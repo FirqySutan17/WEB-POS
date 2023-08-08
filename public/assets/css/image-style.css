@@ -1,0 +1,102 @@
+.loop {
+    margin: 0px !important;
+}
+.modal-dialog {
+    max-width: 90%;
+}
+.float-button {
+    float: right;
+}
+#add-form .bigger {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid #000000;
+    margin-left: 0px;
+}
+/* --------------select-img------------------- */
+#select-img {
+    padding: 20px;
+}
+/* ------------------detail-------------------- */
+#detail {
+    padding: 20px;
+}
+#detail .jarak-input {
+    margin: 10px 0px;
+}
+/* --------------------modal-------------------- */
+#mymodal .spacing-top {
+    margin-top: 20px;
+}
+#mymodal .img-preview {
+    height: 100px;
+    margin-bottom: 20px;
+}
+#mymodal .hidden {
+    display: none;
+}
+
+#mymodal .image-box {
+    height: 600px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    overflow: auto;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+}
+#mymodal .image-box img {
+    object-fit: cover;
+    width: 150px;
+    height: 150px;
+    padding: 10px;
+    border-radius: 10px;
+}
+#mymodal .image-box .active {
+    border: 1px solid #2900bd;
+}
+
+.image-box .folder-class {
+    width: 150px;
+    height: 150px;
+    display: inline-table;
+    padding: 30px;
+    border-radius: 10px;
+}
+.text-detail {
+    max-width: 150px;
+}
+.text-detail p {
+    -webkit-line-clamp: 1;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    margin-bottom: 0px;
+}
+.custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+.custom-file-input::before {
+    content: "Click here to upload Image";
+    display: inline-block;
+    background-color: #ba895d !important;
+    border-color: #ba895d !important;
+    font-size: 14px;
+    padding: 0.45rem 1rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    -webkit-user-select: none;
+    cursor: pointer;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+}
+.custom-file-input:hover::before {
+    border-color: black;
+}
+.custom-file-input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}

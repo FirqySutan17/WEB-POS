@@ -1,0 +1,110 @@
+<header class="main-nav">
+    <div class="sidebar-user text-center">
+        <div class="set-drop">
+            <button class="setting-primary dropSet" style="border: none;"><i data-feather="settings"></i></button>
+            <div class="dropdownSet">
+                <a class="dropStyle {{routeActive('profile.edit')}}" href="{{ route('profile.edit') }}"><i
+                        data-feather="user-check"></i>Edit Profile</a>
+                <a class="dropStyle {{routeActive('password.edit')}}" href="{{ route('password.edit') }}"><i
+                        data-feather="lock"></i>Change Password</a>
+            </div>
+        </div>
+
+        <img class="img-90 rounded-circle" src="{{ asset('file_upload/'. Auth::user()->image) }}" alt=""
+            style="width: 90px; height: 90px; object-fit: cover;" />
+        <a href="{{ route('home') }}">
+            <h6 style="font-size: 16px; font-weight: 600; margin-top: 10px">{{ Auth::user()->name }}</h6>
+        </a>
+        <p class="mb-0 font-roboto">{{ Auth::user()->roles->first()->name??null }}</p>
+    </div>
+    <nav>
+        <div class="main-navbar">
+            <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
+            <div id="mainnav">
+                <ul class="nav-menu custom-scrollbar">
+                    <li class="back-btn">
+                        <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2"
+                                aria-hidden="true"></i></div>
+                    </li>
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive('home')}}" href="{{ route('home') }}">
+                            <i data-feather="home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    @canany(['Manage Skill', 'Manage Portfolio'])
+                    <li class="sidebar-main-title">
+                        <div>
+                            <h6>Master</h6>
+                        </div>
+                    </li>
+                    @endcan
+
+                    <!-- skill -->
+                    @can('Manage Skill')
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['skill.index', 'skill.show', 'skill.edit', 'skill.create'])}}"
+                            href="{{ route('skill.index') }}">
+                            <i data-feather="circle"></i>
+                            <span>Categories</span>
+                        </a>
+                    </li>
+                    @endcan
+                    <!-- End skill -->
+
+                    <!-- Portfolio -->
+                    @can('Manage Portfolio')
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['portfolio.index', 'portfolio.show', 'portfolio.edit', 'portfolio.create'])}}"
+                            href="{{ route('portfolio.index') }}">
+                            <i data-feather="circle"></i>
+                            <span>Portfolio</span>
+                        </a>
+                    </li>
+                    @endcan
+                    <!-- End Portfolio -->
+
+                    <li class="sidebar-main-title">
+                        <div>
+                            <h6>Settings</h6>
+                        </div>
+                    </li>
+
+                    @canany(['Manage Users', 'Manage Roles'])
+                    <li class="dropdown">
+                        <a class="nav-link navSubMenu menu-title {{ routeActive(['user.index', 'user.show', 'user.edit', 'user.create', 'roles.index', 'roles.show', 'roles.edit', 'roles.create']) }}"
+                            href="javascript:void(0)"><i data-feather="users"></i><span>Users Management</span></a>
+                        <ul class="nav-submenu menu-content">
+
+                            <li><a href="{{ route('users.index') }}"
+                                    class="{{routeActive(['users.index', 'users.show', 'users.edit', 'users.create'])}}">Users</a>
+                            </li>
+
+                            <li><a href="{{ route('roles.index') }}"
+                                    class="{{routeActive(['roles.index', 'roles.show', 'roles.edit', 'roles.create'])}}">Roles</a>
+                            </li>
+
+                        </ul>
+                    </li>
+                    @endcan
+
+                    @can('Manage Meta')
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['metas.index', 'metas.show', 'metas.edit', 'metas.create'])}}"
+                            href="{{ route('metas.index') }}">
+                            <i data-feather="bookmark"></i>
+                            <span>Meta Pages</span>
+                        </a>
+                    </li>
+                    @endcan
+
+                </ul>
+            </div>
+            <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+        </div>
+    </nav>
+    <div class="copyrightBox">
+        <p>Copyright {{date('Y')}}-{{date('y', strtotime('+1 year'))}} &copy; Brandztory CMS</p>
+    </div>
+</header>

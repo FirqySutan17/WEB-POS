@@ -1,0 +1,13 @@
+client name (ada)
+start year - ada
+end year - ada
+work categories (ada)
+link client (ada)
+
+multiple image upload (Mockup) - ada
+
+Project title (ada - company)
+Project desc line 1 - ada
+Project desc line 2 - ada
+
+multiple image upload (Slider) - ada
