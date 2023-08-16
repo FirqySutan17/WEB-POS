@@ -45,14 +45,14 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $this->validateLogin($request);
-
+        
+        // $this->validateLogin($request);
         $request->validate([
-            'email' => 'required|string',
+            'employee_id' => 'required|string',
             'password' => 'required|string',
         ]);
-
-        if (auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
+        
+        if (auth()->attempt(['employee_id' => $request->employee_id, 'password' => $request->password])) {
             Alert::toast('Login Successfull', 'success');
             return redirect()->intended('home');
         } else {

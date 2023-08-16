@@ -43,10 +43,10 @@ CMS | Login
                     </div>
                     @endif
                     <div class="form-group _form-group">
-                        <label>Email</label>
+                        <label>Employee ID</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i class="icon-email"></i></span>
-                            <input name="email" class="form-control @error('email') is-invalid @enderror" id="input_login_email" type="email" placeholder="Enter email address" value="{{ old('email') }}">
+                            <span class="input-group-text"><i class="icon-user"></i></span>
+                            <input name="employee_id" class="form-control @error('employee_id') is-invalid @enderror" id="input_login_employee_id" type="text" placeholder="Enter Employee ID" value="{{ old('employee_id') }}">
                         </div>
                     </div>
 

@@ -141,3 +141,8 @@ Breadcrumbs::for('detail_skill', function ($trail, $skill) {
     $trail->push($skill->name, route('skill.show', ['skill' => $skill]));
 });
 
+// Master > Product 
+Breadcrumbs::for('product', function ($trail) {
+    $trail->parent('master');
+    $trail->push("Product", route('product.index'));
+});

@@ -41,13 +41,38 @@
                     </li>
                     @endcan
 
+                    @canany(['Manage Skill', 'Manage Skill'])
+                    <li class="dropdown">
+                        <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
+                            href="javascript:void(0)"><i data-feather="package"></i><span>Products Management</span></a>
+                        <ul class="nav-submenu menu-content">
+
+                            <li><a href="{{ route('product.index') }}"
+                                    class="{{routeActive(['product.index', 'product.show', 'product.edit', 'product.create'])}}">Products</a>
+                            </li>
+
+                            <li><a href="{{ route('product-categories.index') }}"
+                                    class="{{routeActive(['product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create'])}}">Products Categories</a>
+                            </li>
+
+                        </ul>
+                    </li>
+                    @endcan
+
+                    @canany(['Manage Skill', 'Manage Portfolio'])
+                    <li class="sidebar-main-title">
+                        <div>
+                            <h6>Transaksi</h6>
+                        </div>
+                    </li>
+                    @endcan
                     <!-- skill -->
                     @can('Manage Skill')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['skill.index', 'skill.show', 'skill.edit', 'skill.create'])}}"
                             href="{{ route('skill.index') }}">
                             <i data-feather="circle"></i>
-                            <span>Categories</span>
+                            <span>Penerimaan Barang</span>
                         </a>
                     </li>
                     @endcan
@@ -59,7 +84,7 @@
                         <a class="nav-link menu-title link-nav {{routeActive(['portfolio.index', 'portfolio.show', 'portfolio.edit', 'portfolio.create'])}}"
                             href="{{ route('portfolio.index') }}">
                             <i data-feather="circle"></i>
-                            <span>Portfolio</span>
+                            <span>Purchase Order</span>
                         </a>
                     </li>
                     @endcan

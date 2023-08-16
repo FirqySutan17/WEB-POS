@@ -19,8 +19,7 @@ CMS | Dashboard
   style="padding-bottom: 20px; display: flex; align-items: center; justify-content: center;">
   <div class="wrapper-content" style="display: block; text-align: center;">
     <h1>WELCOME TO DASHBOARD</h1>
-    <h1>KOONTJIE.ID</h1>
+    <h1>MEAT MASTER</h1>
   </div>
-
 </div>
 @endsection
