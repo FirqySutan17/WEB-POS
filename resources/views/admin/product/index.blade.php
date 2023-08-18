@@ -26,7 +26,7 @@ CMS | Product
 					<div class="col-8">
 						@can('Portfolio Create')
 						<a href="{{ route('product.create') }}" class="btn btn-primary _btn" role="button">
-							<i class='bx bx-plus'></i> Add new
+							<i class='bx bx-plus'></i> Add New
 						</a>
 						@endcan
 					</div>
@@ -45,29 +45,37 @@ CMS | Product
 			</div>
 		</div>
 		<div class="card-body table-responsive">
-			<table class="table table-striped table-hover">
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th class="center-text">No <span class="dividerHr"></span></th>
 						<th class="heightHr">Name <span class="dividerHr"></span></th>
-						<th class="heightHr">Description <span class="dividerHr"></span></th>
+						<th class="heightHr">Price <span class="dividerHr"></span></th>
+						<th class="heightHr">Stock <span class="dividerHr"></span></th>
 						<th class="center-text">Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					@if (count($portfolios))
-					@forelse ($portfolios as $portfolio)
+					@if (count($products))
+					@forelse ($products as $product)
 					<tr>
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-						<td style="width: 25%; vertical-align: middle">{{ $portfolio->client_name }}</td>
-						<td style="width: 60%; vertical-align: middle">
-							{!! Str::limit($portfolio->description, 150) !!}
+						<td style="width: 45%; vertical-align: middle">{{ $product->name.' | '.$product->code }}</td>
+						<td style="width: 20%; vertical-align: middle">
+							Offline Store : Rp {{ number_format($product->price_store) }}
+							<br>
+							Online Store : Rp {{ number_format($product->price_olshop) }}
+						</td>
+						<td style="width: 20%; vertical-align: middle">
+							Offline Store : {{ number_format($product->stock_store) }}
+							<br>
+							Online Store : {{ number_format($product->stock_olshop) }}
 						</td>
 						<td style="width: 10%;" class="center-text boxAction fontField">
 							<div class="boxInside">
 								@can('Portfolio Update')
 								<div class="boxEdit">
-									<a href="{{ route('portfolio.edit', ['portfolio' => $portfolio]) }}"
+									<a href="{{ route('product.edit', ['product' => $product]) }}"
 										class="btn-sm btn-info" role="button">
 										<i class="bx bx-edit"></i>
 									</a>
@@ -76,7 +84,7 @@ CMS | Product
 
 								@can('Portfolio Delete')
 								<div class="boxDelete">
-									<form action="{{ route('portfolio.destroy', ['portfolio' => $portfolio]) }}"
+									<form action="{{ route('product.destroy', ['product' => $product]) }}"
 										method="POST" role="alert">
 										@csrf
 										@method('DELETE')
@@ -106,9 +114,9 @@ CMS | Product
 		</div>
 		<div class="card-footer">
 			<div class="boxFooter">
-				@if ($portfolios->hasPages())
+				@if ($products->hasPages())
 				<div class="boxPagination">
-					{{ $portfolios->links('vendor.pagination.bootstrap-4') }}
+					{{ $products->links('vendor.pagination.bootstrap-4') }}
 				</div>
 				@endif
 			</div>

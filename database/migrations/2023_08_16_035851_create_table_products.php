@@ -15,12 +15,15 @@ class CreateTableProducts extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->longText('code')->unique();
             $table->string('name');
-            $table->string('slug')->unique();
-            
-            $table->boolean('is_active')->default(0);
-            $table->timestamps();
+            $table->longText('description');
+            $table->integer('price_store');
+            $table->integer('price_olshop');
+            $table->integer('stock_store');
+            $table->integer('stock_olshop');
+            $table->boolean('is_active')->default(1);
+            $table->integer('created_by');
             $table->timestamps();
         });
     }
@@ -32,6 +35,6 @@ class CreateTableProducts extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('table_products');
+        Schema::dropIfExists('products');
     }
 }

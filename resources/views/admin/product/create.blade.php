@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Portfolio
+CMS | Add Product
 @endsection
 
 @push('css')
@@ -13,15 +13,15 @@ CMS | Add Portfolio
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Add Portfolio</h3>
+<h3>Add Product</h3>
 @endslot
-{{ Breadcrumbs::render('add_portfolio') }}
+{{ Breadcrumbs::render('product') }}
 @endcomponent
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <form action="{{ route('portfolio.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card _card" style="margin: auto; padding-bottom: 20px">
                     <div class="card-body _card-body">
@@ -33,13 +33,13 @@ CMS | Add Portfolio
                                         <!-- title -->
                                         <div class="form-group _form-group">
                                             <label for="input_post_title" class="font-weight-bold">
-                                                Client Name <span class="wajib">* </span>
+                                                Product Name <span class="wajib">* </span>
                                             </label>
-                                            <input id="input_post_title" value="{{ old('client_name') }}"
-                                                name="client_name" type="text"
-                                                class="form-control @error('client_name') is-invalid @enderror"
+                                            <input id="input_post_title" value="{{ old('name') }}"
+                                                name="name" type="text"
+                                                class="form-control @error('name') is-invalid @enderror"
                                                 placeholder="Input name here" required />
-                                            @error('client_name')
+                                            @error('name')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -48,15 +48,15 @@ CMS | Add Portfolio
 
                                     </div>
                                     <div class="col-6">
-                                        <!-- slug -->
+                                        <!-- code -->
                                         <div class="form-group _form-group">
-                                            <label for="input_post_slug" class="font-weight-bold">
-                                                Slug
+                                            <label for="input_post_code" class="font-weight-bold">
+                                                Code
                                             </label>
-                                            <input id="input_post_slug" value="{{ old('slug') }}" name="slug"
-                                                type="text" class="form-control @error('slug') is-invalid @enderror"
-                                                placeholder="Auto Generate" readonly />
-                                            @error('slug')
+                                            <input id="input_post_code" value="{{ old('code') }}" name="code"
+                                                type="text" class="form-control @error('code') is-invalid @enderror"
+                                                placeholder="Input product code here" />
+                                            @error('code')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -69,14 +69,14 @@ CMS | Add Portfolio
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="form-group _form-group">
-                                            <label for="datepicker" class="font-weight-bold">
-                                                Start Year <span class="wajib">* </span>
+                                            <label for="price_store" class="font-weight-bold">
+                                                Offline Store Price <span class="wajib">* </span>
                                             </label>
-                                            <input id="datepicker" value="{{ old('start_year') }}" name="start_year"
-                                                type="text"
-                                                class="form-control @error('start_year') is-invalid @enderror"
-                                                placeholder="Select start year" readonly required />
-                                            @error('start_year')
+                                            <input id="price_store" value="{{ old('price_store') }}" name="price_store"
+                                                type="number"
+                                                class="form-control @error('price_store') is-invalid @enderror"
+                                                placeholder="" required />
+                                            @error('price_store')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -86,70 +86,57 @@ CMS | Add Portfolio
                                     <div class="col-3">
                                         <!-- End Year -->
                                         <div class="form-group _form-group">
-                                            <label for="datepickerend" class="font-weight-bold">
-                                                End Year
+                                            <label for="stock_store" class="font-weight-bold">
+                                                Offline Store Stock
                                             </label>
-                                            <input id="datepickerend" value="{{ old('end_year') }}" name="end_year"
-                                                type="text" class="form-control @error('end_year') is-invalid @enderror"
-                                                placeholder="Select end year" readonly />
-                                            @error('end_year')
+                                            <input id="stock_store" value="{{ old('stock_store') }}" name="stock_store"
+                                                type="number" class="form-control @error('stock_store') is-invalid @enderror"
+                                                placeholder="" />
+                                            @error('stock_store')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        {{-- Skill --}}
-                                        <div class="form-group  _form-group">
-                                            <label for="select_portfolio_skill" class="font-weight-bold">
-                                                Categories <span class="wajib">*</span>
+                                    <div class="col-3">
+                                        <div class="form-group _form-group">
+                                            <label for="price_olshop" class="font-weight-bold">
+                                                Online Store Price <span class="wajib">* </span>
                                             </label>
-                                            <select id="select_portfolio_skill" name="skill[]"
-                                                data-placeholder="Choose categories" class="custom-select" multiple>
-
-                                            </select>
+                                            <input id="price_olshop" value="{{ old('price_olshop') }}" name="price_olshop"
+                                                type="number"
+                                                class="form-control @error('price_olshop') is-invalid @enderror"
+                                                placeholder="" required />
+                                            @error('price_olshop')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
                                         </div>
-                                        {{-- End Skill --}}
                                     </div>
-                                </div>
-
-
-                                <!-- title -->
-                                <div class="form-group _form-group">
-                                    <label for="input_post_company" class="font-weight-bold">
-                                        Project Title <span class="wajib">* </span>
-                                    </label>
-                                    <input id="input_post_company" value="{{ old('project_title') }}"
-                                        name="project_title" type="text"
-                                        class="form-control @error('project_title') is-invalid @enderror"
-                                        placeholder="Input project title here" required />
-                                    @error('project_title')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-
-                                <!-- title -->
-                                <div class="form-group _form-group">
-                                    <label for="input_post_link" class="font-weight-bold">
-                                        Visit Link <span class="wajib">* </span>
-                                    </label>
-                                    <input id="input_post_link" value="{{ old('link') }}" name="link" type="text"
-                                        class="form-control @error('link') is-invalid @enderror"
-                                        placeholder="Input link here" required />
-                                    @error('link')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
+                                    <div class="col-3">
+                                        <!-- End Year -->
+                                        <div class="form-group _form-group">
+                                            <label for="stock_olshop" class="font-weight-bold">
+                                                Online Store Stock
+                                            </label>
+                                            <input id="stock_olshop" value="{{ old('stock_olshop') }}" name="stock_olshop"
+                                                type="number" class="form-control @error('stock_olshop') is-invalid @enderror"
+                                                placeholder="" />
+                                            @error('stock_olshop')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- description -->
                                 <div class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
-                                        Description Line 1 <span class="wajib">* </span>
+                                        Description <span class="wajib">* </span>
                                     </label>
                                     <textarea id="input_post_description" name="description"
                                         placeholder="Write description here.."
@@ -160,58 +147,6 @@ CMS | Add Portfolio
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
-                                </div>
-
-                                <!-- description -->
-                                <div class="form-group _form-group">
-                                    <label for="input_post_description_2" class="font-weight-bold">
-                                        Description Line 2 <span class="wajib">* </span>
-                                    </label>
-                                    <textarea id="input_post_description_2" name="description_2"
-                                        placeholder="Write description here.."
-                                        class="form-control @error('description_2') is-invalid @enderror"
-                                        rows="7">{{ old('description_2') }}</textarea>
-                                    @error('description_2')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-
-                                <div class="row req-box">
-                                    <div class="col-6">
-                                        <p
-                                            style="vertical-align: middle; font-weight: 600; color: rgba(0, 0, 0, 0.85); padding: 6px 0px;font-size: 13px">
-                                            Project MockUp <span class="wajib">*</span></p>
-                                    </div>
-                                    <div class="col-6" style="float: right; text-align: right">
-                                        <button onclick="add_image()" type="button"
-                                            class="btn btn-primary _btn-primary px-4" style="font-weight: 600">
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="mt-2" id="images_group">
-
-                                </div>
-
-                                <div class="row req-box">
-                                    <div class="col-6">
-                                        <p
-                                            style="vertical-align: middle; font-weight: 600; color: rgba(0, 0, 0, 0.85); padding: 6px 0px;font-size: 13px">
-                                            Project Sliders <span class="wajib">*</span></p>
-                                    </div>
-                                    <div class="col-6" style="float: right; text-align: right">
-                                        <button onclick="add_image_slider()" type="button"
-                                            class="btn btn-primary _btn-primary px-4" style="font-weight: 600">
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="mt-2" id="images_group_slider">
-
                                 </div>
 
                                 <!-- status -->
@@ -241,7 +176,7 @@ CMS | Add Portfolio
                             <div class="col-12">
                                 <div class="float-right">
                                     <a class="btn btn-outline-primary _btn-primary px-4"
-                                        href="{{ route('portfolio.index') }}">Back</a>
+                                        href="{{ route('product.index') }}">Back</a>
                                     <button type="submit" class="btn btn-primary _btn-primary px-4">
                                         Save
                                     </button>
