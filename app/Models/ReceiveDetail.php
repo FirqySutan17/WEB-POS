@@ -5,16 +5,13 @@ namespace App\Models;
 use DigitalCloud\Blameable\Traits\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-class Product extends Model
+
+class ReceiveDetail extends Model
 {
     use HasFactory;
-    protected $table = 'products';
+    protected $table = 'tr_receive_detail';
     use Blameable;
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
-    protected $fillable = ['code', 'name', 'description', 'price_store', 'price_olshop', 'stock_store', 'stock_olshop', 'is_active'];
-        // public $timestamps = false;
+    protected $fillable = ['receive_code', 'product_code', 'amount'];
 
 
     public function scopeSearch($query, $title)
@@ -25,5 +22,10 @@ class Product extends Model
     public function getRouteKeyName()
     {
         return 'id';
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'code', 'product_code');
     }
 }

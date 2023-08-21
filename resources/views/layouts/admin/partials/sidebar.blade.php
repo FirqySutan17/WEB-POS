@@ -69,10 +69,10 @@
                     <!-- skill -->
                     @can('Manage Skill')
                     <li>
-                        <a class="nav-link menu-title link-nav {{routeActive(['skill.index', 'skill.show', 'skill.edit', 'skill.create'])}}"
-                            href="{{ route('skill.index') }}">
+                        <a class="nav-link menu-title link-nav {{routeActive(['receive.index', 'receive.show', 'receive.edit', 'receive.create'])}}"
+                            href="{{ route('receive.index') }}">
                             <i data-feather="circle"></i>
-                            <span>Penerimaan Barang</span>
+                            <span>Receive</span>
                         </a>
                     </li>
                     @endcan

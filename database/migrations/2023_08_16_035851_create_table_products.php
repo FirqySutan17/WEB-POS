@@ -23,8 +23,9 @@ class CreateTableProducts extends Migration
             $table->integer('stock_store');
             $table->integer('stock_olshop');
             $table->boolean('is_active')->default(1);
-            $table->integer('created_by');
             $table->timestamps();
+            $table->blameable();
+            $table->softDeletes();
         });
     }
 

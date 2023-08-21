@@ -6,14 +6,14 @@ use DigitalCloud\Blameable\Traits\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class Product extends Model
+class Receive extends Model
 {
     use HasFactory;
-    protected $table = 'products';
+    protected $table = 'tr_receive';
     use Blameable;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $fillable = ['code', 'name', 'description', 'price_store', 'price_olshop', 'stock_store', 'stock_olshop', 'is_active'];
+    protected $fillable = ['receive_code', 'receive_date', 'suratjalan_number', 'suratjalan_file', 'plat_no', 'driver', 'driver_phone'];
         // public $timestamps = false;
 
 
@@ -25,5 +25,10 @@ class Product extends Model
     public function getRouteKeyName()
     {
         return 'id';
+    }
+
+    public function details()
+    {
+        return $this->hasMany(ReceiveDetail::class, 'receive_code');
     }
 }

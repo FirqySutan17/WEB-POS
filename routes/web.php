@@ -77,6 +77,11 @@ Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showRese
 Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 
 // Product Route
+Route::get('/product/select', [App\Http\Controllers\ProductController::class, 'select'])->name('product.select');
 Route::resource('/product', App\Http\Controllers\ProductController::class);
 // Product Categories Route
 Route::resource('/product-categories', App\Http\Controllers\ProductCategoriesController::class);
+
+
+// Receive Route
+Route::resource('/receive', App\Http\Controllers\ReceiveController::class);

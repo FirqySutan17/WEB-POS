@@ -40,6 +40,16 @@ class ProductController extends Controller
         ]);
     }
 
+    public function select(Request $request)
+    {
+        $products = Product::select('id', 'code', 'name')->limit(7);
+        if ($request->has('q')) {
+            $products->where('code', 'LIKE', "%{$request->q}%");
+        }
+
+        return response()->json($products->get());
+    }
+
     /**
      * Show the form for creating a new resource.
      *
