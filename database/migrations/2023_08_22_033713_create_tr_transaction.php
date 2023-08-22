@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrReceiveDetail extends Migration
+class CreateTrTransaction extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateTrReceiveDetail extends Migration
      */
     public function up()
     {
-        Schema::create('tr_receive_detail', function (Blueprint $table) {
+        Schema::create('tr_transaction', function (Blueprint $table) {
             $table->id();
-            $table->string('receive_code');
-            $table->string('product_code');
-            $table->integer('quantity');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +26,6 @@ class CreateTrReceiveDetail extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tr_receive_detail');
+        Schema::dropIfExists('tr_transaction');
     }
 }

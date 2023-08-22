@@ -42,7 +42,11 @@ class ProductController extends Controller
 
     public function select(Request $request)
     {
+        $existing_item = json_decode($request->existing_item);
         $products = Product::select('id', 'code', 'name')->limit(7);
+        if (!empty($existing_item)) {
+            $products->whereNotIn('code', $existing_item);
+        }
         if ($request->has('q')) {
             $products->where('code', 'LIKE', "%{$request->q}%");
         }

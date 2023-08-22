@@ -12,7 +12,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Receive;
 use App\Models\Product;
 
-class ReceiveController extends Controller
+class TransactionController extends Controller
 {
     public function __construct()
     {
@@ -36,7 +36,7 @@ class ReceiveController extends Controller
             $receives = Receive::orderBy('id', 'desc')->paginate(9);
         }
         // dd($receives);
-        return view('admin.receive.index', [
+        return view('admin.transaction.index', [
             'receives' => $receives
         ]);
     }
@@ -48,7 +48,7 @@ class ReceiveController extends Controller
      */
     public function create()
     {
-        return view('admin.receive.create');
+        return view('admin.purchase_order.create');
     }
 
     /**
@@ -95,20 +95,20 @@ class ReceiveController extends Controller
             }
 
             $product_code   = $request->product_code;
-            $quantity         = $request->quantity;
+            $amount         = $request->amount;
             $product_arr    = [];
             if (!empty($receive) && !empty($product_code)) {
                 foreach ($product_code as $key => $v) {
-                    $qty = $quantity[$key];
+                    $amnt = $amount[$key];
                     $product_arr[] = [
                         'receive_code'  => $receive_code,
                         'product_code'  => $v,
-                        'quantity'        => $qty
+                        'amount'        => $amnt
                     ];
 
                     // Update amount
                     $product = Product::where('code', $v)->first();
-                    $product->stock_store = $product->stock_store + $qty;
+                    $product->stock_store = $product->stock_store + $amnt;
                     $product->save();
                 }
 

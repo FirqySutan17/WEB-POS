@@ -172,3 +172,8 @@ Breadcrumbs::for('edit_receive', function ($trail, $receive) {
     $trail->parent('receive');
     $trail->push($receive->code, route('receive.edit', ['receive' => $receive]));
 });
+
+// Purchase Order 
+Breadcrumbs::for('transaction', function ($trail) {
+    $trail->push("Transaction", route('transaction.index'));
+});

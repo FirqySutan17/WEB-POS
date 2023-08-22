@@ -81,10 +81,10 @@
                     <!-- Portfolio -->
                     @can('Manage Portfolio')
                     <li>
-                        <a class="nav-link menu-title link-nav {{routeActive(['portfolio.index', 'portfolio.show', 'portfolio.edit', 'portfolio.create'])}}"
-                            href="{{ route('portfolio.index') }}">
+                        <a class="nav-link menu-title link-nav {{routeActive(['transaction.index'])}}"
+                            href="{{ route('transaction.index') }}">
                             <i data-feather="circle"></i>
-                            <span>Purchase Order</span>
+                            <span>Transaction</span>
                         </a>
                     </li>
                     @endcan

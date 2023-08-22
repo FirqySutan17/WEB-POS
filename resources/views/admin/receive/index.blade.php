@@ -45,31 +45,29 @@ CMS | Receive
 			</div>
 		</div>
 		<div class="card-body table-responsive">
-			<table class="table table-striped table-hover">
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th class="center-text">No <span class="dividerHr"></span></th>
 						<th class="heightHr">Receive Code <span class="dividerHr"></span></th>
 						<th class="heightHr">Receive Date <span class="dividerHr"></span></th>
-						<th class="heightHr">Receiver <span class="dividerHr"></span></th>
-						<th class="heightHr">Sender <span class="dividerHr"></span></th>
+						<th class="heightHr">Driver <span class="dividerHr"></span></th>
 						<th class="center-text">Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					@if (count($receives))
-					@forelse ($receives as $portfolio)
+					@forelse ($receives as $receive)
 					<tr>
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-						<td style="width: 25%; vertical-align: middle">{{ $portfolio->client_name }}</td>
-						<td style="width: 60%; vertical-align: middle">
-							{!! Str::limit($portfolio->description, 150) !!}
-						</td>
+						<td style="width: 30%; vertical-align: middle">{{ $receive->receive_code }}</td>
+						<td style="width: 25%; vertical-align: middle">{{ $receive->receive_date }}</td>
+						<td style="width: 30%; vertical-align: middle">{{ $receive->driver." | ".$receive->driver_no." | ".$receive->plat_no }}</td>
 						<td style="width: 10%;" class="center-text boxAction fontField">
 							<div class="boxInside">
 								@can('Portfolio Update')
 								<div class="boxEdit">
-									<a href="{{ route('portfolio.edit', ['portfolio' => $portfolio]) }}"
+									<a href="{{ route('receive.edit', ['receive' => $receive]) }}"
 										class="btn-sm btn-info" role="button">
 										<i class="bx bx-edit"></i>
 									</a>
@@ -78,7 +76,7 @@ CMS | Receive
 
 								@can('Portfolio Delete')
 								<div class="boxDelete">
-									<form action="{{ route('portfolio.destroy', ['portfolio' => $portfolio]) }}"
+									<form action="{{ route('receive.destroy', ['receive' => $receive]) }}"
 										method="POST" role="alert">
 										@csrf
 										@method('DELETE')

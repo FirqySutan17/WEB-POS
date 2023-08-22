@@ -11,8 +11,8 @@ class ReceiveDetail extends Model
     use HasFactory;
     protected $table = 'tr_receive_detail';
     use Blameable;
-    protected $fillable = ['receive_code', 'product_code', 'amount'];
-
+    protected $fillable = ['receive_code', 'product_code', 'quantity'];
+    public $timestamps = false;
 
     public function scopeSearch($query, $title)
     {

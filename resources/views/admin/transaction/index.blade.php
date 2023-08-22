@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Receive
+CMS | Transaction
 @endsection
 
 @push('css')
@@ -13,9 +13,9 @@ CMS | Add Receive
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Add Receive</h3>
+<h3>Transaction</h3>
 @endslot
-{{ Breadcrumbs::render('add_receive') }}
+{{ Breadcrumbs::render('transaction') }}
 @endcomponent
 <div class="container-fluid">
     <div class="row">
@@ -27,45 +27,26 @@ CMS | Add Receive
                         <div class="row d-flex align-items-stretch">
 
                             <div class="col-12">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Receive Date <span class="wajib">* </span>
-                                            </label>
-                                            <input id="receive_date" value="{{ empty(old('receive_date')) ? date('Y-m-d') : old('receive_date') }}" name="receive_date"
-                                                type="text"
-                                                class="form-control @error('receive_date') is-invalid @enderror" required readonly />
-                                            @error('receive_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_time" class="font-weight-bold">
-                                                Receive Time <span class="wajib">* </span>
-                                            </label>
-                                            <input id="receive_time" value="{{ empty(old('receive_time')) ? date('H:i') : old('receive_time') }}" name="receive_time"
-                                                type="text"
-                                                value="{{ date('H:i:s') }}"
-                                                class="form-control @error('receive_time') is-invalid @enderror" required readonly />
-                                            @error('receive_time')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                <div class="form-group _form-group">
+                                    <label for="receive_date" class="font-weight-bold">
+                                        Receive Date <span class="wajib">* </span>
+                                    </label>
+                                    <input id="receive_date" value="{{ old('receive_date') }}" name="receive_date"
+                                        type="text"
+                                        value="{{ date('Y-m-d') }}"
+                                        class="form-control @error('receive_date') is-invalid @enderror" required />
+                                    @error('receive_date')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
 
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="form-group _form-group">
                                             <label for="driver" class="font-weight-bold">
-                                                Driver Name
+                                                Driver Name <span class="wajib">* </span>
                                             </label>
                                             <input id="driver" value="{{ old('driver') }}" name="driver" type="text" class="form-control input-scanner @error('driver') is-invalid @enderror" placeholder="Input driver name here"/>
                                             @error('driver')
@@ -79,7 +60,7 @@ CMS | Add Receive
                                         <!-- End Year -->
                                         <div class="form-group _form-group">
                                             <label for="driver_phone" class="font-weight-bold">
-                                                Driver Phone Number
+                                                Driver Phone Number <span class="wajib">* </span>
                                             </label>
                                             <input id="driver_phone" value="{{ old('driver_phone') }}" name="driver_phone" type="text" class="form-control input-scanner @error('driver_phone') is-invalid @enderror" placeholder="Input Driver Phone Number here"/>
                                             @error('driver_phone')
@@ -92,7 +73,7 @@ CMS | Add Receive
                                     <div class="col-6">
                                         <div class="form-group _form-group">
                                             <label for="plat_no" class="font-weight-bold">
-                                                Vehicle License Number
+                                                Vehicle License Number <span class="wajib">* </span>
                                             </label>
                                             <input id="plat_no" value="{{ old('plat_no') }}" name="plat_no" type="text" class="form-control input-scanner @error('plat_no') is-invalid @enderror" placeholder="Input Plat Nomor Kendaraan disini"/>
                                             @error('plat_no')
@@ -108,7 +89,7 @@ CMS | Add Receive
                                 <!-- title -->
                                 <div class="form-group _form-group">
                                     <label for="suratjalan_number" class="font-weight-bold">
-                                        Delivery Number <span class="wajib">* </span>
+                                        Nomor Surat Jalan <span class="wajib">* </span>
                                     </label>
                                     <input id="suratjalan_number" value="{{ old('suratjalan_number') }}"
                                         name="suratjalan_number" type="text"
@@ -124,7 +105,7 @@ CMS | Add Receive
                                 <!-- title -->
                                 <div class="form-group _form-group">
                                     <label for="input_post_link" class="font-weight-bold">
-                                        Delivery File  <span class="wajib">* </span>
+                                        File Surat Jalan  <span class="wajib">* </span>
                                     </label>
                                     <input name="suratjalan_file" type="file" class="form-control"  />
                                     @error('suratjalan_file')
@@ -188,7 +169,6 @@ CMS | Add Receive
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 @endpush
 
 
@@ -198,17 +178,12 @@ CMS | Add Receive
     function submit_form() {
         $("#form-receive").submit();
     }
-    // $(document).ready(function(){
-    //     $("#receive_date").datepicker({
-    //         format: "yyyy-mm-dd",
-    //         autoclose:true,
-    //         startDate: new Date(),
-    //         endDate: ''
-    //     });
-    //     var today = new Date();
-    //     var momentToday = moment(today).format('YYYY-MM-DD');
-    //     $("#receive_date").val(momentToday).datepicker('update')
-    // })
+    $(document).ready(function(){
+        $("#receive_date").datepicker({
+            format: "yyyy-mm-dd",
+            autoclose:true
+        }); 
+    })
 </script>
 
 <script>
@@ -237,9 +212,9 @@ CMS | Add Receive
                     <div class="col-4">
                         <div  class="form-group _form-group">
                             <label for="input_post_description" class="font-weight-bold">
-                                Quantity 
+                                Amount 
                             </label>
-                            <input id="quantity_${item_id}" name="quantity[]" type="number" class="form-control" value="0" />
+                            <input id="amount_${item_id}" name="amount[]" type="number" class="form-control" value="0" />
                         </div>
                     </div>
                 </div>
@@ -312,12 +287,12 @@ CMS | Add Receive
         if (product_code != item_arr[item_id]) {
             $("#item_id").remove();
         }
-        // Menambah quantity pada existing product
+        // Menambah Amount pada existing product
         var position_product_item = product_position_arr[product_code];
         if ($(`#${position_product_item}`).length > 0) {
-            var str_quantity_product = $(`#quantity_${position_product_item}`).val();
-            var quantity_product = parseInt(str_quantity_product) + 1;
-            $(`#quantity_${position_product_item}`).val(quantity_product);
+            var str_amount_product = $(`#amount_${position_product_item}`).val();
+            var amount_product = parseInt(str_amount_product) + 1;
+            $(`#amount_${position_product_item}`).val(amount_product);
         }
     }
 
