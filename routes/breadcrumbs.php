@@ -61,22 +61,6 @@ Breadcrumbs::for('master', function ($trail) {
     $trail->push('Master');
 });
 
-//Master > Single Upload 
-Breadcrumbs::for('single_upload', function ($trail) {
-    $trail->parent('master');
-    $trail->push("Single Upload", route('single_upload.index'));
-});
-
-Breadcrumbs::for('add_single_upload', function ($trail) {
-    $trail->parent('single_upload');
-    $trail->push('Add Single Upload', route('single_upload.create'));
-});
-
-Breadcrumbs::for('edit_single_upload', function ($trail, $single_upload) {
-    $trail->parent('single_upload');
-    $trail->push($single_upload->title, route('single_upload.edit', ['single_upload' => $single_upload]));
-});
-
 //Master > Meta
 Breadcrumbs::for('meta', function ($trail) {
     $trail->parent('master');
@@ -93,70 +77,21 @@ Breadcrumbs::for('edit_meta', function ($trail, $meta) {
     $trail->push($meta->name, route('metas.edit', ['meta' => $meta]));
 });
 
-//Master > Portfolio 
-Breadcrumbs::for('portfolio', function ($trail) {
+//Master > Transaction 
+Breadcrumbs::for('transaction', function ($trail) {
     $trail->parent('master');
-    $trail->push("Portfolio", route('portfolio.index'));
+    $trail->push("Transaction", route('transaction.index'));
 });
 
-Breadcrumbs::for('add_portfolio', function ($trail) {
-    $trail->parent('portfolio');
-    $trail->push('Add Portfolio', route('portfolio.create'));
+Breadcrumbs::for('add_transaction', function ($trail) {
+    $trail->parent('transaction');
+    $trail->push('Add Transaction', route('transaction.create'));
 });
 
-Breadcrumbs::for('edit_portfolio', function ($trail, $portfolio) {
-    $trail->parent('portfolio');
-    $trail->push($portfolio->client_name, route('portfolio.edit', ['portfolio' => $portfolio]));
+Breadcrumbs::for('edit_transaction', function ($trail, $transaction) {
+    $trail->parent('transaction');
+    $trail->push($transaction->client_name, route('transaction.edit', ['transaction' => $transaction]));
 });
-
-//Dashboard > Project Type
-Breadcrumbs::for('project-type', function ($trail) {
-    $trail->parent('dashboard');
-    $trail->push("Project Type", route('project-type.index'));
-});
-
-Breadcrumbs::for('add_project_type', function ($trail) {
-    $trail->parent('project-type');
-    $trail->push('Add project-type', route('project-type.create'));
-});
-
-Breadcrumbs::for('detail_project_type', function ($trail, $projectType) {
-    $trail->parent('project-type', $projectType);
-    $trail->push($projectType->name, route('project-type.show', ['project_type' => $projectType]));
-});
-
-//Dashboard > Skill
-Breadcrumbs::for('skill', function ($trail) {
-    $trail->parent('dashboard');
-    $trail->push("Categories", route('skill.index'));
-});
-
-Breadcrumbs::for('add_skill', function ($trail) {
-    $trail->parent('skill');
-    $trail->push('Add Categories', route('skill.create'));
-});
-
-Breadcrumbs::for('detail_skill', function ($trail, $skill) {
-    $trail->parent('skill', $skill);
-    $trail->push($skill->name, route('skill.show', ['skill' => $skill]));
-});
-
-// Master > Product 
-Breadcrumbs::for('product', function ($trail) {
-    $trail->parent('master');
-    $trail->push("Product", route('product.index'));
-});
-
-Breadcrumbs::for('add_product', function ($trail) {
-    $trail->parent('product');
-    $trail->push('Add Product', route('product.create'));
-});
-
-Breadcrumbs::for('edit_product', function ($trail, $product) {
-    $trail->parent('product');
-    $trail->push($product->name, route('product.edit', ['product' => $product]));
-});
-
 
 // Penerimaan Barang 
 Breadcrumbs::for('receive', function ($trail) {
@@ -171,9 +106,4 @@ Breadcrumbs::for('add_receive', function ($trail) {
 Breadcrumbs::for('edit_receive', function ($trail, $receive) {
     $trail->parent('receive');
     $trail->push($receive->code, route('receive.edit', ['receive' => $receive]));
-});
-
-// Purchase Order 
-Breadcrumbs::for('transaction', function ($trail) {
-    $trail->push("Transaction", route('transaction.index'));
 });

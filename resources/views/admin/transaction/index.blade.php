@@ -5,9 +5,8 @@ CMS | Transaction
 @endsection
 
 @push('css')
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/sweetalert2.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -17,601 +16,132 @@ CMS | Transaction
 @endslot
 {{ Breadcrumbs::render('transaction') }}
 @endcomponent
+
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <form id="form-receive" action="{{ route('receive.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="card _card" style="margin: auto; padding-bottom: 20px">
-                    <div class="card-body _card-body">
-                        <div class="row d-flex align-items-stretch">
-                            <div class="col-md-3 col-sm-12">
-                                <div class="row tr-shadow" style="height: 328px; display: flex; flex-direction: column;              justify-content: center;
-                                align-items: center;">
-                                    <div class="col-12">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Kasir
-                                            </label>
-                                            <input id="receive_date" value="John Doe" name="receive_date" type="text"
-                                                value="{{ date('Y-m-d') }}"
-                                                class="form-control @error('receive_date') is-invalid @enderror"
-                                                required readonly />
-                                            @error('receive_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="boxHeader">
+                {{-- filter:start --}}
+                <form class="row" method="GET">
+                    <div class="col-8">
 
-                                    <div class="col-12">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Tanggal Transaksi
-                                            </label>
-                                            <input id="receive_date" value="23-08-2023" name="receive_date" type="text"
-                                                value="{{ date('Y-m-d') }}"
-                                                class="form-control @error('receive_date') is-invalid @enderror"
-                                                required readonly />
-                                            @error('receive_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Nomor Invoice
-                                            </label>
-                                            <input id="receive_date" value="#INV-000001" name="receive_date" type="text"
-                                                value="{{ date('Y-m-d') }}"
-                                                class="form-control @error('receive_date') is-invalid @enderror"
-                                                required readonly />
-                                            @error('receive_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-9 col-sm-12" style="padding-right: 0px">
-                                <input id="input-scanner" type="text"
-                                    class="form-control input-scanner @error('suratjalan_number') is-invalid @enderror"
-                                    placeholder="Klik disini untuk Scan Barcode"
-                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " />
-                                <div class="tr-shadow table-responsive">
-
-                                    <table class="table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th class="center-text" style="width: 5%;">No <span
-                                                        class="dividerHr"></span></th>
-                                                <th style="width: 30%; vertical-align: middle" class="heightHr">Nama
-                                                    Item <span class="dividerHr"></span></th>
-                                                <th style="width: 19%; vertical-align: middle; text-align: center"
-                                                    class="heightHr center-text">Harga <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 6%; vertical-align: middle"
-                                                    class="heightHr center-text">Qty <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 10%; vertical-align: middle; text-align: center"
-                                                    class="heightHr center-text">Disc (%)
-                                                    <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 15%; vertical-align: middle; text-align: right"
-                                                    class="heightHr center-text">Total <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 10%;" class="center-text"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="custom-scrollbar">
-                                            <tr>
-                                                <td style="width: 5%;" class="center-text">1</td>
-                                                <td style="width: 30%; vertical-align: middle">Lorem
-                                                    Ipsum Dolor Sit
-                                                    Amet
-                                                </td>
-                                                <td style="width: 19%; vertical-align: middle; text-align: center">
-                                                    <p style="text-decoration: line-through; font-size: 12px">Rp
-                                                        30.000</p>
-                                                    Rp 23.000
-                                                </td>
-                                                <td style="width: 6%; vertical-align: middle">
-                                                    <input type="number" min="1"
-                                                        style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000"
-                                                        value="1" placeholder="1" />
-                                                </td>
-                                                <td style="width: 10%; vertical-align: middle; text-align: center">10%
-                                                </td>
-                                                <td style="width: 15%; vertical-align: middle; text-align: right">Rp
-                                                    200.000</td>
-                                                <td style="width: 10%;"
-                                                    class="center-text boxAction fontField trans-icon">
-                                                    <div class="boxInside"
-                                                        style="align-items: center; justify-content: center;">
-                                                        {{-- <div class="boxEdit">
-                                                            <a href="" class="btn-sm btn-info" role="button">
-                                                                <i class="bx bx-edit"></i>
-                                                            </a>
-                                                        </div> --}}
-                                                        <div class="boxDelete">
-                                                            <form action="" method="POST" role="alert">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                                    <i class="bx bx-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
-                                                    </div>
-
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td style="width: 5%;" class="center-text">2</td>
-                                                <td style="width: 30%; vertical-align: middle">Lorem
-                                                    Ipsum Dolor Sit
-                                                    Amet</td>
-                                                <td style="width: 19%; vertical-align: middle; text-align: center">Rp
-                                                    23.000</td>
-                                                <td style="width: 6%; vertical-align: middle">
-                                                    <input type="number" min="1"
-                                                        style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000"
-                                                        value="1" placeholder="1" />
-                                                </td>
-                                                <td style="width: 10%; vertical-align: middle; text-align: center">10%
-                                                </td>
-                                                <td style="width: 15%; vertical-align: middle; text-align: right">Rp
-                                                    200.000</td>
-                                                <td style="width: 10%;"
-                                                    class="center-text boxAction fontField trans-icon">
-                                                    <div class="boxInside"
-                                                        style="align-items: center; justify-content: center;">
-                                                        {{-- <div class="boxEdit">
-                                                            <a href="" class="btn-sm btn-info" role="button">
-                                                                <i class="bx bx-edit"></i>
-                                                            </a>
-                                                        </div> --}}
-                                                        <div class="boxDelete">
-                                                            <form action="" method="POST" role="alert">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                                    <i class="bx bx-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
-                                                    </div>
-
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td style="width: 5%;" class="center-text">3</td>
-                                                <td style="width: 30%; vertical-align: middle">Lorem
-                                                    Ipsum Dolor Sit
-                                                    Amet</td>
-                                                <td style="width: 19%; vertical-align: middle; text-align: center">Rp
-                                                    23.000</td>
-                                                <td style="width: 6%; vertical-align: middle">
-                                                    <input type="number" min="1"
-                                                        style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000"
-                                                        value="1" placeholder="1" />
-                                                </td>
-                                                <td style="width: 10%; vertical-align: middle; text-align: center">10%
-                                                </td>
-                                                <td style="width: 15%; vertical-align: middle; text-align: right">Rp
-                                                    200.000</td>
-                                                <td style="width: 10%;"
-                                                    class="center-text boxAction fontField trans-icon">
-                                                    <div class="boxInside"
-                                                        style="align-items: center; justify-content: center;">
-                                                        {{-- <div class="boxEdit">
-                                                            <a href="" class="btn-sm btn-info" role="button">
-                                                                <i class="bx bx-edit"></i>
-                                                            </a>
-                                                        </div> --}}
-                                                        <div class="boxDelete">
-                                                            <form action="" method="POST" role="alert">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                                    <i class="bx bx-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
-                                                    </div>
-
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td style="width: 5%;" class="center-text">4</td>
-                                                <td style="width: 30%; vertical-align: middle">Lorem
-                                                    Ipsum Dolor Sit
-                                                    Amet</td>
-                                                <td style="width: 19%; vertical-align: middle; text-align: center">
-                                                    <p style="text-decoration: line-through; font-size: 12px">Rp
-                                                        30.000</p>
-                                                    Rp
-                                                    23.000
-                                                </td>
-                                                <td style="width: 6%; vertical-align: middle">
-                                                    <input type="number" min="1"
-                                                        style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000"
-                                                        value="1" placeholder="1" />
-                                                </td>
-                                                <td style="width: 10%; vertical-align: middle; text-align: center">10%
-                                                </td>
-                                                <td style="width: 15%; vertical-align: middle; text-align: right">Rp
-                                                    200.000</td>
-                                                <td style="width: 10%;"
-                                                    class="center-text boxAction fontField trans-icon">
-                                                    <div class="boxInside"
-                                                        style="align-items: center; justify-content: center;">
-                                                        {{-- <div class="boxEdit">
-                                                            <a href="" class="btn-sm btn-info" role="button">
-                                                                <i class="bx bx-edit"></i>
-                                                            </a>
-                                                        </div> --}}
-                                                        <div class="boxDelete">
-                                                            <form action="" method="POST" role="alert">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                                    <i class="bx bx-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
-                                                    </div>
-
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td style="width: 5%;" class="center-text">5</td>
-                                                <td style="width: 30%; vertical-align: middle">Lorem
-                                                    Ipsum Dolor Sit
-                                                    Amet</td>
-                                                <td style="width: 19%; vertical-align: middle; text-align: center">Rp
-                                                    23.000</td>
-                                                <td style="width: 6%; vertical-align: middle">
-                                                    <input type="number" min="1"
-                                                        style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000"
-                                                        value="1" placeholder="1" />
-                                                </td>
-                                                <td style="width: 10%; vertical-align: middle; text-align: center">10%
-                                                </td>
-                                                <td style="width: 15%; vertical-align: middle; text-align: right">Rp
-                                                    200.000</td>
-                                                <td style="width: 10%;"
-                                                    class="center-text boxAction fontField trans-icon">
-                                                    <div class="boxInside"
-                                                        style="align-items: center; justify-content: center;">
-                                                        {{-- <div class="boxEdit">
-                                                            <a href="" class="btn-sm btn-info" role="button">
-                                                                <i class="bx bx-edit"></i>
-                                                            </a>
-                                                        </div> --}}
-                                                        <div class="boxDelete">
-                                                            <form action="" method="POST" role="alert">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                                    <i class="bx bx-trash"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-
-                                                    </div>
-
-                                                </td>
-                                            </tr>
-
-                                            {{-- <table></table>
-                                            <p style="text-align: center; padding-top: 50px;">
-
-                                                <strong> Search not found</strong>
-
-                                                <strong> No data yet</strong>
-
-                                            </p> --}}
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-12 tr-shadow" style="margin-top: 20px">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Metode Pembayaran <span class="wajib">* </span>
-                                            </label>
-                                            <select id="select_method_payment" name="skill[]"
-                                                data-placeholder="Pilih pembayaran" class="custom-select">
-                                                <option value="Tunai">Tunai</option>
-                                                <option value="EDC - BCA">EDC - BCA</option>
-                                                <option value="EDC - QRIS">EDC - QRIS</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Receipt <span class="wajib">* </span>
-                                            </label>
-                                            <input id="receive_date" placeholder="Ex: RCT123456789" name="receive_date"
-                                                type="text"
-                                                class="form-control @error('receive_date') is-invalid @enderror"
-                                                required />
-                                            @error('receive_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Nominal Tunai
-                                            </label>
-                                            <input id="tanpa-rupiah" placeholder="Ex: 50000" name="receive_date"
-                                                type="text"
-                                                class="form-control @error('receive_date') is-invalid @enderror"
-                                                required />
-                                            @error('receive_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Kembalian
-                                            </label>
-                                            <input id="receive_date" placeholder="Hitungan otomatis" name="receive_date"
-                                                type="text"
-                                                class="form-control @error('receive_date') is-invalid @enderror"
-                                                required readonly />
-                                            @error('receive_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-4" style="text-align: right">
-                                        <h6>Total</h6>
-                                        <h2>Rp 300.000,-</h2>
-                                        <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
-                                        <div style="width: 100%; display: flex; align-items: center; margin-top: 10px">
-                                            <button onclick="submit_form()" type="button"
-                                                class="btn btn-primary _btn-primary px-4" style="width: 100%">
-                                                Save
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <a href="{{ route('transaction.create') }}" class="btn btn-primary _btn" role="button">
+                            <i class='bx bx-plus'></i> Add new
+                        </a>
 
                     </div>
+                    <div class="col-4 boxContent">
+                        <div class="boxSearch _form-group">
+                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
+                                placeholder="Search for data.."
+                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                        </div>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                {{-- filter:end --}}
+            </div>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th class="center-text">No <span class="dividerHr"></span></th>
+                        <th class="heightHr">Kasir <span class="dividerHr"></span></th>
+                        <th class="heightHr">Invoice <span class="dividerHr"></span></th>
+                        <th class="heightHr">Total Harga <span class="dividerHr"></span></th>
+                        <th class="center-text">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td style="width: 5%;" class="center-text">1</td>
+                        <td style="width: 25%; vertical-align: middle">John Doe</td>
+                        <td style="width: 30%; vertical-align: middle">
+                            #INV-000001
+                        </td>
+                        <td style="width: 30%; vertical-align: middle">
+                            Rp 270.000
+                        </td>
+                        <td style="width: 10%;" class="center-text boxAction fontField">
+                            <div class="boxInside">
+
+                                <div class="boxEdit">
+                                    <a href="{{ route('transaction.edite') }}" class="btn-sm btn-info" role="button">
+                                        <i class="bx bx-edit"></i>
+                                    </a>
+                                </div>
+
+
+
+                                <div class="boxDelete">
+                                    <form action="" method="POST" role="alert">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    {{-- <table></table>
+                    <p style="text-align: center; padding-top: 50px;">
+
+                        <strong> Search not found</strong>
+
+                        <strong> No data yet</strong>
+
+                    </p> --}}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="boxFooter">
+
+                <div class="boxPagination">
+
                 </div>
-            </form>
+
+            </div>
         </div>
     </div>
-
 </div>
 
 @endsection
 
-@push('css-external')
-<link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
-<link rel="stylesheet" href="{{ asset('vendor/select2/css/select2-bootstrap4.min.css') }}">
-@endpush
-
-@push('javascript-external')
-<script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
-<script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
-<script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
-<script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-<script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
-@endpush
-
-
 @push('javascript-internal')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    function submit_form() {
-        $("#form-receive").submit();
-    }
-    $(document).ready(function(){
-        $("#receive_date").datepicker({
-            format: "yyyy-mm-dd",
-            autoclose:true
-        }); 
-    })
-
-     /* Tanpa Rupiah */
-     var tanpa_rupiah = document.getElementById('tanpa-rupiah');
-    tanpa_rupiah.addEventListener('keyup', function(e)
-    {
-        tanpa_rupiah.value = formatRupiah(this.value);
-    });
-    
-    /* Dengan Rupiah */
-    var dengan_rupiah = document.getElementById('dengan-rupiah');
-    dengan_rupiah.addEventListener('keyup', function(e)
-    {
-        dengan_rupiah.value = formatRupiah(this.value, 'Rp. ');
-    });
-    
-    /* Fungsi */
-    function formatRupiah(angka, prefix)
-    {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split    = number_string.split(','),
-            sisa     = split[0].length % 3,
-            rupiah     = split[0].substr(0, sisa),
-            ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
-            
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-        
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-    }
-</script>
-
-<script>
-    $(function() {
-        $('#select_method_payment').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}",
-            allowClear: true,
-            // ajax: {
-            //     url: "{{ route('roles.select') }}",
-            //     dataType: 'json',
-            //     delay: 250,
-            //     processResults: function(data) {
-            //         return {
-            //             results: $.map(data, function(item) {
-            //                 return {
-            //                     text: item.name,
-            //                     id: item.id
-            //                 }
-            //             })
-            //         };
-            //     }
-            // }
-        });
-    });
-</script>
-
-<script>
-    var item_arr = [];
-    var product_arr = [];
-    var product_position_arr = [];
-    function add_product_item() {
-        var id = new Date().valueOf();
-        var item_id = "item_slider_" + id;
-        var html_item = `
-            <div id="${item_id}">
-                <div class="row">
-                    <div class="col-4">
-                        <div class="form-group _form-group">
-                            <label for="input_post_description" class="font-weight-bold">
-                                Product / Item <span class="wajib">* </span>
-                            </label>
-                            <div class="float-right">
-                                <button onclick="delete_row_slider('${item_id}')" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                            </div>
-                            <select id="select_item_product_${item_id}" data-itemid="${item_id}" name="product_code[]"
-                                data-placeholder="Choose item" class="custom-select select-item" onChange="select_item_onchange('${item_id}')">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div  class="form-group _form-group">
-                            <label for="input_post_description" class="font-weight-bold">
-                                Amount 
-                            </label>
-                            <input id="amount_${item_id}" name="amount[]" type="number" class="form-control" value="0" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        item_arr[item_id] = "";
-        $("#product_lists").append(html_item);
-        $(`#select_item_product_${item_id}`).select2({
-            theme: 'bootstrap4',
-            language: "",
-            allowClear: false,
-            ajax: {
-                url: "{{ route('product.select') }}",
-                dataType: 'json',
-                delay: 250,
-                type: 'POST',
-                data: {
-                    _token : `{{ csrf_token() }}`,
-                    existing_item: get_product_arr()
-                },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.code + " | " + item.name,
-                                id: item.code
-                            }
-                        })
-                    };
-                }
-            }
-        });
-
-        console.log(product_position_arr, item_arr, product_arr);
-    }
-
-    function get_product_arr() {
-        return JSON.stringify(product_arr);
-    }
-
-    function delete_row_slider(eid_item) {
-        var product_code = item_arr[eid_item];
-        var toRemove = [product_code];
-
-        delete product_position_arr[product_code];
-        delete item_arr[eid_item];
-
-        var index_product = product_arr.indexOf(product_code);
-        if (product_arr.includes(product_code)) {
-            delete product_arr[index_product];
-            product_arr.length = product_arr.length - 1;
-        }
-
-        // product_arr = product_arr.filter( function( el ) {
-        //     return toRemove.indexOf( el ) < 0;
-        // } );
-        $("#" + eid_item).remove();
-    }
-
-    function select_item_onchange(item_id) {
-        var product_code = $(`#select_item_product_${item_id} :selected`).val();
-        if (!(product_code in product_position_arr)) {
-            // Execute to create new array with product code as key in product_position_arr
-            product_position_arr[product_code] = item_id;
-            item_arr[item_id] = product_code;
-            product_arr.push(product_code);
-        }
-
-        if (product_code != item_arr[item_id]) {
-            $("#item_id").remove();
-        }
-        // Menambah Amount pada existing product
-        var position_product_item = product_position_arr[product_code];
-        if ($(`#${position_product_item}`).length > 0) {
-            var str_amount_product = $(`#amount_${position_product_item}`).val();
-            var amount_product = parseInt(str_amount_product) + 1;
-            $(`#amount_${position_product_item}`).val(amount_product);
-        }
-    }
-
+    $(document).ready(function() {
+		$("form[role='alert']").submit(function(event) {
+			event.preventDefault();
+			Swal.fire({
+				title: 'Delete',
+				text: 'Are you sure want to remove this?',
+				icon: 'warning',
+				allowOutsideClick: false,
+				showCancelButton: true,
+				cancelButtonText: "Cancel",
+				reverseButtons: true,
+				confirmButtonText: "Yes",
+			}).then((result) => {
+				if (result.isConfirmed) {
+					// todo: process of deleting categories
+					event.target.submit();
+				}
+			});
+		});
+	});
 </script>
 @endpush

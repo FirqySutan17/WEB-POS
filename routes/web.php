@@ -86,3 +86,4 @@ Route::resource('/product-categories', App\Http\Controllers\ProductCategoriesCon
 Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
 // Transaction Route
 Route::resource('/transaction', App\Http\Controllers\TransactionController::class);
+Route::get('/edit-template', [App\Http\Controllers\TransactionController::class, 'edit_template'])->name('transaction.edite');
