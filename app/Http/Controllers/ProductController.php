@@ -40,18 +40,15 @@ class ProductController extends Controller
         ]);
     }
 
-    public function select(Request $request)
+    public function select_one(Request $request)
     {
-        $existing_item = json_decode($request->existing_item);
-        $products = Product::select('id', 'code', 'name')->limit(7);
-        if (!empty($existing_item)) {
-            $products->whereNotIn('code', $existing_item);
-        }
-        if ($request->has('q')) {
-            $products->where('code', 'LIKE', "%{$request->q}%");
+        $product_code = $request->product_code;
+        $products = Product::select('id', 'code', 'name');
+        if (!empty($product_code)) {
+            $products->where('code', $product_code);
         }
 
-        return response()->json($products->get());
+        return response()->json($products->first());
     }
 
     /**

@@ -62,11 +62,8 @@ class ReceiveController extends Controller
         // dd($request->all());
         $request->validate([
             'receive_date' => 'required',
-            'driver' => 'required',
-            'driver_phone' => 'required',
-            'plat_no' => 'required|string',
-            'suratjalan_number' => 'required|string',
-            // 'suratjalan_file' => 'required'
+            'delivery_number' => 'required|string',
+            // 'delivery_file' => 'required'
         ]);
 
         if (empty($request->product_code)) {
@@ -75,23 +72,27 @@ class ReceiveController extends Controller
 
         DB::beginTransaction();
         try {
-            $receive_code = "RCV".date("YMDHis");
-            $receive = Receive::create([
+            $receive_code = "RCV".date("YmdHis");
+            $insertdata = [
                 'receive_code'  => $receive_code,
                 'receive_date'  => $request->receive_date,
                 'driver'        => $request->driver,
                 'driver_phone'  => $request->driver_phone,
-                'plat_no'       => $request->plat_no,
-                'suratjalan_number'   => $request->suratjalan_number
-            ]);
+                'plate_no'       => $request->plate_no,
+                'delivery_no'   => $request->delivery_number
+            ];
+            // dd($insertdata, $request->all());
+            $receive = Receive::create($insertdata);
 
-            if ($request->file('suratjalan_file')) {
-                $file = $request->file('suratjalan_file');
+            if ($request->file('delivery_file')) {
+                $file = $request->file('delivery_file');
                 $original_name = $file->getClientOriginalName();
                 $ext = pathinfo($original_name, PATHINFO_EXTENSION);
-                $namefile = "suratjalan_".$receive_code.".".$ext;
+                $namefile = "delivery_".$receive_code.".".$ext;
 
                 $file->move('file_upload', $namefile);
+                $receive->delivery_file = $namefile;
+                $receive->save();
             }
 
             $product_code   = $request->product_code;
@@ -123,154 +124,6 @@ class ReceiveController extends Controller
             DB::commit();
         }
         return redirect()->route('receive.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Portfolio  $portfolio
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Portfolio $portfolio)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Portfolio  $portfolio
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Portfolio $portfolio)
-    {
-        $statuses = $this->statuses();
-        $portfolio_image = DB::table('portfolio_image')->where('portfolio_id', $portfolio->id)->orderBy('id', 'asc')->get();
-        $portfolio_slider = DB::table('portfolio_slider')->where('portfolio_id', $portfolio->id)->orderBy('id', 'asc')->get();
-
-        return view('admin.portfolio.edit', compact('portfolio', 'portfolio_image', 'portfolio_slider'));
-
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Portfolio  $portfolio
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Portfolio $portfolio)
-    {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'client_name' => 'required',
-                'slug' => 'required|string|unique:portfolio,slug,' . $portfolio->id,
-                'project_title' => 'required',
-                'link' => 'required',
-                'description' => 'required|string',
-                'description_2' => 'required|string',
-                'start_year' => 'required',
-            ],
-            [],
-        );
-
-        if ($validator->fails()) {
-            if ($request['skill']) {
-                $request['skill'] = Skill::select('id', 'name')->whereIn('id', $request->skill)->get();
-            }
-            return redirect()->back()->withInput($request->all())->withErrors($validator);
-        }
-        DB::beginTransaction();
-        try {
-            $update_data = [
-                'client_name' => $request->client_name,
-                'slug' => $request->slug,
-                'project_title' => $request->project_title,
-                'link' => $request->link,
-                'description'   => $request->description,
-                'description_2'   => $request->description_2,
-                'start_year'   => $request->start_year,
-                'end_year'   => $request->end_year,
-                'is_active' => ($request->is_active) ? '1' : '0',
-            ];
-
-            $portfolio->skills()->sync($request->skill);
-            $update= DB::table('portfolio')->where('id', $portfolio->id)->update($update_data);
-
-            $files = $request->file('image');
-            $alt_text      = $request->alt_text;
-            $hover_text      = $request->hover_text;
-            $image_old_file     = $request->old_file;
-            $image_arr = [];
-            if (!empty($portfolio) && !empty($alt_text)) {
-                // dd($request->all());
-                foreach ($alt_text as $key => $v) {
-                    $old_file = isset($image_old_file[$key]) ? $image_old_file[$key] : "";
-                    $new_file = isset($files[$key]) ? $files[$key] : null;
-                    if (!empty($new_file)) {
-                        $namefile = $new_file->getClientOriginalName();
-                        $new_file->move('file_upload', $namefile);
-                    } else {
-                        $namefile = $old_file;
-                    }
-                    
-                    $image_arr[] = [
-                        'portfolio_id'    => $portfolio->id,
-                        'image'         => $namefile,
-                        'alt_text'        => !empty($alt_text[$key]) ? $alt_text[$key] : "",
-                        'hover_text'        => !empty($hover_text[$key]) ? $hover_text[$key] : "",
-                    ];
-                }
-                // dd($image_arr, $request->all());
-                DB::table('portfolio_image')->where('portfolio_id', $portfolio->id)->delete();
-                DB::table('portfolio_image')->insert($image_arr);
-            }
-
-            $files_slider = $request->file('image_slider');
-            $alt_text_slider      = $request->alt_text_slider;
-            $hover_text_slider      = $request->hover_text_slider;
-            $image_old_file_slider     = $request->old_file_slider;
-            $image_arr_slider = [];
-            if (!empty($portfolio) && !empty($alt_text_slider)) {
-                // dd($request->all());
-                foreach ($alt_text_slider as $key_slider => $v_slider) {
-                    $old_file_slider = isset($image_old_file_slider[$key_slider]) ? $image_old_file_slider[$key_slider] : "";
-                    $new_file_slider = isset($files_slider[$key_slider]) ? $files_slider[$key_slider] : null;
-                    if (!empty($new_file_slider)) {
-                        $namefile_slider = $new_file_slider->getClientOriginalName();
-                        $new_file_slider->move('file_upload', $namefile_slider);
-                    } else {
-                        $namefile_slider = $old_file_slider;
-                    }
-                    
-                    $image_arr_slider[] = [
-                        'portfolio_id'    => $portfolio->id,
-                        'image_slider'         => $namefile_slider,
-                        'alt_text_slider'        => !empty($alt_text_slider[$key_slider]) ? $alt_text_slider[$key_slider] : "",
-                        'hover_text_slider'        => !empty($hover_text_slider[$key_slider]) ? $hover_text_slider[$key_slider] : "",
-                    ];
-                }
-                // dd($image_arr_slider, $request->all());
-                DB::table('portfolio_slider')->where('portfolio_id', $portfolio->id)->delete();
-                DB::table('portfolio_slider')->insert($image_arr_slider);
-            }
-
-            Alert::success('Update Portfolio', 'Success');
-            //dd($request->all());
-            return redirect()->route('portfolio.index');
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            // Alert::success('Update Career', 'Success', ['error' => $th->getMessage()]);
-            dd($th->getMessage());
-            if ($request['skill']) {
-                $request['skill'] = Skill::select('id', 'name')->whereIn('id', $request->skill)->get();
-            }
-            return redirect()->back()->withInput($request->all())->withErrors($validator);
-        } finally {
-            DB::commit();
-        }
-        return redirect()->route('portfolio.index');
     }
 
     /**

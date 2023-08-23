@@ -67,7 +67,7 @@ CMS | Add Receive
                                             <label for="driver" class="font-weight-bold">
                                                 Driver Name
                                             </label>
-                                            <input id="driver" value="{{ old('driver') }}" name="driver" type="text" class="form-control input-scanner @error('driver') is-invalid @enderror" placeholder="Input driver name here"/>
+                                            <input id="driver" value="{{ old('driver') }}" name="driver" type="text" class="form-control  @error('driver') is-invalid @enderror" placeholder="Input driver name here"/>
                                             @error('driver')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -81,7 +81,7 @@ CMS | Add Receive
                                             <label for="driver_phone" class="font-weight-bold">
                                                 Driver Phone Number
                                             </label>
-                                            <input id="driver_phone" value="{{ old('driver_phone') }}" name="driver_phone" type="text" class="form-control input-scanner @error('driver_phone') is-invalid @enderror" placeholder="Input Driver Phone Number here"/>
+                                            <input id="driver_phone" value="{{ old('driver_phone') }}" name="driver_phone" type="text" class="form-control  @error('driver_phone') is-invalid @enderror" placeholder="Input Driver Phone Number here"/>
                                             @error('driver_phone')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -91,11 +91,11 @@ CMS | Add Receive
                                     </div>
                                     <div class="col-6">
                                         <div class="form-group _form-group">
-                                            <label for="plat_no" class="font-weight-bold">
+                                            <label for="plate_no" class="font-weight-bold">
                                                 Vehicle License Number
                                             </label>
-                                            <input id="plat_no" value="{{ old('plat_no') }}" name="plat_no" type="text" class="form-control input-scanner @error('plat_no') is-invalid @enderror" placeholder="Input Plat Nomor Kendaraan disini"/>
-                                            @error('plat_no')
+                                            <input id="plate_no" value="{{ old('plate_no') }}" name="plate_no" type="text" class="form-control  @error('plate_no') is-invalid @enderror" placeholder="Input Plat Nomor Kendaraan disini"/>
+                                            @error('plate_no')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -107,14 +107,14 @@ CMS | Add Receive
 
                                 <!-- title -->
                                 <div class="form-group _form-group">
-                                    <label for="suratjalan_number" class="font-weight-bold">
+                                    <label for="delivery_number" class="font-weight-bold">
                                         Delivery Number <span class="wajib">* </span>
                                     </label>
-                                    <input id="suratjalan_number" value="{{ old('suratjalan_number') }}"
-                                        name="suratjalan_number" type="text"
-                                        class="form-control input-scanner @error('suratjalan_number') is-invalid @enderror"
+                                    <input id="delivery_number" value="{{ old('delivery_number') }}"
+                                        name="delivery_number" type="text"
+                                        class="form-control  @error('delivery_number') is-invalid @enderror"
                                         placeholder="Input surat jalan number here"/>
-                                    @error('suratjalan_number')
+                                    @error('delivery_number')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -126,8 +126,8 @@ CMS | Add Receive
                                     <label for="input_post_link" class="font-weight-bold">
                                         Delivery File  <span class="wajib">* </span>
                                     </label>
-                                    <input name="suratjalan_file" type="file" class="form-control"  />
-                                    @error('suratjalan_file')
+                                    <input name="delivery_file" type="file" class="form-control"  />
+                                    @error('delivery_file')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -137,14 +137,7 @@ CMS | Add Receive
                                 <div class="row req-box">
                                     <div class="col-6">
                                         <p style="vertical-align: middle; font-weight: 600; color: rgba(0, 0, 0, 0.85); padding: 6px 0px;font-size: 13px">Product / Item <span class="wajib">*</span></p>
-                                        <input id="input-scanner" type="text" class="form-control input-scanner @error('suratjalan_number') is-invalid @enderror" placeholder="Fokuskan kursor kesini untuk scan barcode"/>
-                                    </div>
-                                    <div class="col-6" style="float: right; text-align: right">
-                                        
-                                        <button onclick="add_product_item()" type="button"
-                                            class="btn btn-primary _btn-primary px-4" style="font-weight: 600">
-                                            +
-                                        </button>
+                                        <input id="input-scanner" type="text" class="form-control" placeholder="Fokuskan kursor kesini untuk scan barcode" autocomplete="off"/>
                                     </div>
                                 </div>
 
@@ -198,128 +191,71 @@ CMS | Add Receive
     function submit_form() {
         $("#form-receive").submit();
     }
-    // $(document).ready(function(){
-    //     $("#receive_date").datepicker({
-    //         format: "yyyy-mm-dd",
-    //         autoclose:true,
-    //         startDate: new Date(),
-    //         endDate: ''
-    //     });
-    //     var today = new Date();
-    //     var momentToday = moment(today).format('YYYY-MM-DD');
-    //     $("#receive_date").val(momentToday).datepicker('update')
-    // })
-</script>
+    $('#input-scanner').unbind('keyup');
+    $('#input-scanner').bind('keyup', function (e) {
+        var code = e.keyCode || e.which;
+        if (code == 13) {
+            var product_code = $(this).val();
+            var item_product = "item_product_" + product_code;
+            if ($(`#${item_product}`).length > 0) {
+                var str_quantity_product = $(`#quantity_${item_product}`).val();
+                var quantity_product = parseInt(str_quantity_product) + 1;
+                $(`#quantity_${item_product}`).val(quantity_product);
+            } else {
+                add_product_item(product_code);
+            }
+            $(this).val('');
+        }
+        
+    });
 
-<script>
-    var item_arr = [];
-    var product_arr = [];
-    var product_position_arr = [];
-    function add_product_item() {
-        var id = new Date().valueOf();
-        var item_id = "item_slider_" + id;
-        var html_item = `
-            <div id="${item_id}">
-                <div class="row">
-                    <div class="col-4">
-                        <div class="form-group _form-group">
-                            <label for="input_post_description" class="font-weight-bold">
-                                Product / Item <span class="wajib">* </span>
-                            </label>
-                            <div class="float-right">
-                                <button onclick="delete_row_slider('${item_id}')" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+    function add_product_item(product_code) {
+        $.ajax({
+            url: "{{ route('product.select_one') }}",
+            type: "POST",
+            data: {
+                "_token": `{{ csrf_token() }}`,
+                "product_code": product_code,
+            },
+            success: function(response) {
+                var product = response;
+                var id = product_code;
+                var item_id = "item_product_" + id;
+                var html_item = `
+                    <div id="${item_id}">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group _form-group">
+                                    <label for="input_post_description" class="font-weight-bold">
+                                        Product / Item <span class="wajib">* </span>
+                                    </label>
+                                    <div class="float-right">
+                                        <button onclick="delete_row_product('${item_id}')" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                    <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" />
+                                    <input id="product_code_text_${item_id}" type="text" class="form-control" value="${product.code + ' - ' + product.name }" readonly/>
+                                </div>
                             </div>
-                            <select id="select_item_product_${item_id}" data-itemid="${item_id}" name="product_code[]"
-                                data-placeholder="Choose item" class="custom-select select-item" onChange="select_item_onchange('${item_id}')">
-                            </select>
+                            <div class="col-4">
+                                <div  class="form-group _form-group">
+                                    <label for="input_post_description" class="font-weight-bold">
+                                        Quantity 
+                                    </label>
+                                    <input id="quantity_${item_id}" name="quantity[]" type="number" class="form-control" value="1" />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div  class="form-group _form-group">
-                            <label for="input_post_description" class="font-weight-bold">
-                                Quantity 
-                            </label>
-                            <input id="quantity_${item_id}" name="quantity[]" type="number" class="form-control" value="0" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+                `;
 
-        item_arr[item_id] = "";
-        $("#product_lists").append(html_item);
-        $(`#select_item_product_${item_id}`).select2({
-            theme: 'bootstrap4',
-            language: "",
-            allowClear: false,
-            ajax: {
-                url: "{{ route('product.select') }}",
-                dataType: 'json',
-                delay: 250,
-                type: 'POST',
-                data: {
-                    _token : `{{ csrf_token() }}`,
-                    existing_item: get_product_arr()
-                },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.code + " | " + item.name,
-                                id: item.code
-                            }
-                        })
-                    };
-                }
+                $("#product_lists").append(html_item);
             }
         });
 
-        console.log(product_position_arr, item_arr, product_arr);
     }
 
-    function get_product_arr() {
-        return JSON.stringify(product_arr);
-    }
-
-    function delete_row_slider(eid_item) {
-        var product_code = item_arr[eid_item];
-        var toRemove = [product_code];
-
-        delete product_position_arr[product_code];
-        delete item_arr[eid_item];
-
-        var index_product = product_arr.indexOf(product_code);
-        if (product_arr.includes(product_code)) {
-            delete product_arr[index_product];
-            product_arr.length = product_arr.length - 1;
-        }
-
-        // product_arr = product_arr.filter( function( el ) {
-        //     return toRemove.indexOf( el ) < 0;
-        // } );
+    function delete_row_product(eid_item) {
         $("#" + eid_item).remove();
     }
-
-    function select_item_onchange(item_id) {
-        var product_code = $(`#select_item_product_${item_id} :selected`).val();
-        if (!(product_code in product_position_arr)) {
-            // Execute to create new array with product code as key in product_position_arr
-            product_position_arr[product_code] = item_id;
-            item_arr[item_id] = product_code;
-            product_arr.push(product_code);
-        }
-
-        if (product_code != item_arr[item_id]) {
-            $("#item_id").remove();
-        }
-        // Menambah quantity pada existing product
-        var position_product_item = product_position_arr[product_code];
-        if ($(`#${position_product_item}`).length > 0) {
-            var str_quantity_product = $(`#quantity_${position_product_item}`).val();
-            var quantity_product = parseInt(str_quantity_product) + 1;
-            $(`#quantity_${position_product_item}`).val(quantity_product);
-        }
-    }
-
 </script>
 @endpush

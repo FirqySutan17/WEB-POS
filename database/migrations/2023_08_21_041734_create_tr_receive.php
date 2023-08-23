@@ -17,11 +17,11 @@ class CreateTrReceive extends Migration
             $table->id();
             $table->string('receive_code')->unique();
             $table->date('receive_date');
-            $table->string('suratjalan_number');
-            $table->text('suratjalan_file');
-            $table->string('plat_no');
-            $table->string('driver');
-            $table->string('driver_phone');
+            $table->string('delivery_number');
+            $table->text('delivery_file');
+            $table->string('plate_no')->nullable();
+            $table->string('driver')->nullable();
+            $table->string('driver_phone')->nullable();
             $table->blameable();
             $table->softDeletes();
             $table->timestamps();

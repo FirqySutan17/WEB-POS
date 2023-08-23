@@ -13,7 +13,7 @@ class Receive extends Model
     use Blameable;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $fillable = ['receive_code', 'receive_date', 'suratjalan_number', 'suratjalan_file', 'plat_no', 'driver', 'driver_phone'];
+    protected $fillable = ['receive_code', 'receive_date', 'delivery_no', 'delivery_file', 'plate_no', 'driver', 'driver_phone'];
         // public $timestamps = false;
 
 
