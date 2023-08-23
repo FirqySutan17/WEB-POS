@@ -93,6 +93,22 @@ Breadcrumbs::for('edit_transaction', function ($trail, $transaction) {
     $trail->push($transaction->client_name, route('transaction.edit', ['transaction' => $transaction]));
 });
 
+// Master > Product
+Breadcrumbs::for('product', function ($trail) {
+    $trail->parent('master');
+    $trail->push("Product", route('product.index'));
+});
+
+Breadcrumbs::for('add_product', function ($trail) {
+    $trail->parent('product');
+    $trail->push('Add Product', route('product.create'));
+});
+
+Breadcrumbs::for('edit_product', function ($trail, $product) {
+    $trail->parent('product');
+    $trail->push($product->name, route('product.edit', ['product' => $product]));
+});
+
 // Penerimaan Barang 
 Breadcrumbs::for('receive', function ($trail) {
     $trail->push("Receive", route('receive.index'));
