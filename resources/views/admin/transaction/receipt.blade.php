@@ -112,7 +112,7 @@
                 <td style="text-align: right">#INV00001</td>
             </tr>
             <tr>
-                <td>Kasir</td>
+                <td>Cashier</td>
                 <td style="text-align: right">John Doe</td>
             </tr>
         </table>
@@ -151,7 +151,7 @@
                     <td class="price">Rp 200.000</td>
                 </tr>
                 <tr>
-                    <td class="description">PPN 10%</td>
+                    <td class="description">VAT 10%</td>
                     <td class="price">Rp 20.000</td>
                 </tr>
                 <tr>
@@ -165,6 +165,7 @@
             </tbody>
         </table>
 
+        {{--
         <hr class="dotted">
         <table class="item-order">
             <tbody>
@@ -181,7 +182,7 @@
                     <td class="price">Rp 80.000</td>
                 </tr>
             </tbody>
-        </table>
+        </table> --}}
         <hr class="dotted">
         <p class="centered">Thanks for your purchase!
             <br>CHICKEN SHOP

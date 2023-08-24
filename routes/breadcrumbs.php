@@ -123,3 +123,19 @@ Breadcrumbs::for('edit_receive', function ($trail, $receive) {
     $trail->parent('receive');
     $trail->push($receive->code, route('receive.edit', ['receive' => $receive]));
 });
+
+// Master
+Breadcrumbs::for('report', function ($trail) {
+    $trail->push('Report');
+});
+
+// Report Stock
+Breadcrumbs::for('report_stock', function ($trail) {
+    $trail->push("Report Stock", route('report.stock'));
+});
+
+// Report Transaction
+Breadcrumbs::for('report_transaction', function ($trail) {
+    $trail->push("Report Transaction", route('report.transaction'));
+});
+
