@@ -397,10 +397,12 @@ CMS | Transaction
                                         <h2>Rp 300.000,-</h2>
                                         <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
                                         <div style="width: 100%; display: flex; align-items: center; margin-top: 10px">
-                                            <button onclick="submit_form()" type="button"
+                                            {{-- <button onclick="submit_form()" type="button"
                                                 class="btn btn-primary _btn-primary px-4" style="width: 100%">
                                                 Save
-                                            </button>
+                                            </button> --}}
+                                            <a class="btn btn-primary _btn-primary px-4" style="width: 100%"
+                                                href="{{ route('transaction.receipt')}}">SUBMIT ORDER</a>
                                         </div>
                                     </div>
                                 </div>
@@ -500,6 +502,16 @@ CMS | Transaction
             //     }
             // }
         });
+    });
+</script>
+
+<script>
+    $(".sub").focusout(function() {
+        $("#answer").html('');
+        var num1 = $("#num1").val();
+        var num2 = $("#num2").val();
+        var answer = 100 - num1 - num2;
+        $("#answer").html(answer);
     });
 </script>
 @endpush

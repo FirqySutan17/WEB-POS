@@ -40,6 +40,9 @@ class TransactionController extends Controller
         //
     }
 
+    public function print_receipt() {
+        return view('admin.transaction.receipt');
+    }
     /**
      * Display the specified resource.
      *
