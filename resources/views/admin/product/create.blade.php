@@ -70,7 +70,7 @@ CMS | Add Product
                                     <div class="col-3">
                                         <div class="form-group _form-group">
                                             <label for="price_store" class="font-weight-bold">
-                                                Offline Store Price <span class="wajib">* </span>
+                                                Store Price <span class="wajib">* </span>
                                             </label>
                                             <input id="price_store" value="{{ old('price_store') }}" name="price_store"
                                                 type="number"
@@ -84,25 +84,9 @@ CMS | Add Product
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                        <!-- End Year -->
-                                        <div class="form-group _form-group">
-                                            <label for="stock_store" class="font-weight-bold">
-                                                Offline Store Stock
-                                            </label>
-                                            <input id="stock_store" value="{{ old('stock_store') }}" name="stock_store"
-                                                type="number" class="form-control @error('stock_store') is-invalid @enderror"
-                                                placeholder="" />
-                                            @error('stock_store')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-3">
                                         <div class="form-group _form-group">
                                             <label for="price_olshop" class="font-weight-bold">
-                                                Online Store Price <span class="wajib">* </span>
+                                                E-Commerce Price <span class="wajib">* </span>
                                             </label>
                                             <input id="price_olshop" value="{{ old('price_olshop') }}" name="price_olshop"
                                                 type="number"
@@ -119,12 +103,28 @@ CMS | Add Product
                                         <!-- End Year -->
                                         <div class="form-group _form-group">
                                             <label for="stock_olshop" class="font-weight-bold">
-                                                Online Store Stock
+                                                Store Discount (%)
                                             </label>
-                                            <input id="stock_olshop" value="{{ old('stock_olshop') }}" name="stock_olshop"
-                                                type="number" class="form-control @error('stock_olshop') is-invalid @enderror"
+                                            <input id="discount_store" value="{{ old('discount_store') }}" name="discount_store"
+                                                type="number" class="form-control @error('discount_store') is-invalid @enderror"
                                                 placeholder="" />
-                                            @error('stock_olshop')
+                                            @error('discount_store')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <!-- End Year -->
+                                        <div class="form-group _form-group">
+                                            <label for="stock_olshop" class="font-weight-bold">
+                                                E-Commerce Discount (%)
+                                            </label>
+                                            <input id="discount_olshop" value="{{ old('discount_olshop') }}" name="discount_olshop"
+                                                type="number" class="form-control @error('discount_olshop') is-invalid @enderror"
+                                                placeholder="" />
+                                            @error('discount_olshop')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

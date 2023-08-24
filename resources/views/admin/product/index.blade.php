@@ -45,7 +45,7 @@ CMS | Product
 			</div>
 		</div>
 		<div class="card-body table-responsive">
-			<table class="table table-striped">
+			<table class="table">
 				<thead>
 					<tr>
 						<th class="center-text">No <span class="dividerHr"></span></th>
@@ -58,20 +58,24 @@ CMS | Product
 				<tbody>
 					@if (count($products))
 					@forelse ($products as $product)
+					@php
+						$low_stock = "";
+						if ($product->stock < 110) {
+							$low_stock = "bg-danger";
+						}
+					@endphp
 					<tr>
-						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-						<td style="width: 45%; vertical-align: middle">{{ $product->name.' | '.$product->code }}</td>
-						<td style="width: 20%; vertical-align: middle">
-							Offline Store : Rp {{ number_format($product->price_store) }}
+						<td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
+						<td style="width: 45%; vertical-align: middle" class="{{ $low_stock }}">{{ $product->name.' | '.$product->code }}</td>
+						<td style="width: 30%; vertical-align: middle" class="{{ $low_stock }}">
+							Store : Rp {{ number_format($product->price_store) }} ( {{ $product->discount_store }} %)
 							<br>
-							Online Store : Rp {{ number_format($product->price_olshop) }}
+							OLShop : Rp {{ number_format($product->price_olshop) }} ( {{ $product->discount_olshop }} %)
 						</td>
-						<td style="width: 20%; vertical-align: middle">
-							Offline Store : {{ number_format($product->stock_store) }}
-							<br>
-							Online Store : {{ number_format($product->stock_olshop) }}
+						<td style="width: 10%; vertical-align: middle" class="{{ $low_stock }}">
+							{{ number_format($product->stock) }}
 						</td>
-						<td style="width: 10%;" class="center-text boxAction fontField">
+						<td style="width: 10%;" class="center-text boxAction fontField {{ $low_stock }}">
 							<div class="boxInside">
 								@can('Portfolio Update')
 								<div class="boxEdit">
@@ -82,7 +86,16 @@ CMS | Product
 								</div>
 								@endcan
 
-								@can('Portfolio Delete')
+								@can('Portfolio Update')
+								<div class="boxEdit">
+									<a href="{{ route('product.show', ['product' => $product]) }}"
+										class="btn-sm btn-info" role="button">
+										<i class="bx bx-user"></i>
+									</a>
+								</div>
+								@endcan
+
+								{{-- @can('Portfolio Delete')
 								<div class="boxDelete">
 									<form action="{{ route('product.destroy', ['product' => $product]) }}"
 										method="POST" role="alert">
@@ -93,7 +106,7 @@ CMS | Product
 										</button>
 									</form>
 								</div>
-								@endcan
+								@endcan --}}
 							</div>
 
 						</td>

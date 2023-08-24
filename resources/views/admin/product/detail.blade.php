@@ -1,13 +1,13 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Product
+CMS | Detail Product
 @endsection
 
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Edit Product</h3>
+<h3>Detail Product</h3>
 @endslot
 {{ Breadcrumbs::render('edit_product', $product) }}
 @endcomponent
@@ -31,16 +31,7 @@ CMS | Edit Product
                                             <label for="input_post_title" class="font-weight-bold">
                                                 Product Name <span class="wajib">* </span>
                                             </label>
-                                            <input id="input_post_title"
-                                                value="{{ old('name', $product->name) }}"
-                                                name="name" type="text"
-                                                class="form-control @error('name') is-invalid @enderror"
-                                                placeholder="Input name here" />
-                                            @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <input id="input_post_title" value="{{ $product->name }}" name="name" type="text" class="form-control" readonly>
                                         </div>
 
                                     </div>
@@ -50,15 +41,7 @@ CMS | Edit Product
                                             <label for="input_post_code" class="font-weight-bold">
                                                 Code
                                             </label>
-                                            <input id="input_post_code" value="{{ old('code', $product->code) }}"
-                                                name="code" type="text"
-                                                class="form-control @error('code') is-invalid @enderror"
-                                                placeholder="Cannot changed" readonly />
-                                            @error('code')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <input id="input_post_code" value="{{ $product->code }}" type="text" class="form-control" readonly />
                                         </div>
 
                                     </div>
@@ -68,17 +51,9 @@ CMS | Edit Product
                                     <div class="col-3">
                                         <div class="form-group _form-group">
                                             <label for="price_store" class="font-weight-bold">
-                                                Store Price <span class="wajib">* </span>
+                                                Store Price
                                             </label>
-                                            <input id="price_store" value="{{ old('price_store', $product->price_store) }}" name="price_store"
-                                                type="number"
-                                                class="form-control @error('price_store') is-invalid @enderror"
-                                                placeholder="" required />
-                                            @error('price_store')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <input id="price_store" value="{{ number_format($product->price_store) }}" type="text" class="form-control" readonly />
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -86,15 +61,7 @@ CMS | Edit Product
                                             <label for="price_olshop" class="font-weight-bold">
                                                 E-Commerce Price <span class="wajib">* </span>
                                             </label>
-                                            <input id="price_olshop" value="{{ old('price_olshop', $product->price_olshop) }}" name="price_olshop"
-                                                type="number"
-                                                class="form-control @error('price_olshop') is-invalid @enderror"
-                                                placeholder="" required />
-                                            @error('price_olshop')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <input id="price_olshop" value="{{ number_format($product->price_olshop) }}" type="text" class="form-control" readonly />
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -103,14 +70,7 @@ CMS | Edit Product
                                             <label for="discount_store" class="font-weight-bold">
                                                 Store Discount (%)
                                             </label>
-                                            <input id="discount_store" value="{{ old('discount_store', $product->discount_store) }}" name="discount_store"
-                                                type="number" class="form-control @error('discount_store') is-invalid @enderror"
-                                                placeholder="" />
-                                            @error('discount_store')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <input id="discount_store" value="{{ number_format($product->discount_store) }}" type="text" class="form-control" readonly />
                                         </div>
                                     </div>
                                     
@@ -120,14 +80,7 @@ CMS | Edit Product
                                             <label for="stock_olshop" class="font-weight-bold">
                                                 E-Commerce Discount (%)
                                             </label>
-                                            <input id="discount_olshop" value="{{ old('discount_olshop', $product->discount_olshop) }}" name="discount_olshop"
-                                                type="number" class="form-control @error('discount_olshop') is-invalid @enderror"
-                                                placeholder="" />
-                                            @error('discount_olshop')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
+                                            <input id="discount_olshop" value="{{ number_format($product->discount_olshop) }}" type="text" class="form-control" readonly />
                                         </div>
                                     </div>
                                 </div>
@@ -135,54 +88,63 @@ CMS | Edit Product
                                 <!-- description -->
                                 <div class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
-                                        Description <span class="wajib">* </span>
+                                        Description
                                     </label>
-                                    <textarea id="input_post_description" name="description"
-                                        placeholder="Write description here.."
-                                        class="form-control @error('description') is-invalid @enderror"
-                                        rows="7">{{ old('description', $product->description) }}</textarea>
-                                    @error('description')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
+                                    {!! $product->description !!}
                                 </div>
 
-                                <!-- status -->
-                                <div class="form-group {{ $errors->has('is_active') ? ' has-error' : '' }} _form-group"
-                                    style="display: flex; margin-top: 30px">
-                                    <label for="input_banner_status" class="font-weight-bold"
-                                        style="padding: 7px 0px; margin-right: 20px;">
-                                        Status
-                                    </label>
-                                    <div class="col-2">
-                                        <div class="media">
-                                            <div class="media-body text-end icon-state">
-                                                <label class="switch">
-                                                    <input type="checkbox" name="is_active" {{ old("is_active",
-                                                        $product->is_active) == 1 ? "checked" : null }}><span
-                                                        class="switch-state"></span>
-                                                </label>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="form-group" style="display: flex; margin-top: 30px">
+                                            <label for="input_banner_status" class="font-weight-bold" style="padding: 7px 0px; margin-right: 20px;">
+                                                Status
+                                            </label>
+                                            <div class="col-2">
+                                                <div class="media">
+                                                    <div class="media-body text-end icon-state">
+                                                        <label class="switch">
+                                                            <input type="checkbox" {{ $product->is_active == 1 ? "checked" : null }} disabled><span class="switch-state" ></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-8">
+                                        <span><strong>Price Logs</strong></span>
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th class="center-text">No <span class="dividerHr"></span></th>
+                                                    <th class="heightHr">Date <span class="dividerHr"></span></th>
+                                                    <th class="heightHr">Store Price <span class="dividerHr"></span></th>
+                                                    <th class="heightHr">E-Commerce Price<span class="dividerHr"></span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (count($price_logs))
+                                                    @forelse ($price_logs as $plog)
+                                                        <tr>
+                                                            <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
+                                                            <td style="width: 25%; vertical-align: middle">{{ $plog->created_at }}</td>
+                                                            <td style="width: 35%; vertical-align: middle">Rp {{ number_format($product->price_store) }} ( {{ $product->discount_store }} %)</td>
+                                                            <td style="width: 35%; vertical-align: middle"> Rp {{ number_format($product->price_olshop) }} ( {{ $product->discount_olshop }} %)</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <!-- end status -->
-
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="col-12">
                                 <div class="float-right">
-                                    <a class="btn btn-outline-primary _btn-primary px-4"
+                                    <a class="btn btn-outline-primary _btn-primary px-4 mt-5"
                                         href="{{ route('product.index') }}">Back</a>
-                                    <button type="submit" class="btn btn-primary _btn-primary px-4">
-                                        Save
-                                    </button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

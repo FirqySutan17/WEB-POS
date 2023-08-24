@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Product;
+use App\Models\ProductPriceLog;
 
 class ProductController extends Controller
 {
@@ -30,9 +31,9 @@ class ProductController extends Controller
     {
         $products = [];
         if ($request->get('keyword')) {
-            $products = Product::search($request->keyword)->orderBy('id', 'desc')->paginate(9);
+            $products = Product::search($request->keyword)->orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
         } else {
-            $products = Product::orderBy('id', 'desc')->paginate(9);
+            $products = Product::orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
         }
         // dd($products);
         return view('admin.product.index', [
@@ -75,8 +76,6 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price_store' => 'required|string',
             'price_olshop' => 'required',
-            'stock_store' => 'required|string',
-            'stock_olshop' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -86,11 +85,17 @@ class ProductController extends Controller
                 'code' => $request->code,
                 'price_store' => $request->price_store,
                 'price_olshop' => $request->price_olshop,
+                'discount_store' => $request->discount_store,
+                'discount_olshop' => $request->discount_olshop,
                 'description'   => $request->description,
-                'stock_store'   => $request->stock_store,
-                'stock_olshop'   => $request->stock_olshop,
+                'stock'   => 0,
                 'is_active' => ($request->is_active) ? '1' : '0',
             ]);
+
+            if ($product) {
+                $this->insert_price_logs($product);
+            }
+
             Alert::success('Add Product', 'Success');
             // dd($request->all());
         } catch (\Throwable $th) {
@@ -108,9 +113,10 @@ class ProductController extends Controller
      * @param  \App\Models\Portfolio  $portfolio
      * @return \Illuminate\Http\Response
      */
-    public function show(Portfolio $portfolio)
+    public function show(Product $product)
     {
-        //
+        $price_logs = ProductPriceLog::where('product_code', $product->code)->orderBy('id', 'DESC')->get();
+        return view('admin.product.detail', compact('product', 'price_logs'));
     }
 
     /**
@@ -143,9 +149,7 @@ class ProductController extends Controller
                 'code' => 'required|string|unique:products,code' .  $product->id,
                 'description' => 'required|string',
                 'price_store' => 'required|string',
-                'price_olshop' => 'required',
-                'stock_store' => 'required|string',
-                'stock_olshop' => 'required',
+                'price_olshop' => 'required'
             ],
             [],
         );
@@ -154,16 +158,27 @@ class ProductController extends Controller
         try {
             $update_data = [
                 'name' => $request->name,
-                'code' => $request->code,
                 'price_store' => $request->price_store,
                 'price_olshop' => $request->price_olshop,
+                'discount_store' => $request->discount_store,
+                'discount_olshop' => $request->discount_olshop,
                 'description'   => $request->description,
-                'stock_store'   => $request->stock_store,
-                'stock_olshop'   => $request->stock_olshop,
                 'is_active' => ($request->is_active) ? '1' : '0',
             ];
 
             $update= DB::table('products')->where('id', $product->id)->update($update_data);
+            $check_price_logs = ProductPriceLog::where('product_code')->first();
+
+            $product->price_store       = $request->price_store;
+            $product->price_olshop      = $request->price_olshop;
+            $product->discount_store    = $request->discount_store;
+            $product->discount_olshop   = $request->discount_olshop;
+            if (empty($check_price_logs)) {
+                $this->insert_price_logs($product);
+            } elseif ($product->price_store != $request->price_store && $product->price_olshop != $request->price_olshop && $product->discount_store != $request->discount_store && $product->discount_olshop != $request->discount_olshop) {
+                $this->insert_price_logs($product);
+            }
+
             Alert::success('Update Product', 'Success');
             //dd($request->all());
             return redirect()->route('product.index');
@@ -176,6 +191,16 @@ class ProductController extends Controller
             DB::commit();
         }
         return redirect()->route('product.index');
+    }
+
+    private function insert_price_logs($product) {
+        $logs = ProductPriceLog::create([
+            'product_code'  => $product->code,
+            'price_store'   => $product->price_store,
+            'price_olshop'  => $product->price_olshop,
+            'discount_store'    => $product->discount_store,
+            'discount_olshop'   => $product->discount_olshop,
+        ]);
     }
 
     /**

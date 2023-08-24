@@ -6,14 +6,12 @@ use DigitalCloud\Blameable\Traits\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class Product extends Model
+class ProductPriceLog extends Model
 {
     use HasFactory;
-    protected $table = 'products';
+    protected $table = 'products_price_log';
     use Blameable;
-    use SoftDeletes;
-    protected $dates = ['deleted_at'];
-    protected $fillable = ['code', 'name', 'description', 'price_store', 'price_olshop', 'stock', 'discount_store', 'discount_olshop'];
+    protected $fillable = ['product_code', 'price_store', 'price_olshop', 'discount_store', 'discount_olshop'];
         // public $timestamps = false;
 
 
