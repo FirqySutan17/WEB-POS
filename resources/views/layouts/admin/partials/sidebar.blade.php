@@ -47,12 +47,36 @@
                             href="javascript:void(0)"><i data-feather="package"></i><span>Products Management</span></a>
                         <ul class="nav-submenu menu-content">
 
+                            <li><a href="{{ route('product-categories.index') }}"
+                                    class="{{routeActive(['product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create'])}}">
+                                    Categories</a>
+                            </li>
+
                             <li><a href="{{ route('product.index') }}"
                                     class="{{routeActive(['product.index', 'product.show', 'product.edit', 'product.create'])}}">Products</a>
                             </li>
 
-                            <li><a href="{{ route('product-categories.index') }}"
-                                    class="{{routeActive(['product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create'])}}">Products Categories</a>
+                        </ul>
+                    </li>
+                    @endcan
+
+                    @canany(['Manage Skill', 'Manage Skill'])
+                    <li class="dropdown">
+                        <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
+                            href="javascript:void(0)"><i data-feather="package"></i><span>Report</span></a>
+                        <ul class="nav-submenu menu-content">
+
+                            <li>
+                                <a href="{{ route('report.stock') }}" class="{{routeActive('report.stock')}}">
+                                    Stock
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('report.transaction') }}"
+                                    class="{{routeActive('report.transaction')}}">
+                                    Transaction
+                                </a>
                             </li>
 
                         </ul>
