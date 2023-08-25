@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 21, 2023 at 12:00 PM
+-- Generation Time: Aug 25, 2023 at 05:06 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 7.4.33
 
@@ -151,7 +151,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (41, '2023_02_07_040547_create_portfolio_images_table', 29),
 (42, '2023_08_16_035851_create_table_products', 29),
 (43, '2023_08_21_041734_create_tr_receive', 30),
-(44, '2023_08_21_042007_create_tr_receive_detail', 30);
+(44, '2023_08_21_042007_create_tr_receive_detail', 30),
+(47, '2023_08_24_022236_update_products', 32),
+(48, '2023_08_24_022722_create_products_price_log', 33),
+(49, '2023_08_22_033713_create_tr_transaction', 34),
+(50, '2023_08_22_033746_create_tr_transaction_detail', 34);
 
 -- --------------------------------------------------------
 
@@ -474,22 +478,54 @@ CREATE TABLE `products` (
   `description` longtext NOT NULL,
   `price_store` int(11) NOT NULL,
   `price_olshop` int(11) NOT NULL,
-  `stock_store` int(11) NOT NULL,
-  `stock_olshop` int(11) NOT NULL,
+  `stock` int(11) NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `created_by` int(11) NOT NULL,
+  `updated_by` int(11) NOT NULL DEFAULT 0,
   `deleted_at` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `discount_store` int(11) NOT NULL,
+  `discount_olshop` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `code`, `name`, `description`, `price_store`, `price_olshop`, `stock_store`, `stock_olshop`, `is_active`, `created_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 'TBLSGAR600', 'Teh Botol Less Sugar 600ml', '<p>Teh Botol Less Sugar 600 ML</p>', 4500, 5000, 100, 50, 1, 1, NULL, '2023-08-20 19:17:23', '2023-08-20 19:17:23'),
-(2, '1231asdasd', 'TES', '<p>TES</p>', 15000, 12000, 100, 10, 1, 1, NULL, '2023-08-20 19:21:13', '2023-08-20 19:21:13');
+INSERT INTO `products` (`id`, `code`, `name`, `description`, `price_store`, `price_olshop`, `stock`, `is_active`, `created_by`, `updated_by`, `deleted_at`, `created_at`, `updated_at`, `discount_store`, `discount_olshop`) VALUES
+(1, '8998685057308', 'Teh Botol Less Sugar 600ml', '<p>Teh Botol Less Sugar 600 ML</p>', 4500, 5000, 152, 1, 1, 1, NULL, '2023-08-20 19:17:23', '2023-08-22 21:41:49', 0, 0),
+(2, '8996001326398', 'TES', '<p>TES</p>', 15000, 12000, 102, 1, 1, 1, NULL, '2023-08-20 19:21:13', '2023-08-22 21:41:49', 0, 0),
+(3, '8601054', 'KARKAS BROILER 600-699 (B)', '<p>KARKAS AYAM BROILER UK 600-699</p>', 15000, 20000, 100, 1, 1, 0, NULL, '2023-08-22 19:19:35', '2023-08-22 19:19:35', 0, 0),
+(4, '8601055', 'KARKAS BROILER 700-799 (B)', '<p>KARKAS AYAM BROILER UK 700-799</p>', 15000, 20000, 100, 1, 1, 0, NULL, '2023-08-22 19:19:35', '2023-08-22 19:19:35', 0, 0),
+(5, '8601056', 'KARKAS BROILER 800-899 (B)', '<p>KARKAS AYAM BROILER UK 800-899</p>', 15000, 20000, 100, 1, 1, 0, NULL, '2023-08-22 19:19:35', '2023-08-22 19:19:35', 0, 0),
+(6, '8601057', 'KARKAS BROILER 900-999 (B)', '<p>KARKAS AYAM BROILER UK 900-999</p>', 15000, 20000, 100, 1, 1, 0, NULL, '2023-08-22 19:19:35', '2023-08-22 19:19:35', 5, 10);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products_price_log`
+--
+
+CREATE TABLE `products_price_log` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `product_code` varchar(255) NOT NULL,
+  `price_store` int(11) NOT NULL,
+  `price_olshop` int(11) NOT NULL,
+  `discount_store` int(11) NOT NULL,
+  `discount_olshop` int(11) NOT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `products_price_log`
+--
+
+INSERT INTO `products_price_log` (`id`, `product_code`, `price_store`, `price_olshop`, `discount_store`, `discount_olshop`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(1, '8601057', 15000, 20000, 5, 10, 1, NULL, '2023-08-23 21:22:25', '2023-08-23 21:22:25');
 
 -- --------------------------------------------------------
 
@@ -638,17 +674,25 @@ CREATE TABLE `tr_receive` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `receive_code` varchar(255) NOT NULL,
   `receive_date` date NOT NULL,
-  `suratjalan_number` varchar(255) NOT NULL,
-  `suratjalan_file` text NOT NULL,
-  `plat_no` varchar(255) NOT NULL,
-  `driver` varchar(255) NOT NULL,
-  `driver_phone` varchar(255) NOT NULL,
+  `delivery_no` varchar(255) NOT NULL,
+  `delivery_file` text DEFAULT NULL,
+  `plate_no` varchar(255) DEFAULT NULL,
+  `driver` varchar(255) DEFAULT NULL,
+  `driver_phone` varchar(255) DEFAULT NULL,
   `created_by` bigint(20) UNSIGNED DEFAULT NULL,
   `updated_by` bigint(20) UNSIGNED DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tr_receive`
+--
+
+INSERT INTO `tr_receive` (`id`, `receive_code`, `receive_date`, `delivery_no`, `delivery_file`, `plate_no`, `driver`, `driver_phone`, `created_by`, `updated_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(3, 'RCV2023AugTue031621', '2023-08-22', '123ADASD123123', NULL, 'F 499 FFC', 'Ichsan', '083807164451', 1, NULL, NULL, '2023-08-21 20:16:21', '2023-08-21 20:16:21'),
+(5, 'RCV20230823044149', '2023-08-23', 'Ichsan', 'delivery_RCV20230823044149.png', NULL, NULL, NULL, 1, 1, NULL, '2023-08-22 21:41:49', '2023-08-22 21:41:49');
 
 -- --------------------------------------------------------
 
@@ -660,9 +704,56 @@ CREATE TABLE `tr_receive_detail` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `receive_code` varchar(255) NOT NULL,
   `product_code` varchar(255) NOT NULL,
-  `amount` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tr_receive_detail`
+--
+
+INSERT INTO `tr_receive_detail` (`id`, `receive_code`, `product_code`, `quantity`) VALUES
+(1, 'RCV2023AugTue031621', 'TBLSGAR600', 50),
+(2, 'RCV20230823044149', '8996001326398', 2),
+(3, 'RCV20230823044149', '8998685057308', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tr_transaction`
+--
+
+CREATE TABLE `tr_transaction` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `invoice_no` varchar(255) NOT NULL,
+  `receipt_no` varchar(255) NOT NULL,
+  `emp_no` varchar(255) NOT NULL,
+  `trans_date` date NOT NULL,
+  `payment_method` varchar(255) NOT NULL COMMENT 'CASH, EDC - BCA, EDC - QRIS',
+  `cash` int(11) DEFAULT NULL,
+  `sub_price` int(11) NOT NULL,
+  `vat_ppn` int(11) NOT NULL,
+  `total_price` int(11) NOT NULL,
+  `status` varchar(255) NOT NULL COMMENT 'DRAFT, FINISH, CANCEL',
+  `cancellation_reason` text DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tr_transaction_detail`
+--
+
+CREATE TABLE `tr_transaction_detail` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `invoice_no` varchar(255) NOT NULL,
+  `product_code` varchar(255) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `basic_price` int(11) NOT NULL,
+  `discount` int(11) NOT NULL,
+  `price` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -692,7 +783,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `employee_id`, `name`, `email`, `email_verified_at`, `phone_number`, `office`, `password`, `image`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, '01220023', 'Master Admin', 'admin@koontjie.id', '2023-01-10 18:55:51', '08123456789', 'Jakarta', '$2y$10$Ra9HfC9VbIYR871aiH4lvOzo8CmXGIo3tXdytak4vdJr0g7D45EmO', '819675.png', 1, 'qSTyLC5dwg6RLkRkIG1dSzp0LTdXBlOTiON96hp9Udygd723Z1hbPAOKA8ea', '2023-01-10 18:55:51', '2023-02-05 20:47:47'),
+(1, '01220023', 'Master Admin', 'admin@koontjie.id', '2023-01-10 18:55:51', '08123456789', 'Jakarta', '$2y$10$Ra9HfC9VbIYR871aiH4lvOzo8CmXGIo3tXdytak4vdJr0g7D45EmO', '819675.png', 1, 'Fi5xRqDJolC4DPmpHJ8kABmUULAC9rwpIJqxeDcv7DQdwhtefTziJjKgHfmC', '2023-01-10 18:55:51', '2023-02-05 20:47:47'),
 (2, '01220024', 'Firqy Sutan', 'firqy@cj.co.id', NULL, '085959238296', 'Jakarta', '$2y$10$UZEMvhdnmf9hGzGp9qVYfOl2HBPtYvDH8qtQ.CzwXGI0Kf2OdC3gS', 'public/images/NXNx34zMUAsp7ucoFS2CA4n3CmtpQEbZpJRbxK8l.png', 0, NULL, '2023-01-11 01:45:25', '2023-01-11 01:45:25'),
 (6, '01220025', 'Admin', 'admin@rimba.com', '2023-08-09 21:20:40', '08123456789', 'Rimba House, Cipondoh', '$2y$10$Qvgqnx08cOuAKFZPSZY2Vu5MsFpvH5J4skFI8RHd3imu9Z.xRxDoW', 'placeholder/user-placeholder.png', 1, 'g2VkaNgAqj', '2023-08-09 21:20:40', '2023-08-09 21:20:40');
 
@@ -835,6 +926,12 @@ ALTER TABLE `products`
   ADD UNIQUE KEY `products_code_unique` (`code`) USING HASH;
 
 --
+-- Indexes for table `products_price_log`
+--
+ALTER TABLE `products_price_log`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `roles`
 --
 ALTER TABLE `roles`
@@ -875,6 +972,20 @@ ALTER TABLE `tr_receive_detail`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tr_transaction`
+--
+ALTER TABLE `tr_transaction`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `tr_transaction_invoice_no_unique` (`invoice_no`),
+  ADD UNIQUE KEY `tr_transaction_receipt_no_unique` (`receipt_no`);
+
+--
+-- Indexes for table `tr_transaction_detail`
+--
+ALTER TABLE `tr_transaction_detail`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -907,7 +1018,7 @@ ALTER TABLE `meta`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `oauth_clients`
@@ -961,7 +1072,13 @@ ALTER TABLE `portfolio_slider`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `products_price_log`
+--
+ALTER TABLE `products_price_log`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -985,12 +1102,24 @@ ALTER TABLE `skill`
 -- AUTO_INCREMENT for table `tr_receive`
 --
 ALTER TABLE `tr_receive`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tr_receive_detail`
 --
 ALTER TABLE `tr_receive_detail`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `tr_transaction`
+--
+ALTER TABLE `tr_transaction`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tr_transaction_detail`
+--
+ALTER TABLE `tr_transaction_detail`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
