@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class TransactionController extends Controller
 {
@@ -26,7 +30,9 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        return view('admin.transaction.create');
+        $userdata = Auth::user();
+        $no_invoice = "INV".$userdata->id.$userdata->employee_id.strtotime(date('Ymd'));
+        return view('admin.transaction.create', compact('no_invoice'));
     }
 
     /**
@@ -37,7 +43,68 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'invoice_no' => 'required|string|unique:tr_transaction,invoice_no',
+            'payment_method' => 'required',
+        ]);
+
+        $receipt_no = $request->payment_method == 'Tunai' ? rand(10000000, 99999999) : $request->receipt_no;
+        $product_code       = $request->product_code;
+        if (empty($product_code)) {
+            return redirect()->back()->withInput($request->all())->withErrors("No product chosen!");
+        }
+
+        $basic_price  = $request->basic_price;
+        $discount     = $request->discount_store;
+        $quantity     = $request->quantity;
+        $final_price  = $request->final_price;
+        DB::beginTransaction();
+        try {
+            $transaction_details = [];
+            $sub_price = 0;
+            foreach ($product_code as $i => $v) {
+                $trans_detail = [
+                    "invoice_no"    => $request->invoice_no,
+                    "product_code"  => $v,
+                    "quantity"      => $quantity[$i],
+                    "basic_price"   => $basic_price[$i],
+                    "discount"      => $discount[$i],
+                    "price"         => $final_price[$i],
+                ];
+                $transaction_details[] = $trans_detail;
+                $sub_price += $final_price[$i];
+            }
+            // dd($transaction_details);
+            $vat_amount = config('app.vat_amount');
+            $vat_price  = $sub_price * ($sub_price / 100);
+            $total_price = $sub_price + $vat_price;
+
+            $transaction = Transaction::create([
+                'emp_no'        => Auth::user()->employee_id,
+                'invoice_no'    => $request->invoice_no,
+                'receipt_no'    => $receipt_no,
+                'trans_date'    => date('Y-m-d'),
+                'payment_method'    => $request->payment_method,
+                'cash'          => $request->cash,
+                'sub_price'     => $sub_price,
+                'vat_ppn'       => $vat_amount,
+                'total_price'   => $total_price,
+                'status'        => "FINISH"
+            ]);
+
+            if ($transaction) {
+                DB::table('tr_transaction_detail')->insert($transaction_details);
+            }
+
+            Alert::success('Add Transaction', 'Success');
+            // dd($request->all());
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            dd($th->getMessage());
+        } finally {
+            DB::commit();
+        }
+        return redirect()->route('transaction.index');
     }
 
     public function print_receipt() {
