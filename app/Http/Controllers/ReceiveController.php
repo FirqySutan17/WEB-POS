@@ -109,7 +109,7 @@ class ReceiveController extends Controller
 
                     // Update amount
                     $product = Product::where('code', $v)->first();
-                    $product->stock_store = $product->stock_store + $qty;
+                    $product->stock = $product->stock + $qty;
                     $product->save();
                 }
 

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\Transaction;
+use App\Models\Product;
 
 class TransactionController extends Controller
 {
@@ -31,7 +32,7 @@ class TransactionController extends Controller
     public function create()
     {
         $userdata = Auth::user();
-        $no_invoice = "INV".$userdata->id.$userdata->employee_id.strtotime(date('Ymd'));
+        $no_invoice = "INV".$userdata->id.$userdata->employee_id.strtotime(date('YmdHis'));
         return view('admin.transaction.create', compact('no_invoice'));
     }
 
@@ -74,7 +75,6 @@ class TransactionController extends Controller
                 $transaction_details[] = $trans_detail;
                 $sub_price += $final_price[$i];
             }
-            // dd($transaction_details);
             $vat_amount = config('app.vat_amount');
             $vat_price  = $sub_price * ($sub_price / 100);
             $total_price = $sub_price + $vat_price;
@@ -85,15 +85,24 @@ class TransactionController extends Controller
                 'receipt_no'    => $receipt_no,
                 'trans_date'    => date('Y-m-d'),
                 'payment_method'    => $request->payment_method,
-                'cash'          => $request->cash,
+                'cash'          => str_replace(".", "", $request->cash),
                 'sub_price'     => $sub_price,
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
                 'status'        => "FINISH"
             ]);
-
+            // dd($transaction, $transaction_details);
+            
             if ($transaction) {
-                DB::table('tr_transaction_detail')->insert($transaction_details);
+                foreach ($transaction_details as $v) {
+                    $code   = $v['product_code'];
+                    $qty    = $v['quantity'];
+                    // Update amount
+                    $product = Product::where('code', $code)->first();
+                    $product->stock = $product->stock - $qty;
+                    $product->save();
+                }
+                $trans_detail_insert = DB::table('tr_transaction_detail')->insert($transaction_details);
             }
 
             Alert::success('Add Transaction', 'Success');
