@@ -69,23 +69,19 @@ CMS | Report Stock
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="head-report">
-                        <th class="center-text">NO <span class="dividerHr"></span></th>
-                        <th class="center-text">TANGGAL <span class="dividerHr"></span></th>
-                        <th>ITEM <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">BEGIN <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">IN <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">OUT <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">END <span class="dividerHr"></span></th>
+                        <th class="center-text">No <span class="dividerHr"></span></th>
+                        <th>Item <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">Begin <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">In <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">Out <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">End <span class="dividerHr"></span></th>
                     </tr>
                 </thead>
                 <tbody>
 
                     <tr>
                         <td style="width: 5%;" class="center-text">1</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -102,10 +98,7 @@ CMS | Report Stock
 
                     <tr>
                         <td style="width: 5%;" class="center-text">2</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -122,10 +115,7 @@ CMS | Report Stock
 
                     <tr>
                         <td style="width: 5%;" class="center-text">3</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -142,10 +132,7 @@ CMS | Report Stock
 
                     <tr>
                         <td style="width: 5%;" class="center-text">4</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -162,10 +149,7 @@ CMS | Report Stock
 
                     <tr>
                         <td style="width: 5%;" class="center-text">5</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -182,10 +166,7 @@ CMS | Report Stock
 
                     <tr>
                         <td style="width: 5%;" class="center-text">6</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -202,10 +183,7 @@ CMS | Report Stock
 
                     <tr>
                         <td style="width: 5%;" class="center-text">7</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -222,10 +200,7 @@ CMS | Report Stock
 
                     <tr>
                         <td style="width: 5%;" class="center-text">8</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -239,12 +214,10 @@ CMS | Report Stock
                             1.500
                         </td>
                     </tr>
+
                     <tr>
                         <td style="width: 5%;" class="center-text">9</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            24-08-2023
-                        </td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 50%; vertical-align: middle">
                             Lorem Ipsum Dolor Sit Amet
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
@@ -258,6 +231,7 @@ CMS | Report Stock
                             1.500
                         </td>
                     </tr>
+
 
                     {{-- <table></table>
                     <p style="text-align: center; padding-top: 50px;">
