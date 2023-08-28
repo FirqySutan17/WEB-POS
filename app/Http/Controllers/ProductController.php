@@ -44,7 +44,7 @@ class ProductController extends Controller
     public function select_one(Request $request)
     {
         $product_code = $request->product_code;
-        $products = Product::select('id', 'code', 'name');
+        $products = Product::select('id', 'code', 'name', 'price_store', 'discount_store');
         if (!empty($product_code)) {
             $products->where('code', $product_code);
         }
