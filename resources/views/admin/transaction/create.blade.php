@@ -20,20 +20,21 @@ CMS | Transaction
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <form id="form-transaction" action="{{ route('transaction.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="form-transaction" action="{{ route('transaction.store') }}" method="POST"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="card _card" style="margin: auto; padding-bottom: 20px">
                     <div class="card-body _card-body">
                         <div class="row d-flex align-items-stretch">
                             <div class="col-md-3 col-sm-12">
-                                <div class="row tr-shadow" style="height: 328px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                <div class="row tr-shadow"
+                                    style="height: 328px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                                     <div class="col-12">
                                         <div class="form-group _form-group">
                                             <label for="receive_date" class="font-weight-bold">
                                                 Kasir
                                             </label>
-                                            <input value="{{ Auth::user()->name }}" type="text"
-                                                class="form-control"
+                                            <input value="{{ Auth::user()->name }}" type="text" class="form-control"
                                                 required readonly />
                                         </div>
                                     </div>
@@ -52,15 +53,14 @@ CMS | Transaction
                                             <label for="invoice_no" class="font-weight-bold">
                                                 Nomor Invoice
                                             </label>
-                                            <input name="invoice_no" type="text"
-                                                value="{{ $no_invoice }}" class="form-control" required readonly />
+                                            <input name="invoice_no" type="text" value="#{{ $no_invoice }}"
+                                                class="form-control" required readonly />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-9 col-sm-12" style="padding-right: 0px">
-                                <input id="input-scanner" type="text"
-                                    class="form-control"
+                                <input id="input-scanner" type="text" class="form-control"
                                     placeholder="Klik disini untuk Scan Barcode"
                                     style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " />
                                 <div class="tr-shadow table-responsive">
@@ -107,7 +107,8 @@ CMS | Transaction
                                             <label for="receive_date" class="font-weight-bold">
                                                 Receipt <span class="wajib">* </span>
                                             </label>
-                                            <input placeholder="Ex: RCT123456789" name="receipt_no" type="text" class="form-control" required />
+                                            <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
+                                                class="form-control" required />
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -115,18 +116,14 @@ CMS | Transaction
                                             <label for="receive_date" class="font-weight-bold">
                                                 Nominal Tunai
                                             </label>
-                                            <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash"
-                                                type="text"
-                                                class="form-control"
-                                                required />
+                                            <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
+                                                class="form-control" required />
                                         </div>
                                         <div class="form-group _form-group elm_cash">
                                             <label for="receive_date" class="font-weight-bold">
                                                 Kembalian
                                             </label>
-                                            <input placeholder="Hitungan otomatis"
-                                                type="text"
-                                                class="form-control"
+                                            <input placeholder="Hitungan otomatis" type="text" class="form-control"
                                                 required readonly />
                                         </div>
                                     </div>

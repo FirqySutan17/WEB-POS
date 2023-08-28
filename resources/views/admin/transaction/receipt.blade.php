@@ -100,47 +100,51 @@
             Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus
             Ibukota Jakarta 12710
         </p>
-        <p style="text-align: center">23/08/2023 08:30:00</p>
+        <p style="text-align: center">{{ $transaction[0]->created_at->format('d-m-Y h:m:s') }}</p>
         <hr class="dotted">
         <table class="add-note">
             <tr>
                 <td>Receipt</td>
-                <td style="text-align: right">#RCP00001</td>
+                <td style="text-align: right">
+                    #{{ $transaction[0]->receipt_no }}
+                </td>
             </tr>
             <tr>
                 <td>Order INV</td>
-                <td style="text-align: right">#INV00001</td>
+                <td style="text-align: right">#{{ $transaction[0]->invoice_no }}</td>
             </tr>
             <tr>
                 <td>Cashier</td>
-                <td style="text-align: right">John Doe</td>
+                <td style="text-align: right">{{ $transaction[0]->user->name }}</td>
             </tr>
         </table>
         <hr class="dotted">
         <table class="item-order">
             <tbody>
+                <?php $sub_total = 0; ?>
+                <?php $potongan = 0; ?>
+                <?php $total_price = 0; ?>
+                @foreach($details as $d)
+                <?php
+                $total_item_price = $d->quantity * $d->price;
+                $sub_total += $total_item_price;
+                $potongan = ($sub_total / 100) * $transaction[0]->vat_ppn;
+                $total_price = $sub_total + $potongan;
+                ?>
                 <tr>
                     <td>
-                        <p style="font-weight: 600">Lorem Ipsum Dolor 500gr</p>
-                        <p>2x &nbsp; &nbsp; @60.000&nbsp; &nbsp; Disc 10%</p>
-                    </td>
-                    <td>Rp 120.000</td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="font-weight: 600">Lorem Ipsum Dolor 500gr</p>
-                        <p>2x &nbsp; &nbsp; @20.000</p>
-                    </td>
-                    <td>Rp 40.000</td>
-                </tr>
-                <tr>
-                    <td>
-                        <p style="font-weight: 600">Lorem Ipsum Dolor 500gr</p>
-                        <p>2x &nbsp; &nbsp; @20.000</p>
-                    </td>
-                    <td>Rp 40.000</td>
-                </tr>
+                        <p style="font-weight: 600">{{ $d->name}}</p>
+                        <p>{{ $d->quantity}}x &nbsp; &nbsp; @currency($d->price)&nbsp; &nbsp;
+                            @if( $d->discount == 0)
 
+                            @else
+                            Disc {{$d->discount}}%
+                            @endif
+                        </p>
+                    </td>
+                    <td>@currency($total_item_price)</td>
+                </tr>
+                @endforeach
             </tbody>
         </table>
         <hr class="dotted">
@@ -148,11 +152,11 @@
             <tbody>
                 <tr>
                     <td class="description">SUB TOTAL</td>
-                    <td class="price">Rp 200.000</td>
+                    <td class="price">@currency($sub_total)</td>
                 </tr>
                 <tr>
-                    <td class="description">VAT 10%</td>
-                    <td class="price">Rp 20.000</td>
+                    <td class="description">VAT {{ $transaction[0]->vat_ppn }}%</td>
+                    <td class="price">@currency($potongan)</td>
                 </tr>
                 <tr>
                     <td class="description">DISC 0%</td>
@@ -160,7 +164,7 @@
                 </tr>
                 <tr>
                     <td class="description">GRAND TOTAL</td>
-                    <td class="price">Rp 220.000</td>
+                    <td class="price">@currency($total_price)</td>
                 </tr>
             </tbody>
         </table>

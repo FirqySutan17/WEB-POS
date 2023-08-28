@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use App\Models\Product;
 
 class TransactionController extends Controller
@@ -17,11 +18,18 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     
     {
-        $transaction = 1;
-        return view('admin.transaction.index', compact('transaction'));
+        $transactions = [];
+        if ($request->get('keyword')) {
+            $transactions = Transaction::search($request->keyword)->with(['detail', 'user'])->orderBy('id', 'desc')->paginate(9);
+        } else {
+            $transactions = Transaction::orderBy('id', 'desc')->with(['detail', 'user'])->paginate(9);
+        }
+
+        // dd($transaction);
+        return view('admin.transaction.index', compact('transactions'));
     }
 
     /**
@@ -116,8 +124,10 @@ class TransactionController extends Controller
         return redirect()->route('transaction.index');
     }
 
-    public function print_receipt() {
-        return view('admin.transaction.receipt');
+    public function print_receipt(Transaction $transaction) {
+        // $shark = Transaction::find($transaction);
+        // dd($shark);
+        // return view('admin.transaction.receipt', compact('transaction'));
     }
     /**
      * Display the specified resource.
@@ -127,7 +137,11 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        //
+        $transaction = Transaction::find($transaction);
+
+        $details = TransactionDetail::where('invoice_no', $transaction[0]->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
+        // dd($details);
+        return view('admin.transaction.receipt', compact('transaction', 'details'));
     }
 
     /**

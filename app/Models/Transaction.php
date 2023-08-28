@@ -25,6 +25,16 @@ class Transaction extends Model
         return 'id';
     }
 
+    public function detail()
+    {
+        return $this->hasMany(TransactionDetail::class, 'invoice_no', 'invoice_no');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'emp_no', 'employee_id');
+    }
+
     public function details()
     {
         return $this->hasMany(ReceiveDetail::class, 'receive_code');

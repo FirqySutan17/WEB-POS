@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Blade::directive('currency', function ( $expression ) { return "Rp. <?php echo number_format($expression,0,',','.'); ?>"; });
         $project_title = '| Brandztory';
         View::share('title', $project_title);
     }

@@ -49,38 +49,51 @@ CMS | Transaction
                 <thead>
                     <tr>
                         <th class="center-text">No <span class="dividerHr"></span></th>
-                        <th class="center-text">Tanggal Transaksi <span class="dividerHr"></span></th>
+                        <th class="center-text">Tanggal <span class="dividerHr"></span></th>
                         <th class="heightHr">Nama Kasir <span class="dividerHr"></span></th>
-                        <th class="heightHr">Invoice Transaksi <span class="dividerHr"></span></th>
+                        <th class="heightHr">No. Invoice <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">Pembayaran <span class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Total Harga <span class="dividerHr"></span></th>
                         <th class="center-text">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-
+                    @if (count($transactions))
+                    @forelse ($transactions as $transaction)
                     <tr>
-                        <td style="width: 5%;" class="center-text">1</td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">25-08-2023</td>
-                        <td style="width: 25%; vertical-align: middle">Peter Sans Berg</td>
-                        <td style="width: 20%; vertical-align: middle">
-                            #INV-000003
+                        <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
+                        <td class="center-text" style="width: 15%; vertical-align: middle">
+                            {{ $transaction->trans_date }}
                         </td>
+                        <td style="width: 20%; vertical-align: middle">{{ $transaction->user->name }}</td>
+                        <td style="width: 20%; vertical-align: middle">
+                            #{{ $transaction->invoice_no }}
+                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                            {{ $transaction->payment_method }}</td>
                         <td class="center-text" style="width: 20%; vertical-align: middle">
-                            Rp 750.000
+                            @currency($transaction->total_price)
                         </td>
                         <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
 
                                 <div class="boxEdit">
-                                    <a href="{{ route('transaction.edite') }}" class="btn-sm btn-info" role="button">
+                                    <a href="{{ route('transaction.show', ['transaction' => $transaction]) }}"
+                                        class="btn-sm btn-info" role="button" target="_blank">
+                                        <i class="bx bxs-bullseye"></i>
+                                    </a>
+                                </div>
+
+                                <div class="boxEdit">
+                                    <a href="{{ route('transaction.edit', ['transaction' => $transaction]) }}"
+                                        class="btn-sm btn-info" role="button">
                                         <i class="bx bx-edit"></i>
                                     </a>
                                 </div>
 
-
-
                                 <div class="boxDelete">
-                                    <form action="" method="POST" role="alert">
+                                    <form action="{{ route('transaction.destroy', ['transaction' => $transaction]) }}"
+                                        method="POST" role="alert">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
@@ -93,8 +106,19 @@ CMS | Transaction
 
                         </td>
                     </tr>
+                    @endforeach
+                    @else
+                    <table></table>
+                    <p style="text-align: center; padding-top: 50px;">
+                        @if (request()->get('keyword'))
+                        <strong> Search not found</strong>
+                        @else
+                        <strong> No data yet</strong>
+                        @endif
+                    </p>
+                    @endif
 
-                    <tr>
+                    {{-- <tr>
                         <td style="width: 5%;" class="center-text">1</td>
                         <td class="center-text" style="width: 20%; vertical-align: middle">24-08-2023</td>
                         <td style="width: 25%; vertical-align: middle">John Doe</td>
@@ -164,16 +188,7 @@ CMS | Transaction
                             </div>
 
                         </td>
-                    </tr>
-
-                    {{-- <table></table>
-                    <p style="text-align: center; padding-top: 50px;">
-
-                        <strong> Search not found</strong>
-
-                        <strong> No data yet</strong>
-
-                    </p> --}}
+                    </tr> --}}
 
                 </tbody>
             </table>
