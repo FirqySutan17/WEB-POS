@@ -91,5 +91,5 @@ Route::get('/edit-template', [App\Http\Controllers\TransactionController::class,
 Route::get('/receipt-template', [App\Http\Controllers\TransactionController::class, 'print_receipt'])->name('transaction.receipt');
 
 // Report Route
-Route::get('/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');
-Route::get('/report/transaction', [App\Http\Controllers\ReportController::class, 'report_transaction'])->name('report.transaction');
+Route::match(['get', 'post'], '/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');
+Route::match(['get', 'post'], '/report/transaction', [App\Http\Controllers\ReportController::class, 'report_transaction'])->name('report.transaction');

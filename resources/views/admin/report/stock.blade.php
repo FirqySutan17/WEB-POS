@@ -29,21 +29,22 @@ CMS | Report Stock
         <div class="tr-shadow" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px">
             <div class="boxHeader" style="margin-bottom: 0px">
                 {{-- filter:start --}}
-                <form class="row" method="GET">
+                <form action="{{ route('report.stock') }}" class="row" method="POST">
+                    @csrf
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
-                            value="{{ empty(old('sdate')) ? date('d-m-Y') : old('sdate') }}"
+                            value="{{ empty($sdate) ? date('Y-m-d') : $sdate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-2">
-                        <input type="date" class="form-control" name="sdate"
-                            value="{{ empty(old('edate')) ? date('d-m-Y') : old('edate') }}"
+                        <input type="date" class="form-control" name="edate"
+                            value="{{ empty($edate) ? date('Y-m-d') : $edate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-1">
-                        <a href="#" class="btn btn-primary _btn" role="button">
+                        <button type="submit" class="btn btn-primary _btn" role="button">
                             FILTER
-                        </a>
+                        </button>
                     </div>
                     <div class="col-3">
                         <a href="#" class="btn btn-primary _btn" role="button">
@@ -78,159 +79,26 @@ CMS | Report Stock
                     </tr>
                 </thead>
                 <tbody>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">1</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">2</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">3</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">4</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">5</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">6</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">7</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">8</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">9</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            Lorem Ipsum Dolor Sit Amet
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">1.000</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.000
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            900
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            1.500
-                        </td>
-                    </tr>
+                    @if (!empty($data))
+                        @foreach ($data as $item)
+                            <tr>
+                                <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
+                                <td style="width: 50%; vertical-align: middle">
+                                    {{ $item->name." - ".$item->code }}
+                                </td>
+                                <td class="center-text" style="width: 10%; vertical-align: middle">{{ number_format($item->qty_begin) }}</td>
+                                <td class="center-text" style="width: 10%; vertical-align: middle">
+                                    {{ number_format($item->qty_in) }}
+                                </td>
+                                <td class="center-text" style="width: 10%; vertical-align: middle">
+                                    {{ number_format($item->qty_out) }}
+                                </td>
+                                <td class="center-text" style="width: 10%; vertical-align: middle">
+                                    {{ number_format($item->qty_end) }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
 
 
                     {{-- <table></table>
@@ -267,13 +135,13 @@ CMS | Report Stock
 <script>
     $(document).ready(function(){
       $("#startdate").datepicker({
-         format: "dd-mm-yyyy",
+         format: "yyyy-mm-dd",
         //  viewMode: "years", 
         //  minViewMode: "years",
          autoclose:true
       });
       $("#enddate").datepicker({
-         format: "dd-mm-yyyy",
+         format: "yyyy-mm-dd",
         //  viewMode: "years", 
         //  minViewMode: "years",
          autoclose:true

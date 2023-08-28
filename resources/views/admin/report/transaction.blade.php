@@ -29,21 +29,22 @@ CMS | Report Transaction
         <div class="tr-shadow" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px">
             <div class="boxHeader" style="margin-bottom: 0px">
                 {{-- filter:start --}}
-                <form class="row" method="GET">
+                <form action="{{ route('report.transaction') }}" class="row" method="POST">
+                    @csrf
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
-                            value="{{ empty(old('sdate')) ? date('d-m-Y') : old('sdate') }}"
+                            value="{{ empty($sdate) ? date('Y-m-d') : $sdate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-2">
-                        <input type="date" class="form-control" name="sdate"
-                            value="{{ empty(old('edate')) ? date('d-m-Y') : old('edate') }}"
+                        <input type="date" class="form-control" name="edate"
+                            value="{{ empty($edate) ? date('Y-m-d') : $edate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-1">
-                        <a href="#" class="btn btn-primary _btn" role="button">
+                        <button type="submit" class="btn btn-primary _btn" role="button">
                             FILTER
-                        </a>
+                        </button>
                     </div>
                     <div class="col-3">
                         <a href="#" class="btn btn-primary _btn" role="button">
@@ -80,54 +81,24 @@ CMS | Report Transaction
                     </tr>
                 </thead>
                 <tbody>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">1</td>
-                        <td style="width: 10%; vertical-align: middle">
-                            #INV-000003
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">25-08-2023</td>
-                        <td style="width: 30%; vertical-align: middle">Peter Sans Berg</td>
-
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            TUNAI
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle;">
-                            Rp 750.000
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">2</td>
-                        <td style="width: 10%; vertical-align: middle">
-                            #INV-000002
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">25-08-2023</td>
-                        <td style="width: 30%; vertical-align: middle">John Doe</td>
-
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            EDC - BCA
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle;">
-                            Rp 500.000
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">3</td>
-                        <td style="width: 10%; vertical-align: middle">
-                            #INV-000001
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">25-08-2023</td>
-                        <td style="width: 30%; vertical-align: middle">Kathrina Magnificent Doe</td>
-
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            EDC - QRIS
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle;">
-                            Rp 250.000
-                        </td>
-                    </tr>
+                    @if (!empty($data))
+                        @foreach ($data as $item)
+                            <tr>
+                                <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
+                                <td style="width: 10%; vertical-align: middle">
+                                    {{ $item->invoice_no }}
+                                </td>
+                                <td class="center-text" style="width: 20%; vertical-align: middle">{{ date('d-m-Y', strtotime($item->trans_date)) }}</td>
+                                <td style="width: 30%; vertical-align: middle">{{ $item->name." ( ".$item->employee_id." )" }}</td>
+                                <td class="center-text" style="width: 15%; vertical-align: middle">
+                                    {{ $item->payment_method }}
+                                </td>
+                                <td class="center-text" style="width: 20%; vertical-align: middle;">
+                                    Rp {{ number_format($item->total_price) }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
 
                     {{-- <table></table>
                     <p style="text-align: center; padding-top: 50px;">
