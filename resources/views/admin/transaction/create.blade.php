@@ -173,6 +173,9 @@ CMS | Transaction
 @push('javascript-internal')
 
 <script>
+    $(document).ready(function(e) {
+        $("#input-scanner").focus();
+    });
     var vat_amount = parseInt({{ config('app.vat_amount') }});
     function submit_form() {
         $("#form-transaction").submit();
@@ -275,7 +278,9 @@ CMS | Transaction
                 calculate_vat();
                 $(`#quantity_${item_id}`).on('keydown', function (e) {
                     var code = e.keyCode || e.which;
-                    if (code == 38 || code == 40) {
+                    // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
+                    var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
+                    if (allowed_keycode.includes(code)) {
                         var str_quantity_product = $(this).val();
                         var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
                         var final_price = Number($(`#final_price_${item_id}`).val());
