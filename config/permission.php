@@ -2,23 +2,47 @@
 
 return [
   'authorities' => [
-   'Manage Portfolio' => [
-    'Portfolio Show',
-    'Portfolio Create',
-    'Portfolio Update',
-    'Portfolio Delete'
-  ],
+    'Product Categories' => [
+     'PC Show',
+     'PC Create',
+     'PC Update',
+     'PC Delete'
+   ],
+   'Product' => [
+     'P Show',
+     'P Create',
+     'P Update',
+     'P Delete'
+     ],
+     'Report Stock' => [
+          'RS Show',
+          'RS Create',
+          'RS Update',
+          'RS Delete'
+     ],
+     'Report Transaction' => [
+          'RT Show',
+        'RT Create',
+        'RT Update',
+        'RT Delete'
+     ],
+     'Receive' => [
+          'R Show',
+        'R Create',
+        'R Update',
+        'R Delete'
+     ],
+     'Transaction' => [
+          'T Show',
+        'T Create',
+        'T Update',
+        'T Delete'
+     ],
    'Manage Meta' => [
      'Meta Show',
      'Meta Create',
      'Meta Update',
      'Meta Delete'
-   ],
-   'Manage Skill' => [
-     'Skill Show',
-     'Skill Create',
-     'Skill Update',
-     'Skill Delete'
    ],
    'Manage Users' => [
      'User Show',

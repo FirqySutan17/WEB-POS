@@ -25,12 +25,57 @@ class AuthServiceProvider extends ServiceProvider
   {
     $this->registerPolicies();
 
-    Gate::define('Manage Portfolio', function ($user) {
+    Gate::define('Product Categories', function ($user) {
       return $user->hasAnyPermission([
-        'Portfolio Show',
-        'Portfolio Create',
-        'Portfolio Update',
-        'Portfolio Delete'
+        'PC Show',
+        'PC Create',
+        'PC Update',
+        'PC Delete'
+      ]);
+    });
+
+    Gate::define('Product', function ($user) {
+      return $user->hasAnyPermission([
+        'P Show',
+        'P Create',
+        'P Update',
+        'P Delete'
+      ]);
+    });
+
+    Gate::define('Report Stock', function ($user) {
+      return $user->hasAnyPermission([
+        'RS Show',
+        'RS Create',
+        'RS Update',
+        'RS Delete'
+      ]);
+    });
+
+    Gate::define('Report Transaction', function ($user) {
+      return $user->hasAnyPermission([
+        'RT Show',
+        'RT Create',
+        'RT Update',
+        'RT Delete'
+      ]);
+    });
+
+    Gate::define('Receive', function ($user) {
+      return $user->hasAnyPermission([
+        'R Show',
+        'R Create',
+        'R Update',
+        'R Delete'
+      ]);
+    });
+
+    Gate::define('Transaction', function ($user) {
+      return $user->hasAnyPermission([
+        'T Show',
+        'T Create',
+        'T Update',
+        'T Delete'
       ]);
     });
 
@@ -40,15 +85,6 @@ class AuthServiceProvider extends ServiceProvider
         'Meta Create',
         'Meta Update',
         'Meta Delete'
-      ]);
-    });
-
-    Gate::define('Manage Skill', function ($user) {
-      return $user->hasAnyPermission([
-        'Skill Show',
-        'Skill Create',
-        'Skill Update',
-        'Skill Delete'
       ]);
     });
 

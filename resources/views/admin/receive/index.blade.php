@@ -24,7 +24,7 @@ CMS | Receive
 				{{-- filter:start --}}
 				<form class="row" method="GET">
 					<div class="col-8">
-						@can('Portfolio Create')
+						@can('R Create')
 						<a href="{{ route('receive.create') }}" class="btn btn-primary _btn" role="button">
 							<i class='bx bx-plus'></i> Add new
 						</a>
@@ -62,8 +62,12 @@ CMS | Receive
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
 						<td style="width: 30%; vertical-align: middle">{{ $receive->receive_code }}</td>
 						<td style="width: 25%; vertical-align: middle">{{ $receive->receive_date }}</td>
-						<td style="width: 15%; vertical-align: middle"><a href="{{ asset('file_upload/'.$receive->delivery_file) }}">{{ $receive->delivery_no }}</a></td>
-						<td style="width: 25%; vertical-align: middle">{!! empty($receive->driver) ? "Delivery from Warehouse" : $receive->driver."<br/>".$receive->driver_phone."<br/>".$receive->plate_no !!}</td>
+						<td style="width: 15%; vertical-align: middle"><a
+								href="{{ asset('file_upload/'.$receive->delivery_file) }}">{{ $receive->delivery_no
+								}}</a></td>
+						<td style="width: 25%; vertical-align: middle">{!! empty($receive->driver) ? "Delivery from
+							Warehouse" : $receive->driver."<br />".$receive->driver_phone."<br />".$receive->plate_no
+							!!}</td>
 					</tr>
 					@endforeach
 					@else

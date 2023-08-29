@@ -24,7 +24,7 @@ CMS | Product
 				{{-- filter:start --}}
 				<form class="row" method="GET">
 					<div class="col-8">
-						@can('Portfolio Create')
+						@can('P Create')
 						<a href="{{ route('product.create') }}" class="btn btn-primary _btn" role="button">
 							<i class='bx bx-plus'></i> Add New
 						</a>
@@ -59,14 +59,11 @@ CMS | Product
 					@if (count($products))
 					@forelse ($products as $product)
 					@php
-						$low_stock = "";
-						if ($product->stock < 110) {
-							$low_stock = "bg-danger";
-						}
-					@endphp
-					<tr>
+					$low_stock = "";
+					if ($product->stock < 110) { $low_stock="bg-danger" ; } @endphp <tr>
 						<td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
-						<td style="width: 45%; vertical-align: middle" class="{{ $low_stock }}">{{ $product->name.' | '.$product->code }}</td>
+						<td style="width: 45%; vertical-align: middle" class="{{ $low_stock }}">{{ $product->name.' |
+							'.$product->code }}</td>
 						<td style="width: 30%; vertical-align: middle" class="{{ $low_stock }}">
 							Store : Rp {{ number_format($product->price_store) }} ( {{ $product->discount_store }} %)
 							<br>
@@ -77,7 +74,7 @@ CMS | Product
 						</td>
 						<td style="width: 10%;" class="center-text boxAction fontField {{ $low_stock }}">
 							<div class="boxInside">
-								@can('Portfolio Update')
+								@can('P Update')
 								<div class="boxEdit">
 									<a href="{{ route('product.edit', ['product' => $product]) }}"
 										class="btn-sm btn-info" role="button">
@@ -86,7 +83,7 @@ CMS | Product
 								</div>
 								@endcan
 
-								@can('Portfolio Update')
+								@can('P Update')
 								<div class="boxEdit">
 									<a href="{{ route('product.show', ['product' => $product]) }}"
 										class="btn-sm btn-info" role="button">
@@ -95,10 +92,10 @@ CMS | Product
 								</div>
 								@endcan
 
-								{{-- @can('Portfolio Delete')
+								{{-- @can('P Delete')
 								<div class="boxDelete">
-									<form action="{{ route('product.destroy', ['product' => $product]) }}"
-										method="POST" role="alert">
+									<form action="{{ route('product.destroy', ['product' => $product]) }}" method="POST"
+										role="alert">
 										@csrf
 										@method('DELETE')
 										<button type="submit" class="btn btn-sm btn-danger">
@@ -110,18 +107,18 @@ CMS | Product
 							</div>
 
 						</td>
-					</tr>
-					@endforeach
-					@else
-					<table></table>
-					<p style="text-align: center; padding-top: 50px;">
-						@if (request()->get('keyword'))
-						<strong> Search not found</strong>
+						</tr>
+						@endforeach
 						@else
-						<strong> No data yet</strong>
+						<table></table>
+						<p style="text-align: center; padding-top: 50px;">
+							@if (request()->get('keyword'))
+							<strong> Search not found</strong>
+							@else
+							<strong> No data yet</strong>
+							@endif
+						</p>
 						@endif
-					</p>
-					@endif
 				</tbody>
 			</table>
 		</div>

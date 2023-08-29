@@ -15,10 +15,10 @@ class ProductCategoriesController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:Portfolio Show', ['only' => 'index']);
-        $this->middleware('permission:Portfolio Create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Portfolio Update', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Portfolio Delete', ['only' => 'destroy']);
+        $this->middleware('permission:PR Show', ['only' => 'index']);
+        $this->middleware('permission:PR Create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:PR Update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:PR Delete', ['only' => 'destroy']);
     }
     /**
      * Display a listing of the resource.

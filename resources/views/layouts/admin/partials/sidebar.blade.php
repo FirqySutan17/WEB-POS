@@ -33,7 +33,7 @@
                         </a>
                     </li>
 
-                    @canany(['Manage Skill', 'Manage Portfolio'])
+                    @canany(['PC Show', 'P Show'])
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Master</h6>
@@ -41,57 +41,59 @@
                     </li>
                     @endcan
 
-                    @canany(['Manage Skill', 'Manage Skill'])
+                    @canany(['PC Show', 'P Show'])
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
                             href="javascript:void(0)"><i data-feather="package"></i><span>Products Management</span></a>
                         <ul class="nav-submenu menu-content">
-
+                            @can('PC Show')
                             <li><a href="{{ route('product-categories.index') }}"
                                     class="{{routeActive(['product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create'])}}">
                                     Categories</a>
                             </li>
-
+                            @endcan
+                            @can('P Show')
                             <li><a href="{{ route('product.index') }}"
                                     class="{{routeActive(['product.index', 'product.show', 'product.edit', 'product.create'])}}">Products</a>
                             </li>
-
+                            @endcan
                         </ul>
                     </li>
                     @endcan
 
-                    @canany(['Manage Skill', 'Manage Skill'])
+                    @canany(['RS Show', 'RT Show'])
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
                             href="javascript:void(0)"><i data-feather="package"></i><span>Report</span></a>
                         <ul class="nav-submenu menu-content">
-
+                            @can('RS Show')
                             <li>
                                 <a href="{{ route('report.stock') }}" class="{{routeActive('report.stock')}}">
                                     Stock
                                 </a>
                             </li>
-
+                            @endcan
+                            @can('RT Show')
                             <li>
                                 <a href="{{ route('report.transaction') }}"
                                     class="{{routeActive('report.transaction')}}">
                                     Transaction
                                 </a>
                             </li>
-
+                            @endcan
                         </ul>
                     </li>
-                    @endcan
+                    @endcanany
 
-                    @canany(['Manage Skill', 'Manage Portfolio'])
+                    @canany(['R Show', 'T Show'])
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Transaksi</h6>
                         </div>
                     </li>
-                    @endcan
+                    @endcanany
                     <!-- skill -->
-                    @can('Manage Skill')
+                    @can('R Show')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['receive.index', 'receive.show', 'receive.edit', 'receive.create'])}}"
                             href="{{ route('receive.index') }}">
@@ -103,7 +105,7 @@
                     <!-- End skill -->
 
                     <!-- Portfolio -->
-                    @can('Manage Portfolio')
+                    @can('T Show')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['transaction.index'])}}"
                             href="{{ route('transaction.index') }}">
@@ -114,11 +116,13 @@
                     @endcan
                     <!-- End Portfolio -->
 
+                    @canany(['Manage Users', 'Manage Roles'])
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Settings</h6>
                         </div>
                     </li>
+                    @endcan
 
                     @canany(['Manage Users', 'Manage Roles'])
                     <li class="dropdown">
