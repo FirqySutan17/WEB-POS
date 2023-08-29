@@ -63,7 +63,7 @@
 
                     @canany(['RS Show', 'RT Show'])
                     <li class="dropdown">
-                        <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
+                        <a class="nav-link navSubMenu menu-title {{ routeActive(['report.transaction', 'report.stock']) }}"
                             href="javascript:void(0)"><i data-feather="package"></i><span>Report</span></a>
                         <ul class="nav-submenu menu-content">
                             @can('RS Show')
