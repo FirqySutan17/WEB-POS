@@ -61,13 +61,24 @@ CMS | Add Receive
                                     </div>
                                 </div>
 
+                                <!-- title -->
+                                <div class="form-group _form-group">
+                                    <label for="is_warehouse" class="font-weight-bold">
+                                        Stock Taken From <span class="wajib">* </span>
+                                    </label>
+                                    <select id="is_warehouse" name="is_warehouse" class="form-control">
+                                        <option value="0">Delivery</option>
+                                        <option value="1">Warehouse</option>
+                                    </select>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-3">
-                                        <div class="form-group _form-group">
+                                        <div class="form-group _form-group not_warehouse">
                                             <label for="driver" class="font-weight-bold">
                                                 Driver Name
                                             </label>
-                                            <input id="driver" value="{{ old('driver') }}" name="driver" type="text" class="form-control  @error('driver') is-invalid @enderror" placeholder="Input driver name here"/>
+                                            <input id="driver" value="{{ old('driver') }}" name="driver" type="text" class="form-control not_warehouse_input  @error('driver') is-invalid @enderror" placeholder="Input driver name here"/>
                                             @error('driver')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -77,11 +88,11 @@ CMS | Add Receive
                                     </div>
                                     <div class="col-3">
                                         <!-- End Year -->
-                                        <div class="form-group _form-group">
+                                        <div class="form-group _form-group not_warehouse">
                                             <label for="driver_phone" class="font-weight-bold">
                                                 Driver Phone Number
                                             </label>
-                                            <input id="driver_phone" value="{{ old('driver_phone') }}" name="driver_phone" type="text" class="form-control  @error('driver_phone') is-invalid @enderror" placeholder="Input Driver Phone Number here"/>
+                                            <input id="driver_phone" value="{{ old('driver_phone') }}" name="driver_phone" type="text" class="form-control not_warehouse_input @error('driver_phone') is-invalid @enderror" placeholder="Input Driver Phone Number here"/>
                                             @error('driver_phone')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -90,11 +101,11 @@ CMS | Add Receive
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <div class="form-group _form-group">
+                                        <div class="form-group _form-group not_warehouse">
                                             <label for="plate_no" class="font-weight-bold">
                                                 Vehicle License Number
                                             </label>
-                                            <input id="plate_no" value="{{ old('plate_no') }}" name="plate_no" type="text" class="form-control  @error('plate_no') is-invalid @enderror" placeholder="Input Plat Nomor Kendaraan disini"/>
+                                            <input id="plate_no" value="{{ old('plate_no') }}" name="plate_no" type="text" class="form-control not_warehouse_input @error('plate_no') is-invalid @enderror" placeholder="Input Plat Nomor Kendaraan disini"/>
                                             @error('plate_no')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -182,12 +193,23 @@ CMS | Add Receive
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 
 
 @push('javascript-internal')
 
 <script>
+    $("#is_warehouse").on('change', function() {
+        var val = $("#is_warehouse option:selected").val();
+        if (val == "0") {
+            $(".not_warehouse").show();
+        } else {
+            $(".not_warehouse_input").val('');
+            $(".not_warehouse").hide();
+        }
+    });
+
     function submit_form() {
         $("#form-receive").submit();
     }
@@ -218,7 +240,15 @@ CMS | Add Receive
                 "product_code": product_code,
             },
             success: function(response) {
-                var product = response;
+                if (response.status == "failed") {
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: response.message,
+                        icon: 'error'
+                    });
+                    return false;
+                }
+                var product = response.data;
                 var id = product_code;
                 var item_id = "item_product_" + id;
                 var html_item = `

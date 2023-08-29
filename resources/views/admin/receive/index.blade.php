@@ -51,6 +51,7 @@ CMS | Receive
 						<th class="center-text">No <span class="dividerHr"></span></th>
 						<th class="heightHr">Receive Code <span class="dividerHr"></span></th>
 						<th class="heightHr">Receive Date <span class="dividerHr"></span></th>
+						<th class="heightHr">PIC <span class="dividerHr"></span></th>
 						<th class="heightHr">Delivery No <span class="dividerHr"></span></th>
 						<th class="heightHr">Driver <span class="dividerHr"></span></th>
 					</tr>
@@ -60,8 +61,9 @@ CMS | Receive
 					@forelse ($receives as $receive)
 					<tr>
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-						<td style="width: 30%; vertical-align: middle">{{ $receive->receive_code }}</td>
-						<td style="width: 25%; vertical-align: middle">{{ $receive->receive_date }}</td>
+						<td style="width: 20%; vertical-align: middle">{{ $receive->receive_code }}</td>
+						<td style="width: 15%; vertical-align: middle">{{ $receive->receive_date }}</td>
+						<td style="width: 20%; vertical-align: middle">{{ $receive->user->name }}</td>
 						<td style="width: 15%; vertical-align: middle"><a
 								href="{{ asset('file_upload/'.$receive->delivery_file) }}">{{ $receive->delivery_no
 								}}</a></td>
