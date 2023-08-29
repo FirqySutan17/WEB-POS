@@ -134,8 +134,28 @@ Breadcrumbs::for('report_stock', function ($trail) {
     $trail->push("Report Stock", route('report.stock'));
 });
 
+// Report Stock by Invoice
+Breadcrumbs::for('report_stock_by_invoice', function ($trail) {
+    $trail->push("Report Stock by Invoice", route('report.stockinvoice'));
+});
+
+// Report Stock by Product
+Breadcrumbs::for('report_stock_by_product', function ($trail) {
+    $trail->push("Report Stock by Product", route('report.stockproduct'));
+});
+
 // Report Transaction
 Breadcrumbs::for('report_transaction', function ($trail) {
     $trail->push("Report Transaction", route('report.transaction'));
+});
+
+// Report Transaction by Invoice
+Breadcrumbs::for('report_transaction_by_invoice', function ($trail) {
+    $trail->push("Report Transaction by Invoice", route('report.transactioninvoice'));
+});
+
+// Report Transaction by Product
+Breadcrumbs::for('report_transaction_by_product', function ($trail) {
+    $trail->push("Report Transaction by Product", route('report.transactionproduct'));
 });
 

@@ -92,5 +92,9 @@ Route::get('/edit-template', [App\Http\Controllers\TransactionController::class,
 Route::get('/receipt-template', [App\Http\Controllers\TransactionController::class, 'print_receipt'])->name('transaction.receipt');
 
 // Report Route
-Route::match(['get', 'post'], '/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');
-Route::match(['get', 'post'], '/report/transaction', [App\Http\Controllers\ReportController::class, 'report_transaction'])->name('report.transaction');
+Route::match(['get', 'post'], '/report/stock-by-date', [App\Http\Controllers\ReportController::class, 'report_stock_by_date'])->name('report.stock');
+Route::match(['get', 'post'], '/report/stock-by-invoice', [App\Http\Controllers\ReportController::class, 'report_stock_by_invoice'])->name('report.stockinvoice');
+Route::match(['get', 'post'], '/report/stock-by-product', [App\Http\Controllers\ReportController::class, 'report_stock_by_product'])->name('report.stockproduct');
+Route::match(['get', 'post'], '/report/transaction', [App\Http\Controllers\ReportController::class, 'report_transaction_by_date'])->name('report.transaction');
+Route::match(['get', 'post'], '/report/transaction-by-invoice', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice'])->name('report.transactioninvoice');
+Route::match(['get', 'post'], '/report/transaction-by-product', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product'])->name('report.transactionproduct');

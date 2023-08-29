@@ -14,7 +14,7 @@ class ReportController extends Controller
         $this->middleware('permission:RT Show', ['only' => 'report_transaction']);
     }
     
-    public function report_stock(Request $request) {
+    public function report_stock_by_date(Request $request) {
         $data   = [];
         $sdate  = "";
         $edate  = ""; 
@@ -24,6 +24,30 @@ class ReportController extends Controller
             $data = $this->get_stock($sdate, $edate);
         }
         return view('admin.report.stock', compact('data', 'sdate', 'edate'));
+    }
+
+    public function report_stock_by_invoice(Request $request) {
+        $data   = [];
+        $sdate  = "";
+        $edate  = ""; 
+        if ($request->_token) {
+            $sdate = $request->sdate;
+            $edate = $request->edate;
+            $data = $this->get_stock($sdate, $edate);
+        }
+        return view('admin.report.stockinvoice', compact('data', 'sdate', 'edate'));
+    }
+
+    public function report_stock_by_product(Request $request) {
+        $data   = [];
+        $sdate  = "";
+        $edate  = ""; 
+        if ($request->_token) {
+            $sdate = $request->sdate;
+            $edate = $request->edate;
+            $data = $this->get_stock($sdate, $edate);
+        }
+        return view('admin.report.stockproduct', compact('data', 'sdate', 'edate'));
     }
 
     private function get_stock($sdate, $edate) {
@@ -96,7 +120,7 @@ class ReportController extends Controller
         return $db_query;
     }
 
-    public function report_transaction(Request $request) {
+    public function report_transaction_by_date(Request $request) {
         $data   = [];
         $sdate  = "";
         $edate  = ""; 
@@ -106,6 +130,30 @@ class ReportController extends Controller
             $data = $this->get_transaction($sdate, $edate);
         }
         return view('admin.report.transaction', compact('data', 'sdate', 'edate'));
+    }
+
+    public function report_transaction_by_invoice(Request $request) {
+        $data   = [];
+        $sdate  = "";
+        $edate  = ""; 
+        if ($request->_token) {
+            $sdate = $request->sdate;
+            $edate = $request->edate;
+            $data = $this->get_transaction($sdate, $edate);
+        }
+        return view('admin.report.transactioninvoice', compact('data', 'sdate', 'edate'));
+    }
+
+    public function report_transaction_by_product(Request $request) {
+        $data   = [];
+        $sdate  = "";
+        $edate  = ""; 
+        if ($request->_token) {
+            $sdate = $request->sdate;
+            $edate = $request->edate;
+            $data = $this->get_transaction($sdate, $edate);
+        }
+        return view('admin.report.transactionproduct', compact('data', 'sdate', 'edate'));
     }
 
     private function get_transaction($sdate, $edate) {
