@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:RS Show', ['only' => 'report_stock']);
+        $this->middleware('permission:RT Show', ['only' => 'report_transaction']);
+    }
+    
     public function report_stock(Request $request) {
         $data   = [];
         $sdate  = "";

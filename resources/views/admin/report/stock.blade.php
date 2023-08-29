@@ -80,24 +80,25 @@ CMS | Report Stock
                 </thead>
                 <tbody>
                     @if (!empty($data))
-                        @foreach ($data as $item)
-                            <tr>
-                                <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                                <td style="width: 50%; vertical-align: middle">
-                                    {{ $item->name." - ".$item->code }}
-                                </td>
-                                <td class="center-text" style="width: 10%; vertical-align: middle">{{ number_format($item->qty_begin) }}</td>
-                                <td class="center-text" style="width: 10%; vertical-align: middle">
-                                    {{ number_format($item->qty_in) }}
-                                </td>
-                                <td class="center-text" style="width: 10%; vertical-align: middle">
-                                    {{ number_format($item->qty_out) }}
-                                </td>
-                                <td class="center-text" style="width: 10%; vertical-align: middle">
-                                    {{ number_format($item->qty_end) }}
-                                </td>
-                            </tr>
-                        @endforeach
+                    @foreach ($data as $item)
+                    <tr>
+                        <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
+                        <td style="width: 50%; vertical-align: middle">
+                            {{ $item->name." - ".$item->code }}
+                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">{{
+                            number_format($item->qty_begin) }}</td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                            {{ number_format($item->qty_in) }}
+                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                            {{ number_format($item->qty_out) }}
+                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                            {{ number_format($item->qty_end) }}
+                        </td>
+                    </tr>
+                    @endforeach
                     @endif
 
 

@@ -17,10 +17,10 @@ class ReceiveController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:Portfolio Show', ['only' => 'index']);
-        $this->middleware('permission:Portfolio Create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:Portfolio Update', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:Portfolio Delete', ['only' => 'destroy']);
+        $this->middleware('permission:R Show', ['only' => 'index']);
+        $this->middleware('permission:R Create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:R Update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:R Delete', ['only' => 'destroy']);
     }
     /**
      * Display a listing of the resource.
