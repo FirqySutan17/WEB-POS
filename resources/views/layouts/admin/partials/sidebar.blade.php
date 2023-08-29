@@ -116,6 +116,7 @@
                     @endcan
                     <!-- End Portfolio -->
 
+                    @canany(['Manage Users', 'Manage Roles'])
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Settings</h6>
