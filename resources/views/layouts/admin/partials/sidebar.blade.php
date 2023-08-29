@@ -33,7 +33,7 @@
                         </a>
                     </li>
 
-                    @canany(['Manage Skill', 'Manage Portfolio'])
+                    @canany(['PC Show', 'P Show'])
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Master</h6>
@@ -41,7 +41,7 @@
                     </li>
                     @endcan
 
-                    @canany(['Product Categories', 'Product'])
+                    @canany(['PC Show', 'P Show'])
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
                             href="javascript:void(0)"><i data-feather="package"></i><span>Products Management</span></a>
@@ -61,7 +61,7 @@
                     </li>
                     @endcan
 
-                    @canany(['Report Stock', 'Report Transaction'])
+                    @canany(['RS Show', 'RT Show'])
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
                             href="javascript:void(0)"><i data-feather="package"></i><span>Report</span></a>
@@ -85,7 +85,7 @@
                     </li>
                     @endcanany
 
-                    @canany(['Manage Receive', 'Manage Transaction'])
+                    @canany(['R Show', 'T Show'])
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Transaksi</h6>
