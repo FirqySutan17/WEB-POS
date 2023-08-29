@@ -78,6 +78,7 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 
 // Product Route
 Route::post('/product/select_one', [App\Http\Controllers\ProductController::class, 'select_one'])->name('product.select_one');
+Route::post('/product/select', [App\Http\Controllers\ProductController::class, 'select'])->name('product.select');
 Route::resource('/product', App\Http\Controllers\ProductController::class);
 // Product Categories Route
 Route::resource('/product-categories', App\Http\Controllers\ProductCategoriesController::class);

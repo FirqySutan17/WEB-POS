@@ -41,15 +41,35 @@ class ProductController extends Controller
         ]);
     }
 
+
+    public function select(Request $request)
+    {
+        $products = [];
+        if ($request->has('q')) {
+            $products = Product::select('code', 'name')->search($request->q)->get();
+        }
+
+        return response()->json($products);
+    }
+
     public function select_one(Request $request)
     {
         $product_code = $request->product_code;
-        $products = Product::select('id', 'code', 'name', 'price_store', 'discount_store');
+        $result = [
+            "status"    => "failed",
+            "message"   => "Product not found",
+            "data"      => []
+        ];
         if (!empty($product_code)) {
-            $products->where('code', $product_code);
+            $products = Product::select('id', 'code', 'name', 'price_store', 'discount_store')->where('code', $product_code)->first();
+            if (!empty($products)) {
+                $result["message"]  = "";
+                $result["status"]   = "success";
+                $result["data"]     = $products;
+            }
         }
 
-        return response()->json($products->first());
+        return response()->json($result);
     }
 
     /**

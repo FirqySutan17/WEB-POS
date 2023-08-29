@@ -121,7 +121,7 @@ class TransactionController extends Controller
         } finally {
             DB::commit();
         }
-        return redirect()->route('transaction.index');
+        return redirect()->route('transaction.create');
     }
 
     public function print_receipt(Transaction $transaction) {

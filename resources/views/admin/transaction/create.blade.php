@@ -35,7 +35,7 @@ CMS | Transaction
                                                 Kasir
                                             </label>
                                             <input value="{{ Auth::user()->name }}" type="text" class="form-control"
-                                                required readonly />
+                                                required readonly tabindex="0"/>
                                         </div>
                                     </div>
 
@@ -44,7 +44,7 @@ CMS | Transaction
                                             <label for="receive_date" class="font-weight-bold">
                                                 Tanggal Transaksi
                                             </label>
-                                            <input value="{{ date('d-m-Y') }}" class="form-control" required readonly />
+                                            <input value="{{ date('d-m-Y') }}" class="form-control" required readonly tabindex="0"/>
                                         </div>
                                     </div>
 
@@ -54,7 +54,7 @@ CMS | Transaction
                                                 Nomor Invoice
                                             </label>
                                             <input name="invoice_no" type="text" value="#{{ $no_invoice }}"
-                                                class="form-control" required readonly />
+                                                class="form-control" required readonly tabindex="0"/>
                                         </div>
                                     </div>
                                 </div>
@@ -103,12 +103,12 @@ CMS | Transaction
                                                 <option value="EDC - QRIS">EDC - QRIS</option>
                                             </select>
                                         </div>
-                                        <div id="elm_receipt" class="form-group _form-group" style="display:none">
+                                        <div id="elm_receipt" class="form-group _form-group">
                                             <label for="receive_date" class="font-weight-bold">
                                                 Receipt <span class="wajib">* </span>
                                             </label>
                                             <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
-                                                class="form-control" required />
+                                                class="form-control elm_receipt_input" readonly tabindex="-1" />
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -117,14 +117,13 @@ CMS | Transaction
                                                 Nominal Tunai
                                             </label>
                                             <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
-                                                class="form-control" required />
+                                                class="form-control elm_cash_input" required />
                                         </div>
                                         <div class="form-group _form-group elm_cash">
                                             <label for="receive_date" class="font-weight-bold">
                                                 Kembalian
                                             </label>
-                                            <input placeholder="Hitungan otomatis" type="text" class="form-control"
-                                                required readonly />
+                                            <input id="kembalian" placeholder="Hitungan otomatis" type="text" class="form-control" disabled tabindex="0"/>
                                         </div>
                                     </div>
 
@@ -133,7 +132,7 @@ CMS | Transaction
                                         <h2 id="total_transaction">Rp 0</h2>
                                         <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
                                         <div style="width: 100%; display: flex; align-items: center; margin-top: 10px">
-                                            <button onclick="submit_form()" type="button"
+                                            <button id="btn_delete_1" onblur="onblur_color('1')" onfocus="onfocus_color('1')" onclick="submit_form()" type="button"
                                                 class="btn btn-primary _btn-primary px-4" style="width: 100%">
                                                 SUBMIT ORDER
                                             </button>
@@ -171,12 +170,22 @@ CMS | Transaction
 
 
 @push('javascript-internal')
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function(e) {
         $("#input-scanner").focus();
     });
     var vat_amount = parseInt({{ config('app.vat_amount') }});
+    function onfocus_color(item_id) {
+        $(`#btn_delete_${item_id}`).removeClass('btn-danger');
+        $(`#btn_delete_${item_id}`).addClass('btn-warning');
+    }
+
+    function onblur_color(item_id) {
+        $(`#btn_delete_${item_id}`).removeClass('btn-warning');
+        $(`#btn_delete_${item_id}`).addClass('btn-danger');
+    }
+
     function submit_form() {
         $("#form-transaction").submit();
     }
@@ -185,7 +194,6 @@ CMS | Transaction
         var total_price_item = 0;
         $('.total_price_item').each(function(i, obj) {
             var price_item = Number($(this).val());
-
             total_price_item += price_item;
         });
         var vat_price = total_price_item * (vat_amount / 100);
@@ -226,7 +234,15 @@ CMS | Transaction
                 "product_code": product_code,
             },
             success: function(response) {
-                var product = response;
+                if (response.status == "failed") {
+                    Swal.fire({
+                        title: 'Oops...',
+                        text: response.message,
+                        icon: 'error'
+                    });
+                    return false;
+                }
+                var product = response.data;
                 var id = product_code;
                 var item_id = "item_product_" + id;
 
@@ -247,25 +263,25 @@ CMS | Transaction
                 var html_item = `
                     <tr id="${item_id}">
                         <td style="width: 35%; vertical-align: middle">
-                            <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" />
-                            <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" />
-                            <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" />
-                            <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control" value="${final_price}" />
-                            <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" />
+                            <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
+                            <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
+                            <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
+                            <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control" value="${final_price}" tabindex="0"/>
+                            <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
                             ${product.code + ' - ' + product.name}
                         </td>
                         <td style="width: 19%; vertical-align: middle; text-align: center">
                             ${html_price}
                         </td>
                         <td style="width: 6%; vertical-align: middle">
-                            <input type="number" id="quantity_${item_id}" name="quantity[]" min="1" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" />
+                            <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" />
                         </td>
                         <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
                         <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
                         <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
                             <div class="boxInside" style="align-items: center; justify-content: center;">
                                 <div class="boxDelete">
-                                    <button onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
+                                    <button id="btn_delete_${item_id}" onblur="onblur_color('${item_id}')" onfocus="onfocus_color('${item_id}')" onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
                                         <i class="bx bx-trash"></i>
                                     </button>
                                 </div>
@@ -276,16 +292,16 @@ CMS | Transaction
 
                 $("#product_lists").append(html_item);
                 calculate_vat();
-                $(`#quantity_${item_id}`).on('keydown', function (e) {
+                $(`#quantity_${item_id}`).on('keyup', function (e) {
                     var code = e.keyCode || e.which;
                     // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
                     var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
                     if (allowed_keycode.includes(code)) {
-                        var str_quantity_product = $(this).val();
-                        var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
+                        // var str_quantity_product = $(this).val();
+                        // var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
+                        var qty = Number($(`#quantity_${item_id}`).val());
                         var final_price = Number($(`#final_price_${item_id}`).val());
-                        var total_price = final_price * quantity_product;
-                        
+                        var total_price = final_price * qty;
                         $(`#total_price_${item_id}`).val(total_price);
                         $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
                         calculate_vat();
@@ -304,8 +320,7 @@ CMS | Transaction
 
      /* Tanpa Rupiah */
      var tanpa_rupiah = document.getElementById('tanpa-rupiah');
-    tanpa_rupiah.addEventListener('keyup', function(e)
-    {
+    tanpa_rupiah.addEventListener('keyup', function(e) {
         tanpa_rupiah.value = formatRupiah(this.value);
     });
     
@@ -346,11 +361,19 @@ CMS | Transaction
             var val = $("#payment_method option:selected").val();
             console.log('val', val);
             if (val == "Tunai") {
-                $("#elm_receipt").hide();
-                $(".elm_cash").show();
+                // $("#elm_receipt").hide();
+                $(".elm_receipt_input").prop('tabindex', -1);
+                $(".elm_receipt_input").prop('readonly', true);
+                // $(".elm_cash").show();
+                $(".elm_cash_input").prop('tabindex', 1);
+                $(".elm_cash_input").prop('readonly', false);
             } else {
-                $(".elm_cash").hide();
-                $("#elm_receipt").show();
+                // $(".elm_cash").hide();
+                $(".elm_cash_input").prop('tabindex', -1);
+                $(".elm_cash_input").prop('readonly', true);
+                // $("#elm_receipt").show();
+                $(".elm_receipt_input").prop('tabindex', 1);
+                $(".elm_receipt_input").prop('readonly', false);
             }
         });
     });

@@ -19,7 +19,7 @@ class Product extends Model
 
     public function scopeSearch($query, $title)
     {
-        return $query->where('name', 'LIKE', "%{$title}%");
+        return $query->where('name', 'LIKE', "%{$title}%")->orWhere('code', 'LIKE', "%{$title}%");
     }
 
     public function getRouteKeyName()
