@@ -23,6 +23,7 @@ CMS | Transaction
             <form id="form-transaction" action="{{ route('transaction.store') }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf
+                <input id="input_status" type="hidden" name="status" value="FINISH">
                 <div class="card _card" style="margin: auto; padding-bottom: 20px">
                     <div class="card-body _card-body">
                         <div class="row d-flex align-items-stretch">
@@ -53,16 +54,23 @@ CMS | Transaction
                                             <label for="invoice_no" class="font-weight-bold">
                                                 Nomor Invoice
                                             </label>
-                                            <input name="invoice_no" type="text" value="#{{ $no_invoice }}"
+                                            <input name="invoice_no" type="text" value="{{ $no_invoice }}"
                                                 class="form-control" required readonly tabindex="0"/>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-9 col-sm-12" style="padding-right: 0px">
+                                <marquee width="100%" direction="left">
+                                    @if (!empty($product_discount))
+                                        @foreach ($product_discount as $item)
+                                        <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
+                                        @endforeach
+                                    @endif
+                                </marquee>
                                 <input id="input-scanner" type="text" class="form-control"
                                     placeholder="Klik disini untuk Scan Barcode"
-                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " />
+                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " tabindex="1" />
                                 <div class="tr-shadow table-responsive">
                                     <table class="table table-striped table-hover">
                                         <thead>
@@ -87,6 +95,20 @@ CMS | Transaction
                                         </thead>
                                         <tbody id="product_lists" class="custom-scrollbar">
                                         </tbody>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 75%; vertical-align: middle; text-align=right" class="heightHr">Total QTY<span class="dividerHr"></span></th>
+                                                <th style="width: 25%; vertical-align: middle; text-align: center" class="heightHr center-text" id="total_qty">0</th>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 75%; vertical-align: middle; text-align=right" class="heightHr">Sub Total<span class="dividerHr"></span></th>
+                                                <th style="width: 25%; vertical-align: middle; text-align: center" class="heightHr center-text" id="sub_total">0</th>
+                                            </tr>
+                                            <tr>
+                                                <th style="width: 75%; vertical-align: middle; text-align=right" class="heightHr">Total Discount<span class="dividerHr"></span></th>
+                                                <th style="width: 25%; vertical-align: middle; text-align: center" class="heightHr center-text" id="total_discount">Rp 0</th>
+                                            </tr>
+                                        </thead>
                                     </table>
                                 </div>
                             </div>
@@ -97,7 +119,7 @@ CMS | Transaction
                                             <label for="receive_date" class="font-weight-bold">
                                                 Metode Pembayaran <span class="wajib">* </span>
                                             </label>
-                                            <select id="payment_method" name="payment_method" class="custom-select">
+                                            <select id="payment_method" name="payment_method" class="custom-select" tabindex="2">
                                                 <option value="Tunai">Tunai</option>
                                                 <option value="EDC - BCA">EDC - BCA</option>
                                                 <option value="EDC - QRIS">EDC - QRIS</option>
@@ -108,7 +130,7 @@ CMS | Transaction
                                                 Receipt <span class="wajib">* </span>
                                             </label>
                                             <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
-                                                class="form-control elm_receipt_input" readonly tabindex="-1" />
+                                                class="form-control elm_receipt_input" readonly tabindex="3" />
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -117,7 +139,7 @@ CMS | Transaction
                                                 Nominal Tunai
                                             </label>
                                             <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
-                                                class="form-control elm_cash_input" required />
+                                                class="form-control elm_cash_input" tabindex="4" />
                                         </div>
                                         <div class="form-group _form-group elm_cash">
                                             <label for="receive_date" class="font-weight-bold">
@@ -132,8 +154,12 @@ CMS | Transaction
                                         <h2 id="total_transaction">Rp 0</h2>
                                         <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
                                         <div style="width: 100%; display: flex; align-items: center; margin-top: 10px">
-                                            <button id="btn_delete_1" onblur="onblur_color('1')" onfocus="onfocus_color('1')" onclick="submit_form()" type="button"
-                                                class="btn btn-primary _btn-primary px-4" style="width: 100%">
+                                            <button onclick="submit_form('DRAFT')" type="button"
+                                                class="btn btn-success _btn-success px-4" style="width: 100%; margin-right:5px"; tabindex="6">
+                                                SAVE DRAFT
+                                            </button>
+                                            <button id="btn_delete_1" onblur="onblur_color('1')" onfocus="onfocus_color('1')" onclick="submit_form('FINISH')" type="button"
+                                                class="btn btn-primary _btn-primary px-4" style="width: 100%" tabindex="6">
                                                 SUBMIT ORDER
                                             </button>
                                             {{-- <a class="btn btn-primary _btn-primary px-4" style="width: 100%"
@@ -172,6 +198,8 @@ CMS | Transaction
 @push('javascript-internal')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    var final_total_price_item = 0;
+
     $(document).ready(function(e) {
         $("#input-scanner").focus();
     });
@@ -186,26 +214,52 @@ CMS | Transaction
         $(`#btn_delete_${item_id}`).addClass('btn-danger');
     }
 
-    function submit_form() {
+    function submit_form(status) {
+        $("#input_status").val(status);
         $("#form-transaction").submit();
     }
 
     function calculate_vat() {
+        calculate_total();
         var total_price_item = 0;
         $('.total_price_item').each(function(i, obj) {
             var price_item = Number($(this).val());
             total_price_item += price_item;
         });
         var vat_price = total_price_item * (vat_amount / 100);
-        var final_total_price_item = total_price_item + vat_price;
+        final_total_price_item = total_price_item + vat_price;
         $("#total_transaction").text(formatRupiah(final_total_price_item.toString()));
+    }
+
+    function calculate_total() {
+        var total_discount  = 0;
+        var total_qty       = 0;
+        var sub_total       = 0;
+        $('.final_price_item').each(function(i, obj) {
+            var id = $(this).attr('id').split("_");
+            var item_id = "item_product_" + id[4];
+            var final_price_item = Number($(this).val());
+            var basic_price_item = Number($(`#basic_price_${item_id}`).val());
+            var quantity_item = Number($(`#quantity_${item_id}`).val());
+            var discount = 0;
+            var sub_total_item = final_price_item * quantity_item;
+            if (final_price_item != basic_price_item) {
+                discount = basic_price_item - final_price_item;
+            }
+            total_discount += discount;
+            total_qty += quantity_item;
+            sub_total += sub_total_item;
+        });
+        $("#total_discount").text(formatRupiah(total_discount.toString()));
+        $("#sub_total").text(formatRupiah(sub_total.toString()));
+        $("#total_qty").text(total_qty);
     }
 
     $('#input-scanner').unbind('keyup');
     $('#input-scanner').bind('keyup', function (e) {
         var code = e.keyCode || e.which;
         if (code == 13) {
-            var product_code = $(this).val();
+            var product_code = $(this).val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
@@ -266,7 +320,7 @@ CMS | Transaction
                             <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
                             <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
                             <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
-                            <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control" value="${final_price}" tabindex="0"/>
+                            <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
                             <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
                             ${product.code + ' - ' + product.name}
                         </td>
@@ -274,7 +328,7 @@ CMS | Transaction
                             ${html_price}
                         </td>
                         <td style="width: 6%; vertical-align: middle">
-                            <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" />
+                            <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
                         </td>
                         <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
                         <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
@@ -316,12 +370,19 @@ CMS | Transaction
 
     function delete_row_product(eid_item) {
         $("#" + eid_item).remove();
+        calculate_vat();
     }
 
      /* Tanpa Rupiah */
-     var tanpa_rupiah = document.getElementById('tanpa-rupiah');
+    var tanpa_rupiah    = document.getElementById('tanpa-rupiah');
+    var kembalian       = document.getElementById('kembalian');
     tanpa_rupiah.addEventListener('keyup', function(e) {
-        tanpa_rupiah.value = formatRupiah(this.value);
+        var nominal = this.value;
+        var nominal_number = Number(nominal.replace(".", ""));
+        tanpa_rupiah.value = formatRupiah(nominal);
+
+        var kembali = final_total_price_item - nominal_number;
+        kembalian.value = formatRupiah(kembali.toString());
     });
     
     /* Dengan Rupiah */
@@ -362,17 +423,13 @@ CMS | Transaction
             console.log('val', val);
             if (val == "Tunai") {
                 // $("#elm_receipt").hide();
-                $(".elm_receipt_input").prop('tabindex', -1);
                 $(".elm_receipt_input").prop('readonly', true);
                 // $(".elm_cash").show();
-                $(".elm_cash_input").prop('tabindex', 1);
                 $(".elm_cash_input").prop('readonly', false);
             } else {
                 // $(".elm_cash").hide();
-                $(".elm_cash_input").prop('tabindex', -1);
                 $(".elm_cash_input").prop('readonly', true);
                 // $("#elm_receipt").show();
-                $(".elm_receipt_input").prop('tabindex', 1);
                 $(".elm_receipt_input").prop('readonly', false);
             }
         });

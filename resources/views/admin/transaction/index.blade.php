@@ -54,6 +54,7 @@ CMS | Transaction
                         <th class="heightHr">No. Invoice <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">Pembayaran <span class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Total Harga <span class="dividerHr"></span></th>
+                        <th class="heightHr">Status <span class="dividerHr"></span></th>
                         <th class="center-text">Action</th>
                     </tr>
                 </thead>
@@ -66,32 +67,40 @@ CMS | Transaction
                             {{ $transaction->trans_date }}
                         </td>
                         <td style="width: 20%; vertical-align: middle">{{ $transaction->user->name }}</td>
-                        <td style="width: 20%; vertical-align: middle">
-                            #{{ $transaction->invoice_no }}
+                        <td style="width: 15%; vertical-align: middle">
+                            {{ $transaction->invoice_no }}
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">
-                            {{ $transaction->payment_method }}</td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">
-                            @currency($transaction->total_price)
+                            {{ $transaction->status == 'DRAFT' ? '' : $transaction->payment_method }}</td>
+                        <td class="center-text" style="width: 15%; vertical-align: middle">
+                            @if ($transaction->status == 'FINISH')
+                                @currency($transaction->total_price)
+                            @endif
+                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                            {{ $transaction->status }}
                         </td>
                         <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
+                                @if ($transaction->status == 'FINISH')
+                                    <div class="boxEdit">
+                                        <a href="{{ route('transaction.show', ['transaction' => $transaction]) }}"
+                                            class="btn-sm btn-info" role="button" target="_blank">
+                                            <i class="bx bxs-bullseye"></i>
+                                        </a>
+                                    </div> 
+                                @endif
+                                
+                                @if ($transaction->status == 'DRAFT')
+                                    <div class="boxEdit">
+                                        <a href="{{ route('transaction.edit', ['transaction' => $transaction]) }}"
+                                            class="btn-sm btn-info" role="button">
+                                            <i class="bx bx-edit"></i>
+                                        </a>
+                                    </div>
+                                @endif
 
-                                <div class="boxEdit">
-                                    <a href="{{ route('transaction.show', ['transaction' => $transaction]) }}"
-                                        class="btn-sm btn-info" role="button" target="_blank">
-                                        <i class="bx bxs-bullseye"></i>
-                                    </a>
-                                </div>
-
-                                <div class="boxEdit">
-                                    <a href="{{ route('transaction.edit', ['transaction' => $transaction]) }}"
-                                        class="btn-sm btn-info" role="button">
-                                        <i class="bx bx-edit"></i>
-                                    </a>
-                                </div>
-
-                                <div class="boxDelete">
+                                {{-- <div class="boxDelete">
                                     <form action="{{ route('transaction.destroy', ['transaction' => $transaction]) }}"
                                         method="POST" role="alert">
                                         @csrf
@@ -100,7 +109,7 @@ CMS | Transaction
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </form>
-                                </div>
+                                </div> --}}
 
                             </div>
 
