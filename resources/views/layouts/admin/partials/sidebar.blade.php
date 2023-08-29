@@ -122,6 +122,7 @@
                             <h6>Settings</h6>
                         </div>
                     </li>
+                    @endcan
 
                     @canany(['Manage Users', 'Manage Roles'])
                     <li class="dropdown">
