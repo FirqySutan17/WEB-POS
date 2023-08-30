@@ -86,35 +86,117 @@ CMS | Transaction
         <div class="card-body table-responsive">
             <div class="summary">
                 <div class="summary-box tr-shadow">
-                    <div class="row"
-                        style="height: 328px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: sticky; position: -webkit-sticky; top: 10px">
+                    <div class="row d-flex align-items-stretch">
                         <div class="col-12">
                             <div class="form-group _form-group">
-                                <label for="receive_date" class="font-weight-bold">
-                                    Kasir
-                                </label>
-                                <input value="{{ Auth::user()->name }}" type="text" class="form-control" required
-                                    readonly tabindex="0" />
+                                <div class="avatar-upload">
+                                    {{-- <div class="avatar-edit">
+                                        <input name="image" type="file" value="{{ old('image', $user->image) }}"
+                                            class="form-control" type='file' id="imageUpload"
+                                            accept=".png, .jpg, .jpeg" />
+                                        <label for="imageUpload"></label>
+                                    </div> --}}
+                                    <div class="avatar-preview" style="text-align: center">
+                                        <img class="rounded-circle"
+                                            src="{{ asset('file_upload/'. Auth::user()->image) }}" alt=""
+                                            style="width: 170px; height: 170px; object-fit: cover; text-align: center" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                            <!-- end image -->
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group _form-group">
+                                        <label for="input_user_name" class="font-weight-bold">
+                                            Employee ID <span class="wajib">*</span>
+                                        </label>
+                                        <input id="input_user_name" value="{{ Auth::user()->employee_id }}"
+                                            name="employee_id" type="text" placeholder="{{ Auth::user()->employee_id }}"
+                                            class="form-control @error('employee_id') is-invalid @enderror"
+                                            placeholder="Input Employee ID.." readonly />
+                                        @error('employee_id')
+                                        <span class="invalid-feedback">
+                                            {{ $message }}
+                                        </span>
+                                        @enderror
+                                        <!-- error message -->
+                                    </div>
 
-                        <div class="col-12">
-                            <div class="form-group _form-group">
-                                <label for="receive_date" class="font-weight-bold">
-                                    Tanggal Transaksi
-                                </label>
-                                <input value="{{ date('d-m-Y') }}" class="form-control" required readonly
-                                    tabindex="0" />
+                                </div>
+                                <div class="col-6">
+                                    <!-- title -->
+                                    <div class="form-group _form-group">
+                                        <label for="input_post_title" class="font-weight-bold">
+                                            Name
+                                        </label>
+                                        <input id="input_post_title" value="{{ Auth::user()->name }}"
+                                            autocomplete="name" name="name" type="text" class="form-control"
+                                            placeholder="{{ Auth::user()->name }}" readonly />
+                                    </div>
+                                    <!-- end title -->
+
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-12">
-                            <div class="form-group _form-group">
-                                <label for="invoice_no" class="font-weight-bold">
-                                    Nomor Invoice
-                                </label>
-                                <input name="invoice_no" type="text" value="" class="form-control" required readonly
-                                    tabindex="0" />
+                            <div class="row">
+                                <div class="col-6">
+                                    <!-- email -->
+                                    <div class="form-group _form-group">
+                                        <label for="input_post_title" class="font-weight-bold">
+                                            Role
+                                        </label>
+                                        <input id="input_post_title" value="{{ Auth::user()->roles->first()->name }}"
+                                            autocomplete="role" name="role" type="text" class="form-control"
+                                            placeholder="{{ Auth::user()->roles->first()->name }}" readonly />
+                                    </div>
+                                    <!-- end email -->
+                                </div>
+                                <div class="col-6">
+                                    <!-- email -->
+                                    <div class="form-group _form-group">
+                                        <label for="input_post_title" class="font-weight-bold">
+                                            Email
+                                        </label>
+                                        <input id="input_post_title" value="{{ Auth::user()->email }}"
+                                            autocomplete="email" name="email" type="email" class="form-control"
+                                            placeholder="{{ Auth::user()->email }}" readonly />
+                                    </div>
+                                    <!-- end email -->
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <!-- email -->
+                                    <div class="form-group _form-group">
+                                        <label for="input_post_title" class="font-weight-bold">
+                                            Lokasi
+                                        </label>
+                                        <input id="input_post_title" value="{{ Auth::user()->office }}"
+                                            autocomplete="office" name="office" type="office" class="form-control"
+                                            placeholder="{{ Auth::user()->office }}" readonly />
+                                    </div>
+                                    <!-- end email -->
+                                </div>
+                                <div class="col-6">
+                                    <!-- Phone Number -->
+                                    <div class="form-group _form-group">
+                                        <label for="input_user_name" class="font-weight-bold">
+                                            Phone Number <span class="wajib">*</span>
+                                        </label>
+                                        <input id="input_user_name" value="{{ Auth::user()->phone_number }}"
+                                            name="phone_number" type="text"
+                                            class="form-control @error('phone_number') is-invalid @enderror"
+                                            placeholder="{{ Auth::user()->phone_number }}" readonly />
+                                        @error('phone_number')
+                                        <span class="invalid-feedback">
+                                            {{ $message }}
+                                        </span>
+                                        @enderror
+                                        <!-- error message -->
+                                    </div>
+                                    <!-- end name -->
+                                </div>
                             </div>
                         </div>
                     </div>
