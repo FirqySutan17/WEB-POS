@@ -164,7 +164,8 @@ CMS | Transaction
                                                     Receipt <span class="wajib">* </span>
                                                 </label>
                                                 <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
-                                                    class="form-control elm_receipt_input" readonly tabindex="3" />
+                                                    class="form-control elm_receipt_input"
+                                                    style="text-transform:uppercase" readonly tabindex="3" />
                                             </div>
                                         </div>
                                         <div class="col-4">

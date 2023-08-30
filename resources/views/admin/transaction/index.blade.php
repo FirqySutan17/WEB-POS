@@ -96,7 +96,23 @@ CMS | Transaction
                 <tbody>
                     @if (count($transactions))
                     @forelse ($transactions as $transaction)
-                    <tr>
+                    {{-- @if($transaction->status == 'DRAFT')
+                    <style>
+                        .tr-list td {
+                            background: yellow !important;
+                            color: #fff !important;
+                        }
+                    </style>
+                    @else
+                    <style>
+                        .tr-list td {
+                            background: transparent !important;
+                            color: #000 !important;
+                        }
+                    </style>
+                    @endif --}}
+
+                    <tr class="tr-list">
                         <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
                         <td class="center-text" style="width: 15%; vertical-align: middle">
                             {{ $transaction->trans_date }}

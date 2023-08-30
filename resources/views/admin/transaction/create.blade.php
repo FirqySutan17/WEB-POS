@@ -8,6 +8,48 @@ CMS | Transaction
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/sweetalert2.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+
+<style>
+    .tr-input {
+        width: 100%;
+        position: relative;
+        margin-bottom: 10px
+    }
+
+    .tr-input input[type="text"] {
+        width: 100%;
+        padding: 15px 0px;
+        border: none;
+        outline: none;
+        border-radius: 5px 5px 0 0;
+        background-color: #ffffff;
+        font-size: 16px;
+    }
+
+    .tr-input ul {
+        list-style: none;
+        position: absolute;
+        top: 64px;
+        box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+        left: 0;
+        padding: 10px 10px;
+        border-radius: 10px
+    }
+
+    .tr-input .list {
+        width: 100%;
+        background-color: #ffffff;
+        border-radius: 10px
+    }
+
+    .tr-input .list-items {
+        padding: 10px 5px;
+    }
+
+    .tr-input .list-items:hover {
+        background-color: #dddddd;
+    }
+</style>
 @endpush
 
 @section('content')
@@ -88,10 +130,18 @@ CMS | Transaction
                                         @endforeach
                                         @endif
                                     </marquee> --}}
-                                    <input id="input-scanner" type="text" class="form-control"
+                                    {{-- <input id="input-scanner" type="text" class="form-control"
                                         placeholder="Klik disini untuk Scan Barcode"
                                         style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                        tabindex="1" />
+                                        tabindex="1" /> --}}
+                                    <div class="tr-input tr-shadow" style="padding: 0px 20px">
+                                        <div>
+                                            <input type="text" id="input" placeholder="Klik disini untuk scan barcode"
+                                                tabindex="1" />
+                                        </div>
+                                        <ul class="list"></ul>
+                                    </div>
+
                                     <div class="tr-shadow table-responsive">
                                         <table class="table table-striped table-hover">
                                             <thead>
@@ -161,7 +211,8 @@ CMS | Transaction
                                                     Receipt <span class="wajib">* </span>
                                                 </label>
                                                 <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
-                                                    class="form-control elm_receipt_input" readonly tabindex="3" />
+                                                    class="form-control elm_receipt_input"
+                                                    style="text-transform:uppercase" readonly tabindex="3" />
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -234,6 +285,77 @@ CMS | Transaction
 
     @push('javascript-internal')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let names = [
+        "Ayla",
+        "Jake",
+        "Sean",
+        "Henry",
+        "Brad",
+        "Stephen",
+        "Taylor",
+        "Timmy",
+        "Cathy",
+        "John",
+        "Amanda",
+        "Amara",
+        "Sam",
+        "Sandy",
+        "Danny",
+        "Ellen",
+        "Camille",
+        "Chloe",
+        "Emily",
+        "Nadia",
+        "Mitchell",
+        "Harvey",
+        "Lucy",
+        "Amy",
+        "Glen",
+        "Peter",
+        ];
+        //Sort names in ascending order
+        let sortedNames = names.sort();
+        //reference
+        let input = document.getElementById("input");
+        //Execute function on keyup
+        input.addEventListener("keyup", (e) => {
+        //loop through above array
+        //Initially remove all elements ( so if user erases a letter or adds new letter then clean previous outputs)
+        removeElements();
+        for (let i of sortedNames) {
+            //convert input to lowercase and compare with each string
+            if (
+            i.toLowerCase().startsWith(input.value.toLowerCase()) &&
+            input.value != ""
+            ) {
+            //create li element
+            let listItem = document.createElement("li");
+            //One common class name
+            listItem.classList.add("list-items");
+            listItem.style.cursor = "pointer";
+            listItem.setAttribute("onclick", "displayNames('" + i + "')");
+            //Display matched part in bold
+            let word = "<b>" + i.substr(0, input.value.length) + "</b>";
+            word += i.substr(input.value.length);
+            //display the value in array
+            listItem.innerHTML = word;
+            document.querySelector(".list").appendChild(listItem);
+            }
+        }
+        });
+        function displayNames(value) {
+        input.value = value;
+        removeElements();
+        }
+        function removeElements() {
+        //clear all the item
+        let items = document.querySelectorAll(".list-items");
+        items.forEach((item) => {
+            item.remove();
+        });
+        }
+    </script>
     <script>
         var final_total_price_item = 0;
 

@@ -17,7 +17,7 @@ CMS | Transaction
         grid-template-columns: repeat(6, 1fr);
         width: 100%;
         column-gap: 20px;
-        padding: 10px
+        padding: 20px 5px;
     }
 
     .summary .summary-box {
