@@ -8,13 +8,13 @@
       </div>
       {{-- <div class="dark-logo-wrapper"><a href="{{ route('index') }}"><img class="img-fluid"
             src="{{asset('assets/images/logo/dark-logo.png')}}" alt=""></a></div> --}}
-
-      @if(Auth::user()->roles->first()->name == 'cashier')
-
-      @else
       <div class="toggle-sidebar"><i class="status_toggle middle" data-feather="align-center" id="sidebar-toggle"> </i>
       </div>
-      @endif
+      {{-- @if(Auth::user()->roles->first()->name == 'cashier')
+
+      @else
+
+      @endif --}}
     </div>
 
     <!--

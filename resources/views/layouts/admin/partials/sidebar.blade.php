@@ -85,7 +85,7 @@
                     </li>
                     @endcanany
 
-                    @canany(['R Show', 'T Show'])
+                    @canany(['Transaction', 'Receive'])
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Transaksi</h6>
@@ -93,7 +93,7 @@
                     </li>
                     @endcanany
                     <!-- skill -->
-                    @can('R Show')
+                    @can('Receive')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['receive.index', 'receive.show', 'receive.edit', 'receive.create'])}}"
                             href="{{ route('receive.index') }}">
@@ -105,7 +105,7 @@
                     <!-- End skill -->
 
                     <!-- Portfolio -->
-                    @can('T Show')
+                    @can('Transaction')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['transaction.index'])}}"
                             href="{{ route('transaction.index') }}">

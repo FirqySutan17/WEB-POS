@@ -34,11 +34,11 @@ class PermissionTableSeeder extends Seeder
                 // SuperAdmin
                 $superAdminPermissions[] = $permission;
                 //Admin
-                if (in_array($label, ['Manage Skill'])) {
+                if (in_array($label, ['Transaction'])) {
                     $adminPermissions[] = $permission;
                 }
                 //Editor
-                if (in_array($label, ['Manage Skill'])) {
+                if (in_array($label, ['Receive'])) {
                     $editorPermissions[] = $permission;
                 }
             }
