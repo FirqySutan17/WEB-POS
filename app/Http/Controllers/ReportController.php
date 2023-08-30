@@ -26,30 +26,6 @@ class ReportController extends Controller
         return view('admin.report.stock', compact('data', 'sdate', 'edate'));
     }
 
-    public function report_stock_by_invoice(Request $request) {
-        $data   = [];
-        $sdate  = "";
-        $edate  = ""; 
-        if ($request->_token) {
-            $sdate = $request->sdate;
-            $edate = $request->edate;
-            $data = $this->get_stock($sdate, $edate);
-        }
-        return view('admin.report.stockinvoice', compact('data', 'sdate', 'edate'));
-    }
-
-    public function report_stock_by_product(Request $request) {
-        $data   = [];
-        $sdate  = "";
-        $edate  = ""; 
-        if ($request->_token) {
-            $sdate = $request->sdate;
-            $edate = $request->edate;
-            $data = $this->get_stock($sdate, $edate);
-        }
-        return view('admin.report.stockproduct', compact('data', 'sdate', 'edate'));
-    }
-
     private function get_stock($sdate, $edate) {
         $query = "
             SELECT 
@@ -119,52 +95,197 @@ class ReportController extends Controller
         $db_query = DB::select(DB::raw($query));
         return $db_query;
     }
+    
+    /* START REPORT TRANSACTION */
 
-    public function report_transaction_by_date(Request $request) {
-        $data   = [];
-        $sdate  = "";
-        $edate  = ""; 
-        if ($request->_token) {
-            $sdate = $request->sdate;
-            $edate = $request->edate;
-            $data = $this->get_transaction($sdate, $edate);
+        public function report_transaction_by_date(Request $request) {
+            $data   = [];
+            $sdate  = "";
+            $edate  = ""; 
+            if ($request->_token) {
+                $sdate = $request->sdate;
+                $edate = $request->edate;
+                $data = $this->get_transaction($sdate, $edate);
+            }
+            return view('admin.report.transaction', compact('data', 'sdate', 'edate'));
         }
-        return view('admin.report.transaction', compact('data', 'sdate', 'edate'));
-    }
 
-    public function report_transaction_by_invoice(Request $request) {
-        $data   = [];
-        $sdate  = "";
-        $edate  = ""; 
-        if ($request->_token) {
-            $sdate = $request->sdate;
-            $edate = $request->edate;
-            $data = $this->get_transaction($sdate, $edate);
+        public function report_transaction_by_invoice(Request $request) {
+            $data   = [];
+            $sdate  = "";
+            $edate  = "";
+
+            if ($request->_token) {
+                $sdate = $request->sdate;
+                $edate = $request->edate;
+                $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by);
+                $data     = $this->convert_transaction_by_invoice($data_raw);
+                // dd($data_converted);
+            }
+
+
+            return view('admin.report.transactioninvoice', compact('data', 'sdate', 'edate'));
         }
-        return view('admin.report.transactioninvoice', compact('data', 'sdate', 'edate'));
-    }
 
-    public function report_transaction_by_product(Request $request) {
-        $data   = [];
-        $sdate  = "";
-        $edate  = ""; 
-        if ($request->_token) {
-            $sdate = $request->sdate;
-            $edate = $request->edate;
-            $data = $this->get_transaction($sdate, $edate);
+        public function report_transaction_by_product(Request $request) {
+            $data   = [];
+            $sdate  = "";
+            $edate  = ""; 
+            if ($request->_token) {
+                $sdate = $request->sdate;
+                $edate = $request->edate;
+                $order_by = "ORDER BY trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by);
+                $data     = $this->convert_transaction_by_product($data_raw);
+            }
+            return view('admin.report.transactionproduct', compact('data', 'sdate', 'edate'));
         }
-        return view('admin.report.transactionproduct', compact('data', 'sdate', 'edate'));
-    }
 
-    private function get_transaction($sdate, $edate) {
-        $query = "
-            SELECT trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.employee_id, users.name
-            FROM tr_transaction trans
-            INNER JOIN users ON trans.emp_no = users.employee_id
-            WHERE trans.trans_date BETWEEN '$sdate' AND '$edate'
-        ";
+        private function get_transaction($sdate, $edate) {
+            $query = "
+                SELECT trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.employee_id, users.name
+                FROM tr_transaction trans
+                INNER JOIN users ON trans.emp_no = users.employee_id
+                WHERE trans.trans_date BETWEEN '$sdate' AND '$edate'
+            ";
 
-        $db_query = DB::select(DB::raw($query));
-        return $db_query;
-    }
+            $db_query = DB::select(DB::raw($query));
+            return $db_query;
+        }
+
+        private function get_transaction_by_invoice($sdate, $edate, $order_by) {
+            $query = "
+                SELECT 
+                    trans_detail.product_code, products.name as product_name, 
+                    trans_detail.quantity, trans_detail.basic_price, trans_detail.discount, trans_detail.price,
+                    trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.name
+                FROM tr_transaction_detail AS trans_detail
+                INNER JOIN products ON trans_detail.product_code = products.code
+                INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
+                INNER JOIN users ON trans.emp_no = users.employee_id
+                WHERE trans.trans_date BETWEEN '$sdate' AND '$edate'
+                $order_by
+            ";
+
+            $db_query = DB::select(DB::raw($query));
+            return $db_query;
+        }
+
+        private function convert_transaction_by_invoice($data_raw) {
+            $data_invoice = [];
+            if (!empty($data_raw)) {
+                foreach ($data_raw as $item) {
+                    $invoice_no = $item->invoice_no;
+                    if (!array_key_exists($invoice_no, $data_invoice)) {
+                        $data_invoice[$invoice_no] = [
+                            "invoice_no"    => $invoice_no,
+                            "trans_date"    => $item->trans_date,
+                            "pic"           => $item->name,
+                            "payment_method" => $item->payment_method,
+                            "products"      => []
+                        ];
+                    }
+                    
+                    $data_invoice[$invoice_no]["products"][] = [
+                        "name"  => $item->product_name,
+                        "code"  => $item->product_code,
+                        "price"         => $item->price,
+                        "basic_price"   => $item->basic_price,
+                        "discount"      => $item->discount,
+                        "quantity"  => $item->quantity
+                    ];
+                }
+            }
+            return $data_invoice;
+        }
+
+        private function convert_transaction_by_product($data_raw) {
+            $data_product = [];
+            if (!empty($data_raw)) {
+                foreach ($data_raw as $item) {
+                    $product_code = $item->product_code;
+                    if (!array_key_exists($product_code, $data_product)) {
+                        $data_product[$product_code] = [
+                            "name"  => $item->product_name,
+                            "code"  => $item->product_code,
+                            "details" => []
+                        ];
+                    }
+                    $data_product[$product_code]["details"][] = [
+                        "invoice_no"    => $item->invoice_no,
+                        "trans_date"    => $item->trans_date,
+                        "price"         => $item->price,
+                        "basic_price"   => $item->basic_price,
+                        "discount"      => $item->discount,
+                        "quantity"  => $item->quantity
+                    ];
+                }
+            }
+            return $data_product;
+        }
+
+    /* END REPORT TRANSACTION */
+
+    /* START REPORT RECEIVE */
+
+        public function report_receive(Request $request) {
+            $data   = [];
+            $sdate  = "";
+            $edate  = ""; 
+            if ($request->_token) {
+                // $order_by = "ORDER BY ";
+                $sdate = $request->sdate;
+                $edate = $request->edate;
+                $data_raw = $this->get_receive($sdate, $edate);
+                $data     = $this->convert_receive_by_date($data_raw);
+                // dd($data);
+            }
+            return view('admin.report.receive', compact('data', 'sdate', 'edate'));
+        }
+        
+        private function get_receive($sdate, $edate) {
+            $query = "
+                SELECT 
+                    receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name AS pic, 
+                    COUNT(receive_detail.product_code) AS total_product,
+                    SUM(receive_detail.quantity) AS total_qty
+                FROM tr_receive_detail receive_detail
+                INNER JOIN tr_receive receive ON receive_detail.receive_code = receive.receive_code
+                INNER JOIN users ON receive.created_by = users.id
+                WHERE receive.receive_date BETWEEN '$sdate' AND '$edate'
+                GROUP BY receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name
+                ORDER BY receive.receive_date DESC, receive_detail.receive_code ASC
+            ";
+
+            $db_query = DB::select(DB::raw($query));
+            return $db_query;
+        }
+
+        private function convert_receive_by_date($data_raw) {
+            $data_receive = [];
+            if (!empty($data_raw)) {
+                foreach ($data_raw as $item) {
+                    $receive_date = $item->receive_date;
+                    $rd_stringfy = strtotime($receive_date);
+                    if (!array_key_exists($rd_stringfy, $data_receive)) {
+                        $data_receive[$rd_stringfy] = [
+                            "receive_date"  => $receive_date,
+                            "details"       => []
+                        ];
+                    }
+                    
+                    $data_receive[$rd_stringfy]["details"][] = [
+                        "code"          => $item->receive_code,
+                        "delivery_no"   => $item->delivery_no,
+                        "pic"           => $item->pic,
+                        "total_product"       => $item->total_product,
+                        "total_qty"      => $item->total_qty
+                    ];
+                }
+            }
+            return $data_receive;
+        }
+
+    /* END REPORT RECEIVE */
 }

@@ -26,7 +26,7 @@ CMS | Report Transaction
 
 <div class="container-fluid">
     <div class="menu-rt">
-        <a class="{{routeActive('report.transaction')}}" href="{{ route('report.transaction') }}">Transaction</a>
+        <a class="{{routeActive('report.transaction')}}" href="{{ route('report.transaction') }}">By Date</a>
         <a class="{{routeActive('report.transactioninvoice')}}" href="{{ route('report.transactioninvoice') }}">By
             Invoice</a>
         <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
@@ -89,109 +89,29 @@ CMS | Report Transaction
                     </tr>
                 </thead>
                 <tbody>
+                    @if (!empty($data))
+                        @foreach ($data as $item)
+                            <tr>
+                                <td class="center-text">{{ $loop->iteration }}</td>
 
-                    <tr>
-                        <td class="center-text">
-                            1
-                        </td>
-
-                        <td class="center-text" style="vertical-align: middle">
-                            23-08-2023
-                        </td>
-                        <td style="vertical-align: middle">
-                            #INV1012200231693190579
-                        </td>
-                        <td style="vertical-align: middle">
-                            Ahmad Suhaidi John Doe
-                        </td>
-                        <td class="center-text" style="vertical-align: middle">
-                            EDC - BCA
-                        </td>
-                        <td class="center-text" style="vertical-align: middle;">
-                            Rp 270.000
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="center-text">
-                            2
-                        </td>
-
-                        <td class="center-text" style="vertical-align: middle">
-                            28-08-2023
-                        </td>
-                        <td style="vertical-align: middle">
-                            #INV1012200231693190526
-                        </td>
-                        <td style="vertical-align: middle">
-                            Kathrina June Doe
-                        </td>
-                        <td class="center-text" style="vertical-align: middle">
-                            Tunai
-                        </td>
-                        <td class="center-text" style="vertical-align: middle;">
-                            Rp 350.000
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td class="center-text">
-                            3
-                        </td>
-
-                        <td class="center-text" style="vertical-align: middle">
-                            30-08-2023
-                        </td>
-                        <td style="vertical-align: middle">
-                            #INV1012200231693190102
-                        </td>
-                        <td style="vertical-align: middle">
-                            Muhammad Ichsan Maulana
-                        </td>
-                        <td class="center-text" style="vertical-align: middle">
-                            EDC - QRIS
-                        </td>
-                        <td class="center-text" style="vertical-align: middle;">
-                            Rp 750.000
-                        </td>
-                    </tr>
-                    {{-- @if (!empty($data))
-                    @foreach ($data as $item)
-                    <tr>
-                        <td class="center-text">{{ $loop->iteration }}</td>
-
-                        <td class="center-text" style="vertical-align: middle">
-                            {{ date('d-m-Y',strtotime($item->trans_date)) }}
-                            23-08-2023
-                        </td>
-                        <td style="vertical-align: middle">
-                            {{ $item->invoice_no }}
-                            #INV1012200231693190579
-                        </td>
-                        <td style="vertical-align: middle">
-                            {{ $item->name." ( ".$item->employee_id." )" }}
-                            Ahmad Suhaidi John Doe
-                        </td>
-                        <td class="center-text" style="vertical-align: middle">
-                            {{ $item->payment_method }}
-                            EDC - BCA
-                        </td>
-                        <td class="center-text" style="vertical-align: middle;">
-                            Rp {{ number_format($item->total_price) }}
-                        </td>
-                    </tr>
-                    @endforeach
-                    @endif --}}
-
-                    {{-- <table></table>
-                    <p style="text-align: center; padding-top: 50px;">
-
-                        <strong> Search not found</strong>
-
-                        <strong> No data yet</strong>
-
-                    </p> --}}
-
+                                <td class="center-text" style="vertical-align: middle">
+                                    {{ date('d-m-Y',strtotime($item->trans_date)) }}
+                                </td>
+                                <td style="vertical-align: middle">
+                                    {{ $item->invoice_no }}
+                                </td>
+                                <td style="vertical-align: middle">
+                                    {{ $item->name." ( ".$item->employee_id." )" }}
+                                </td>
+                                <td class="center-text" style="vertical-align: middle">
+                                    {{ $item->payment_method }}
+                                </td>
+                                <td class="center-text" style="vertical-align: middle;">
+                                    @currency($item->total_price)
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

@@ -19,17 +19,24 @@ CMS | Report Stock
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Report Stock</h3>
+<h3>Report Receive</h3>
 @endslot
 {{ Breadcrumbs::render('report_stock') }}
 @endcomponent
 
 <div class="container-fluid">
-    <div class="card">
+    <div class="menu-rt">
+        <a class="{{routeActive('report.receive')}}" href="{{ route('report.receive') }}">By Date</a>
+        <a class="{{routeActive('report.transactioninvoice')}}" href="{{ route('report.transactioninvoice') }}">By
+            Receive No</a>
+        <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
+            Product</a>
+    </div>
+    <div class="card border-add">
         <div class="tr-shadow" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px">
             <div class="boxHeader" style="margin-bottom: 0px">
                 {{-- filter:start --}}
-                <form action="{{ route('report.stock') }}" class="row" method="POST">
+                <form action="{{ route('report.receive') }}" class="row" method="POST">
                     @csrf
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
@@ -51,66 +58,72 @@ CMS | Report Stock
                             EXPORT
                         </a>
                     </div>
-                    <div class="col-4 boxContent">
-                        <div class="boxSearch _form-group">
-                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
-                                placeholder="Search for data.."
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
-                        </div>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
                 </form>
                 {{-- filter:end --}}
             </div>
         </div>
         <div class="table-responsive"
             style="box-shadow: 0 5px 10px rgb(0 0 0 / 0.2); border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
-            <table class="table table-striped table-hover">
+            <table class="table table-bordered table-hover">
                 <thead>
                     <tr class="head-report">
-                        <th class="center-text">No <span class="dividerHr"></span></th>
-                        <th>Item <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">Begin <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">In <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">Out <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">End <span class="dividerHr"></span></th>
+                        <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
+                        <th rowspan="2" class="center-text">Tanggal<span class="dividerHr"></span></th>
+                        <th colspan="5" class="heightHr center-text" style="vertical-align: middle">Receive <span
+                                class="dividerHr"></span>
+
+                        </th>
+                    </tr>
+                    <tr class="head-report">
+                        <th class="heightHr center-text" style="vertical-align: middle">Receive No <span
+                                class="dividerHr"></span>
+                        </th>
+                        <th class="heightHr center-text" style="vertical-align: middle">Delivery No<span
+                            class="dividerHr"></span>
+                        </th>
+                        <th class="heightHr center-text" style="vertical-align: middle">PIC<span
+                                class="dividerHr"></span>
+                        </th>
+                        <th class="heightHr center-text" style="vertical-align: middle">Total Product<span
+                                class="dividerHr"></span>
+                        </th>
+                        <th class="heightHr center-text" style="vertical-align: middle">Total Qty<span
+                                class="dividerHr"></span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (!empty($data))
-                    @foreach ($data as $item)
-                    <tr>
-                        <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 50%; vertical-align: middle">
-                            {{ $item->name." - ".$item->code }}
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">{{
-                            number_format($item->qty_begin) }}</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            {{ number_format($item->qty_in) }}
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            {{ number_format($item->qty_out) }}
-                        </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            {{ number_format($item->qty_end) }}
-                        </td>
-                    </tr>
-                    @endforeach
+                        @foreach ($data as $item)
+                        <?php $rowspan = 1 + count($item['details']) ?>
+                            <div class="rt-invoice">
+                                <tr>
+                                    <td rowspan="{{ $rowspan }}" class="center-text">
+                                        {{ $loop->iteration }}
+                                    </td>
+                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                        {{ $item['receive_date'] }}
+                                    </td>
+
+                                    <td colspan="5" style="vertical-align: middle; padding: 0px">
+
+                                    </td>
+                                    {{-- <td rowspan="3" class="center-text" style="vertical-align: middle;">
+                                        Rp 270.000
+                                    </td> --}}
+                                </tr>
+                                @foreach ($item['details'] as $rcv)
+                                    <tr>
+                                        <td style="vertical-align: middle">{{ $rcv['code'] }}</td>
+                                        <td style="vertical-align: middle">{{ $rcv['delivery_no'] }}</td>
+                                        <td class="center-text">{{ $rcv['pic'] }}</td>
+                                        <td class="center-text">{{ $rcv['total_product'] }}</td>
+                                        <td class="center-text">{{ $rcv['total_qty'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </div>
+                        @endforeach
                     @endif
-
-
-                    {{-- <table></table>
-                    <p style="text-align: center; padding-top: 50px;">
-
-                        <strong> Search not found</strong>
-
-                        <strong> No data yet</strong>
-
-                    </p> --}}
-
                 </tbody>
             </table>
         </div>

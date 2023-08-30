@@ -35,7 +35,7 @@ CMS | Report Transaction
 
 <div class="container-fluid">
     <div class="menu-rt">
-        <a class="{{routeActive('report.transaction')}}" href="{{ route('report.transaction') }}">Transaction</a>
+        <a class="{{routeActive('report.transaction')}}" href="{{ route('report.transaction') }}">By Date</a>
         <a class="{{routeActive('report.transactioninvoice')}}" href="{{ route('report.transactioninvoice') }}">By
             Invoice</a>
         <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
@@ -46,7 +46,7 @@ CMS | Report Transaction
             style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 0px">
             <div class="boxHeader" style="margin-bottom: 0px">
                 {{-- filter:start --}}
-                <form action="{{ route('report.transaction') }}" class="row" method="POST">
+                <form action="{{ route('report.transactionproduct') }}" class="row" method="POST">
                     @csrf
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
@@ -88,137 +88,46 @@ CMS | Report Transaction
                 <thead>
                     <tr class="head-report">
                         <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
-                        <th rowspan="2" class="center-text">Tanggal<span class="dividerHr"></span></th>
                         <th rowspan="2" class="heightHr center-text">Produk <span class="dividerHr"></span></th>
-                        <th colspan="3" class="heightHr center-text">Detail <span class="dividerHr"></span></th>
-                        <th rowspan="2" class="heightHr center-text" style="vertical-align: middle">No. Invoice <span
-                                class="dividerHr"></span>
-                        </th>
-                        <th rowspan="2" class="heightHr center-text" style="vertical-align: middle">Kasir <span
-                                class="dividerHr"></span>
-                        </th>
-
-                        <th rowspan="2" class="center-text" class="heightHr">Total Harga <span class="dividerHr"></span>
-                        </th>
+                        <th colspan="5" class="heightHr center-text">Detail <span class="dividerHr"></span></th>
                     </tr>
                     <tr class="head-report">
                         <th class="heightHr center-text">Harga/@</th>
                         <th class="heightHr center-text">Qty</th>
                         <th class="heightHr center-text">(%)</th>
+                        <th class="heightHr center-text">Tanggal</th>
+                        <th class="heightHr center-text">No Invoice</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <div class="rt-invoice">
-                        <tr>
-                            <td rowspan="2" class="center-text">
-                                1
-                            </td>
-                            <td rowspan="2" class="center-text" style=" vertical-align: middle">
-                                28-08-2023
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle">
-                                Lorem Ipsum Dolor Sit Amet
-                            </td>
-
-                            <td colspan="3" style="vertical-align: middle; padding: 0px">
-
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle">
-                                #INV1012200231693190579
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle">
-                                Ahmad Suhaidi John Doe
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle;">
-                                Rp 270.000
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td class="center-text"> <span style="text-decoration: line-through; font-size: 12px"> Rp
-                                    27.000</span> <br>
-                                Rp
-                                13.000
-                            </td>
-                            <td class="center-text">10</td>
-                            <td class="center-text">5</td>
-                        </tr>
-                    </div>
-
-                    <div class="rt-invoice">
-                        <tr>
-                            <td rowspan="2" class="center-text">
-                                2
-                            </td>
-                            <td rowspan="2" class="center-text" style=" vertical-align: middle">
-                                28-08-2023
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle">
-                                Lorem Ipsum Dolor Sit Amet
-                            </td>
-
-                            <td colspan="3" style="vertical-align: middle; padding: 0px">
-
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle">
-                                #INV1012200231693190579
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle">
-                                Ahmad Suhaidi John Doe
-                            </td>
-                            <td rowspan="2" class="center-text" style="vertical-align: middle;">
-                                Rp 270.000
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td class="center-text"> <span style="text-decoration: line-through; font-size: 12px"> Rp
-                                    27.000</span> <br>
-                                Rp
-                                13.000
-                            </td>
-                            <td class="center-text">10</td>
-                            <td class="center-text">5</td>
-                        </tr>
-                    </div>
-
-                    {{-- @if (!empty($data))
-                    @foreach ($data as $item)
-                    <tr>
-                        <td class="center-text">{{ $loop->iteration }}</td>
-
-                        <td class="center-text" style="vertical-align: middle">
-                            {{ date('d-m-Y',strtotime($item->trans_date)) }}
-                            23-08-2023
-                        </td>
-                        <td style="vertical-align: middle">
-                            {{ $item->invoice_no }}
-                            #INV1012200231693190579
-                        </td>
-                        <td style="vertical-align: middle">
-                            {{ $item->name." ( ".$item->employee_id." )" }}
-                            Ahmad Suhaidi John Doe
-                        </td>
-                        <td class="center-text" style="vertical-align: middle">
-                            {{ $item->payment_method }}
-                            EDC - BCA
-                        </td>
-                        <td class="center-text" style="vertical-align: middle;">
-                            Rp {{ number_format($item->total_price) }}
-                        </td>
-                    </tr>
-                    @endforeach
-                    @endif --}}
-
-                    {{-- <table></table>
-                    <p style="text-align: center; padding-top: 50px;">
-
-                        <strong> Search not found</strong>
-
-                        <strong> No data yet</strong>
-
-                    </p> --}}
-
+                    @if (!empty($data))
+                        @foreach ($data as $item)
+                            <?php $rowspan = 1 + count($item['details']); ?>
+                            <div class="rt-invoice">
+                                <tr>
+                                    <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
+                                    <td rowspan="{{ $rowspan }}" class="center-text" style=" vertical-align: middle">{{ $item['code']." | ".$item['name'] }}</td>
+                                    <td colspan="5" style="vertical-align: middle; padding: 0px">
+        
+                                    </td>
+                                </tr>
+                                @foreach ($item['details'] as $inv)
+                                    <tr>
+                                        <td class="center-text"> 
+                                            @if ($inv['discount'] > 0)
+                                                <span style="text-decoration: line-through; font-size: 12px"> @currency($inv['price'])</span> <br>
+                                            @endif
+                                            @currency($inv['price'])
+                                        </td>
+                                        <td class="center-text">{{ $inv['quantity'] }}</td>
+                                        <td class="center-text">{{ $inv['discount'] }}</td>
+                                        <td class="center-text">{{ $inv['trans_date'] }}</td>
+                                        <td class="center-text">{{ $inv['invoice_no'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
