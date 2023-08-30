@@ -16,7 +16,7 @@ class TransactionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:T Show', ['only' => 'index']);
+        $this->middleware('permission:T Show', ['only' => ['index', 'summary_cashier']]);
         $this->middleware('permission:T Create', ['only' => ['create', 'store']]);
         $this->middleware('permission:T Update', ['only' => ['edit', 'update']]);
         $this->middleware('permission:T Delete', ['only' => 'destroy']);
@@ -35,9 +35,9 @@ class TransactionController extends Controller
         } else {
             $transactions = Transaction::orderBy('id', 'desc')->with(['detail', 'user'])->paginate(9);
         }
-        $session_user = Auth::user()->roles()->first()->name;
+        // $session_user = Auth::user()->roles()->first()->name;
         // dd($transaction);
-        dd($session_user);
+        // dd($session_user);
         return view('admin.transaction.index', compact('transactions'));
     }
 
@@ -187,11 +187,9 @@ class TransactionController extends Controller
         return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount'));
     }
 
-    public function edit_template()
-    {
-        return view('admin.transaction.edit');
+    public function summary(Transaction $transaction) {
+        return view('admin.transaction.summary');
     }
-
 
     /**
      * Update the specified resource in storage.

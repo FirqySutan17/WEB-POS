@@ -88,7 +88,7 @@ Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
 
 // Transaction Route
 Route::resource('/transaction', App\Http\Controllers\TransactionController::class);
-Route::get('/edit-template', [App\Http\Controllers\TransactionController::class, 'edit_template'])->name('transaction.edite');
+Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::class, 'summary'])->name('transaction.summary');
 Route::get('/receipt-template', [App\Http\Controllers\TransactionController::class, 'print_receipt'])->name('transaction.receipt');
 
 // Report Route

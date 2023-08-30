@@ -54,6 +54,9 @@ class LoginController extends Controller
         
         if (auth()->attempt(['employee_id' => $request->employee_id, 'password' => $request->password])) {
             Alert::toast('Login Successfull', 'success');
+            if (auth()->user()->roles()->first()->name == 'Cashier') {
+                return redirect()->intended('transaction/create');
+            }
             return redirect()->intended('home');
         } else {
 

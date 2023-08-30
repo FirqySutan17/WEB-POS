@@ -159,6 +159,8 @@ table.dataTable th.dataTables_empty {
 
 .boxInside {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .boxEdit,

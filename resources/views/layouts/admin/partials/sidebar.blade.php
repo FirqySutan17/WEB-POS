@@ -1,3 +1,10 @@
+@if(Auth::user()->roles->first()->name == 'Cashier')
+<style>
+    .page-wrapper.compact-wrapper .page-body-wrapper .page-body {
+        margin-left: 0px !important;
+    }
+</style>
+@else
 <header class="main-nav">
     <div class="sidebar-user text-center">
         <div class="set-drop">
@@ -81,6 +88,11 @@
                                 </a>
                             </li>
                             @endcan
+                            <li>
+                                <a href="{{ route('report.receive') }}" class="{{routeActive('report.receive')}}">
+                                    Receive
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @endcanany
@@ -161,3 +173,4 @@
         <p>Copyright {{date('Y')}}-{{date('y', strtotime('+1 year'))}} &copy; Brandztory CMS</p>
     </div>
 </header>
+@endif

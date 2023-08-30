@@ -11,207 +11,231 @@ CMS | Transaction
 @endpush
 
 @section('content')
+@if(Auth::user()->roles->first()->name == 'Cashier')
+
+@else
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
 <h3>Transaction</h3>
 @endslot
 {{ Breadcrumbs::render('transaction') }}
 @endcomponent
+@endif
+
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <form id="form-transaction" action="{{ route('transaction.store') }}" method="POST"
-                enctype="multipart/form-data">
-                @csrf
-                <input id="input_status" type="hidden" name="status" value="FINISH">
-                <div class="card" style="margin: auto; padding-bottom: 20px">
-                    <div class="card-body _card-body">
-                        <div class="row d-flex align-items-stretch">
-                            <div class="col-md-3 col-sm-12">
-                                <div class="row tr-shadow"
-                                    style="height: 328px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <div class="col-12">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Kasir
-                                            </label>
-                                            <input value="{{ Auth::user()->name }}" type="text" class="form-control"
-                                                required readonly tabindex="0" />
+    @if(Auth::user()->roles->first()->name == 'Cashier')
+    <div class="menu-rt">
+        <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
+        <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
+        <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+    </div>
+    @else
+    @endif
+
+    @if(Auth::user()->roles->first()->name == 'Cashier')
+    <div class="row" style="padding: 10px">
+        @else
+        <div class="row" style="padding: 0px 10px">
+            @endif
+
+            <div class="col-12">
+                <form id="form-transaction" action="{{ route('transaction.store') }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <input id="input_status" type="hidden" name="status" value="FINISH">
+                    <div class="card" style="margin: auto; padding-bottom: 20px">
+                        <div class="card-body _card-body">
+                            <div class="row d-flex align-items-stretch">
+                                <div class="col-md-3 col-sm-12">
+                                    <div class="row tr-shadow"
+                                        style="height: 328px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: sticky; position: -webkit-sticky; top: 10px">
+                                        <div class="col-12">
+                                            <div class="form-group _form-group">
+                                                <label for="receive_date" class="font-weight-bold">
+                                                    Kasir
+                                                </label>
+                                                <input value="{{ Auth::user()->name }}" type="text" class="form-control"
+                                                    required readonly tabindex="0" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group _form-group">
+                                                <label for="receive_date" class="font-weight-bold">
+                                                    Tanggal Transaksi
+                                                </label>
+                                                <input value="{{ date('d-m-Y') }}" class="form-control" required
+                                                    readonly tabindex="0" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group _form-group">
+                                                <label for="invoice_no" class="font-weight-bold">
+                                                    Nomor Invoice
+                                                </label>
+                                                <input name="invoice_no" type="text" value="{{ $no_invoice }}"
+                                                    class="form-control" required readonly tabindex="0" />
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-12">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Tanggal Transaksi
-                                            </label>
-                                            <input value="{{ date('d-m-Y') }}" class="form-control" required readonly
-                                                tabindex="0" />
-                                        </div>
+                                </div>
+                                <div class="col-md-9 col-sm-12" style="padding-right: 0px">
+                                    {{-- <marquee width="100%" direction="left">
+                                        @if (!empty($product_discount))
+                                        @foreach ($product_discount as $item)
+                                        <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
+                                        @endforeach
+                                        @endif
+                                    </marquee> --}}
+                                    <input id="input-scanner" type="text" class="form-control"
+                                        placeholder="Klik disini untuk Scan Barcode"
+                                        style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
+                                        tabindex="1" />
+                                    <div class="tr-shadow table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 35%; vertical-align: middle" class="heightHr">Nama
+                                                        Item <span class="dividerHr"></span></th>
+                                                    <th style="width: 19%; vertical-align: middle; text-align: center"
+                                                        class="heightHr center-text">Harga <span
+                                                            class="dividerHr"></span>
+                                                    </th>
+                                                    <th style="width: 6%; vertical-align: middle"
+                                                        class="heightHr center-text">Qty <span class="dividerHr"></span>
+                                                    </th>
+                                                    <th style="width: 10%; vertical-align: middle; text-align: center"
+                                                        class="heightHr center-text">Disc (%)
+                                                        <span class="dividerHr"></span>
+                                                    </th>
+                                                    <th style="width: 15%; vertical-align: middle; text-align: right"
+                                                        class="heightHr center-text">Total <span
+                                                            class="dividerHr"></span>
+                                                    </th>
+                                                    <th style="width: 10%;" class="center-text"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="product_lists" class="custom-scrollbar">
+                                            </tbody>
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 75%; vertical-align: middle; text-align=right"
+                                                        class="heightHr">Total QTY<span class="dividerHr"></span></th>
+                                                    <th style="width: 25%; vertical-align: middle; text-align: center"
+                                                        class="heightHr center-text" id="total_qty">0</th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="width: 75%; vertical-align: middle; text-align=right"
+                                                        class="heightHr">Sub Total<span class="dividerHr"></span></th>
+                                                    <th style="width: 25%; vertical-align: middle; text-align: center"
+                                                        class="heightHr center-text" id="sub_total">0</th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="width: 75%; vertical-align: middle; text-align=right"
+                                                        class="heightHr">Total Discount<span class="dividerHr"></span>
+                                                    </th>
+                                                    <th style="width: 25%; vertical-align: middle; text-align: center"
+                                                        class="heightHr center-text" id="total_discount">Rp 0</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
                                     </div>
+                                </div>
+                                <div class="col-12 tr-shadow" style="margin-top: 20px">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group _form-group">
+                                                <label for="receive_date" class="font-weight-bold">
+                                                    Metode Pembayaran <span class="wajib">* </span>
+                                                </label>
+                                                <select id="payment_method" name="payment_method" class="custom-select"
+                                                    tabindex="2">
+                                                    <option value="Tunai">Tunai</option>
+                                                    <option value="EDC - BCA">EDC - BCA</option>
+                                                    <option value="EDC - QRIS">EDC - QRIS</option>
+                                                </select>
+                                            </div>
+                                            <div id="elm_receipt" class="form-group _form-group">
+                                                <label for="receive_date" class="font-weight-bold">
+                                                    Receipt <span class="wajib">* </span>
+                                                </label>
+                                                <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
+                                                    class="form-control elm_receipt_input" readonly tabindex="3" />
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="form-group _form-group elm_cash">
+                                                <label for="receive_date" class="font-weight-bold">
+                                                    Nominal Tunai
+                                                </label>
+                                                <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
+                                                    class="form-control elm_cash_input" tabindex="4" />
+                                            </div>
+                                            <div class="form-group _form-group elm_cash">
+                                                <label for="receive_date" class="font-weight-bold">
+                                                    Kembalian
+                                                </label>
+                                                <input id="kembalian" placeholder="Hitungan otomatis" type="text"
+                                                    class="form-control" disabled tabindex="0" />
+                                            </div>
+                                        </div>
 
-                                    <div class="col-12">
-                                        <div class="form-group _form-group">
-                                            <label for="invoice_no" class="font-weight-bold">
-                                                Nomor Invoice
-                                            </label>
-                                            <input name="invoice_no" type="text" value="{{ $no_invoice }}"
-                                                class="form-control" required readonly tabindex="0" />
+                                        <div class="col-4" style="text-align: right">
+                                            <h6>Total</h6>
+                                            <h2 id="total_transaction">Rp 0</h2>
+                                            <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
+                                            <div
+                                                style="width: 100%; display: flex; align-items: center; margin-top: 10px">
+                                                <button onclick="submit_form('DRAFT')" type="button"
+                                                    class="btn btn-success _btn-success px-4"
+                                                    style="width: 100%; margin-right:5px" ; tabindex="6">
+                                                    SAVE DRAFT
+                                                </button>
+                                                <button id="btn_delete_1" onblur="onblur_color('1')"
+                                                    onfocus="onfocus_color('1')" onclick="submit_form('FINISH')"
+                                                    type="button" class="btn btn-primary _btn-primary px-4"
+                                                    style="width: 100%" tabindex="6">
+                                                    SUBMIT ORDER
+                                                </button>
+                                                {{-- <a class="btn btn-primary _btn-primary px-4" style="width: 100%"
+                                                    href="{{ route('transaction.receipt')}}">SUBMIT ORDER</a> --}}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-9 col-sm-12" style="padding-right: 0px">
-                                <marquee width="100%" direction="left">
-                                    @if (!empty($product_discount))
-                                    @foreach ($product_discount as $item)
-                                    <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
-                                    @endforeach
-                                    @endif
-                                </marquee>
-                                <input id="input-scanner" type="text" class="form-control"
-                                    placeholder="Klik disini untuk Scan Barcode"
-                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                    tabindex="1" />
-                                <div class="tr-shadow table-responsive">
-                                    <table class="table table-striped table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 35%; vertical-align: middle" class="heightHr">Nama
-                                                    Item <span class="dividerHr"></span></th>
-                                                <th style="width: 19%; vertical-align: middle; text-align: center"
-                                                    class="heightHr center-text">Harga <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 6%; vertical-align: middle"
-                                                    class="heightHr center-text">Qty <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 10%; vertical-align: middle; text-align: center"
-                                                    class="heightHr center-text">Disc (%)
-                                                    <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 15%; vertical-align: middle; text-align: right"
-                                                    class="heightHr center-text">Total <span class="dividerHr"></span>
-                                                </th>
-                                                <th style="width: 10%;" class="center-text"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="product_lists" class="custom-scrollbar">
-                                        </tbody>
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 75%; vertical-align: middle; text-align=right"
-                                                    class="heightHr">Total QTY<span class="dividerHr"></span></th>
-                                                <th style="width: 25%; vertical-align: middle; text-align: center"
-                                                    class="heightHr center-text" id="total_qty">0</th>
-                                            </tr>
-                                            <tr>
-                                                <th style="width: 75%; vertical-align: middle; text-align=right"
-                                                    class="heightHr">Sub Total<span class="dividerHr"></span></th>
-                                                <th style="width: 25%; vertical-align: middle; text-align: center"
-                                                    class="heightHr center-text" id="sub_total">0</th>
-                                            </tr>
-                                            <tr>
-                                                <th style="width: 75%; vertical-align: middle; text-align=right"
-                                                    class="heightHr">Total Discount<span class="dividerHr"></span></th>
-                                                <th style="width: 25%; vertical-align: middle; text-align: center"
-                                                    class="heightHr center-text" id="total_discount">Rp 0</th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="col-12 tr-shadow" style="margin-top: 20px">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <div class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Metode Pembayaran <span class="wajib">* </span>
-                                            </label>
-                                            <select id="payment_method" name="payment_method" class="custom-select"
-                                                tabindex="2">
-                                                <option value="Tunai">Tunai</option>
-                                                <option value="EDC - BCA">EDC - BCA</option>
-                                                <option value="EDC - QRIS">EDC - QRIS</option>
-                                            </select>
-                                        </div>
-                                        <div id="elm_receipt" class="form-group _form-group">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Receipt <span class="wajib">* </span>
-                                            </label>
-                                            <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
-                                                class="form-control elm_receipt_input" readonly tabindex="3" />
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="form-group _form-group elm_cash">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Nominal Tunai
-                                            </label>
-                                            <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
-                                                class="form-control elm_cash_input" tabindex="4" />
-                                        </div>
-                                        <div class="form-group _form-group elm_cash">
-                                            <label for="receive_date" class="font-weight-bold">
-                                                Kembalian
-                                            </label>
-                                            <input id="kembalian" placeholder="Hitungan otomatis" type="text"
-                                                class="form-control" disabled tabindex="0" />
-                                        </div>
-                                    </div>
 
-                                    <div class="col-4" style="text-align: right">
-                                        <h6>Total</h6>
-                                        <h2 id="total_transaction">Rp 0</h2>
-                                        <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
-                                        <div style="width: 100%; display: flex; align-items: center; margin-top: 10px">
-                                            <button onclick="submit_form('DRAFT')" type="button"
-                                                class="btn btn-success _btn-success px-4"
-                                                style="width: 100%; margin-right:5px" ; tabindex="6">
-                                                SAVE DRAFT
-                                            </button>
-                                            <button id="btn_delete_1" onblur="onblur_color('1')"
-                                                onfocus="onfocus_color('1')" onclick="submit_form('FINISH')"
-                                                type="button" class="btn btn-primary _btn-primary px-4"
-                                                style="width: 100%" tabindex="6">
-                                                SUBMIT ORDER
-                                            </button>
-                                            {{-- <a class="btn btn-primary _btn-primary px-4" style="width: 100%"
-                                                href="{{ route('transaction.receipt')}}">SUBMIT ORDER</a> --}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
+
     </div>
 
-</div>
+    @endsection
 
-@endsection
+    @push('css-external')
+    <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2-bootstrap4.min.css') }}">
+    @endpush
 
-@push('css-external')
-<link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
-<link rel="stylesheet" href="{{ asset('vendor/select2/css/select2-bootstrap4.min.css') }}">
-@endpush
-
-@push('javascript-external')
-<script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
-<script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
-<script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
-<script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-<script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
-@endpush
+    @push('javascript-external')
+    <script src="{{ asset('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
+    <script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
+    <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
+    <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js">
+    </script>
+    @endpush
 
 
-@push('javascript-internal')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    var final_total_price_item = 0;
+    @push('javascript-internal')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        var final_total_price_item = 0;
 
     $(document).ready(function(e) {
         $("#input-scanner").focus();
@@ -422,10 +446,10 @@ CMS | Transaction
         rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
         return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
     }
-</script>
+    </script>
 
-<script>
-    $(function() {
+    <script>
+        $(function() {
         $('#payment_method').select2({
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}"
@@ -447,15 +471,15 @@ CMS | Transaction
             }
         });
     });
-</script>
+    </script>
 
-<script>
-    $(".sub").focusout(function() {
+    <script>
+        $(".sub").focusout(function() {
         $("#answer").html('');
         var num1 = $("#num1").val();
         var num2 = $("#num2").val();
         var answer = 100 - num1 - num2;
         $("#answer").html(answer);
     });
-</script>
-@endpush
+    </script>
+    @endpush

@@ -7,39 +7,74 @@ CMS | Transaction
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
+<style>
+    .head-report th {
+        background: #f3f2f7 !important;
+    }
+</style>
 @endpush
 
 @section('content')
+@if(Auth::user()->roles->first()->name == 'Cashier')
+
+@else
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
 <h3>Transaction</h3>
 @endslot
 {{ Breadcrumbs::render('transaction') }}
 @endcomponent
+@endif
 
 <div class="container-fluid">
+    @if(Auth::user()->roles->first()->name == 'Cashier')
+    <div class="menu-rt">
+        <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
+        <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
+        <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+    </div>
+    @else
+    @endif
     <div class="card">
         <div class="card-header">
             <div class="boxHeader">
                 {{-- filter:start --}}
                 <form class="row" method="GET">
                     <div class="col-8">
+                        @if(Auth::user()->roles->first()->name == 'Cashier')
+                        @else
                         @can('T Create')
                         <a href="{{ route('transaction.create') }}" class="btn btn-primary _btn" role="button">
                             <i class='bx bx-plus'></i> Add new
                         </a>
                         @endcan
+                        @endif
+
                     </div>
-                    <div class="col-4 boxContent">
-                        <div class="boxSearch _form-group">
-                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
-                                placeholder="Search for data.."
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                    @if(Auth::user()->roles->first()->name == 'Cashier')
+                    <style>
+                        .boxContent {
+                            padding-top: 10px
+                        }
+
+                        .boxContent .boxSearch {
+                            width: 100%;
+
+                        }
+                    </style>
+                    <div class="col-12 boxContent">
+                        @else
+                        <div class="col-4 boxContent">
+                            @endif
+                            <div class="boxSearch _form-group">
+                                <input name="keyword" value="{{ request('keyword') }}" type="search"
+                                    class="form-control" placeholder="Search for data.."
+                                    style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                            </div>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </div>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
                 </form>
                 {{-- filter:end --}}
             </div>
@@ -47,14 +82,14 @@ CMS | Transaction
         <div class="card-body table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
-                    <tr>
+                    <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="center-text">Tanggal <span class="dividerHr"></span></th>
                         <th class="heightHr">Nama Kasir <span class="dividerHr"></span></th>
                         <th class="heightHr">No. Invoice <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">Pembayaran <span class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Total Harga <span class="dividerHr"></span></th>
-                        <th class="heightHr">Status <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">Status <span class="dividerHr"></span></th>
                         <th class="center-text">Action</th>
                     </tr>
                 </thead>
