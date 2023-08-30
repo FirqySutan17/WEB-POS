@@ -27,8 +27,9 @@ class TransactionController extends Controller
         } else {
             $transactions = Transaction::orderBy('id', 'desc')->with(['detail', 'user'])->paginate(9);
         }
-
+        $session_user = Auth::user()->roles()->first()->name;
         // dd($transaction);
+        dd($session_user);
         return view('admin.transaction.index', compact('transactions'));
     }
 
@@ -40,8 +41,10 @@ class TransactionController extends Controller
     public function create()
     {
         $userdata = Auth::user();
+        // $session_user = $request->session()->get('role');
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
         $no_invoice = "INV".$userdata->id.$userdata->employee_id.strtotime(date('YmdHis'));
+        // dd($session_user);
         return view('admin.transaction.create', compact('no_invoice', 'product_discount'));
     }
 

@@ -24,7 +24,7 @@ CMS | Transaction
                 enctype="multipart/form-data">
                 @csrf
                 <input id="input_status" type="hidden" name="status" value="FINISH">
-                <div class="card _card" style="margin: auto; padding-bottom: 20px">
+                <div class="card" style="margin: auto; padding-bottom: 20px">
                     <div class="card-body _card-body">
                         <div class="row d-flex align-items-stretch">
                             <div class="col-md-3 col-sm-12">
@@ -36,7 +36,7 @@ CMS | Transaction
                                                 Kasir
                                             </label>
                                             <input value="{{ Auth::user()->name }}" type="text" class="form-control"
-                                                required readonly tabindex="0"/>
+                                                required readonly tabindex="0" />
                                         </div>
                                     </div>
 
@@ -45,7 +45,8 @@ CMS | Transaction
                                             <label for="receive_date" class="font-weight-bold">
                                                 Tanggal Transaksi
                                             </label>
-                                            <input value="{{ date('d-m-Y') }}" class="form-control" required readonly tabindex="0"/>
+                                            <input value="{{ date('d-m-Y') }}" class="form-control" required readonly
+                                                tabindex="0" />
                                         </div>
                                     </div>
 
@@ -55,7 +56,7 @@ CMS | Transaction
                                                 Nomor Invoice
                                             </label>
                                             <input name="invoice_no" type="text" value="{{ $no_invoice }}"
-                                                class="form-control" required readonly tabindex="0"/>
+                                                class="form-control" required readonly tabindex="0" />
                                         </div>
                                     </div>
                                 </div>
@@ -63,14 +64,15 @@ CMS | Transaction
                             <div class="col-md-9 col-sm-12" style="padding-right: 0px">
                                 <marquee width="100%" direction="left">
                                     @if (!empty($product_discount))
-                                        @foreach ($product_discount as $item)
-                                        <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
-                                        @endforeach
+                                    @foreach ($product_discount as $item)
+                                    <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
+                                    @endforeach
                                     @endif
                                 </marquee>
                                 <input id="input-scanner" type="text" class="form-control"
                                     placeholder="Klik disini untuk Scan Barcode"
-                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " tabindex="1" />
+                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
+                                    tabindex="1" />
                                 <div class="tr-shadow table-responsive">
                                     <table class="table table-striped table-hover">
                                         <thead>
@@ -97,16 +99,22 @@ CMS | Transaction
                                         </tbody>
                                         <thead>
                                             <tr>
-                                                <th style="width: 75%; vertical-align: middle; text-align=right" class="heightHr">Total QTY<span class="dividerHr"></span></th>
-                                                <th style="width: 25%; vertical-align: middle; text-align: center" class="heightHr center-text" id="total_qty">0</th>
+                                                <th style="width: 75%; vertical-align: middle; text-align=right"
+                                                    class="heightHr">Total QTY<span class="dividerHr"></span></th>
+                                                <th style="width: 25%; vertical-align: middle; text-align: center"
+                                                    class="heightHr center-text" id="total_qty">0</th>
                                             </tr>
                                             <tr>
-                                                <th style="width: 75%; vertical-align: middle; text-align=right" class="heightHr">Sub Total<span class="dividerHr"></span></th>
-                                                <th style="width: 25%; vertical-align: middle; text-align: center" class="heightHr center-text" id="sub_total">0</th>
+                                                <th style="width: 75%; vertical-align: middle; text-align=right"
+                                                    class="heightHr">Sub Total<span class="dividerHr"></span></th>
+                                                <th style="width: 25%; vertical-align: middle; text-align: center"
+                                                    class="heightHr center-text" id="sub_total">0</th>
                                             </tr>
                                             <tr>
-                                                <th style="width: 75%; vertical-align: middle; text-align=right" class="heightHr">Total Discount<span class="dividerHr"></span></th>
-                                                <th style="width: 25%; vertical-align: middle; text-align: center" class="heightHr center-text" id="total_discount">Rp 0</th>
+                                                <th style="width: 75%; vertical-align: middle; text-align=right"
+                                                    class="heightHr">Total Discount<span class="dividerHr"></span></th>
+                                                <th style="width: 25%; vertical-align: middle; text-align: center"
+                                                    class="heightHr center-text" id="total_discount">Rp 0</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -119,7 +127,8 @@ CMS | Transaction
                                             <label for="receive_date" class="font-weight-bold">
                                                 Metode Pembayaran <span class="wajib">* </span>
                                             </label>
-                                            <select id="payment_method" name="payment_method" class="custom-select" tabindex="2">
+                                            <select id="payment_method" name="payment_method" class="custom-select"
+                                                tabindex="2">
                                                 <option value="Tunai">Tunai</option>
                                                 <option value="EDC - BCA">EDC - BCA</option>
                                                 <option value="EDC - QRIS">EDC - QRIS</option>
@@ -145,7 +154,8 @@ CMS | Transaction
                                             <label for="receive_date" class="font-weight-bold">
                                                 Kembalian
                                             </label>
-                                            <input id="kembalian" placeholder="Hitungan otomatis" type="text" class="form-control" disabled tabindex="0"/>
+                                            <input id="kembalian" placeholder="Hitungan otomatis" type="text"
+                                                class="form-control" disabled tabindex="0" />
                                         </div>
                                     </div>
 
@@ -155,11 +165,14 @@ CMS | Transaction
                                         <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
                                         <div style="width: 100%; display: flex; align-items: center; margin-top: 10px">
                                             <button onclick="submit_form('DRAFT')" type="button"
-                                                class="btn btn-success _btn-success px-4" style="width: 100%; margin-right:5px"; tabindex="6">
+                                                class="btn btn-success _btn-success px-4"
+                                                style="width: 100%; margin-right:5px" ; tabindex="6">
                                                 SAVE DRAFT
                                             </button>
-                                            <button id="btn_delete_1" onblur="onblur_color('1')" onfocus="onfocus_color('1')" onclick="submit_form('FINISH')" type="button"
-                                                class="btn btn-primary _btn-primary px-4" style="width: 100%" tabindex="6">
+                                            <button id="btn_delete_1" onblur="onblur_color('1')"
+                                                onfocus="onfocus_color('1')" onclick="submit_form('FINISH')"
+                                                type="button" class="btn btn-primary _btn-primary px-4"
+                                                style="width: 100%" tabindex="6">
                                                 SUBMIT ORDER
                                             </button>
                                             {{-- <a class="btn btn-primary _btn-primary px-4" style="width: 100%"
