@@ -79,7 +79,8 @@ class ReceiveController extends Controller
                 'driver'        => $request->driver,
                 'driver_phone'  => $request->driver_phone,
                 'plate_no'       => $request->plate_no,
-                'delivery_no'   => $request->delivery_number
+                'delivery_no'   => $request->delivery_number,
+                'is_warehouse'   => $request->is_warehouse
             ];
             // dd($insertdata, $request->all());
             $receive = Receive::create($insertdata);
