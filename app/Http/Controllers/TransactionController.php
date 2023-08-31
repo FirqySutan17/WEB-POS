@@ -164,7 +164,8 @@ class TransactionController extends Controller
 
         $details = TransactionDetail::where('invoice_no', $transaction[0]->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
         // dd($details);
-        return view('admin.transaction.receipt', compact('transaction', 'details'));
+        // return view('admin.transaction.receipt', compact('transaction', 'details'));
+        return response()->json($transaction, $details);
     }
 
     public function receipt(Transaction $transaction)

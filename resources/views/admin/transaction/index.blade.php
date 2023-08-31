@@ -119,7 +119,7 @@ CMS | Transaction
                         </td>
                         <td style="width: 20%; vertical-align: middle">{{ $transaction->user->name }}</td>
                         <td style="width: 20%; vertical-align: middle">
-                            {{ $transaction->invoice_no }}
+                            #{{ $transaction->invoice_no }}
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">
                             {{ $transaction->status == 'DRAFT' ? '' : $transaction->payment_method }}</td>
@@ -135,8 +135,8 @@ CMS | Transaction
                             <div class="boxInside">
                                 @if ($transaction->status == 'FINISH')
                                 <div class="boxEdit">
-                                    <a href="{{ route('transaction.show', ['transaction' => $transaction]) }}"
-                                        class="btn-sm btn-info" role="button" target="_blank">
+                                    <a href="javascript:void(0)" id="btn-show-post"
+                                        data-id="{{ $transaction->invoice_no }}" class="btn-sm btn-info" role="button">
                                         <i class='bx bx-show'></i>
                                     </a>
                                 </div>
@@ -157,17 +157,6 @@ CMS | Transaction
                                 </div>
                                 @endif
 
-                                {{-- <div class="boxDelete">
-                                    <form action="{{ route('transaction.destroy', ['transaction' => $transaction]) }}"
-                                        method="POST" role="alert">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    </form>
-                                </div> --}}
-
                             </div>
 
                         </td>
@@ -183,79 +172,6 @@ CMS | Transaction
                         @endif
                     </p>
                     @endif
-
-                    {{-- <tr>
-                        <td style="width: 5%;" class="center-text">1</td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">24-08-2023</td>
-                        <td style="width: 25%; vertical-align: middle">John Doe</td>
-                        <td style="width: 20%; vertical-align: middle">
-                            #INV-000002
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">
-                            Rp 270.000
-                        </td>
-                        <td style="width: 10%;" class="center-text boxAction fontField">
-                            <div class="boxInside">
-
-                                <div class="boxEdit">
-                                    <a href="{{ route('transaction.edite') }}" class="btn-sm btn-info" role="button">
-                                        <i class="bx bx-edit"></i>
-                                    </a>
-                                </div>
-
-
-
-                                <div class="boxDelete">
-                                    <form action="" method="POST" role="alert">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-
-                            </div>
-
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width: 5%;" class="center-text">2</td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">23-08-2023</td>
-                        <td style="width: 25%; vertical-align: middle">Kathrina Doe</td>
-                        <td style="width: 20%; vertical-align: middle">
-                            #INV-000001
-                        </td>
-                        <td class="center-text" style="width: 20%; vertical-align: middle">
-                            Rp 500.000
-                        </td>
-                        <td style="width: 10%;" class="center-text boxAction fontField">
-                            <div class="boxInside">
-
-                                <div class="boxEdit">
-                                    <a href="{{ route('transaction.edite') }}" class="btn-sm btn-info" role="button">
-                                        <i class="bx bx-edit"></i>
-                                    </a>
-                                </div>
-
-
-
-                                <div class="boxDelete">
-                                    <form action="" method="POST" role="alert">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-
-                            </div>
-
-                        </td>
-                    </tr> --}}
-
                 </tbody>
             </table>
         </div>
@@ -270,6 +186,8 @@ CMS | Transaction
         </div>
     </div>
 </div>
+
+@include('admin.transaction.show')
 
 @endsection
 
@@ -299,4 +217,6 @@ CMS | Transaction
 		});
 	});
 </script>
+
+
 @endpush
