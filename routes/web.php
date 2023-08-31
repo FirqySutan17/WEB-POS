@@ -95,9 +95,27 @@ Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::clas
 Route::match(['get', 'post'], '/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');
 Route::post('/report/stock/excel', [App\Http\Controllers\ReportController::class, 'report_stock_excel'])->name('report.stock.excel');
 Route::post('/report/stock/pdf', [App\Http\Controllers\ReportController::class, 'report_stock_pdf'])->name('report.stock.pdf');
+
 Route::match(['get', 'post'], '/report/transaction', [App\Http\Controllers\ReportController::class, 'report_transaction_by_date'])->name('report.transaction');
+Route::post('/report/transaction/excel', [App\Http\Controllers\ReportController::class, 'report_transaction_by_date_excel'])->name('report.transaction.excel');
+Route::post('/report/transaction/pdf', [App\Http\Controllers\ReportController::class, 'report_transaction_by_date_pdf'])->name('report.transaction.pdf');
+
 Route::match(['get', 'post'], '/report/transaction-by-invoice', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice'])->name('report.transactioninvoice');
+Route::post('/report/transaction-by-invoice/excel', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice_excel'])->name('report.transactioninvoice.excel');
+Route::post('/report/transaction-by-invoice/pdf', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice_pdf'])->name('report.transactioninvoice.pdf');
+
 Route::match(['get', 'post'], '/report/transaction-by-product', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product'])->name('report.transactionproduct');
+Route::post('/report/transaction-by-product/excel', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product_excel'])->name('report.transactionproduct.excel');
+Route::post('/report/transaction-by-product/pdf', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product_pdf'])->name('report.transactionproduct.pdf');
+
 Route::match(['get', 'post'], '/report/receive', [App\Http\Controllers\ReportController::class, 'report_receive'])->name('report.receive');
+Route::post('/report/receive/excel', [App\Http\Controllers\ReportController::class, 'report_receive_excel'])->name('report.receive.excel');
+Route::post('/report/receive/pdf', [App\Http\Controllers\ReportController::class, 'report_receive_pdf'])->name('report.receive.pdf');
+
 Route::match(['get', 'post'], '/report/receive-by-no', [App\Http\Controllers\ReportController::class, 'report_receive_by_no'])->name('report.receiveno');
+Route::post('/report/receive-by-no/excel', [App\Http\Controllers\ReportController::class, 'report_receive_by_no_excel'])->name('report.receiveno.excel');
+Route::post('/report/receive-by-no/pdf', [App\Http\Controllers\ReportController::class, 'report_receive_by_no_pdf'])->name('report.receiveno.pdf');
+
 Route::match(['get', 'post'], '/report/receive-by-product', [App\Http\Controllers\ReportController::class, 'report_receive_by_product'])->name('report.receiveproduct');
+Route::post('/report/receive-by-product/excel', [App\Http\Controllers\ReportController::class, 'report_receive_by_product_excel'])->name('report.receiveproduct.excel');
+Route::post('/report/receive-by-product/pdf', [App\Http\Controllers\ReportController::class, 'report_receive_by_product_pdf'])->name('report.receiveproduct.pdf');
