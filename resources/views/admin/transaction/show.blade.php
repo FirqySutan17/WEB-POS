@@ -36,19 +36,21 @@
 
 <script>
     //button create post event
-    $('body').on('click', '#btn-show-post', function () {
+    $('body').on('click', '.btn-show-post', function () {
 
-        let invoice_no = $(this).data('invoice_no');
-
+        // let invoice_no = $(this).data('id');
+        let url_show = $(this).data('url');
+        // url_show.replace(":id", invoice_no);
+        // console.log(invoice_no);
         //fetch detail post with ajax
         $.ajax({
-            url: `/transaction/${invoice_no}`,
+            url: url_show,
             type: "GET",
             cache: false,
             success:function(response){
 
                 //fill data to form
-                $('#invoice_no').val(response.data.invoice_no);
+                $('#invoice_no').val(response.transaction.invoice_no);
 
                 //open modal
                 $('#modal-edit').modal('show');

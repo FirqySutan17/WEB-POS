@@ -147,7 +147,7 @@ class ReportController extends Controller
                 SELECT trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.employee_id, users.name
                 FROM tr_transaction trans
                 INNER JOIN users ON trans.emp_no = users.employee_id
-                WHERE trans.trans_date BETWEEN '$sdate' AND '$edate'
+                WHERE trans.status = 'FINISH' AND trans.trans_date BETWEEN '$sdate' AND '$edate'
             ";
 
             $db_query = DB::select(DB::raw($query));
@@ -164,7 +164,7 @@ class ReportController extends Controller
                 INNER JOIN products ON trans_detail.product_code = products.code
                 INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
                 INNER JOIN users ON trans.emp_no = users.employee_id
-                WHERE trans.trans_date BETWEEN '$sdate' AND '$edate'
+                WHERE trans.status = 'FINISH' AND trans.trans_date BETWEEN '$sdate' AND '$edate'
                 $order_by
             ";
 

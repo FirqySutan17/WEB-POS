@@ -89,8 +89,10 @@ CMS | Report Transaction
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $grand_total = 0; ?>
                     @if (!empty($data))
                         @foreach ($data as $item)
+                        <?php $grand_total += $item->total_price; ?>
                             <tr>
                                 <td class="center-text">{{ $loop->iteration }}</td>
 
@@ -113,6 +115,12 @@ CMS | Report Transaction
                         @endforeach
                     @endif
                 </tbody>
+                <tfoot>
+                    <tr class="head-report">
+                        <th colspan="5" class="heightHr right-text">Grand Total <span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">@currency($grand_total) <span class="dividerHr"></span></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">
