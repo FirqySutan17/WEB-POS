@@ -88,8 +88,8 @@ Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
 
 // Transaction Route
 Route::resource('/transaction', App\Http\Controllers\TransactionController::class);
+Route::get('/transaction/receipt/{transaction}', [App\Http\Controllers\TransactionController::class, 'receipt'])->name('transaction.receipt');
 Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::class, 'summary'])->name('transaction.summary');
-Route::get('/receipt-template', [App\Http\Controllers\TransactionController::class, 'print_receipt'])->name('transaction.receipt');
 
 // Report Route
 Route::match(['get', 'post'], '/report/stock-by-date', [App\Http\Controllers\ReportController::class, 'report_stock_by_date'])->name('report.stock');

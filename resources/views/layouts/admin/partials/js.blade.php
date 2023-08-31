@@ -10,7 +10,6 @@
 <script src="{{asset('assets/js/bootstrap/bootstrap.min.js')}}"></script>
 <!-- Plugins JS start-->
 @stack('scripts')
-@stack('javascript-external')
 @stack('javascript-internal')
 
 <!-- Plugins JS Ends-->

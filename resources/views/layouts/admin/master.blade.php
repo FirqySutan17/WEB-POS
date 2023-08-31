@@ -66,7 +66,6 @@
   </div>
   <!-- latest jquery-->
   @includeIf('layouts.admin.partials.js')
-  @stack('javascript-internal')
   @stack('javascript-external')
 </body>
 

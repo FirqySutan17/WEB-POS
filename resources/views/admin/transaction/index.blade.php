@@ -118,7 +118,7 @@ CMS | Transaction
                             {{ $transaction->trans_date }}
                         </td>
                         <td style="width: 20%; vertical-align: middle">{{ $transaction->user->name }}</td>
-                        <td style="width: 15%; vertical-align: middle">
+                        <td style="width: 20%; vertical-align: middle">
                             {{ $transaction->invoice_no }}
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">
@@ -131,13 +131,19 @@ CMS | Transaction
                         <td class="center-text" style="width: 10%; vertical-align: middle">
                             {{ $transaction->status }}
                         </td>
-                        <td style="width: 10%;" class="center-text boxAction fontField">
+                        <td style="width: 5%;" class="center-text boxAction fontField">
                             <div class="boxInside">
                                 @if ($transaction->status == 'FINISH')
                                 <div class="boxEdit">
                                     <a href="{{ route('transaction.show', ['transaction' => $transaction]) }}"
                                         class="btn-sm btn-info" role="button" target="_blank">
-                                        <i class="bx bxs-bullseye"></i>
+                                        <i class='bx bx-show'></i>
+                                    </a>
+                                </div>
+                                <div class="boxEdit">
+                                    <a href="{{ route('transaction.receipt', ['transaction' => $transaction]) }}"
+                                        class="btn-sm btn-info" role="button" target="_blank">
+                                        <i class='bx bx-receipt'></i>
                                     </a>
                                 </div>
                                 @endif

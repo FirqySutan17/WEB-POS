@@ -22,7 +22,7 @@ class Transaction extends Model
 
     public function getRouteKeyName()
     {
-        return 'id';
+        return 'invoice_no';
     }
 
     public function detail()
