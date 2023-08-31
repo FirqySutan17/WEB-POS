@@ -97,3 +97,5 @@ Route::match(['get', 'post'], '/report/transaction', [App\Http\Controllers\Repor
 Route::match(['get', 'post'], '/report/transaction-by-invoice', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice'])->name('report.transactioninvoice');
 Route::match(['get', 'post'], '/report/transaction-by-product', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product'])->name('report.transactionproduct');
 Route::match(['get', 'post'], '/report/receive', [App\Http\Controllers\ReportController::class, 'report_receive'])->name('report.receive');
+Route::match(['get', 'post'], '/report/receive-by-no', [App\Http\Controllers\ReportController::class, 'report_receive_by_no'])->name('report.receiveno');
+Route::match(['get', 'post'], '/report/receive-by-product', [App\Http\Controllers\ReportController::class, 'report_receive_by_product'])->name('report.receiveproduct');

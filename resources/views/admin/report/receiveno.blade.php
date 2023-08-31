@@ -36,7 +36,7 @@ CMS | Report Stock
         <div class="tr-shadow" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px">
             <div class="boxHeader" style="margin-bottom: 0px">
                 {{-- filter:start --}}
-                <form action="{{ route('report.receive') }}" class="row" method="POST">
+                <form action="{{ route('report.receiveno') }}" class="row" method="POST">
                     @csrf
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
@@ -68,27 +68,19 @@ CMS | Report Stock
                 <thead>
                     <tr class="head-report">
                         <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
-                        <th rowspan="2" class="center-text">Tanggal<span class="dividerHr"></span></th>
-                        <th colspan="5" class="heightHr center-text" style="vertical-align: middle">Receive <span
-                                class="dividerHr"></span>
-
+                        <th rowspan="2" class="center-text">Receive Code<span class="dividerHr"></span></th>
+                        <th rowspan="2" class="center-text">Receive Date<span class="dividerHr"></span></th>
+                        <th rowspan="2" class="center-text">Delivery No<span class="dividerHr"></span></th>
+                        <th rowspan="2" class="center-text">PIC<span class="dividerHr"></span></th>
+                        <th colspan="2" class="heightHr center-text" style="vertical-align: middle">Product <span class="dividerHr"></span>
                         </th>
                     </tr>
                     <tr class="head-report">
-                        <th class="heightHr center-text" style="vertical-align: middle">Receive No <span
+                        <th class="heightHr center-text" style="vertical-align: middle">Product Name <span
                                 class="dividerHr"></span>
                         </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">Delivery No<span
+                        <th class="heightHr center-text" style="vertical-align: middle">Qty<span
                             class="dividerHr"></span>
-                        </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">PIC<span
-                                class="dividerHr"></span>
-                        </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">Total Product<span
-                                class="dividerHr"></span>
-                        </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">Total Qty<span
-                                class="dividerHr"></span>
                         </th>
                     </tr>
                 </thead>
@@ -102,10 +94,18 @@ CMS | Report Stock
                                         {{ $loop->iteration }}
                                     </td>
                                     <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                        {{ $item['code'] }}
+                                    </td>
+                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
                                         {{ $item['receive_date'] }}
                                     </td>
-
-                                    <td colspan="5" style="vertical-align: middle; padding: 0px">
+                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                        {{ $item['delivery_no'] }}
+                                    </td>
+                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                        {{ $item['pic'] }}
+                                    </td>
+                                    <td colspan="2" style="vertical-align: middle; padding: 0px">
 
                                     </td>
                                     {{-- <td rowspan="3" class="center-text" style="vertical-align: middle;">
@@ -114,11 +114,8 @@ CMS | Report Stock
                                 </tr>
                                 @foreach ($item['details'] as $rcv)
                                     <tr>
-                                        <td style="vertical-align: middle">{{ $rcv['code'] }}</td>
-                                        <td style="vertical-align: middle">{{ $rcv['delivery_no'] }}</td>
-                                        <td class="center-text">{{ $rcv['pic'] }}</td>
-                                        <td class="center-text">{{ $rcv['total_product'] }}</td>
-                                        <td class="center-text">{{ $rcv['total_qty'] }}</td>
+                                        <td class="center-text">{{ $rcv['product'] }}</td>
+                                        <td class="center-text">{{ $rcv['quantity'] }}</td>
                                     </tr>
                                 @endforeach
                             </div>
@@ -161,27 +158,5 @@ CMS | Report Stock
          autoclose:true
       });     
     })
-</script>
-<script>
-    $(document).ready(function() {
-		$("form[role='alert']").submit(function(event) {
-			event.preventDefault();
-			Swal.fire({
-				title: 'Delete',
-				text: 'Are you sure want to remove this?',
-				icon: 'warning',
-				allowOutsideClick: false,
-				showCancelButton: true,
-				cancelButtonText: "Cancel",
-				reverseButtons: true,
-				confirmButtonText: "Yes",
-			}).then((result) => {
-				if (result.isConfirmed) {
-					// todo: process of deleting categories
-					event.target.submit();
-				}
-			});
-		});
-	});
 </script>
 @endpush
