@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\StockExport;
+
 class ReportController extends Controller
 {
     public function __construct()
@@ -14,19 +18,52 @@ class ReportController extends Controller
         $this->middleware('permission:RT Show', ['only' => 'report_transaction']);
     }
     
-    public function report_stock_by_date(Request $request) {
+    public function report_stock(Request $request) {
         $data   = [];
         $sdate  = "";
-        $edate  = ""; 
+        $edate  = "";
+        $search  = ""; 
         if ($request->_token) {
             $sdate = $request->sdate;
             $edate = $request->edate;
-            $data = $this->get_stock($sdate, $edate);
+            $search = trim($request->search);
+            $data = $this->get_stock($sdate, $edate, $search);
         }
-        return view('admin.report.stock', compact('data', 'sdate', 'edate'));
+        return view('admin.report.stock', compact('data', 'sdate', 'edate', 'search'));
     }
 
-    private function get_stock($sdate, $edate) {
+    public function report_stock_excel(Request $request) {
+        $data   = [];
+        $sdate  = "";
+        $edate  = "";
+        $search  = ""; 
+        if ($request->_token) {
+            $sdate = $request->sdate;
+            $edate = $request->edate;
+            $search = trim($request->search);
+            $data = $this->get_stock($sdate, $edate, $search);
+        }
+        return Excel::download(new StockExport($data), 'stock.xlsx');
+    }
+
+    public function report_stock_pdf(Request $request) {
+        $data   = [];
+        $sdate  = "";
+        $edate  = "";
+        $search  = ""; 
+        if ($request->_token) {
+            $sdate = $request->sdate;
+            $edate = $request->edate;
+            $search = trim($request->search);
+            $data = $this->get_stock($sdate, $edate, $search);
+        }
+        $pdf = PDF::loadview('exports/stock',['data'=>$data]);
+        return $pdf->stream();
+    	// return $pdf->download('stock-opname-pdf');
+    }
+
+    private function get_stock($sdate, $edate, $search) {
+        $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
         $query = "
             SELECT 
                 products.code, 
@@ -88,7 +125,7 @@ class ReportController extends Controller
                     )
                 ) AS qty_end
             FROM products
-            WHERE deleted_at IS NULL
+            WHERE deleted_at IS NULL ".$where."
             ORDER BY products.name ASC, products.code ASC       
         ";
 

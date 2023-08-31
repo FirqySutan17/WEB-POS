@@ -92,7 +92,9 @@ Route::get('/transaction/receipt/{transaction}', [App\Http\Controllers\Transacti
 Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::class, 'summary'])->name('transaction.summary');
 
 // Report Route
-Route::match(['get', 'post'], '/report/stock-by-date', [App\Http\Controllers\ReportController::class, 'report_stock_by_date'])->name('report.stock');
+Route::match(['get', 'post'], '/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');
+Route::post('/report/stock/excel', [App\Http\Controllers\ReportController::class, 'report_stock_excel'])->name('report.stock.excel');
+Route::post('/report/stock/pdf', [App\Http\Controllers\ReportController::class, 'report_stock_pdf'])->name('report.stock.pdf');
 Route::match(['get', 'post'], '/report/transaction', [App\Http\Controllers\ReportController::class, 'report_transaction_by_date'])->name('report.transaction');
 Route::match(['get', 'post'], '/report/transaction-by-invoice', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice'])->name('report.transactioninvoice');
 Route::match(['get', 'post'], '/report/transaction-by-product', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product'])->name('report.transactionproduct');

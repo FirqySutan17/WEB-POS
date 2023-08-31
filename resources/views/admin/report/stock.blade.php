@@ -31,6 +31,11 @@ CMS | Report Stock
                 {{-- filter:start --}}
                 <form action="{{ route('report.stock') }}" class="row" method="POST">
                     @csrf
+                    <div class="col-5">
+                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text" class="form-control"
+                                placeholder="Search item by name or code"
+                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                    </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
                             value="{{ empty($sdate) ? date('Y-m-d') : $sdate }}"
@@ -46,20 +51,11 @@ CMS | Report Stock
                             FILTER
                         </button>
                     </div>
-                    <div class="col-3">
-                        <a href="#" class="btn btn-primary _btn" role="button">
-                            EXPORT
-                        </a>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.stock.excel') }}">EXCEL</button>
                     </div>
-                    <div class="col-4 boxContent">
-                        <div class="boxSearch _form-group">
-                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
-                                placeholder="Search for data.."
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
-                        </div>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.stock.pdf') }}">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
@@ -100,16 +96,6 @@ CMS | Report Stock
                     </tr>
                     @endforeach
                     @endif
-
-
-                    {{-- <table></table>
-                    <p style="text-align: center; padding-top: 50px;">
-
-                        <strong> Search not found</strong>
-
-                        <strong> No data yet</strong>
-
-                    </p> --}}
 
                 </tbody>
             </table>
