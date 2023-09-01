@@ -48,6 +48,11 @@ CMS | Report Transaction
                 {{-- filter:start --}}
                 <form action="{{ route('report.transactionproduct') }}" class="row" method="POST">
                     @csrf
+                    <div class="col-5">
+                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text" class="form-control"
+                                placeholder="Search employee name or id"
+                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                    </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
                             value="{{ empty($sdate) ? date('Y-m-d') : $sdate }}"
@@ -59,24 +64,13 @@ CMS | Report Transaction
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button">
-                            FILTER
-                        </button>
+                        <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
-                    <div class="col-3">
-                        <a href="#" class="btn btn-primary _btn" role="button">
-                            EXPORT
-                        </a>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transactionproduct.excel') }}">EXCEL</button>
                     </div>
-                    <div class="col-4 boxContent">
-                        <div class="boxSearch _form-group">
-                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
-                                placeholder="Search for data.."
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
-                        </div>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transactionproduct.pdf') }}">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
