@@ -136,7 +136,8 @@ CMS | Transaction
                                 @if ($transaction->status == 'FINISH')
                                 <div class="boxEdit">
                                     <a href="javascript:void(0)"
-                                        data-url="{{ route('transaction.show', $transaction->invoice_no) }}" class="btn-sm btn-info btn-show-post" role="button">
+                                        data-url="{{ route('transaction.show', $transaction->invoice_no) }}"
+                                        class="btn-sm btn-info btn-show-post" role="button">
                                         <i class='bx bx-show'></i>
                                     </a>
                                 </div>

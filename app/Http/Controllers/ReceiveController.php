@@ -127,6 +127,19 @@ class ReceiveController extends Controller
         return redirect()->route('receive.index');
     }
 
+    public function show(Receive $receive)
+    {
+        $receive = Receive::with(['user', 'detail'])->find($receive);
+        // dd($receive_data);
+        $details = ReceiveDetail::where('receive_code', $receive[0]->receive_code)->join('products', 'tr_receive_detail.product_code', 'products.code')->get();
+        $data = [
+            "receive"   => $receive,
+            "details" => $details
+        ];
+        return response()->json($data);
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *

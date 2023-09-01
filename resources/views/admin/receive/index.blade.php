@@ -54,6 +54,7 @@ CMS | Receive
 						<th class="heightHr">PIC <span class="dividerHr"></span></th>
 						<th class="heightHr">Delivery No <span class="dividerHr"></span></th>
 						<th class="heightHr">Driver <span class="dividerHr"></span></th>
+						<th class="heightHr">Action <span class="dividerHr"></span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -63,13 +64,22 @@ CMS | Receive
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
 						<td style="width: 20%; vertical-align: middle">{{ $receive->receive_code }}</td>
 						<td style="width: 15%; vertical-align: middle">{{ $receive->receive_date }}</td>
-						<td style="width: 20%; vertical-align: middle">{{ $receive->user->name }}</td>
+						<td style="width: 15%; vertical-align: middle">{{ $receive->user->name }}</td>
 						<td style="width: 15%; vertical-align: middle"><a
 								href="{{ asset('file_upload/'.$receive->delivery_file) }}">{{ $receive->delivery_no
 								}}</a></td>
-						<td style="width: 25%; vertical-align: middle">{!! empty($receive->driver) ? "Delivery from
+						<td style="width: 20%; vertical-align: middle">{!! empty($receive->driver) ? "Delivery from
 							Warehouse" : $receive->driver."<br />".$receive->driver_phone."<br />".$receive->plate_no
 							!!}</td>
+						<td style="width: 10%; vertical-align: middle">
+							<div class="boxEdit">
+								<a href="javascript:void(0)"
+									data-url="{{ route('receive.show', $receive->receive_code) }}"
+									class="btn-sm btn-info btn-show-receive" role="button">
+									<i class='bx bx-show'></i>
+								</a>
+							</div>
+						</td>
 					</tr>
 					@endforeach
 					@else
@@ -125,4 +135,7 @@ CMS | Receive
 		});
 	});
 </script>
+
+@include('admin.receive.show')
+
 @endpush

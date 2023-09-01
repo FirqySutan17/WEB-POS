@@ -106,7 +106,7 @@
 </style>
 
 <!-- Modal -->
-<div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-receive" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -119,25 +119,19 @@
                 <table class="modal-table">
                     <thead>
                         <tr>
-                            <th>NO. INVOICE</th>
-                            <td>#{{ $transaction['invoice_no'] }}</td>
-                            <th>NO. RECEIPT</th>
-                            <td>#{{ $transaction->receipt_no }}</td>
+                            <th>KODE RECEIVE</th>
+                            <td>#</td>
+                            <th>TANGGAL/WAKTU</th>
+                            <td>#</td>
                         </tr>
                         <tr>
-                            <th>KASIR</th>
-                            <td>{{ $transaction->user->name }}</td>
-                            <th>TANGGAL</th>
-                            <td>{{ $transaction->trans_date }}</td>
+                            <th>PENERIMA</th>
+                            <td></td>
+                            <th>PENGIRIM</th>
+                            <td></td>
                         </tr>
                         <tr>
-                            <th>PEMBAYARAN</th>
-                            <td>{{ $transaction->payment_method }}</td>
-                            <th>STATUS</th>
-                            <td>{{ $transaction->status }}</td>
-                        </tr>
-                        <tr>
-                            <th colspan="4" class="center-text">TRANSAKSI</th>
+                            <th colspan="4" class="center-text">RECEIVE</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -150,74 +144,29 @@
                         <tr>
                             <th class="center-text">No.</th>
                             <th>Produk</th>
-                            <th class="center-text">Harga</th>
-                            <th class="center-text">(%)</th>
                             <th class="center-text">Qty</th>
                             <th style="text-align: right">Total</th>
                         </tr>
 
                         <tr>
                             <td class="center-text" style="width: 5%">1</td>
-                            <td style="width: 40%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 20%">
-                                <span style="text-decoration: line-through; font-size: 12px">
-                                    Rp 300.000</span> <br>
-                                Rp 270.000
-                            </td>
-                            <td class="center-text" style="width: 5%">
-                                5%
-                            </td>
+                            <td style="width: 90%">LOREM IPSUM DOLOR SIT AMET</td>
                             <td class="center-text" style="width: 5%">10</td>
-                            <td class="center-text" style="width: 25%;text-align: right">Rp 1.700.000</td>
                         </tr>
+
                         <tr>
                             <td class="center-text" style="width: 5%">2</td>
-                            <td style="width: 40%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 20%">
-
-                                Rp 270.000
-                            </td>
-                            <td class="center-text" style="width: 5%">
-                                0%
-                            </td>
+                            <td style="width: 90%">LOREM IPSUM DOLOR SIT AMET</td>
                             <td class="center-text" style="width: 5%">10</td>
-                            <td style="width: 25%;text-align: right">Rp 1.700.000</td>
                         </tr>
+
                         <tr>
                             <td class="center-text" style="width: 5%">3</td>
-                            <td style="width: 40%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 20%">
-
-                                Rp 270.000
-                            </td>
-                            <td class="center-text" style="width: 5%">
-                                0%
-                            </td>
+                            <td style="width: 90%">LOREM IPSUM DOLOR SIT AMET</td>
                             <td class="center-text" style="width: 5%">10</td>
-                            <td style="width: 25%;text-align: right">Rp 1.700.000</td>
                         </tr>
                     </tbody>
 
-                </table>
-                <table class="modal-table-total">
-                    <tbody>
-                        <tr>
-                            <th style="width: 75%">SUB TOTAL</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
-                        </tr>
-                        <tr>
-                            <th style="width: 75%">(%)</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
-                        </tr>
-                        <tr>
-                            <th style="width: 75%">VAT</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
-                        </tr>
-                        <tr>
-                            <th style="width: 75%">GRAND TOTAL</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -228,12 +177,12 @@
 
 <script>
     //button create post event
-    $('.btn-show-post').click(function () {
+    $('.btn-show-receive').click(function () {
 
         // let invoice_no = $(this).data('id');
         let url_show = $(this).data('url');
         // url_show.replace(":id", invoice_no);
-        // console.log(url_show);
+        console.log(url_show);
         //fetch detail post with ajax
         $.ajax({
             url: url_show,
@@ -245,10 +194,10 @@
             success:function(response){
                 console.log(response);
                 //fill data to form
-                $('#invoice_no').val(response.transaction.invoice_no);
+                $('#invoice_no').val(response.receive.receive_code);
 
                 //open modal
-                $('#modal-edit').modal('show');
+                $('#modal-receive').modal('show');
             },
             complete: function () {
                 $('#loader').addClass('display-none')

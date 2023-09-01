@@ -65,7 +65,3 @@
     <div class="d-lg-none mobile-toggle pull-right w-auto"><i data-feather="more-horizontal"></i></div>
   </div>
 </div>
-
-<script>
-  console.log(Auth::user()->role)
-</script>
