@@ -91,10 +91,17 @@ CMS | Transaction
                                         @endforeach
                                         @endif
                                     </marquee> --}}
-                                    <input id="input-scanner" type="text" class="form-control"
+                                    {{-- <input id="input-scanner" type="text" class="form-control"
                                         placeholder="Klik disini untuk Scan Barcode"
                                         style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                        tabindex="1" />
+                                        tabindex="1" /> --}}
+                                    <div class="tr-input tr-shadow" style="padding: 0px 20px">
+                                        <div>
+                                            <input type="text" id="input-scanner" placeholder="Klik disini untuk scan barcode"
+                                                tabindex="1" />
+                                        </div>
+                                        <ul class="list stay-hidden"></ul>
+                                    </div>
                                     <div class="tr-shadow table-responsive">
                                         <table class="table table-striped table-hover">
                                             <thead>
@@ -320,10 +327,35 @@ CMS | Transaction
     }
 
     $('#input-scanner').unbind('keyup');
-    $('#input-scanner').bind('keyup', function (e) {
-        var code = e.keyCode || e.which;
-        if (code == 13) {
-            var product_code = $(this).val().trim();
+        $('#input-scanner').bind('keyup', function (e) {
+            removeElements();
+            var code = e.keyCode || e.which;
+            let value = $('#input-scanner').val();
+            let len_char = value.length;
+            // if (len_char <= 6) {
+            //     $(".list").empty();
+            // }
+            if (len_char > 6 && code != 13) {
+                search_product(value);
+            }
+            if (code == 13) {
+                proceed_enter();
+            }
+            
+        });
+
+        function displayNames(value, text) {
+            $("#input-scanner").val(value);
+            proceed_enter();
+        }
+        function removeElements() {
+            $(".list").empty();
+            $(".list").addClass('stay-hidden');
+        }
+
+        function proceed_enter() {
+            removeElements();
+            var product_code = $('#input-scanner').val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
@@ -337,141 +369,165 @@ CMS | Transaction
             } else {
                 add_product_item(product_code);
             }
-            
-            $(this).val('');
+            $('#input-scanner').val('');
+            removeElements();
         }
-        
-    });
 
-    function add_product_item(product_code, qty = 1) {
-        $.ajax({
-            url: "{{ route('product.select_one') }}",
-            type: "POST",
-            data: {
-                "_token": `{{ csrf_token() }}`,
-                "product_code": product_code,
-            },
-            success: function(response) {
-                if (response.status == "failed") {
-                    Swal.fire({
-                        title: 'Oops...',
-                        text: response.message,
-                        icon: 'error'
-                    });
-                    return false;
-                }
-                var product = response.data;
-                var id = product_code;
-                var item_id = "item_product_" + id;
-
-                var basic_price = product.price_store;
-                var final_price = basic_price;
-                var html_price = formatRupiah(final_price.toString());
-                // Calculate Discount
-                var discount_store = (product.discount_store) ? product.discount_store : 0;
-                var discount_price = 0;
-                if (discount_store > 0) {
-                    discount_price = basic_price * (discount_store / 100);
-                    final_price = basic_price - discount_price;
-                    html_price = `
-                        <p style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</p>
-                        ${formatRupiah(final_price.toString())}
-                    `;
-                }
-                var html_item = `
-                    <tr id="${item_id}">
-                        <td style="width: 35%; vertical-align: middle">
-                            <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
-                            <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
-                            <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
-                            <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
-                            <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
-                            ${product.code + ' - ' + product.name}
-                        </td>
-                        <td style="width: 19%; vertical-align: middle; text-align: center">
-                            ${html_price}
-                        </td>
-                        <td style="width: 6%; vertical-align: middle">
-                            <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="${qty}" placeholder="1" tabindex="1" />
-                        </td>
-                        <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
-                        <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
-                        <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
-                            <div class="boxInside" style="align-items: center; justify-content: center;">
-                                <div class="boxDelete">
-                                    <button id="btn_delete_${item_id}" onblur="onblur_color('${item_id}')" onfocus="onfocus_color('${item_id}')" onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
-                                        <i class="bx bx-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-
-                $("#product_lists").append(html_item);
-                calculate_vat();
-                $(`#quantity_${item_id}`).on('keyup', function (e) {
-                    var code = e.keyCode || e.which;
-                    // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
-                    var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
-                    if (allowed_keycode.includes(code)) {
-                        // var str_quantity_product = $(this).val();
-                        // var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
-                        var qty = Number($(`#quantity_${item_id}`).val());
-                        var final_price = Number($(`#final_price_${item_id}`).val());
-                        var total_price = final_price * qty;
-                        $(`#total_price_${item_id}`).val(total_price);
-                        $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
-                        calculate_vat();
-                    } else {
-                        e.preventDefault();
+        function search_product(keyword) {
+            $.ajax({
+                url: "{{ route('product.select') }}",
+                type: "POST",
+                data: {
+                    "_token": `{{ csrf_token() }}`,
+                    "q": keyword,
+                },
+                beforeSend: function () {
+                    removeElements();
+                },
+                success: function(response) {
+                    console.log(response);
+                    let data = response;
+                    let html_input = "";
+                    if (data.length > 0) {
+                        $.each(data, function(i, item) {
+                            html_input += `<option onclick="displayNames('${item.code}', '${item.code} | ${item.name}')" class="list-items" value="${item.code}">${item.code} | ${item.name}</option>`;
+                        })
                     }
-                });
-            }
-        });
-
-    }
-
-    function delete_row_product(eid_item) {
-        $("#" + eid_item).remove();
-        calculate_vat();
-    }
-
-     /* Tanpa Rupiah */
-    var tanpa_rupiah    = document.getElementById('tanpa-rupiah');
-    var kembalian       = document.getElementById('kembalian');
-    tanpa_rupiah.addEventListener('keyup', function(e) {
-        var nominal = this.value;
-        var nominal_number = Number(nominal.replace(".", ""));
-        tanpa_rupiah.value = formatRupiah(nominal);
-
-        var kembali = final_total_price_item - nominal_number;
-        kembalian.value = formatRupiah(kembali.toString());
-    });
-    
-    /* Dengan Rupiah */
-    // var dengan_rupiah = document.getElementById('dengan-rupiah');
-    // dengan_rupiah.addEventListener('keyup', function(e)
-    // {
-    //     dengan_rupiah.value = formatRupiah(this.value, 'Rp. ');
-    // });
-    
-    /* Fungsi */
-    function formatRupiah(angka, prefix)
-    {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split    = number_string.split(','),
-            sisa     = split[0].length % 3,
-            rupiah     = split[0].substr(0, sisa),
-            ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
-            
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
+                    $(".list").html(html_input);
+                    $(".list").removeClass("stay-hidden");
+                }
+            });
         }
+
+        function add_product_item(product_code, qty = 1) {
+            $.ajax({
+                url: "{{ route('product.select_one') }}",
+                type: "POST",
+                data: {
+                    "_token": `{{ csrf_token() }}`,
+                    "product_code": product_code,
+                },
+                success: function(response) {
+                    if (response.status == "failed") {
+                        Swal.fire({
+                            title: 'Oops...',
+                            text: response.message,
+                            icon: 'error'
+                        });
+                        return false;
+                    }
+                    var product = response.data;
+                    var id = product_code;
+                    var item_id = "item_product_" + id;
+
+                    var basic_price = product.price_store;
+                    var final_price = basic_price;
+                    var html_price = formatRupiah(final_price.toString());
+                    // Calculate Discount
+                    var discount_store = (product.discount_store) ? product.discount_store : 0;
+                    var discount_price = 0;
+                    if (discount_store > 0) {
+                        discount_price = basic_price * (discount_store / 100);
+                        final_price = basic_price - discount_price;
+                        html_price = `
+                            <p style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</p>
+                            ${formatRupiah(final_price.toString())}
+                        `;
+                    }
+                    var html_item = `
+                        <tr id="${item_id}">
+                            <td style="width: 35%; vertical-align: middle">
+                                <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
+                                <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
+                                <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
+                                <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
+                                <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
+                                ${product.code + ' - ' + product.name}
+                            </td>
+                            <td style="width: 19%; vertical-align: middle; text-align: center">
+                                ${html_price}
+                            </td>
+                            <td style="width: 6%; vertical-align: middle">
+                                <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="${qty}" placeholder="1" tabindex="1" />
+                            </td>
+                            <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
+                            <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
+                            <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
+                                <div class="boxInside" style="align-items: center; justify-content: center;">
+                                    <div class="boxDelete">
+                                        <button id="btn_delete_${item_id}" onblur="onblur_color('${item_id}')" onfocus="onfocus_color('${item_id}')" onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+
+                    $("#product_lists").append(html_item);
+                    calculate_vat();
+                    $(`#quantity_${item_id}`).on('keyup', function (e) {
+                        var code = e.keyCode || e.which;
+                        // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
+                        var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
+                        if (allowed_keycode.includes(code)) {
+                            // var str_quantity_product = $(this).val();
+                            // var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
+                            var qty = Number($(`#quantity_${item_id}`).val());
+                            var final_price = Number($(`#final_price_${item_id}`).val());
+                            var total_price = final_price * qty;
+                            $(`#total_price_${item_id}`).val(total_price);
+                            $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
+                            calculate_vat();
+                        } else {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function delete_row_product(eid_item) {
+            $("#" + eid_item).remove();
+            calculate_vat();
+        }
+
+        /* Tanpa Rupiah */
+        var tanpa_rupiah    = document.getElementById('tanpa-rupiah');
+        var kembalian       = document.getElementById('kembalian');
+        tanpa_rupiah.addEventListener('keyup', function(e) {
+            var nominal = this.value;
+            var nominal_number = Number(nominal.replace(".", ""));
+            tanpa_rupiah.value = formatRupiah(nominal);
+
+            var kembali = final_total_price_item - nominal_number;
+            kembalian.value = formatRupiah(kembali.toString());
+        });
         
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-    }
+        /* Dengan Rupiah */
+        // var dengan_rupiah = document.getElementById('dengan-rupiah');
+        // dengan_rupiah.addEventListener('keyup', function(e)
+        // {
+        //     dengan_rupiah.value = formatRupiah(this.value, 'Rp. ');
+        // });
+        
+        /* Fungsi */
+        function formatRupiah(angka, prefix)
+        {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split    = number_string.split(','),
+                sisa     = split[0].length % 3,
+                rupiah     = split[0].substr(0, sisa),
+                ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
+                
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+            
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
     </script>
     @endpush

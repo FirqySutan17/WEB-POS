@@ -120,21 +120,21 @@
                     <thead>
                         <tr>
                             <th>NO. INVOICE</th>
-                            <td>#{{ $transaction['invoice_no'] }}</td>
+                            <td class="detail_clear" id="invoice_no"></td>
                             <th>NO. RECEIPT</th>
-                            <td>#{{ $transaction->receipt_no }}</td>
+                            <td class="detail_clear" id="receipt_no"></td>
                         </tr>
                         <tr>
                             <th>KASIR</th>
-                            <td>{{ $transaction->user->name }}</td>
+                            <td class="detail_clear" id="cashier_name"></td>
                             <th>TANGGAL</th>
-                            <td>{{ $transaction->trans_date }}</td>
+                            <td class="detail_clear" id="transaction_date"></td>
                         </tr>
                         <tr>
                             <th>PEMBAYARAN</th>
-                            <td>{{ $transaction->payment_method }}</td>
+                            <td class="detail_clear" id="payment_method"></td>
                             <th>STATUS</th>
-                            <td>{{ $transaction->status }}</td>
+                            <td class="detail_clear" id="status"></td>
                         </tr>
                         <tr>
                             <th colspan="4" class="center-text">TRANSAKSI</th>
@@ -146,7 +146,7 @@
                     <thead>
 
                     </thead>
-                    <tbody>
+                    <tbody id="transaction_detail">
                         <tr>
                             <th class="center-text">No.</th>
                             <th>Produk</th>
@@ -155,47 +155,6 @@
                             <th class="center-text">Qty</th>
                             <th style="text-align: right">Total</th>
                         </tr>
-
-                        <tr>
-                            <td class="center-text" style="width: 5%">1</td>
-                            <td style="width: 40%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 20%">
-                                <span style="text-decoration: line-through; font-size: 12px">
-                                    Rp 300.000</span> <br>
-                                Rp 270.000
-                            </td>
-                            <td class="center-text" style="width: 5%">
-                                5%
-                            </td>
-                            <td class="center-text" style="width: 5%">10</td>
-                            <td class="center-text" style="width: 25%;text-align: right">Rp 1.700.000</td>
-                        </tr>
-                        <tr>
-                            <td class="center-text" style="width: 5%">2</td>
-                            <td style="width: 40%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 20%">
-
-                                Rp 270.000
-                            </td>
-                            <td class="center-text" style="width: 5%">
-                                0%
-                            </td>
-                            <td class="center-text" style="width: 5%">10</td>
-                            <td style="width: 25%;text-align: right">Rp 1.700.000</td>
-                        </tr>
-                        <tr>
-                            <td class="center-text" style="width: 5%">3</td>
-                            <td style="width: 40%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 20%">
-
-                                Rp 270.000
-                            </td>
-                            <td class="center-text" style="width: 5%">
-                                0%
-                            </td>
-                            <td class="center-text" style="width: 5%">10</td>
-                            <td style="width: 25%;text-align: right">Rp 1.700.000</td>
-                        </tr>
                     </tbody>
 
                 </table>
@@ -203,19 +162,19 @@
                     <tbody>
                         <tr>
                             <th style="width: 75%">SUB TOTAL</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
+                            <td class="footer_clear" id="sub_price" style="width: 25%;text-align: right">Rp 100.000</td>
                         </tr>
                         <tr>
                             <th style="width: 75%">(%)</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
+                            <td class="footer_clear" id="discount" style="width: 25%;text-align: right">Rp 100.000</td>
                         </tr>
                         <tr>
                             <th style="width: 75%">VAT</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
+                            <td class="footer_clear" id="vat" style="width: 25%;text-align: right">Rp 100.000</td>
                         </tr>
                         <tr>
                             <th style="width: 75%">GRAND TOTAL</th>
-                            <td style="width: 25%;text-align: right">Rp 100.000</td>
+                            <td class="footer_clear" id="grand_total" style="width: 25%;text-align: right">Rp 100.000</td>
                         </tr>
                     </tbody>
                 </table>
@@ -227,25 +186,95 @@
 <div id="loader" class="lds-dual-ring display-none overlay"></div>
 
 <script>
+    function clear_detail() {
+        $(".detail_clear").text("");
+        $(".row_clear").remove();
+        $(".footer_clear").text(formatRupiah("0"));
+    }
+
+    function formatRupiah(angka, prefix)
+    {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split    = number_string.split(','),
+            sisa     = split[0].length % 3,
+            rupiah     = split[0].substr(0, sisa),
+            ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
+            
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+
+    function fill_transaction(transaction) {
+        let vat_amount  = parseInt({{ config('app.vat_amount') }});
+        let sub_price   = parseInt(transaction.sub_price);
+        let vat         = sub_price * (vat_amount / 100);
+        let grand_total = sub_price + vat;
+
+        $('#invoice_no').text(transaction.invoice_no);
+        $('#receipt_no').text(transaction.receipt_no);
+        $('#cashier_name').text(transaction.user.name);
+        $('#transaction_date').text(transaction.trans_date);
+        $('#payment_method').text(transaction.payment_method);
+        $('#status').text(transaction.status);
+
+        $('#sub_price').text(formatRupiah(transaction.sub_price.toString()));
+        $('#vat').text(formatRupiah(vat.toString()));
+        $('#grand_total').text(formatRupiah(grand_total.toString()));
+    }
+
+    function fill_transaction_detail(transaction_detail) {
+        let html = '';
+        let total_discount_amount = 0;
+        $.each(transaction_detail, function(i, item) {
+            let html_price = formatRupiah(item.price.toString());
+            let total_price = item.price * item.quantity;
+            let discount_amount = 0;
+            if (item.discount > 0) {
+                discount_amount = item.basic_price - item.price;
+                total_discount_amount += discount_amount;
+                html_price = `
+                    <s>${formatRupiah(item.basic_price.toString())}</s>
+                    <br/>
+                    ${formatRupiah(item.price.toString())}
+                `;
+            }
+            html += `<tr class="row_clear">`;
+                html += `<td>${i + 1}</td>`;
+                html += `<td>${item.code} - ${item.name}</td>`;
+                html += `<td>${html_price}</td>`;
+                html += `<td>${item.discount}</td>`;
+                html += `<td>${item.quantity}</td>`;
+                html += `<td>${formatRupiah(total_price.toString())}</td>`;
+            html += `</tr>`;
+        });
+        $('#discount').text(formatRupiah(total_discount_amount.toString()));
+        $('#transaction_detail').append(html);
+    }
+
     //button create post event
     $('.btn-show-post').click(function () {
-
-        // let invoice_no = $(this).data('id');
         let url_show = $(this).data('url');
-        // url_show.replace(":id", invoice_no);
-        // console.log(url_show);
         //fetch detail post with ajax
         $.ajax({
             url: url_show,
             type: "GET",
             cache: false,
             beforeSend: function () {
+                clear_detail();
                 $('#loader').removeClass('display-none')
             },
             success:function(response){
                 console.log(response);
+                let transaction = response.transaction;
+                let transaction_detail = response.details;
                 //fill data to form
-                $('#invoice_no').val(response.transaction.invoice_no);
+                fill_transaction(transaction);
+                fill_transaction_detail(transaction_detail);
 
                 //open modal
                 $('#modal-edit').modal('show');

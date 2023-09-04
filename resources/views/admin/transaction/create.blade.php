@@ -49,6 +49,10 @@ CMS | Transaction
     .tr-input .list-items:hover {
         background-color: #dddddd;
     }
+
+    .stay-hidden {
+        display: none;
+    }
 </style>
 @endpush
 
@@ -136,10 +140,10 @@ CMS | Transaction
                                         tabindex="1" /> --}}
                                     <div class="tr-input tr-shadow" style="padding: 0px 20px">
                                         <div>
-                                            <input type="text" id="input" placeholder="Klik disini untuk scan barcode"
+                                            <input type="text" id="input-scanner" placeholder="Klik disini untuk scan barcode"
                                                 tabindex="1" />
                                         </div>
-                                        <ul class="list"></ul>
+                                        <ul class="list stay-hidden"></ul>
                                     </div>
 
                                     <div class="tr-shadow table-responsive">
@@ -277,7 +281,7 @@ CMS | Transaction
     <script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
+    {{-- <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js">
     </script>
     @endpush
@@ -285,140 +289,113 @@ CMS | Transaction
 
     @push('javascript-internal')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        let names = [
-        "Ayla",
-        "Jake",
-        "Sean",
-        "Henry",
-        "Brad",
-        "Stephen",
-        "Taylor",
-        "Timmy",
-        "Cathy",
-        "John",
-        "Amanda",
-        "Amara",
-        "Sam",
-        "Sandy",
-        "Danny",
-        "Ellen",
-        "Camille",
-        "Chloe",
-        "Emily",
-        "Nadia",
-        "Mitchell",
-        "Harvey",
-        "Lucy",
-        "Amy",
-        "Glen",
-        "Peter",
-        ];
-        //Sort names in ascending order
-        let sortedNames = names.sort();
-        //reference
-        let input = document.getElementById("input");
-        //Execute function on keyup
-        input.addEventListener("keyup", (e) => {
-        //loop through above array
-        //Initially remove all elements ( so if user erases a letter or adds new letter then clean previous outputs)
-        removeElements();
-        for (let i of sortedNames) {
-            //convert input to lowercase and compare with each string
-            if (
-            i.toLowerCase().startsWith(input.value.toLowerCase()) &&
-            input.value != ""
-            ) {
-            //create li element
-            let listItem = document.createElement("li");
-            //One common class name
-            listItem.classList.add("list-items");
-            listItem.style.cursor = "pointer";
-            listItem.setAttribute("onclick", "displayNames('" + i + "')");
-            //Display matched part in bold
-            let word = "<b>" + i.substr(0, input.value.length) + "</b>";
-            word += i.substr(input.value.length);
-            //display the value in array
-            listItem.innerHTML = word;
-            document.querySelector(".list").appendChild(listItem);
-            }
+        function printExternal(url) {
+            var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
+
+            printWindow.addEventListener('load', function() {
+                if (Boolean(printWindow.chrome)) {
+                    printWindow.print();
+                    setTimeout(function(){
+                        printWindow.close();
+                    }, 500);
+                } else {
+                    printWindow.print();
+                    printWindow.close();
+                }
+            }, true);
         }
-        });
-        function displayNames(value) {
-        input.value = value;
-        removeElements();
-        }
-        function removeElements() {
-        //clear all the item
-        let items = document.querySelectorAll(".list-items");
-        items.forEach((item) => {
-            item.remove();
-        });
-        }
-    </script>
-    <script>
+
         var final_total_price_item = 0;
 
-    $(document).ready(function(e) {
-        $("#input-scanner").focus();
-    });
-    var vat_amount = parseInt({{ config('app.vat_amount') }});
-    function onfocus_color(item_id) {
-        $(`#btn_delete_${item_id}`).removeClass('btn-danger');
-        $(`#btn_delete_${item_id}`).addClass('btn-warning');
-    }
-
-    function onblur_color(item_id) {
-        $(`#btn_delete_${item_id}`).removeClass('btn-warning');
-        $(`#btn_delete_${item_id}`).addClass('btn-danger');
-    }
-
-    function submit_form(status) {
-        $("#input_status").val(status);
-        $("#form-transaction").submit();
-    }
-
-    function calculate_vat() {
-        calculate_total();
-        var total_price_item = 0;
-        $('.total_price_item').each(function(i, obj) {
-            var price_item = Number($(this).val());
-            total_price_item += price_item;
+        $(document).ready(function(e) {
+            $("#input-scanner").focus();
         });
-        var vat_price = total_price_item * (vat_amount / 100);
-        final_total_price_item = total_price_item + vat_price;
-        $("#total_transaction").text(formatRupiah(final_total_price_item.toString()));
-    }
+        var vat_amount = parseInt({{ config('app.vat_amount') }});
+        function onfocus_color(item_id) {
+            $(`#btn_delete_${item_id}`).removeClass('btn-danger');
+            $(`#btn_delete_${item_id}`).addClass('btn-warning');
+        }
 
-    function calculate_total() {
-        var total_discount  = 0;
-        var total_qty       = 0;
-        var sub_total       = 0;
-        $('.final_price_item').each(function(i, obj) {
-            var id = $(this).attr('id').split("_");
-            var item_id = "item_product_" + id[4];
-            var final_price_item = Number($(this).val());
-            var basic_price_item = Number($(`#basic_price_${item_id}`).val());
-            var quantity_item = Number($(`#quantity_${item_id}`).val());
-            var discount = 0;
-            var sub_total_item = final_price_item * quantity_item;
-            if (final_price_item != basic_price_item) {
-                discount = basic_price_item - final_price_item;
+        function onblur_color(item_id) {
+            $(`#btn_delete_${item_id}`).removeClass('btn-warning');
+            $(`#btn_delete_${item_id}`).addClass('btn-danger');
+        }
+
+        function submit_form(status) {
+            let url = `{{ route('transaction.receipt', ['transaction' => 'INV1012200231693282703']) }}`;
+            $("#input_status").val(status);
+            printExternal(url);
+            // $("#form-transaction").submit();
+        }
+
+        function calculate_vat() {
+            calculate_total();
+            var total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+            var vat_price = total_price_item * (vat_amount / 100);
+            final_total_price_item = total_price_item + vat_price;
+            $("#total_transaction").text(formatRupiah(final_total_price_item.toString()));
+        }
+
+        function calculate_total() {
+            var total_discount  = 0;
+            var total_qty       = 0;
+            var sub_total       = 0;
+            $('.final_price_item').each(function(i, obj) {
+                var id = $(this).attr('id').split("_");
+                var item_id = "item_product_" + id[4];
+                var final_price_item = Number($(this).val());
+                var basic_price_item = Number($(`#basic_price_${item_id}`).val());
+                var quantity_item = Number($(`#quantity_${item_id}`).val());
+                var discount = 0;
+                var sub_total_item = final_price_item * quantity_item;
+                if (final_price_item != basic_price_item) {
+                    discount = basic_price_item - final_price_item;
+                }
+                total_discount += discount;
+                total_qty += quantity_item;
+                sub_total += sub_total_item;
+            });
+            $("#total_discount").text(formatRupiah(total_discount.toString()));
+            $("#sub_total").text(formatRupiah(sub_total.toString()));
+            $("#total_qty").text(total_qty);
+        }
+
+        $('#input-scanner').unbind('keyup');
+        $('#input-scanner').bind('keyup', function (e) {
+            removeElements();
+            var code = e.keyCode || e.which;
+            let value = $('#input-scanner').val();
+            let len_char = value.length;
+            // if (len_char <= 6) {
+            //     $(".list").empty();
+            // }
+            if (len_char > 6 && code != 13) {
+                search_product(value);
             }
-            total_discount += discount;
-            total_qty += quantity_item;
-            sub_total += sub_total_item;
+            if (code == 13) {
+                proceed_enter();
+            }
+            
         });
-        $("#total_discount").text(formatRupiah(total_discount.toString()));
-        $("#sub_total").text(formatRupiah(sub_total.toString()));
-        $("#total_qty").text(total_qty);
-    }
 
-    $('#input-scanner').unbind('keyup');
-    $('#input-scanner').bind('keyup', function (e) {
-        var code = e.keyCode || e.which;
-        if (code == 13) {
-            var product_code = $(this).val().trim();
+        function displayNames(value, text) {
+            $("#input-scanner").val(value);
+            proceed_enter();
+        }
+        function removeElements() {
+            $(".list").empty();
+            $(".list").addClass('stay-hidden');
+        }
+
+        function proceed_enter() {
+            removeElements();
+            var product_code = $('#input-scanner').val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
@@ -432,176 +409,190 @@ CMS | Transaction
             } else {
                 add_product_item(product_code);
             }
-            
-            $(this).val('');
+            $('#input-scanner').val('');
+            removeElements();
         }
-        
-    });
 
-    function add_product_item(product_code) {
-        $.ajax({
-            url: "{{ route('product.select_one') }}",
-            type: "POST",
-            data: {
-                "_token": `{{ csrf_token() }}`,
-                "product_code": product_code,
-            },
-            success: function(response) {
-                if (response.status == "failed") {
-                    Swal.fire({
-                        title: 'Oops...',
-                        text: response.message,
-                        icon: 'error'
-                    });
-                    return false;
-                }
-                var product = response.data;
-                var id = product_code;
-                var item_id = "item_product_" + id;
-
-                var basic_price = product.price_store;
-                var final_price = basic_price;
-                var html_price = formatRupiah(final_price.toString());
-                // Calculate Discount
-                var discount_store = (product.discount_store) ? product.discount_store : 0;
-                var discount_price = 0;
-                if (discount_store > 0) {
-                    discount_price = basic_price * (discount_store / 100);
-                    final_price = basic_price - discount_price;
-                    html_price = `
-                        <p style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</p>
-                        ${formatRupiah(final_price.toString())}
-                    `;
-                }
-                var html_item = `
-                    <tr id="${item_id}">
-                        <td style="width: 35%; vertical-align: middle">
-                            <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
-                            <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
-                            <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
-                            <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
-                            <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
-                            ${product.code + ' - ' + product.name}
-                        </td>
-                        <td style="width: 19%; vertical-align: middle; text-align: center">
-                            ${html_price}
-                        </td>
-                        <td style="width: 6%; vertical-align: middle">
-                            <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
-                        </td>
-                        <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
-                        <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
-                        <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
-                            <div class="boxInside" style="align-items: center; justify-content: center;">
-                                <div class="boxDelete">
-                                    <button id="btn_delete_${item_id}" onblur="onblur_color('${item_id}')" onfocus="onfocus_color('${item_id}')" onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
-                                        <i class="bx bx-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-
-                $("#product_lists").append(html_item);
-                calculate_vat();
-                $(`#quantity_${item_id}`).on('keyup', function (e) {
-                    var code = e.keyCode || e.which;
-                    // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
-                    var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
-                    if (allowed_keycode.includes(code)) {
-                        // var str_quantity_product = $(this).val();
-                        // var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
-                        var qty = Number($(`#quantity_${item_id}`).val());
-                        var final_price = Number($(`#final_price_${item_id}`).val());
-                        var total_price = final_price * qty;
-                        $(`#total_price_${item_id}`).val(total_price);
-                        $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
-                        calculate_vat();
-                    } else {
-                        e.preventDefault();
+        function search_product(keyword) {
+            $.ajax({
+                url: "{{ route('product.select') }}",
+                type: "POST",
+                data: {
+                    "_token": `{{ csrf_token() }}`,
+                    "q": keyword,
+                },
+                beforeSend: function () {
+                    removeElements();
+                },
+                success: function(response) {
+                    console.log(response);
+                    let data = response;
+                    let html_input = "";
+                    if (data.length > 0) {
+                        $.each(data, function(i, item) {
+                            html_input += `<option onclick="displayNames('${item.code}', '${item.code} | ${item.name}')" class="list-items" value="${item.code}">${item.code} | ${item.name}</option>`;
+                        })
                     }
-                });
-            }
-        });
-
-    }
-
-    function delete_row_product(eid_item) {
-        $("#" + eid_item).remove();
-        calculate_vat();
-    }
-
-     /* Tanpa Rupiah */
-    var tanpa_rupiah    = document.getElementById('tanpa-rupiah');
-    var kembalian       = document.getElementById('kembalian');
-    tanpa_rupiah.addEventListener('keyup', function(e) {
-        var nominal = this.value;
-        var nominal_number = Number(nominal.replace(".", ""));
-        tanpa_rupiah.value = formatRupiah(nominal);
-
-        var kembali = final_total_price_item - nominal_number;
-        kembalian.value = formatRupiah(kembali.toString());
-    });
-    
-    /* Dengan Rupiah */
-    // var dengan_rupiah = document.getElementById('dengan-rupiah');
-    // dengan_rupiah.addEventListener('keyup', function(e)
-    // {
-    //     dengan_rupiah.value = formatRupiah(this.value, 'Rp. ');
-    // });
-    
-    /* Fungsi */
-    function formatRupiah(angka, prefix)
-    {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split    = number_string.split(','),
-            sisa     = split[0].length % 3,
-            rupiah     = split[0].substr(0, sisa),
-            ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
-            
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
+                    $(".list").html(html_input);
+                    $(".list").removeClass("stay-hidden");
+                }
+            });
         }
+
+        function add_product_item(product_code) {
+            $.ajax({
+                url: "{{ route('product.select_one') }}",
+                type: "POST",
+                data: {
+                    "_token": `{{ csrf_token() }}`,
+                    "product_code": product_code,
+                },
+                success: function(response) {
+                    if (response.status == "failed") {
+                        Swal.fire({
+                            title: 'Oops...',
+                            text: response.message,
+                            icon: 'error'
+                        });
+                        return false;
+                    }
+                    var product = response.data;
+                    var id = product_code;
+                    var item_id = "item_product_" + id;
+
+                    var basic_price = product.price_store;
+                    var final_price = basic_price;
+                    var html_price = formatRupiah(final_price.toString());
+                    // Calculate Discount
+                    var discount_store = (product.discount_store) ? product.discount_store : 0;
+                    var discount_price = 0;
+                    if (discount_store > 0) {
+                        discount_price = basic_price * (discount_store / 100);
+                        final_price = basic_price - discount_price;
+                        html_price = `
+                            <p style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</p>
+                            ${formatRupiah(final_price.toString())}
+                        `;
+                    }
+                    var html_item = `
+                        <tr id="${item_id}">
+                            <td style="width: 35%; vertical-align: middle">
+                                <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
+                                <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
+                                <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
+                                <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
+                                <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
+                                ${product.code + ' | ' + product.name}
+                            </td>
+                            <td style="width: 19%; vertical-align: middle; text-align: center">
+                                ${html_price}
+                            </td>
+                            <td style="width: 6%; vertical-align: middle">
+                                <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
+                            </td>
+                            <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
+                            <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
+                            <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
+                                <div class="boxInside" style="align-items: center; justify-content: center;">
+                                    <div class="boxDelete">
+                                        <button id="btn_delete_${item_id}" onblur="onblur_color('${item_id}')" onfocus="onfocus_color('${item_id}')" onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+
+                    $("#product_lists").append(html_item);
+                    calculate_vat();
+                    $(`#quantity_${item_id}`).on('keyup', function (e) {
+                        var code = e.keyCode || e.which;
+                        // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
+                        var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
+                        if (allowed_keycode.includes(code)) {
+                            // var str_quantity_product = $(this).val();
+                            // var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
+                            var qty = Number($(`#quantity_${item_id}`).val());
+                            var final_price = Number($(`#final_price_${item_id}`).val());
+                            var total_price = final_price * qty;
+                            $(`#total_price_${item_id}`).val(total_price);
+                            $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
+                            calculate_vat();
+                        } else {
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function delete_row_product(eid_item) {
+            $("#" + eid_item).remove();
+            calculate_vat();
+        }
+
+        /* Tanpa Rupiah */
+        var tanpa_rupiah    = document.getElementById('tanpa-rupiah');
+        var kembalian       = document.getElementById('kembalian');
+        tanpa_rupiah.addEventListener('keyup', function(e) {
+            var nominal = this.value;
+            var nominal_number = Number(nominal.replace(".", ""));
+            tanpa_rupiah.value = formatRupiah(nominal);
+
+            var kembali = final_total_price_item - nominal_number;
+            kembalian.value = formatRupiah(kembali.toString());
+        });
         
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-    }
+        /* Dengan Rupiah */
+        // var dengan_rupiah = document.getElementById('dengan-rupiah');
+        // dengan_rupiah.addEventListener('keyup', function(e)
+        // {
+        //     dengan_rupiah.value = formatRupiah(this.value, 'Rp. ');
+        // });
+        
+        /* Fungsi */
+        function formatRupiah(angka, prefix)
+        {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split    = number_string.split(','),
+                sisa     = split[0].length % 3,
+                rupiah     = split[0].substr(0, sisa),
+                ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
+                
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+            
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
     </script>
 
     <script>
         $(function() {
-        $('#payment_method').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}"
-        });
+            $('#payment_method').select2({
+                theme: 'bootstrap4',
+                language: "{{ app()->getLocale() }}"
+            });
 
-        $("#payment_method").on('change', function() {
-            var val = $("#payment_method option:selected").val();
-            console.log('val', val);
-            if (val == "Tunai") {
-                // $("#elm_receipt").hide();
-                $(".elm_receipt_input").prop('readonly', true);
-                // $(".elm_cash").show();
-                $(".elm_cash_input").prop('readonly', false);
-            } else {
-                // $(".elm_cash").hide();
-                $(".elm_cash_input").prop('readonly', true);
-                // $("#elm_receipt").show();
-                $(".elm_receipt_input").prop('readonly', false);
-            }
+            $("#payment_method").on('change', function() {
+                var val = $("#payment_method option:selected").val();
+                console.log('val', val);
+                if (val == "Tunai") {
+                    // $("#elm_receipt").hide();
+                    $(".elm_receipt_input").prop('readonly', true);
+                    // $(".elm_cash").show();
+                    $(".elm_cash_input").prop('readonly', false);
+                } else {
+                    // $(".elm_cash").hide();
+                    $(".elm_cash_input").prop('readonly', true);
+                    // $("#elm_receipt").show();
+                    $(".elm_receipt_input").prop('readonly', false);
+                }
+            });
         });
-    });
-    </script>
-
-    <script>
-        $(".sub").focusout(function() {
-        $("#answer").html('');
-        var num1 = $("#num1").val();
-        var num2 = $("#num2").val();
-        var answer = 100 - num1 - num2;
-        $("#answer").html(answer);
-    });
     </script>
     @endpush

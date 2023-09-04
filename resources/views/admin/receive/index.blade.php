@@ -74,7 +74,7 @@ CMS | Receive
 						<td style="width: 10%; vertical-align: middle">
 							<div class="boxEdit">
 								<a href="javascript:void(0)"
-									data-url="{{ route('receive.show', $receive->receive_code) }}"
+									data-url="{{ route('receive.show', ['receive' => $receive->receive_code]) }}"
 									class="btn-sm btn-info btn-show-receive" role="button">
 									<i class='bx bx-show'></i>
 								</a>

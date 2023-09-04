@@ -46,7 +46,7 @@ class ProductController extends Controller
     {
         $products = [];
         if ($request->has('q')) {
-            $products = Product::select('code', 'name')->search($request->q)->get();
+            $products = Product::select('code', 'name')->where('code', 'LIKE', $request->q.'%')->orWhere('name', 'LIKE', $request->q.'%')->get();
         }
 
         return response()->json($products);

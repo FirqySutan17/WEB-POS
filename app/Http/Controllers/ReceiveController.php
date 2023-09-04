@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Receive;
+use App\Models\ReceiveDetail;
 use App\Models\Product;
 
 class ReceiveController extends Controller
@@ -127,11 +128,12 @@ class ReceiveController extends Controller
         return redirect()->route('receive.index');
     }
 
-    public function show(Receive $receive)
+    public function show($receive)
     {
-        $receive = Receive::with(['user', 'detail'])->find($receive);
+        $receive = Receive::with('user')->where('receive_code', $receive)->first();
+        $receive->created_at = date('Y-m-d H:i:s', strtotime($receive->created_at));
         // dd($receive_data);
-        $details = ReceiveDetail::where('receive_code', $receive[0]->receive_code)->join('products', 'tr_receive_detail.product_code', 'products.code')->get();
+        $details = ReceiveDetail::select('tr_receive_detail.*', 'products.name' , 'products.code')->where('receive_code', $receive->receive_code)->join('products', 'tr_receive_detail.product_code', 'products.code')->get();
         $data = [
             "receive"   => $receive,
             "details" => $details

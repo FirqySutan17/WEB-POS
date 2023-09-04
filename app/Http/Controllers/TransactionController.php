@@ -160,9 +160,9 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        $transaction = Transaction::with(['user', 'detail'])->find($transaction);
+        $transaction = Transaction::with(['user', 'detail'])->find($transaction)->first();
         // dd($transaction_data);
-        $details = TransactionDetail::where('invoice_no', $transaction[0]->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
+        $details = TransactionDetail::select('tr_transaction_detail.*', 'products.name' , 'products.code')->where('invoice_no', $transaction->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
         $data = [
             "transaction"   => $transaction,
             "details" => $details

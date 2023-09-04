@@ -120,15 +120,19 @@
                     <thead>
                         <tr>
                             <th>KODE RECEIVE</th>
-                            <td>#</td>
+                            <td class="detail_clear" id="receive_code">#</td>
                             <th>TANGGAL/WAKTU</th>
-                            <td>#</td>
+                            <td class="detail_clear" id="receive_date">#</td>
                         </tr>
                         <tr>
                             <th>PENERIMA</th>
-                            <td></td>
+                            <td class="detail_clear" id="pic"></td>
                             <th>PENGIRIM</th>
-                            <td></td>
+                            <td class="detail_clear" id="sender"></td>
+                        </tr>
+                        <tr>
+                            <th>DELIVERY NO</th>
+                            <td colspan="3" class="detail_clear" id="delivery_no">#</td>
                         </tr>
                         <tr>
                             <th colspan="4" class="center-text">RECEIVE</th>
@@ -140,30 +144,11 @@
                     <thead>
 
                     </thead>
-                    <tbody>
+                    <tbody id="receive_detail">
                         <tr>
                             <th class="center-text">No.</th>
                             <th>Produk</th>
                             <th class="center-text">Qty</th>
-                            <th style="text-align: right">Total</th>
-                        </tr>
-
-                        <tr>
-                            <td class="center-text" style="width: 5%">1</td>
-                            <td style="width: 90%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 5%">10</td>
-                        </tr>
-
-                        <tr>
-                            <td class="center-text" style="width: 5%">2</td>
-                            <td style="width: 90%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 5%">10</td>
-                        </tr>
-
-                        <tr>
-                            <td class="center-text" style="width: 5%">3</td>
-                            <td style="width: 90%">LOREM IPSUM DOLOR SIT AMET</td>
-                            <td class="center-text" style="width: 5%">10</td>
                         </tr>
                     </tbody>
 
@@ -176,12 +161,36 @@
 <div id="loader" class="lds-dual-ring display-none overlay"></div>
 
 <script>
+    function clear_detail() {
+        $(".detail_clear").text("");
+        $(".row_clear").remove();
+    }
+    function fill_receive(receive) {
+        let sender = "From Warehouse";
+        if (receive.is_warehouse == 0 || receive.driver != null) {
+            sender = receive.driver + " | " + receive.driver_phone + " | " + receive.plat_no;
+        }
+        $('#receive_code').text(receive.receive_code);
+        $('#receive_date').text(receive.created_at);
+        $('#delivery_no').text(receive.delivery_no);
+        $('#pic').text(receive.user.name);
+        $('#sender').text(sender);
+    }
+
+    function fill_receive_detail(receive_detail) {
+        let html = '';
+        $.each(receive_detail, function(i, item) {
+            html += `<tr class="row_clear">`;
+                html += `<td class="center-text" style="width: 5%">${i + 1}</td>`;
+                html += `<td>${item.code} - ${item.name}</td>`;
+                html += `<td class="center-text" style="width: 5%">${item.quantity}</td>`;
+            html += `</tr>`;
+        });
+        $('#receive_detail').append(html);
+    }
     //button create post event
     $('.btn-show-receive').click(function () {
-
-        // let invoice_no = $(this).data('id');
         let url_show = $(this).data('url');
-        // url_show.replace(":id", invoice_no);
         console.log(url_show);
         //fetch detail post with ajax
         $.ajax({
@@ -189,12 +198,16 @@
             type: "GET",
             cache: false,
             beforeSend: function () {
+                clear_detail();
                 $('#loader').removeClass('display-none')
             },
             success:function(response){
                 console.log(response);
+                let receive = response.receive;
+                let receive_detail = response.details;
                 //fill data to form
-                $('#invoice_no').val(response.receive.receive_code);
+                fill_receive(receive);
+                fill_receive_detail(receive_detail);
 
                 //open modal
                 $('#modal-receive').modal('show');
