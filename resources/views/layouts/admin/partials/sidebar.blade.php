@@ -83,13 +83,14 @@
                             @can('RT Show')
                             <li>
                                 <a href="{{ route('report.transaction') }}"
-                                    class="{{routeActive('report.transaction')}}">
+                                    class="{{routeActive(['report.transaction','report.transactioninvoice', 'report.transactionproduct'])}}">
                                     Transaction
                                 </a>
                             </li>
                             @endcan
                             <li>
-                                <a href="{{ route('report.receive') }}" class="{{routeActive('report.receive')}}">
+                                <a href="{{ route('report.receive') }}"
+                                    class="{{routeActive(['report.receive', 'report.receiveno', 'report.receiveproduct'])}}">
                                     Receive
                                 </a>
                             </li>

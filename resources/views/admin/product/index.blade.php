@@ -7,6 +7,11 @@ CMS | Product
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
+<style>
+	.head-report th {
+		background: #f3f2f7 !important;
+	}
+</style>
 @endpush
 
 @section('content')
@@ -47,7 +52,7 @@ CMS | Product
 		<div class="card-body table-responsive">
 			<table class="table">
 				<thead>
-					<tr>
+					<tr class="head-report">
 						<th class="center-text">No <span class="dividerHr"></span></th>
 						<th class="heightHr">Name <span class="dividerHr"></span></th>
 						<th class="heightHr">Price <span class="dividerHr"></span></th>

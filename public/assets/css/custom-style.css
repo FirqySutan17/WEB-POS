@@ -48,7 +48,7 @@
 }
 
 .accordion-button:not(.collapsed) {
-  color: #ff008c;
+  color: #a12a2f;
   background-color: rgba(36, 105, 92, 0.1);
 }
 
@@ -199,7 +199,7 @@ table.dataTable th.dataTables_empty {
   font-weight: 600;
 }
 tr {
-  background: #ffcce8;
+  background: #c2797c;
   border: none !important;
   font-family: "Poppins", sans-serif;
 }
@@ -307,7 +307,7 @@ label {
   ul.nav-submenu
   li
   a.active {
-  background-color: #ff008c9d;
+  background-color: #a12a2f9d;
   color: #ffffff;
 }
 
@@ -320,7 +320,7 @@ label {
   ul.nav-submenu
   li
   a:hover {
-  background-color: #ff008c;
+  background-color: #a12a2f;
   color: #ffffff;
 }
 
@@ -347,10 +347,10 @@ textarea.form-control {
   padding: 10px;
 }
 .page-main-header .main-header-right {
-  background: #ff008c;
+  background: #a12a2f;
 }
 .page-main-header .main-header-right .toggle-sidebar svg {
-  color: #ff008c;
+  color: #a12a2f;
 }
 .page-main-header .main-header-right .nav-right.right-menu ul li {
   position: relative;
@@ -428,7 +428,7 @@ textarea.form-control {
   header.main-nav
   .sidebar-user
   .setting-primary:hover {
-  background-color: #ff008c;
+  background-color: #a12a2f;
 }
 
 .dropdownSet {
@@ -452,7 +452,7 @@ textarea.form-control {
   height: 0;
   border-style: solid;
   border-width: 0 10px 10px 10px;
-  border-color: transparent transparent #ff008c transparent;
+  border-color: transparent transparent #a12a2f transparent;
   z-index: 9999;
 }
 
@@ -512,7 +512,7 @@ svg.feather.feather-lock {
 }
 
 .dropStyle.active {
-  background: #ff008c;
+  background: #a12a2f;
   border-radius: 10px;
   color: #ffffff;
 }
@@ -554,7 +554,7 @@ svg.feather.feather-lock {
 
 .list-group-item-head {
   color: #fff;
-  background-color: #ff008c;
+  background-color: #a12a2f;
   font-size: 13px;
   font-weight: 600;
 }
@@ -626,7 +626,7 @@ svg.feather.feather-lock {
 
 .squareContent .boxIcon {
   margin-bottom: 10px;
-  background-color: #ff008c33;
+  background-color: #a12a2f33;
   clip-path: circle(65.6% at 34% 34%);
   position: absolute;
   border-top-left-radius: 10px;
@@ -1045,13 +1045,13 @@ input[type="number"]::-webkit-outer-spin-button {
   border-bottom: none;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background: #ff008c;
+  background: #a12a2f;
   color: #fff;
   font-weight: 600;
 }
 
 .menu-rt a:hover {
-  background: #ff008c;
+  background: #a12a2f;
   color: #fff;
 }
 
@@ -1061,5 +1061,9 @@ input[type="number"]::-webkit-outer-spin-button {
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
+}
+
+table i {
+  color: #000;
 }
 /* END REPORT TRANSACTION STYLE */
