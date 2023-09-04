@@ -32,9 +32,9 @@ CMS | Report Stock
                 <form action="{{ route('report.stock') }}" class="row" method="POST">
                     @csrf
                     <div class="col-5">
-                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text" class="form-control"
-                                placeholder="Search item by name or code"
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
+                            class="form-control" placeholder="Search item by name or code"
+                            style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
@@ -52,10 +52,12 @@ CMS | Report Stock
                         </button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.stock.excel') }}">EXCEL</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.stock.excel') }}">EXCEL</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.stock.pdf') }}">PDF</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.stock.pdf') }}" formtarget="_blank">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
