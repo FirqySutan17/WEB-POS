@@ -47,9 +47,7 @@ CMS | Report Stock
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button">
-                            FILTER
-                        </button>
+                        <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
                     <div class="col-1">
                         <button type="submit" class="btn btn-primary _btn" role="button"

@@ -49,14 +49,13 @@ CMS | Report Stock
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button">
-                            FILTER
-                        </button>
+                        <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
-                    <div class="col-3">
-                        <a href="#" class="btn btn-primary _btn" role="button">
-                            EXPORT
-                        </a>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.receive.excel') }}">EXCEL</button>
+                    </div>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.receive.pdf') }}">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}

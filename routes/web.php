@@ -108,9 +108,9 @@ Route::match(['get', 'post'], '/report/transaction-by-product', [App\Http\Contro
 Route::post('/report/transaction-by-product/excel', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product_excel'])->name('report.transactionproduct.excel');
 Route::post('/report/transaction-by-product/pdf', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product_pdf'])->name('report.transactionproduct.pdf');
 
-Route::match(['get', 'post'], '/report/receive', [App\Http\Controllers\ReportController::class, 'report_receive'])->name('report.receive');
-Route::post('/report/receive/excel', [App\Http\Controllers\ReportController::class, 'report_receive_excel'])->name('report.receive.excel');
-Route::post('/report/receive/pdf', [App\Http\Controllers\ReportController::class, 'report_receive_pdf'])->name('report.receive.pdf');
+Route::match(['get', 'post'], '/report/receive', [App\Http\Controllers\ReportController::class, 'report_receive_by_date'])->name('report.receive');
+Route::post('/report/receive/excel', [App\Http\Controllers\ReportController::class, 'report_receive_by_date_excel'])->name('report.receive.excel');
+Route::post('/report/receive/pdf', [App\Http\Controllers\ReportController::class, 'report_receive_by_date_pdf'])->name('report.receive.pdf');
 
 Route::match(['get', 'post'], '/report/receive-by-no', [App\Http\Controllers\ReportController::class, 'report_receive_by_no'])->name('report.receiveno');
 Route::post('/report/receive-by-no/excel', [App\Http\Controllers\ReportController::class, 'report_receive_by_no_excel'])->name('report.receiveno.excel');
