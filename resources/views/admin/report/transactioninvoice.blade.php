@@ -49,9 +49,9 @@ CMS | Report Transaction
                 <form action="{{ route('report.transactioninvoice') }}" class="row" method="POST">
                     @csrf
                     <div class="col-5">
-                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text" class="form-control"
-                                placeholder="Search employee name or id"
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
+                            class="form-control" placeholder="Search employee name or id"
+                            style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
@@ -67,10 +67,12 @@ CMS | Report Transaction
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transactioninvoice.excel') }}">EXCEL</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.transactioninvoice.excel') }}">EXCEL</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transactioninvoice.pdf') }}">PDF</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.transactioninvoice.pdf') }}" formtarget="_blank">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
@@ -87,11 +89,13 @@ CMS | Report Transaction
                         </th>
                         <th rowspan="2" class="center-text">Tanggal<span class="dividerHr"></span></th>
                         <th rowspan="2" class="heightHr center-text" style="vertical-align: middle">Kasir <span
-                            class="dividerHr"></span>
+                                class="dividerHr"></span>
                         </th>
                         <th rowspan="2" class="heightHr center-text">Pembayaran <span class="dividerHr"></span></th>
-                        <th colspan="4" class="heightHr center-text" style="vertical-align: middle">Item <span
+                        <th colspan="5" class="heightHr center-text" style="vertical-align: middle">Item <span
                                 class="dividerHr"></span></th>
+                        <th rowspan="2" class="heightHr center-text">Total <span class="dividerHr"></span></th>
+
                     </tr>
                     <tr class="head-report">
 
@@ -99,6 +103,9 @@ CMS | Report Transaction
                                 class="dividerHr"></span>
 
                         </th>
+
+                        <th class="heightHr center-text" style="vertical-align: middle">(%)<span
+                                class="dividerHr"></span></th>
                         <th class="heightHr center-text" style="vertical-align: middle">Harga/@<span
                                 class="dividerHr"></span>
 
@@ -107,57 +114,70 @@ CMS | Report Transaction
                                 class="dividerHr"></span>
 
                         </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">(%)<span
-                                class="dividerHr"></span></th>
+                        <th class="heightHr center-text" style="vertical-align: middle">Total <span
+                                class="dividerHr"></span>
 
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $pro_price = 0; ?>
+                    <?php $disc = 0; ?>
+                    <?php $disc_price = 0; ?>
+                    <?php $sub_total = 0; ?>
                     @if (!empty($data))
-                        @foreach ($data as $item)
-                        <?php $rowspan = 1 + count($item['products']) ?>
-                            <div class="rt-invoice">
-                                <tr>
-                                    <td rowspan="{{ $rowspan }}" class="center-text">
-                                        {{ $loop->iteration }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                        {{ $item['invoice_no'] }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style=" vertical-align: middle">
-                                        {{ $item['trans_date'] }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                        {{ $item['pic'] }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                        {{ $item['payment_method'] }}
-                                    </td>
+                    @foreach ($data as $item)
+                    <?php $rowspan = 1 + count($item['products']) ?>
+                    <div class="rt-invoice">
+                        <tr>
+                            <td rowspan="{{ $rowspan }}" class="center-text">
+                                {{ $loop->iteration }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                {{ $item['invoice_no'] }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style=" vertical-align: middle">
+                                {{ $item['trans_date'] }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                {{ $item['pic'] }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                {{ $item['payment_method'] }}
+                            </td>
 
-                                    <td colspan="4" style="vertical-align: middle; padding: 0px">
+                            <td colspan="5" style="vertical-align: middle; padding: 0px">
 
-                                    </td>
-                                    {{-- <td rowspan="3" class="center-text" style="vertical-align: middle;">
-                                        Rp 270.000
-                                    </td> --}}
-                                </tr>
-                                @foreach ($item['products'] as $product)
-                                    <tr>
-                                        <td style="vertical-align: middle">
-                                            {{ $product['name'] }}
-                                        </td>
-                                        <td class="center-text"> 
-                                            @if ($product['discount'] > 0)
-                                                <span style="text-decoration: line-through; font-size: 12px"> @currency($product['price'])</span> <br>
-                                            @endif
-                                            @currency($product['price'])
-                                        </td>
-                                        <td class="center-text">{{ $product['quantity'] }}</td>
-                                        <td class="center-text">{{ $product['discount'] }}</td>
-                                    </tr>
-                                @endforeach
-                            </div>
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                @currency($sub_total)
+                            </td>
+                        </tr>
+                        @foreach ($item['products'] as $product)
+                        <?php
+                            $disc = ($product['discount'] / 100) * $product['price'];
+                            $disc_price = $product['price'] - $disc;
+                            $pro_price = $disc_price * $product['quantity'];
+                            $sub_total += $pro_price;
+                        ?>
+                        <tr>
+                            <td style="vertical-align: middle">
+                                {{ $product['name'] }}
+                            </td>
+                            <td class="center-text">{{ $product['discount'] }}</td>
+                            <td class="center-text">
+                                @if ($product['discount'] > 0)
+                                <span style="text-decoration: line-through; font-size: 12px">
+                                    @currency($product['price'])</span> <br>
+                                @endif
+                                @currency($disc_price)
+                            </td>
+                            <td class="center-text">{{ $product['quantity'] }}</td>
+                            <td class="center-text">@currency($pro_price)</td>
+                        </tr>
                         @endforeach
+                    </div>
+                    @endforeach
                     @endif
                 </tbody>
             </table>

@@ -179,6 +179,8 @@ class ReportController extends Controller
             }
             $pdf = PDF::loadview('exports/transaction',['data'=>$data]);
             return $pdf->stream();
+
+            
             // return $pdf->download('stock-opname-pdf');
         }
 
@@ -232,6 +234,7 @@ class ReportController extends Controller
             }
             $pdf = PDF::loadview('exports/transactioninvoice',['data'=>$data])->setPaper('a4', 'landscape');
             return $pdf->stream();
+            // return view('exports.transactioninvoice', compact('data'));
             // return $pdf->download('stock-opname-pdf');
         }
 

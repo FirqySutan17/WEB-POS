@@ -40,9 +40,9 @@ CMS | Report Transaction
                 <form action="{{ route('report.transaction') }}" class="row" method="POST">
                     @csrf
                     <div class="col-5">
-                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text" class="form-control"
-                                placeholder="Search employee name or id"
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
+                            class="form-control" placeholder="Search employee name or id"
+                            style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
@@ -58,10 +58,12 @@ CMS | Report Transaction
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transaction.excel') }}">EXCEL</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.transaction.excel') }}">EXCEL</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transaction.pdf') }}">PDF</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.transaction.pdf') }}" formtarget="_blank">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
@@ -85,34 +87,35 @@ CMS | Report Transaction
                 <tbody>
                     <?php $grand_total = 0; ?>
                     @if (!empty($data))
-                        @foreach ($data as $item)
-                        <?php $grand_total += $item->total_price; ?>
-                            <tr>
-                                <td class="center-text">{{ $loop->iteration }}</td>
+                    @foreach ($data as $item)
+                    <?php $grand_total += $item->total_price; ?>
+                    <tr>
+                        <td class="center-text">{{ $loop->iteration }}</td>
 
-                                <td class="center-text" style="vertical-align: middle">
-                                    {{ date('d-m-Y',strtotime($item->trans_date)) }}
-                                </td>
-                                <td style="vertical-align: middle">
-                                    {{ $item->invoice_no }}
-                                </td>
-                                <td style="vertical-align: middle">
-                                    {{ $item->name." ( ".$item->employee_id." )" }}
-                                </td>
-                                <td class="center-text" style="vertical-align: middle">
-                                    {{ $item->payment_method }}
-                                </td>
-                                <td class="center-text" style="vertical-align: middle;">
-                                    @currency($item->total_price)
-                                </td>
-                            </tr>
-                        @endforeach
+                        <td class="center-text" style="vertical-align: middle">
+                            {{ date('d-m-Y',strtotime($item->trans_date)) }}
+                        </td>
+                        <td style="vertical-align: middle">
+                            {{ $item->invoice_no }}
+                        </td>
+                        <td style="vertical-align: middle">
+                            {{ $item->name." ( ".$item->employee_id." )" }}
+                        </td>
+                        <td class="center-text" style="vertical-align: middle">
+                            {{ $item->payment_method }}
+                        </td>
+                        <td class="center-text" style="vertical-align: middle;">
+                            @currency($item->total_price)
+                        </td>
+                    </tr>
+                    @endforeach
                     @endif
                 </tbody>
                 <tfoot>
                     <tr class="head-report">
                         <th colspan="5" class="heightHr right-text">Grand Total <span class="dividerHr"></span></th>
-                        <th class="center-text" class="heightHr">@currency($grand_total) <span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">@currency($grand_total) <span class="dividerHr"></span>
+                        </th>
                     </tr>
                 </tfoot>
             </table>

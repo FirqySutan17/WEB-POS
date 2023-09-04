@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Report Stock
+CMS | Report Receive
 @endsection
 
 @push('css')
@@ -13,6 +13,15 @@ CMS | Report Stock
     .head-report th {
         background: #f3f2f7 !important;
     }
+
+    .table-bordered td,
+    .table-bordered th {
+        border: 1px solid !important
+    }
+
+    tr {
+        background: #fff !important
+    }
 </style>
 @endpush
 
@@ -21,7 +30,7 @@ CMS | Report Stock
 @slot('breadcrumb_title')
 <h3>Report Receive</h3>
 @endslot
-{{ Breadcrumbs::render('report_stock') }}
+{{ Breadcrumbs::render('report_receive_by_no') }}
 @endcomponent
 
 <div class="container-fluid">
@@ -52,10 +61,12 @@ CMS | Report Stock
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.receiveno.excel') }}">EXCEL</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.receiveno.excel') }}">EXCEL</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.receiveno.pdf') }}">PDF</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.receiveno.pdf') }}" formtarget="_blank">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
@@ -63,7 +74,7 @@ CMS | Report Stock
         </div>
         <div class="table-responsive"
             style="box-shadow: 0 5px 10px rgb(0 0 0 / 0.2); border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr class="head-report">
                         <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
@@ -71,7 +82,8 @@ CMS | Report Stock
                         <th rowspan="2" class="center-text">Receive Date<span class="dividerHr"></span></th>
                         <th rowspan="2" class="center-text">Delivery No<span class="dividerHr"></span></th>
                         <th rowspan="2" class="center-text">PIC<span class="dividerHr"></span></th>
-                        <th colspan="2" class="heightHr center-text" style="vertical-align: middle">Product <span class="dividerHr"></span>
+                        <th colspan="2" class="heightHr center-text" style="vertical-align: middle">Product <span
+                                class="dividerHr"></span>
                         </th>
                     </tr>
                     <tr class="head-report">
@@ -79,46 +91,46 @@ CMS | Report Stock
                                 class="dividerHr"></span>
                         </th>
                         <th class="heightHr center-text" style="vertical-align: middle">Qty<span
-                            class="dividerHr"></span>
+                                class="dividerHr"></span>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (!empty($data))
-                        @foreach ($data as $item)
-                        <?php $rowspan = 1 + count($item['details']) ?>
-                            <div class="rt-invoice">
-                                <tr>
-                                    <td rowspan="{{ $rowspan }}" class="center-text">
-                                        {{ $loop->iteration }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                        {{ $item['code'] }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                        {{ $item['receive_date'] }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                        {{ $item['delivery_no'] }}
-                                    </td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                        {{ $item['pic'] }}
-                                    </td>
-                                    <td colspan="2" style="vertical-align: middle; padding: 0px">
+                    @foreach ($data as $item)
+                    <?php $rowspan = 1 + count($item['details']) ?>
+                    <div class="rt-invoice">
+                        <tr>
+                            <td rowspan="{{ $rowspan }}" class="center-text">
+                                {{ $loop->iteration }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                {{ $item['code'] }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                {{ $item['receive_date'] }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                {{ $item['delivery_no'] }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                                {{ $item['pic'] }}
+                            </td>
+                            <td colspan="2" style="vertical-align: middle; padding: 0px">
 
-                                    </td>
-                                    {{-- <td rowspan="3" class="center-text" style="vertical-align: middle;">
-                                        Rp 270.000
-                                    </td> --}}
-                                </tr>
-                                @foreach ($item['details'] as $rcv)
-                                    <tr>
-                                        <td class="center-text">{{ $rcv['product'] }}</td>
-                                        <td class="center-text">{{ $rcv['quantity'] }}</td>
-                                    </tr>
-                                @endforeach
-                            </div>
+                            </td>
+                            {{-- <td rowspan="3" class="center-text" style="vertical-align: middle;">
+                                Rp 270.000
+                            </td> --}}
+                        </tr>
+                        @foreach ($item['details'] as $rcv)
+                        <tr>
+                            <td class="center-text">{{ $rcv['product'] }}</td>
+                            <td class="center-text">{{ $rcv['quantity'] }}</td>
+                        </tr>
                         @endforeach
+                    </div>
+                    @endforeach
                     @endif
                 </tbody>
             </table>

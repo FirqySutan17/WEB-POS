@@ -159,3 +159,18 @@ Breadcrumbs::for('report_transaction_by_product', function ($trail) {
     $trail->push("Report Transaction by Product", route('report.transactionproduct'));
 });
 
+// Report Receive
+Breadcrumbs::for('report_receive', function ($trail) {
+    $trail->push("Report Receive", route('report.receive'));
+});
+
+// Report Receive by Receive No
+Breadcrumbs::for('report_receive_by_no', function ($trail) {
+    $trail->push("Report Receive by No", route('report.receiveno'));
+});
+
+// Report Receive by Product
+Breadcrumbs::for('report_receive_by_product', function ($trail) {
+    $trail->push("Report Receive by Product", route('report.receiveproduct'));
+});
+

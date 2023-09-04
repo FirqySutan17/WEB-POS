@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Biztrip Request</title>
+    <title>Report Stock</title>
     <link rel="icon" type="image/png" href="var:icon" sizes="16x16">
     <link rel="icon" type="image/png" href="var:icon" sizes="32x32">
     <link rel="icon" href="var:icon" type="image/x-icon" />
@@ -303,6 +303,10 @@
         th,
         td {
             padding: 10px
+        }
+
+        .head-report th {
+            background: #f3f2f7 !important;
         }
     </style>
 

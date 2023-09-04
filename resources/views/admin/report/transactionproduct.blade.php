@@ -49,9 +49,9 @@ CMS | Report Transaction
                 <form action="{{ route('report.transactionproduct') }}" class="row" method="POST">
                     @csrf
                     <div class="col-5">
-                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text" class="form-control"
-                                placeholder="Search employee name or id"
-                                style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
+                            class="form-control" placeholder="Search employee name or id"
+                            style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
@@ -67,10 +67,12 @@ CMS | Report Transaction
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transactionproduct.excel') }}">EXCEL</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.transactionproduct.excel') }}">EXCEL</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="{{ route('report.transactionproduct.pdf') }}">PDF</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.transactionproduct.pdf') }}" formtarget="_blank">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
@@ -95,32 +97,34 @@ CMS | Report Transaction
                 </thead>
                 <tbody>
                     @if (!empty($data))
-                        @foreach ($data as $item)
-                            <?php $rowspan = 1 + count($item['details']); ?>
-                            <div class="rt-invoice">
-                                <tr>
-                                    <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
-                                    <td rowspan="{{ $rowspan }}" class="center-text" style=" vertical-align: middle">{{ $item['code']." | ".$item['name'] }}</td>
-                                    <td colspan="5" style="vertical-align: middle; padding: 0px">
-        
-                                    </td>
-                                </tr>
-                                @foreach ($item['details'] as $inv)
-                                    <tr>
-                                        <td class="center-text"> 
-                                            @if ($inv['discount'] > 0)
-                                                <span style="text-decoration: line-through; font-size: 12px"> @currency($inv['price'])</span> <br>
-                                            @endif
-                                            @currency($inv['price'])
-                                        </td>
-                                        <td class="center-text">{{ $inv['quantity'] }}</td>
-                                        <td class="center-text">{{ $inv['discount'] }}</td>
-                                        <td class="center-text">{{ $inv['trans_date'] }}</td>
-                                        <td class="center-text">{{ $inv['invoice_no'] }}</td>
-                                    </tr>
-                                @endforeach
-                            </div>
+                    @foreach ($data as $item)
+                    <?php $rowspan = 1 + count($item['details']); ?>
+                    <div class="rt-invoice">
+                        <tr>
+                            <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
+                            <td rowspan="{{ $rowspan }}" class="center-text" style=" vertical-align: middle">{{
+                                $item['code']." | ".$item['name'] }}</td>
+                            <td colspan="5" style="vertical-align: middle; padding: 0px">
+
+                            </td>
+                        </tr>
+                        @foreach ($item['details'] as $inv)
+                        <tr>
+                            <td class="center-text">
+                                @if ($inv['discount'] > 0)
+                                <span style="text-decoration: line-through; font-size: 12px">
+                                    @currency($inv['price'])</span> <br>
+                                @endif
+                                @currency($inv['price'])
+                            </td>
+                            <td class="center-text">{{ $inv['quantity'] }}</td>
+                            <td class="center-text">{{ $inv['discount'] }}</td>
+                            <td class="center-text">{{ $inv['trans_date'] }}</td>
+                            <td class="center-text">{{ $inv['invoice_no'] }}</td>
+                        </tr>
                         @endforeach
+                    </div>
+                    @endforeach
                     @endif
                 </tbody>
             </table>
