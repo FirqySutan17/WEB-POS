@@ -84,18 +84,18 @@ CMS | Transaction
                                     </div>
                                 </div>
                                 <div class="col-md-9 col-sm-12" style="padding-right: 0px">
-                                    {{-- <marquee width="100%" direction="left">
+                                    <marquee width="100%" direction="left">
                                         @if (!empty($product_discount))
                                         @foreach ($product_discount as $item)
                                         <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
                                         @endforeach
                                         @endif
-                                    </marquee> --}}
-                                    {{-- <input id="input-scanner" type="text" class="form-control"
+                                    </marquee>
+                                    <div class="tr-input tr-shadow" style="padding: 0px 20px">
+                                        <input id="input-scanner" type="text" class="form-control"
                                         placeholder="Klik disini untuk Scan Barcode"
                                         style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                        tabindex="1" /> --}}
-                                    <div class="tr-input tr-shadow" style="padding: 0px 20px">
+                                        tabindex="1" />
                                         <div>
                                             <input type="text" id="input-scanner" placeholder="Klik disini untuk scan barcode"
                                                 tabindex="1" />
@@ -242,102 +242,104 @@ CMS | Transaction
     @push('javascript-internal')
     <script>
         $(function() {
-        console.log('DOCUMENT READY');
-        $("#input-scanner").focus();
-        $('#payment_method').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}"
-        });
-
-        $("#payment_method").on('change', function() {
-            var val = $("#payment_method option:selected").val();
-            console.log('val', val);
-            if (val == "Tunai") {
-                // $("#elm_receipt").hide();
-                $(".elm_receipt_input").prop('readonly', true);
-                // $(".elm_cash").show();
-                $(".elm_cash_input").prop('readonly', false);
-            } else {
-                // $(".elm_cash").hide();
-                $(".elm_cash_input").prop('readonly', true);
-                // $("#elm_receipt").show();
-                $(".elm_receipt_input").prop('readonly', false);
-            }
-        });
-
-        var transaction_detail_draft = JSON.parse(`{!! json_encode($transaction_details) !!}`);
-        if (transaction_detail_draft.length > 0) {
-            $.each(transaction_detail_draft, function(i, item) {
-                add_product_item(item.product_code, item.quantity);
+            console.log('DOCUMENT READY');
+            $("#input-scanner").focus();
+            $('#payment_method').select2({
+                theme: 'bootstrap4',
+                language: "{{ app()->getLocale() }}"
             });
-        }
-    });
 
-    var final_total_price_item = 0;
-    var vat_amount = parseInt({{ config('app.vat_amount') }});
-    function onfocus_color(item_id) {
-        $(`#btn_delete_${item_id}`).removeClass('btn-danger');
-        $(`#btn_delete_${item_id}`).addClass('btn-warning');
-    }
+            $("#payment_method").on('change', function() {
+                var val = $("#payment_method option:selected").val();
+                console.log('val', val);
+                if (val == "Tunai") {
+                    // $("#elm_receipt").hide();
+                    $(".elm_receipt_input").prop('readonly', true);
+                    // $(".elm_cash").show();
+                    $(".elm_cash_input").prop('readonly', false);
+                } else {
+                    // $(".elm_cash").hide();
+                    $(".elm_cash_input").prop('readonly', true);
+                    // $("#elm_receipt").show();
+                    $(".elm_receipt_input").prop('readonly', false);
+                }
+            });
 
-    function onblur_color(item_id) {
-        $(`#btn_delete_${item_id}`).removeClass('btn-warning');
-        $(`#btn_delete_${item_id}`).addClass('btn-danger');
-    }
-
-    function submit_form(status) {
-        $("#input_status").val(status);
-        $("#form-transaction").submit();
-    }
-
-    function calculate_vat() {
-        calculate_total();
-        var total_price_item = 0;
-        $('.total_price_item').each(function(i, obj) {
-            var price_item = Number($(this).val());
-            total_price_item += price_item;
-        });
-        var vat_price = total_price_item * (vat_amount / 100);
-        final_total_price_item = total_price_item + vat_price;
-        $("#total_transaction").text(formatRupiah(final_total_price_item.toString()));
-    }
-
-    function calculate_total() {
-        var total_discount  = 0;
-        var total_qty       = 0;
-        var sub_total       = 0;
-        $('.final_price_item').each(function(i, obj) {
-            var id = $(this).attr('id').split("_");
-            var item_id = "item_product_" + id[4];
-            var final_price_item = Number($(this).val());
-            var basic_price_item = Number($(`#basic_price_${item_id}`).val());
-            var quantity_item = Number($(`#quantity_${item_id}`).val());
-            var discount = 0;
-            var sub_total_item = final_price_item * quantity_item;
-            if (final_price_item != basic_price_item) {
-                discount = basic_price_item - final_price_item;
+            var transaction_detail_draft = JSON.parse(`{!! json_encode($transaction_details) !!}`);
+            if (transaction_detail_draft.length > 0) {
+                $.each(transaction_detail_draft, function(i, item) {
+                    add_product_item(item.product_code, item.quantity);
+                });
             }
-            total_discount += discount;
-            total_qty += quantity_item;
-            sub_total += sub_total_item;
         });
-        $("#total_discount").text(formatRupiah(total_discount.toString()));
-        $("#sub_total").text(formatRupiah(sub_total.toString()));
-        $("#total_qty").text(total_qty);
-    }
 
-    $('#input-scanner').unbind('keyup');
-        $('#input-scanner').bind('keyup', function (e) {
+        var final_total_price_item = 0;
+        var vat_amount = parseInt({{ config('app.vat_amount') }});
+        function onfocus_color(item_id) {
+            $(`#btn_delete_${item_id}`).removeClass('btn-danger');
+            $(`#btn_delete_${item_id}`).addClass('btn-warning');
+        }
+
+        function onblur_color(item_id) {
+            $(`#btn_delete_${item_id}`).removeClass('btn-warning');
+            $(`#btn_delete_${item_id}`).addClass('btn-danger');
+        }
+
+        function submit_form(status) {
+            $("#input_status").val(status);
+            $("#form-transaction").submit();
+        }
+
+        function calculate_vat() {
+            calculate_total();
+            var total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+            var vat_price = total_price_item * (vat_amount / 100);
+            final_total_price_item = total_price_item + vat_price;
+            $("#total_transaction").text(formatRupiah(final_total_price_item.toString()));
+        }
+
+        function calculate_total() {
+            var total_discount  = 0;
+            var total_qty       = 0;
+            var sub_total       = 0;
+            $('.final_price_item').each(function(i, obj) {
+                var id = $(this).attr('id').split("_");
+                var item_id = "item_product_" + id[4];
+                var final_price_item = Number($(this).val());
+                var basic_price_item = Number($(`#basic_price_${item_id}`).val());
+                var quantity_item = Number($(`#quantity_${item_id}`).val());
+                var discount = 0;
+                var sub_total_item = final_price_item * quantity_item;
+                if (final_price_item != basic_price_item) {
+                    discount = basic_price_item - final_price_item;
+                }
+                total_discount += discount;
+                total_qty += quantity_item;
+                sub_total += sub_total_item;
+            });
+            $("#total_discount").text(formatRupiah(total_discount.toString()));
+            $("#sub_total").text(formatRupiah(sub_total.toString()));
+            $("#total_qty").text(total_qty);
+        }
+
+        $('#input-typing').unbind('keyup');
+        $('#input-typing').bind('keyup', function (e) {
             removeElements();
             var code = e.keyCode || e.which;
-            let value = $('#input-scanner').val();
+            let value = $('#input-typing').val();
             let len_char = value.length;
-            // if (len_char <= 6) {
-            //     $(".list").empty();
-            // }
-            if (len_char > 6 && code != 13) {
+            if (len_char >= 3 && code != 13) {
                 search_product(value);
             }
+        });
+
+        $('#input-scanner').unbind('keyup');
+        $('#input-scanner').bind('keyup', function (e) {
+            var code = e.keyCode || e.which;
             if (code == 13) {
                 proceed_enter();
             }
@@ -345,7 +347,7 @@ CMS | Transaction
         });
 
         function displayNames(value, text) {
-            $("#input-scanner").val(value);
+            $("#input-typing").val(value);
             proceed_enter();
         }
         function removeElements() {
@@ -355,7 +357,7 @@ CMS | Transaction
 
         function proceed_enter() {
             removeElements();
-            var product_code = $('#input-scanner').val().trim();
+            var product_code = $('#input-scanner').val().trim() == '' ? $('#input-typing').val().trim() : $('#input-scanner').val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
@@ -370,6 +372,7 @@ CMS | Transaction
                 add_product_item(product_code);
             }
             $('#input-scanner').val('');
+            $('#input-typing').val('');
             removeElements();
         }
 

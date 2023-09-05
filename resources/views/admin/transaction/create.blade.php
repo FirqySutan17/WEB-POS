@@ -134,14 +134,14 @@ CMS | Transaction
                                         @endforeach
                                         @endif
                                     </marquee>
-                                    {{-- <input id="input-scanner" type="text" class="form-control"
-                                        placeholder="Klik disini untuk Scan Barcode"
-                                        style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                        tabindex="1" /> --}}
                                     <div class="tr-input tr-shadow" style="padding: 0px 20px">
+                                        <input id="input-scanner" type="text" class="form-control"
+                                            placeholder="Klik disini untuk Scan Barcode"
+                                            style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
+                                            tabindex="1" />
                                         <div>
-                                            <input type="text" id="input-scanner"
-                                                placeholder="Klik disini untuk scan barcode" tabindex="1" />
+                                            <input type="text" id="input-typing"
+                                                placeholder="Cari barang manual disini" tabindex="2" />
                                         </div>
                                         <ul class="list stay-hidden"></ul>
                                     </div>
@@ -373,18 +373,20 @@ CMS | Transaction
             $("#total_qty").text(total_qty);
         }
 
-        $('#input-scanner').unbind('keyup');
-        $('#input-scanner').bind('keyup', function (e) {
+        $('#input-typing').unbind('keyup');
+        $('#input-typing').bind('keyup', function (e) {
             removeElements();
             var code = e.keyCode || e.which;
-            let value = $('#input-scanner').val();
+            let value = $('#input-typing').val();
             let len_char = value.length;
-            // if (len_char <= 6) {
-            //     $(".list").empty();
-            // }
             if (len_char >= 3 && code != 13) {
                 search_product(value);
             }
+        });
+
+        $('#input-scanner').unbind('keyup');
+        $('#input-scanner').bind('keyup', function (e) {
+            var code = e.keyCode || e.which;
             if (code == 13) {
                 proceed_enter();
             }
@@ -392,7 +394,7 @@ CMS | Transaction
         });
 
         function displayNames(value, text) {
-            $("#input-scanner").val(value);
+            $("#input-typing").val(value);
             proceed_enter();
         }
         function removeElements() {
@@ -402,7 +404,7 @@ CMS | Transaction
 
         function proceed_enter() {
             removeElements();
-            var product_code = $('#input-scanner').val().trim();
+            var product_code = $('#input-scanner').val().trim() == '' ? $('#input-typing').val().trim() : $('#input-scanner').val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
@@ -417,6 +419,7 @@ CMS | Transaction
                 add_product_item(product_code);
             }
             $('#input-scanner').val('');
+            $('#input-typing').val('');
             removeElements();
         }
 
