@@ -355,53 +355,52 @@
                 <?php $disc_price = 0; ?>
                 <?php $sub_total = 0; ?>
                 @if (!empty($data))
-                @foreach ($data as $item)
-                <?php $rowspan = 1 + count($item['products']) ?>
-
-                <tr>
-                    <td class="center-text" rowspan="{{ $rowspan }}">
-                        {{ $loop->iteration }}
-                    </td>
-                    <td class="center-text" rowspan="{{ $rowspan }}">
-                        {{ $item['invoice_no'] }}
-                    </td>
-                    <td class="center-text" rowspan="{{ $rowspan }}">
-                        {{ $item['trans_date'] }}
-                    </td>
-                    <td class="center-text" rowspan="{{ $rowspan }}">
-                        {{ $item['pic'] }}
-                    </td>
-                    <td class="center-text" rowspan="{{ $rowspan }}">
-                        {{ $item['payment_method'] }}
-                    </td>
-                    <td colspan="5"></td>
-                    <td class="center-text" rowspan="{{ $rowspan }}">
-                        @currency($sub_total)
-                    </td>
-                </tr>
-                @foreach ($item['products'] as $product)
-                <?php
-                    $disc = ($product['discount'] / 100) * $product['price'];
-                    $disc_price = $product['price'] - $disc;
-                    $pro_price = $disc_price * $product['quantity'];
-                    $sub_total += $pro_price;
-                ?>
-                <tr>
-                    <td>
-                        {{ $product['name'] }}
-                    </td>
-                    <td class="center-text">{{ $product['discount'] }}</td>
-                    <td class="center-text" style="font-size: 14.5px">
-                        @if ($product['discount'] > 0)
-                        <s style="font-size: 12px"> @currency($product['price'])</s> <br>
-                        @endif
-                        @currency($disc_price)
-                    </td>
-                    <td class="center-text">{{ $product['quantity'] }}</td>
-                    <td class="center-text">@currency($pro_price)</td>
-                </tr>
-                @endforeach
-                @endforeach
+                    @foreach ($data as $item)
+                        <?php $rowspan = 1 + count($item['products']) ?>
+                        <tr>
+                            <td class="center-text" rowspan="{{ $rowspan }}">
+                                {{ $loop->iteration }}
+                            </td>
+                            <td class="center-text" rowspan="{{ $rowspan }}">
+                                {{ $item['invoice_no'] }}
+                            </td>
+                            <td class="center-text" rowspan="{{ $rowspan }}">
+                                {{ $item['trans_date'] }}
+                            </td>
+                            <td class="center-text" rowspan="{{ $rowspan }}">
+                                {{ $item['pic'] }}
+                            </td>
+                            <td class="center-text" rowspan="{{ $rowspan }}">
+                                {{ $item['payment_method'] }}
+                            </td>
+                            <td colspan="5"></td>
+                            <td class="center-text" rowspan="{{ $rowspan }}">
+                                @currency($item['total_price'])
+                            </td>
+                        </tr>
+                        @foreach ($item['products'] as $product)
+                            <?php
+                                $disc = ($product['discount'] / 100) * $product['price'];
+                                $disc_price = $product['price'] - $disc;
+                                $pro_price = $disc_price * $product['quantity'];
+                                $sub_total += $pro_price;
+                            ?>
+                            <tr>
+                                <td>
+                                    {{ $product['name'] }}
+                                </td>
+                                <td class="center-text">{{ $product['discount'] }}</td>
+                                <td class="center-text" style="font-size: 14.5px">
+                                    @if ($product['discount'] > 0)
+                                    <s style="font-size: 12px"> @currency($product['price'])</s> <br>
+                                    @endif
+                                    @currency($disc_price)
+                                </td>
+                                <td class="center-text">{{ $product['quantity'] }}</td>
+                                <td class="center-text">@currency($pro_price)</td>
+                            </tr>
+                        @endforeach
+                    @endforeach
                 @endif
             </tbody>
         </table>

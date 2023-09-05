@@ -127,13 +127,13 @@ CMS | Transaction
                                     </div>
                                 </div>
                                 <div class="col-md-9 col-sm-12" style="padding-right: 0px">
-                                    {{-- <marquee width="100%" direction="left">
+                                    <marquee width="100%" direction="left">
                                         @if (!empty($product_discount))
                                         @foreach ($product_discount as $item)
                                         <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
                                         @endforeach
                                         @endif
-                                    </marquee> --}}
+                                    </marquee>
                                     {{-- <input id="input-scanner" type="text" class="form-control"
                                         placeholder="Klik disini untuk Scan Barcode"
                                         style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
@@ -239,8 +239,10 @@ CMS | Transaction
                                         <div class="col-4" style="text-align: right">
                                             <h6>Total</h6>
                                             <h2 id="total_transaction">Rp 0</h2>
-                                            <p style="margin-bottom: 0px">*Termasuk PPN {{ env('VAT_AMOUNT') }}%
-                                            </p>
+                                            <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
+                                            {{-- @if(Session::get('receipt'))
+                                            ada receipt {{ Session::get('receipt') }}
+                                            @endif --}}
                                             <div
                                                 style="width: 100%; display: flex; align-items: center; margin-top: 10px">
                                                 <button onclick="submit_form('DRAFT')" type="button"
@@ -311,6 +313,10 @@ CMS | Transaction
         var final_total_price_item = 0;
 
         $(document).ready(function(e) {
+            // @if(Session::has('receipt'))
+            //     let url = `{{ route('transaction.receipt', ['transaction' => Session::has('receipt')]) }}`;
+            //     console.log('Ada receipt', url);
+            // @endif
             $("#input-scanner").focus();
         });
         var vat_amount = parseInt({{ config('app.vat_amount') }});
@@ -325,10 +331,10 @@ CMS | Transaction
         }
 
         function submit_form(status) {
-            let url = `{{ route('transaction.receipt', ['transaction' => 'INV1012200231693282703']) }}`;
+            // let url = `{{ route('transaction.receipt', ['transaction' => 'INV1012200231693282703']) }}`;
             $("#input_status").val(status);
-            printExternal(url);
-            // $("#form-transaction").submit();
+            // printExternal(url);
+            $("#form-transaction").submit();
         }
 
         function calculate_vat() {
@@ -376,7 +382,7 @@ CMS | Transaction
             // if (len_char <= 6) {
             //     $(".list").empty();
             // }
-            if (len_char > 6 && code != 13) {
+            if (len_char >= 3 && code != 13) {
                 search_product(value);
             }
             if (code == 13) {
