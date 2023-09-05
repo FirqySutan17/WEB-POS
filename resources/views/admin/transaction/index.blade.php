@@ -32,6 +32,16 @@ CMS | Transaction
         <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
         <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
         <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+
+        <button class="btn " type="button">
+            <a href="{{ route('logout') }}"
+                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
+            </a>
+        </button>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
     </div>
     @else
     @endif
