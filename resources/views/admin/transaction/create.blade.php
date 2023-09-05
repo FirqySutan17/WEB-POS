@@ -138,7 +138,7 @@ CMS | Transaction
                                         <input id="input-scanner" type="text" class="form-control"
                                             placeholder="Klik disini untuk Scan Barcode"
                                             style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                            tabindex="1" />
+                                            tabindex="1" autofocus/>
                                         <div>
                                             <input type="text" id="input-typing"
                                                 placeholder="Cari barang manual disini" tabindex="2" />
@@ -284,7 +284,7 @@ CMS | Transaction
     <script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-    {{-- <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script> --}}
+    <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js">
     </script>
     @endpush
@@ -294,6 +294,9 @@ CMS | Transaction
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        window.onload = function() {
+        var input = document.getElementById("input-scanner").focus();
+        }
         function printExternal(url) {
             var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
 
@@ -317,7 +320,8 @@ CMS | Transaction
             //     let url = `{{ route('transaction.receipt', ['transaction' => Session::has('receipt')]) }}`;
             //     console.log('Ada receipt', url);
             // @endif
-            $("#input-scanner").focus();
+            // console.log('ready')
+            // $("#input-scanner").focus();
         });
         var vat_amount = parseInt({{ config('app.vat_amount') }});
         function onfocus_color(item_id) {
