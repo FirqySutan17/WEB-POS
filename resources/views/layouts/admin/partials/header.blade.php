@@ -1,3 +1,17 @@
+@if(Auth::user()->roles->first()->name == 'Cashier')
+<style>
+  .page-wrapper .page-main-header {
+    display: none;
+  }
+
+  .page-wrapper.compact-wrapper .page-body-wrapper .page-body {
+    margin-top: 0px;
+    padding-top: 0px
+  }
+</style>
+@endif
+
+
 <div class="page-main-header">
   <div class="main-header-right row m-0">
     <div class="main-header-left">

@@ -30,6 +30,16 @@ CMS | Transaction
             href="{{ route('transaction.create') }}">Transaction</a>
         <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
         <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+
+        <button class="btn " type="button">
+            <a href="{{ route('logout') }}"
+                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
+            </a>
+        </button>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
     </div>
     @else
     @endif
@@ -93,12 +103,12 @@ CMS | Transaction
                                     </marquee>
                                     <div class="tr-input tr-shadow" style="padding: 0px 20px">
                                         <input id="input-scanner" type="text" class="form-control"
-                                        placeholder="Klik disini untuk Scan Barcode"
-                                        style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                        tabindex="1" />
+                                            placeholder="Klik disini untuk Scan Barcode"
+                                            style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
+                                            tabindex="1" />
                                         <div>
-                                            <input type="text" id="input-scanner" placeholder="Klik disini untuk scan barcode"
-                                                tabindex="1" />
+                                            <input type="text" id="input-scanner"
+                                                placeholder="Klik disini untuk scan barcode" tabindex="1" />
                                         </div>
                                         <ul class="list stay-hidden"></ul>
                                     </div>
