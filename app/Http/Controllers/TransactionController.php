@@ -32,9 +32,9 @@ class TransactionController extends Controller
     {
         $transactions = [];
         if ($request->get('keyword')) {
-            $transactions = Transaction::where('invoice_no', $request->keyword)->with(['detail', 'user'])->orderBy('id', 'desc')->paginate(9);
+            $transactions = Transaction::where('invoice_no', $request->keyword)->with(['user'])->orderByRaw("FIELD(status, 'DRAFT', 'FINISH', 'CANCEL') ASC")->orderBy('id', 'desc')->paginate(9);
         } else {
-            $transactions = Transaction::orderBy('id', 'desc')->with(['detail', 'user'])->paginate(9);
+            $transactions = Transaction::orderBy('id', 'desc')->with(['user'])->orderByRaw("FIELD(status, 'DRAFT', 'FINISH', 'CANCEL') DESC")->orderBy('id', 'desc')->paginate(9);
         }
         // $session_user = Auth::user()->roles()->first()->name;
         // dd($transaction);
@@ -164,8 +164,7 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        $transaction = Transaction::with(['user', 'detail'])->find($transaction)->first();
-        // dd($transaction_data);
+        $transaction = Transaction::with(['user'])->where('tr_transaction.invoice_no', $transaction->invoice_no)->first();
         $details = TransactionDetail::select('tr_transaction_detail.*', 'products.name' , 'products.code')->where('invoice_no', $transaction->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
         $data = [
             "transaction"   => $transaction,
@@ -177,9 +176,8 @@ class TransactionController extends Controller
 
     public function receipt(Transaction $transaction)
     {
-        $transaction = Transaction::find($transaction);
-
-        $details = TransactionDetail::where('invoice_no', $transaction[0]->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
+        $transaction = Transaction::with(['user'])->where('tr_transaction.invoice_no', $transaction->invoice_no)->first();
+        $details = TransactionDetail::select('tr_transaction_detail.*', 'products.name' , 'products.code')->where('invoice_no', $transaction->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
         // dd($details);
         return view('admin.transaction.receipt', compact('transaction', 'details'));
     }

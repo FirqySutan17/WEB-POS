@@ -100,22 +100,22 @@
             Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus
             Ibukota Jakarta 12710
         </p>
-        <p style="text-align: center">{{ $transaction[0]->created_at->format('d-m-Y h:m:s') }}</p>
+        <p style="text-align: center">{{ $transaction->created_at->format('d-m-Y h:m:s') }}</p>
         <hr class="dotted">
         <table class="add-note">
             <tr>
                 <td>Receipt</td>
                 <td style="text-align: right">
-                    #{{ $transaction[0]->receipt_no }}
+                    #{{ $transaction->receipt_no }}
                 </td>
             </tr>
             <tr>
                 <td>Order INV</td>
-                <td style="text-align: right">#{{ $transaction[0]->invoice_no }}</td>
+                <td style="text-align: right">#{{ $transaction->invoice_no }}</td>
             </tr>
             <tr>
                 <td>Cashier</td>
-                <td style="text-align: right">{{ $transaction[0]->user->name }}</td>
+                <td style="text-align: right">{{ $transaction->user->name }}</td>
             </tr>
         </table>
         <hr class="dotted">
@@ -150,7 +150,7 @@
         <hr class="dotted">
         <table class="item-order">
             <?php 
-                $vat_amount = ($sub_total / 100) * $transaction[0]->vat_ppn;
+                $vat_amount = ($sub_total / 100) * $transaction->vat_ppn;
                 $total_price = $sub_total + $vat_amount;
             ?>
             <tbody>
@@ -159,7 +159,7 @@
                     <td class="price">@currency($sub_total)</td>
                 </tr>
                 <tr>
-                    <td class="description">VAT {{ $transaction[0]->vat_ppn }}%</td>
+                    <td class="description">VAT {{ $transaction->vat_ppn }}%</td>
                     <td class="price">@currency($vat_amount)</td>
                 </tr>
                 <tr>

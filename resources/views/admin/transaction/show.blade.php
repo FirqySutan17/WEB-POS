@@ -259,6 +259,7 @@
     //button create post event
     $('.btn-show-post').click(function () {
         let url_show = $(this).data('url');
+        console.log(url_show);
         //fetch detail post with ajax
         $.ajax({
             url: url_show,

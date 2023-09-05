@@ -190,7 +190,11 @@ CMS | Transaction
             <div class="boxFooter">
 
                 <div class="boxPagination">
-
+                    @if ($transactions->hasPages())
+                    <div class="boxPagination">
+                        {{ $transactions->links('vendor.pagination.bootstrap-4') }}
+                    </div>
+                    @endif
                 </div>
 
             </div>
