@@ -140,8 +140,8 @@ CMS | Transaction
                                         tabindex="1" /> --}}
                                     <div class="tr-input tr-shadow" style="padding: 0px 20px">
                                         <div>
-                                            <input type="text" id="input-scanner" placeholder="Klik disini untuk scan barcode"
-                                                tabindex="1" />
+                                            <input type="text" id="input-scanner"
+                                                placeholder="Klik disini untuk scan barcode" tabindex="1" />
                                         </div>
                                         <ul class="list stay-hidden"></ul>
                                     </div>
@@ -239,7 +239,8 @@ CMS | Transaction
                                         <div class="col-4" style="text-align: right">
                                             <h6>Total</h6>
                                             <h2 id="total_transaction">Rp 0</h2>
-                                            <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
+                                            <p style="margin-bottom: 0px">*Termasuk PPN {{ env('VAT_AMOUNT') }}%
+                                            </p>
                                             <div
                                                 style="width: 100%; display: flex; align-items: center; margin-top: 10px">
                                                 <button onclick="submit_form('DRAFT')" type="button"
