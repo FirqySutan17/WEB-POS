@@ -10,6 +10,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use App\Models\Product;
+use Session;
 
 class TransactionController extends Controller
 {
@@ -31,7 +32,7 @@ class TransactionController extends Controller
     {
         $transactions = [];
         if ($request->get('keyword')) {
-            $transactions = Transaction::search($request->keyword)->with(['detail', 'user'])->orderBy('id', 'desc')->paginate(9);
+            $transactions = Transaction::where('invoice_no', $request->keyword)->with(['detail', 'user'])->orderBy('id', 'desc')->paginate(9);
         } else {
             $transactions = Transaction::orderBy('id', 'desc')->with(['detail', 'user'])->paginate(9);
         }
@@ -52,6 +53,9 @@ class TransactionController extends Controller
         // $session_user = $request->session()->get('role');
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
         $no_invoice = "INV".$userdata->id.$userdata->employee_id.strtotime(date('YmdHis'));
+        // if (Session::get('receipt')) {
+        //     dd(Session::get('receipt'));
+        // }
         // dd($session_user);
         return view('admin.transaction.create', compact('no_invoice', 'product_discount'));
     }

@@ -331,10 +331,13 @@ class ReportController extends Controller
                             "trans_date"    => $item->trans_date,
                             "pic"           => $item->name,
                             "payment_method" => $item->payment_method,
+                            "total_price"   => 0,
                             "products"      => []
                         ];
                     }
                     
+                    $sub_price = $item->price * $item->quantity;
+                    $data_invoice[$invoice_no]["total_price"] += $sub_price;
                     $data_invoice[$invoice_no]["products"][] = [
                         "name"  => $item->product_name,
                         "code"  => $item->product_code,

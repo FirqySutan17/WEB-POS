@@ -121,24 +121,24 @@
         <hr class="dotted">
         <table class="item-order">
             <tbody>
-                <?php $sub_total = 0; ?>
-                <?php $potongan = 0; ?>
-                <?php $total_price = 0; ?>
+                <?php $sub_total = 0; $potongan = 0; $total_price = 0; $total_discount = 0; ?>
                 @foreach($details as $d)
                 <?php
-                $total_item_price = $d->quantity * $d->price;
-                $sub_total += $total_item_price;
-                $potongan = ($sub_total / 100) * $transaction[0]->vat_ppn;
-                $total_price = $sub_total + $potongan;
+                    $total_item_price = $d->quantity * $d->price;
+                    $sub_total += $total_item_price;
+                    $discount_amount = $d->discount > 0 ? $d->basic_price - $d->price : 0;
+                    $total_discount += $discount_amount * $d->quantity;
                 ?>
                 <tr>
                     <td>
                         <p style="font-weight: 600">{{ $d->name}}</p>
-                        <p>{{ $d->quantity}}x &nbsp; &nbsp; @currency($d->price)&nbsp; &nbsp;
-                            @if( $d->discount == 0)
-
-                            @else
-                            Disc {{$d->discount}}%
+                        <p>{{ $d->quantity}}x &nbsp; &nbsp; 
+                            @if( $d->discount > 0)
+                                <s>@currency($d->basic_price)</s>&nbsp; &nbsp;
+                            @endif
+                            @currency($d->price)&nbsp; &nbsp;
+                            @if( $d->discount > 0)
+                                Disc {{$d->discount}}%
                             @endif
                         </p>
                     </td>
@@ -149,6 +149,10 @@
         </table>
         <hr class="dotted">
         <table class="item-order">
+            <?php 
+                $vat_amount = ($sub_total / 100) * $transaction[0]->vat_ppn;
+                $total_price = $sub_total + $vat_amount;
+            ?>
             <tbody>
                 <tr>
                     <td class="description">SUB TOTAL</td>
@@ -156,11 +160,11 @@
                 </tr>
                 <tr>
                     <td class="description">VAT {{ $transaction[0]->vat_ppn }}%</td>
-                    <td class="price">@currency($potongan)</td>
+                    <td class="price">@currency($vat_amount)</td>
                 </tr>
                 <tr>
-                    <td class="description">DISC 0%</td>
-                    <td class="price">Rp 0</td>
+                    <td class="description">DISC TOTAL</td>
+                    <td class="price">@currency($total_discount)</td>
                 </tr>
                 <tr>
                     <td class="description">GRAND TOTAL</td>
@@ -192,8 +196,13 @@
             <br>CHICKEN SHOP
         </p>
     </div>
-    {{-- <button id="btnPrint" class="hidden-print">Print</button> --}}
-    <script src="script.js"></script>
+    <button id="btnPrint" class="hidden-print">Print</button>
+    <script>
+        let buttonPrint = document.getElementById("btnPrint");
+        buttonPrint.addEventListener("click", function() {
+            window.print()
+        });
+    </script>
 </body>
 
 </html>
