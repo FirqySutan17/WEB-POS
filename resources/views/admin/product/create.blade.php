@@ -136,7 +136,7 @@ CMS | Add Product
                                 <!-- description -->
                                 <div class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
-                                        Description <span class="wajib">* </span>
+                                        Description
                                     </label>
                                     <textarea id="input_post_description" name="description"
                                         placeholder="Write description here.."

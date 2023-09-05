@@ -93,7 +93,6 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'code' => 'required|string|unique:products,code',
-            'description' => 'required|string',
             'price_store' => 'required|string',
             'price_olshop' => 'required',
         ]);
@@ -167,7 +166,6 @@ class ProductController extends Controller
             [
                 'name' => 'required',
                 'code' => 'required|string|unique:products,code' .  $product->id,
-                'description' => 'required|string',
                 'price_store' => 'required|string',
                 'price_olshop' => 'required'
             ],
