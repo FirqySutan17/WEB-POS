@@ -288,6 +288,22 @@ class ReportController extends Controller
             // return $pdf->download('stock-opname-pdf');
         }
 
+        public function report_transaction_by_cashier(Request $request) {
+            $data   = [];
+            $sdate  = "";
+            $edate  = ""; 
+            $search = "";
+            if ($request->_token) {
+                $sdate = $request->sdate;
+                $edate = $request->edate;
+                $search = trim($request->search);
+                $order_by = "ORDER BY users.name ASC, trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data     = $this->convert_transaction_by_cashier($data_raw);
+            }
+            return view('admin.report.transactionproduct', compact('data', 'sdate', 'edate', 'search'));
+        }
+
         private function get_transaction($sdate, $edate, $search) {
             $where = empty($search) ? "" : " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%')";
             $query = "
@@ -374,6 +390,32 @@ class ReportController extends Controller
                 }
             }
             return $data_product;
+        }
+
+        private function convert_transaction_by_cashier($data_raw) {
+            $data_cashier = [];
+            if (!empty($data_raw)) {
+                foreach ($data_raw as $item) {
+                    dd($item);
+                    $product_code = $item->product_code;
+                    if (!array_key_exists($product_code, $data_cashier)) {
+                        $data_cashier[$product_code] = [
+                            "name"  => $item->product_name,
+                            "code"  => $item->product_code,
+                            "details" => []
+                        ];
+                    }
+                    $data_cashier[$product_code]["details"][] = [
+                        "invoice_no"    => $item->invoice_no,
+                        "trans_date"    => $item->trans_date,
+                        "price"         => $item->price,
+                        "basic_price"   => $item->basic_price,
+                        "discount"      => $item->discount,
+                        "quantity"  => $item->quantity
+                    ];
+                }
+            }
+            return $data_cashier;
         }
 
     /* END REPORT TRANSACTION */
