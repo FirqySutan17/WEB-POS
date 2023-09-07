@@ -35,9 +35,8 @@ CMS | Add Product
                                             <label for="input_post_title" class="font-weight-bold">
                                                 Product Name <span class="wajib">* </span>
                                             </label>
-                                            <input id="input_post_title" value="{{ old('name') }}"
-                                                name="name" type="text"
-                                                class="form-control @error('name') is-invalid @enderror"
+                                            <input id="input_post_title" value="{{ old('name') }}" name="name"
+                                                type="text" class="form-control @error('name') is-invalid @enderror"
                                                 placeholder="Input name here" required />
                                             @error('name')
                                             <span class="invalid-feedback" role="alert">
@@ -88,8 +87,8 @@ CMS | Add Product
                                             <label for="price_olshop" class="font-weight-bold">
                                                 E-Commerce Price <span class="wajib">* </span>
                                             </label>
-                                            <input id="price_olshop" value="{{ old('price_olshop') }}" name="price_olshop"
-                                                type="number"
+                                            <input id="price_olshop" value="{{ old('price_olshop') }}"
+                                                name="price_olshop" type="number"
                                                 class="form-control @error('price_olshop') is-invalid @enderror"
                                                 placeholder="" required />
                                             @error('price_olshop')
@@ -105,8 +104,9 @@ CMS | Add Product
                                             <label for="stock_olshop" class="font-weight-bold">
                                                 Store Discount (%)
                                             </label>
-                                            <input id="discount_store" value="{{ old('discount_store') }}" name="discount_store"
-                                                type="number" class="form-control @error('discount_store') is-invalid @enderror"
+                                            <input id="discount_store" value="{{ old('discount_store') }}"
+                                                name="discount_store" type="number"
+                                                class="form-control @error('discount_store') is-invalid @enderror"
                                                 placeholder="" />
                                             @error('discount_store')
                                             <span class="invalid-feedback" role="alert">
@@ -121,8 +121,9 @@ CMS | Add Product
                                             <label for="stock_olshop" class="font-weight-bold">
                                                 E-Commerce Discount (%)
                                             </label>
-                                            <input id="discount_olshop" value="{{ old('discount_olshop') }}" name="discount_olshop"
-                                                type="number" class="form-control @error('discount_olshop') is-invalid @enderror"
+                                            <input id="discount_olshop" value="{{ old('discount_olshop') }}"
+                                                name="discount_olshop" type="number"
+                                                class="form-control @error('discount_olshop') is-invalid @enderror"
                                                 placeholder="" />
                                             @error('discount_olshop')
                                             <span class="invalid-feedback" role="alert">
@@ -132,6 +133,25 @@ CMS | Add Product
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Kategori -->
+                                <div class="form-group _form-group">
+                                    <label for="select_user_kategori" class="font-weight-bold">
+                                        Categories <span class="wajib">*</span>
+                                    </label>
+                                    <select id="select_user_kategori" name="kategori"
+                                        data-placeholder="Choose categories" class="js-example-placeholder-multiple">
+                                        <option value="Internal">Internal</option>
+                                        <option value="External">External</option>
+                                    </select>
+                                    @error('role')
+                                    <span class="invalid-feedback">
+                                        {{ $message }}
+                                    </span>
+                                    @enderror
+                                    <!-- error message -->
+                                </div>
+                                <!-- end role -->
 
                                 <!-- description -->
                                 <div class="form-group _form-group">
@@ -159,8 +179,8 @@ CMS | Add Product
                                         <div class="media">
                                             <div class="media-body text-end icon-state">
                                                 <label class="switch">
-                                                    <input type="checkbox" name="is_vat" {{ old("is_vat")==1
-                                                        ? "checked" : null }}><span class="switch-state"></span>
+                                                    <input type="checkbox" name="is_vat" {{ old("is_vat")==1 ? "checked"
+                                                        : null }}><span class="switch-state"></span>
                                                 </label>
                                             </div>
                                         </div>
@@ -329,7 +349,7 @@ CMS | Add Product
 </script>
 <script>
     $(function() {
-        $('#select_user_type').select2({
+        $('#select_user_kategori').select2({
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}",
             allowClear: true,
@@ -349,71 +369,6 @@ CMS | Add Product
             //     }
             // }
         });
-    });
-
-    $(function() {
-        $('#select_user_location').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}",
-            allowClear: true,
-            // ajax: {
-            //     url: "{{ route('roles.select') }}",
-            //     dataType: 'json',
-            //     delay: 250,
-            //     processResults: function(data) {
-            //         return {
-            //             results: $.map(data, function(item) {
-            //                 return {
-            //                     text: item.name,
-            //                     id: item.id
-            //                 }
-            //             })
-            //         };
-            //     }
-            // }
-        });
-    });
-    //select2 tag
-    $('#select_portfolio_skill').select2({
-            theme: 'bootstrap4',
-            language: "",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('skill.select') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                }
-            }
-    });
-    //select2 tag
-    $('#select_user_role').select2({
-            theme: 'bootstrap4',
-            language: "",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('project-type.select') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
-                }
-            }
     });
 </script>
 

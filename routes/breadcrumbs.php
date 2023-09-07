@@ -124,6 +124,21 @@ Breadcrumbs::for('edit_receive', function ($trail, $receive) {
     $trail->push($receive->code, route('receive.edit', ['receive' => $receive]));
 });
 
+// Membership 
+Breadcrumbs::for('membership', function ($trail) {
+    $trail->push("Membership", route('membership.index'));
+});
+
+Breadcrumbs::for('add_membership', function ($trail) {
+    $trail->parent('membership');
+    $trail->push('Add Membership', route('membership.create'));
+});
+
+Breadcrumbs::for('edit_membership', function ($trail, $membership) {
+    $trail->parent('membership');
+    $trail->push($membership->code, route('membership.edit', ['membership' => $membership]));
+});
+
 // Master
 Breadcrumbs::for('report', function ($trail) {
     $trail->push('Report');
