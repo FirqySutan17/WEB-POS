@@ -30,6 +30,7 @@ CMS | Transaction
     @if(Auth::user()->roles->first()->name == 'Cashier')
     <div class="menu-rt">
         <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
+        <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
         <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
         <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
 

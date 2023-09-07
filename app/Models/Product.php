@@ -13,7 +13,7 @@ class Product extends Model
     use Blameable;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $fillable = ['code', 'name', 'description', 'price_store', 'price_olshop', 'stock', 'discount_store', 'discount_olshop'];
+    protected $fillable = ['code', 'name', 'description', 'price_store', 'price_olshop', 'stock', 'discount_store', 'discount_olshop', 'is_vat'];
         // public $timestamps = false;
 
 

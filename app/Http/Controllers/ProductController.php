@@ -61,11 +61,22 @@ class ProductController extends Controller
             "data"      => []
         ];
         if (!empty($product_code)) {
-            $products = Product::select('id', 'code', 'name', 'price_store', 'discount_store')->where('code', $product_code)->first();
+            $products = Product::select('id', 'code', 'name', 'price_store', 'discount_store', 'stock', 'is_vat')->where('code', $product_code)->first();
             if (!empty($products)) {
                 $result["message"]  = "";
                 $result["status"]   = "success";
                 $result["data"]     = $products;
+                if ($products->stock < 1) {
+                    $result["message"]  = "Empty stock!";
+                    $result["status"]   = "failed";
+                    $result["data"]     = [];
+                }
+
+                if ($products->is_vat == 1) {
+                    $vat_percent    = config('app.vat_amount');
+                    $vat_amount     = ($products->price_store / 100) * $vat_percent;
+                    $products->price_store = $products->price_store + $vat_amount;
+                }
             }
         }
 
@@ -109,6 +120,7 @@ class ProductController extends Controller
                 'description'   => $request->description,
                 'stock'   => 0,
                 'is_active' => ($request->is_active) ? '1' : '0',
+                'is_vat' => ($request->is_vat) ? '1' : '0',
             ]);
 
             if ($product) {
@@ -193,7 +205,7 @@ class ProductController extends Controller
             $product->discount_olshop   = $request->discount_olshop;
             if (empty($check_price_logs)) {
                 $this->insert_price_logs($product);
-            } elseif ($product->price_store != $request->price_store && $product->price_olshop != $request->price_olshop && $product->discount_store != $request->discount_store && $product->discount_olshop != $request->discount_olshop) {
+            } elseif ($product->price_store != $request->price_store || $product->price_olshop != $request->price_olshop || $product->discount_store != $request->discount_store || $product->discount_olshop != $request->discount_olshop || $product->is_vat != $request->is_vat) {
                 $this->insert_price_logs($product);
             }
 
@@ -218,6 +230,7 @@ class ProductController extends Controller
             'price_olshop'  => $product->price_olshop,
             'discount_store'    => $product->discount_store,
             'discount_olshop'   => $product->discount_olshop,
+            'is_vat'   => $product->is_vat,
         ]);
     }
 

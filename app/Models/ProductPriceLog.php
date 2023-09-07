@@ -11,7 +11,7 @@ class ProductPriceLog extends Model
     use HasFactory;
     protected $table = 'products_price_log';
     use Blameable;
-    protected $fillable = ['product_code', 'price_store', 'price_olshop', 'discount_store', 'discount_olshop'];
+    protected $fillable = ['product_code', 'price_store', 'price_olshop', 'discount_store', 'discount_olshop', 'is_vat'];
         // public $timestamps = false;
 
 

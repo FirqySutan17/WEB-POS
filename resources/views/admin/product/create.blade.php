@@ -149,6 +149,24 @@ CMS | Add Product
                                     @enderror
                                 </div>
 
+                                <div class="form-group {{ $errors->has('is_vat') ? ' has-error' : '' }} _form-group"
+                                    style="display: flex; margin-top: 30px">
+                                    <label for="input_banner_status" class="font-weight-bold"
+                                        style="padding: 7px 0px; margin-right: 20px;">
+                                        Include PPN
+                                    </label>
+                                    <div class="col-2">
+                                        <div class="media">
+                                            <div class="media-body text-end icon-state">
+                                                <label class="switch">
+                                                    <input type="checkbox" name="is_vat" {{ old("is_vat")==1
+                                                        ? "checked" : null }}><span class="switch-state"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- status -->
                                 <div class="form-group {{ $errors->has('is_active') ? ' has-error' : '' }} _form-group"
                                     style="display: flex; margin-top: 30px">

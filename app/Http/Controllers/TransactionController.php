@@ -28,14 +28,28 @@ class TransactionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    
     {
         $transactions = [];
         if ($request->get('keyword')) {
-            $transactions = Transaction::where('invoice_no', $request->keyword)->with(['user'])->orderByRaw("FIELD(status, 'DRAFT', 'FINISH', 'CANCEL') ASC")->orderBy('id', 'desc')->paginate(9);
+            $transactions = Transaction::where('invoice_no', $request->keyword)->with(['user'])->orderBy('id', 'desc')->paginate(9);
         } else {
-            $transactions = Transaction::orderBy('id', 'desc')->with(['user'])->orderByRaw("FIELD(status, 'DRAFT', 'FINISH', 'CANCEL') DESC")->orderBy('id', 'desc')->paginate(9);
+            $transactions = Transaction::orderBy('id', 'desc')->with(['user'])->orderBy('id', 'desc')->paginate(9);
         }
+        // $session_user = Auth::user()->roles()->first()->name;
+        // dd($transaction);
+        // dd($session_user);
+        return view('admin.transaction.index', compact('transactions'));
+    }
+
+    public function index_draft(Request $request)
+    {
+        $user = Auth::user();
+
+        $query = Transaction::where('status', 'DRAFT')->where('created_at', $user->id)->with(['user'])->orderBy('id', 'desc');
+        if ($request->get('keyword')) {
+            $query->where('invoice_no', $request->keyword);
+        }
+        $transactions = $query->paginate(10);
         // $session_user = Auth::user()->roles()->first()->name;
         // dd($transaction);
         // dd($session_user);
