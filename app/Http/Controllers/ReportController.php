@@ -298,10 +298,10 @@ class ReportController extends Controller
                 $edate = $request->edate;
                 $search = trim($request->search);
                 $order_by = "ORDER BY users.name ASC, trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "cashier");
                 $data     = $this->convert_transaction_by_cashier($data_raw);
             }
-            return view('admin.report.transactionproduct', compact('data', 'sdate', 'edate', 'search'));
+            return view('admin.report.transactioncashier', compact('data', 'sdate', 'edate', 'search'));
         }
 
         private function get_transaction($sdate, $edate, $search) {
@@ -317,13 +317,19 @@ class ReportController extends Controller
             return $db_query;
         }
 
-        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search) {
-            $where = empty($search) ? "" : " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%' OR products.name LIKE '%".$search."%' OR products.code LIKE '%".$search."%')";
+        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search, $by = "") {
+            $where = "";
+            if (!empty($search)) {
+                $where = " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%' OR products.name LIKE '%".$search."%' OR products.code LIKE '%".$search."%')";
+                if ($by == "cashier") {
+                    $where = " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%')";
+                }
+            }
             $query = "
                 SELECT 
                     trans_detail.product_code, products.name as product_name, 
                     trans_detail.quantity, trans_detail.basic_price, trans_detail.discount, trans_detail.price,
-                    trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.name
+                    trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.name, users.employee_id
                 FROM tr_transaction_detail AS trans_detail
                 INNER JOIN products ON trans_detail.product_code = products.code
                 INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
@@ -396,22 +402,19 @@ class ReportController extends Controller
             $data_cashier = [];
             if (!empty($data_raw)) {
                 foreach ($data_raw as $item) {
-                    dd($item);
-                    $product_code = $item->product_code;
-                    if (!array_key_exists($product_code, $data_cashier)) {
-                        $data_cashier[$product_code] = [
-                            "name"  => $item->product_name,
-                            "code"  => $item->product_code,
+                    $employee_id = $item->employee_id;
+                    if (!array_key_exists($employee_id, $data_cashier)) {
+                        $data_cashier[$employee_id] = [
+                            "name"  => $item->name,
+                            "code"  => $item->employee_id,
                             "details" => []
                         ];
                     }
-                    $data_cashier[$product_code]["details"][] = [
+                    $data_cashier[$employee_id]["details"][] = [
                         "invoice_no"    => $item->invoice_no,
                         "trans_date"    => $item->trans_date,
-                        "price"         => $item->price,
-                        "basic_price"   => $item->basic_price,
-                        "discount"      => $item->discount,
-                        "quantity"  => $item->quantity
+                        "total_price"   => $item->total_price,
+                        "payment_method"   => $item->payment_method
                     ];
                 }
             }

@@ -40,6 +40,7 @@ CMS | Report Transaction
             Invoice</a>
         <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
             Product</a>
+        <a class="{{routeActive('report.transactioncashier')}}" href="{{ route('report.transactioncashier') }}">By Cashier</a>
     </div>
     <div class="card border-add">
         <div class="tr-shadow"
