@@ -105,6 +105,7 @@ Route::match(['get', 'post'], '/report/transaction-by-invoice', [App\Http\Contro
 Route::post('/report/transaction-by-invoice/excel', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice_excel'])->name('report.transactioninvoice.excel');
 Route::post('/report/transaction-by-invoice/pdf', [App\Http\Controllers\ReportController::class, 'report_transaction_by_invoice_pdf'])->name('report.transactioninvoice.pdf');
 
+
 Route::match(['get', 'post'], '/report/transaction-by-product', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product'])->name('report.transactionproduct');
 Route::post('/report/transaction-by-product/excel', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product_excel'])->name('report.transactionproduct.excel');
 Route::post('/report/transaction-by-product/pdf', [App\Http\Controllers\ReportController::class, 'report_transaction_by_product_pdf'])->name('report.transactionproduct.pdf');
@@ -120,3 +121,6 @@ Route::post('/report/receive-by-no/pdf', [App\Http\Controllers\ReportController:
 Route::match(['get', 'post'], '/report/receive-by-product', [App\Http\Controllers\ReportController::class, 'report_receive_by_product'])->name('report.receiveproduct');
 Route::post('/report/receive-by-product/excel', [App\Http\Controllers\ReportController::class, 'report_receive_by_product_excel'])->name('report.receiveproduct.excel');
 Route::post('/report/receive-by-product/pdf', [App\Http\Controllers\ReportController::class, 'report_receive_by_product_pdf'])->name('report.receiveproduct.pdf');
+
+Route::match(['get', 'post'], '/report/transaction-by-cashier', [App\Http\Controllers\ReportController::class, 'report_transaction_by_cashier'])->name('report.transactioncashier');
+Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');
