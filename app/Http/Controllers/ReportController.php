@@ -679,4 +679,11 @@ class ReportController extends Controller
         }
 
     /* END REPORT RECEIVE */
+
+    // START REPORT CASH FLOW
+        public function report_cash_flow(Request $request) {
+            $data   = [];
+            return view('admin.report.cash-flow', compact('data'));
+        }
+    // END REPORT CASH FLOW
 }

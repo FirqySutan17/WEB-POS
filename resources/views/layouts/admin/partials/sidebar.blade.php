@@ -98,10 +98,17 @@
                                 </a>
                             </li>
                             @endcan
+
                             <li>
                                 <a href="{{ route('report.receive') }}"
                                     class="{{routeActive(['report.receive', 'report.receiveno', 'report.receiveproduct'])}}">
                                     Receive
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('report.cashflow') }}" class="{{routeActive(['report.cashflow'])}}">
+                                    Cash flow
                                 </a>
                             </li>
                         </ul>
