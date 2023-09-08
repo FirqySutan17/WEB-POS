@@ -48,7 +48,17 @@
                     </li>
                     @endcan
 
-                    @canany(['PC Show', 'P Show'])
+                    @can(['P Show'])
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['product.index', 'product.show', 'product.edit', 'product.create'])}}"
+                            href="{{ route('product.index') }}">
+                            <i data-feather="package"></i>
+                            <span>Product</span>
+                        </a>
+                    </li>
+                    @endcan
+
+                    {{-- @canany(['PC Show', 'P Show'])
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
                             href="javascript:void(0)"><i data-feather="package"></i><span>Products Management</span></a>
@@ -66,7 +76,7 @@
                             @endcan
                         </ul>
                     </li>
-                    @endcan
+                    @endcan --}}
 
                     @canany(['RS Show', 'RT Show'])
                     <li class="dropdown">

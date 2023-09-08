@@ -132,17 +132,28 @@
                 <tr>
                     <td>
                         <p style="font-weight: 600">{{ $d->name}}</p>
-                        <p>{{ $d->quantity}}x &nbsp; &nbsp; 
+                        <p>{{ $d->quantity}}x &nbsp; &nbsp;
                             @if( $d->discount > 0)
-                                <s>@currency($d->basic_price)</s>&nbsp; &nbsp;
+                            <s>@currency($d->basic_price)</s>&nbsp; &nbsp;
                             @endif
                             @currency($d->price)&nbsp; &nbsp;
                             @if( $d->discount > 0)
-                                Disc {{$d->discount}}%
+                            Disc {{$d->discount}}%
                             @endif
                         </p>
                     </td>
-                    <td>@currency($total_item_price)</td>
+                    <td>
+
+                        @if ($d->discount > 0)
+                        <p style="padding-top: 15px">@currency($total_item_price)</p>
+                        <p>
+                            (@currency($total_discount))
+                        </p>
+                        @else
+                        <p style="padding-top: 15px">@currency($total_item_price)</p>
+                        @endif
+                        <br>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -159,7 +170,7 @@
                     <td class="price">@currency($sub_total)</td>
                 </tr>
                 <tr>
-                    <td class="description">VAT {{ $transaction->vat_ppn }}%</td>
+                    <td class="description">VAT</td>
                     <td class="price">@currency($vat_amount)</td>
                 </tr>
                 <tr>
