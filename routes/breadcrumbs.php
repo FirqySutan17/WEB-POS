@@ -195,3 +195,8 @@ Breadcrumbs::for('report_cashflow', function ($trail) {
     $trail->push("Report cashflow", route('report.cashflow'));
 });
 
+// Report Cashflow
+Breadcrumbs::for('report_bestseller', function ($trail) {
+    $trail->push("Report bestseller", route('report.bestseller'));
+});
+

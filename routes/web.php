@@ -129,3 +129,5 @@ Route::match(['get', 'post'], '/report/transaction-by-cashier', [App\Http\Contro
 Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');
 
 Route::match(['get', 'post'], '/report/cash-flow', [App\Http\Controllers\ReportController::class, 'report_cash_flow'])->name('report.cashflow');
+
+Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');

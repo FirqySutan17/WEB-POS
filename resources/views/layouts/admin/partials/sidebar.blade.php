@@ -111,6 +111,13 @@
                                     Cash flow
                                 </a>
                             </li>
+
+                            <li>
+                                <a href="{{ route('report.bestseller') }}"
+                                    class="{{routeActive(['report.bestseller'])}}">
+                                    Cash flow
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @endcanany
