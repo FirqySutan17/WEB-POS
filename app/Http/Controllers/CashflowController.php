@@ -58,7 +58,7 @@ class CashflowController extends Controller
 
         DB::beginTransaction();
         try {
-            $membership = Membership::create([
+            $cashflow = Cashflow::create([
                 'date' => $request->date,
                 'time' => $request->time,
                 'employee_id' => $request->employee_id,
