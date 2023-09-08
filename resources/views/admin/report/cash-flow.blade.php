@@ -68,52 +68,52 @@ CMS | Report Cash Flow
                     <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="center-text">Tanggal<span class="dividerHr"></span></th>
-                        <th class="heightHr" style="vertical-align: middle">No. Invoice <span class="dividerHr"></span>
-                        </th>
                         <th class="heightHr" style="vertical-align: middle">Nama Kasir <span class="dividerHr"></span>
                         </th>
-                        <th class="heightHr center-text">Metode Pembayaran <span class="dividerHr"></span></th>
-                        <th class="center-text" class="heightHr">Total Harga <span class="dividerHr"></span></th>
+                        <th class="heightHr" style="vertical-align: middle">Begin <span class="dividerHr"></span>
+                        </th>
+                        <th class="center-text" class="heightHr">Action <span class="dividerHr"></span></th>
                     </tr>
                 </thead>
                 <tbody>
 
                     <tr>
                         <td class="center-text">1</td>
-
                         <td class="center-text" style="vertical-align: middle">
                             2023-09-12
-                        </td>
-                        <td style="vertical-align: middle">
-                            #INV-00001
                         </td>
                         <td style="vertical-align: middle">
                             John Doe
                         </td>
                         <td class="center-text" style="vertical-align: middle">
-                            Tunai
+                            Rp 2.000.000
                         </td>
-                        <td class="center-text" style="vertical-align: middle;">
-                            Rp 375.000
+                        <td style="width: 10%;" class="center-text boxAction fontField">
+                            <div class="boxInside">
+                                <div class="boxEdit">
+                                    <a href="javascript:void(0)"
+                                        data-url="{{ route('transaction.show', $transaction->invoice_no) }}"
+                                        class="btn-sm btn-info btn-show-post" role="button">
+                                        <i class='bx bx-show'></i>
+                                    </a>
+                                </div>
+                            </div>
+
                         </td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr class="head-report">
-                        <th colspan="5" class="heightHr right-text">Grand Total <span class="dividerHr"></span></th>
-                        <th class="center-text" class="heightHr">Rp 375.000 <span class="dividerHr"></span>
-                        </th>
-                    </tr>
-                </tfoot>
             </table>
         </div>
+
         <div class="card-footer">
             <div class="boxFooter">
-
                 <div class="boxPagination">
-
+                    @if ($transactions->hasPages())
+                    <div class="boxPagination">
+                        {{ $transactions->links('vendor.pagination.bootstrap-4') }}
+                    </div>
+                    @endif
                 </div>
-
             </div>
         </div>
     </div>

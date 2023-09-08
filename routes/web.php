@@ -89,6 +89,9 @@ Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
 // Membership Route
 Route::resource('/membership', App\Http\Controllers\MembershipController::class);
 
+// Cashflow Route
+Route::resource('/cashflow', App\Http\Controllers\CashflowController::class);
+
 // Transaction Route
 Route::resource('/transaction', App\Http\Controllers\TransactionController::class);
 Route::get('/transaction/receipt/{transaction}', [App\Http\Controllers\TransactionController::class, 'receipt'])->name('transaction.receipt');

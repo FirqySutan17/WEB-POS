@@ -139,6 +139,20 @@ Breadcrumbs::for('edit_membership', function ($trail, $membership) {
     $trail->push($membership->code, route('membership.edit', ['membership' => $membership]));
 });
 
+// cashflow 
+Breadcrumbs::for('cashflow', function ($trail) {
+    $trail->push("Cashflow", route('cashflow.index'));
+});
+
+Breadcrumbs::for('add_cashflow', function ($trail) {
+    $trail->parent('cashflow');
+    $trail->push('Add Cashflow', route('cashflow.create'));
+});
+
+Breadcrumbs::for('edit_cashflow', function ($trail, $cashflow) {
+    $trail->parent('cashflow');
+    $trail->push($cashflow->id, route('cashflow.edit', ['cashflow' => $cashflow]));
+});
 
 // Master
 Breadcrumbs::for('report', function ($trail) {
