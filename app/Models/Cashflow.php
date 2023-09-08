@@ -6,20 +6,20 @@ use DigitalCloud\Blameable\Traits\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Membership extends Model
+class Cashflow extends Model
 {
     use HasFactory;
-    protected $table = 'memberships';
+    protected $table = 'cash_flow';
     use Blameable;
-    protected $fillable = ['code', 'name', 'phone', 'email'];
+    protected $fillable = ['date', 'time', 'employee_id', 'categories', 'description', 'approval', 'cash'];
 
     public function scopeSearch($query, $title)
     {
-        return $query->where('name', 'LIKE', "%{$title}%")->orWhere('code', 'LIKE', "%{$title}%");
+        return $query->where('categories', 'LIKE', "%{$title}%");
     }
 
     public function getRouteKeyName()
     {
-        return 'code';
+        return 'id';
     }
 }

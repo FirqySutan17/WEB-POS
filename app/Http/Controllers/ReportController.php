@@ -710,6 +710,7 @@ class ReportController extends Controller
         //     $search = trim($request->search);
         //     $data = $this->get_stock($sdate, $edate, $search);
         // }
+
         return view('admin.report.best-seller', compact('data', 'sdate', 'edate', 'search'));
     }
 

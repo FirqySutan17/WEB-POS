@@ -58,25 +58,29 @@
                     </li>
                     @endcan
 
-                    {{-- @canany(['PC Show', 'P Show'])
-                    <li class="dropdown">
-                        <a class="nav-link navSubMenu menu-title {{ routeActive(['product.index', 'product.show', 'product.edit', 'product.create','product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create']) }}"
-                            href="javascript:void(0)"><i data-feather="package"></i><span>Products Management</span></a>
-                        <ul class="nav-submenu menu-content">
-                            @can('PC Show')
-                            <li><a href="{{ route('product-categories.index') }}"
-                                    class="{{routeActive(['product-categories.index', 'product-categories.show', 'product-categories.edit', 'product-categories.create'])}}">
-                                    Categories</a>
-                            </li>
-                            @endcan
-                            @can('P Show')
-                            <li><a href="{{ route('product.index') }}"
-                                    class="{{routeActive(['product.index', 'product.show', 'product.edit', 'product.create'])}}">Products</a>
-                            </li>
-                            @endcan
-                        </ul>
+                    <!-- skill -->
+                    @can('Receive')
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['cashflow.index', 'cashflow.show', 'cashflow.edit', 'cashflow.create'])}}"
+                            href="{{ route('cashflow.index') }}">
+                            <i data-feather="dollar-sign"></i>
+                            <span>Cashflow</span>
+                        </a>
                     </li>
-                    @endcan --}}
+                    @endcan
+                    <!-- End skill -->
+
+                    <!-- skill -->
+                    @can('Receive')
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['membership.index', 'membership.show', 'membership.edit', 'membership.create'])}}"
+                            href="{{ route('membership.index') }}">
+                            <i data-feather="users"></i>
+                            <span>Membership</span>
+                        </a>
+                    </li>
+                    @endcan
+                    <!-- End skill -->
 
                     @canany(['RS Show', 'RT Show'])
                     <li class="dropdown">
@@ -115,24 +119,12 @@
                             <li>
                                 <a href="{{ route('report.bestseller') }}"
                                     class="{{routeActive(['report.bestseller'])}}">
-                                    Cash flow
+                                    Best Seller
                                 </a>
                             </li>
                         </ul>
                     </li>
                     @endcanany
-
-                    <!-- skill -->
-                    @can('Receive')
-                    <li>
-                        <a class="nav-link menu-title link-nav {{routeActive(['membership.index', 'membership.show', 'membership.edit', 'membership.create'])}}"
-                            href="{{ route('membership.index') }}">
-                            <i data-feather="users"></i>
-                            <span>Membership</span>
-                        </a>
-                    </li>
-                    @endcan
-                    <!-- End skill -->
 
                     @canany(['Transaction', 'Receive'])
                     <li class="sidebar-main-title">
