@@ -71,7 +71,7 @@
                     @canany(['RS Show', 'RT Show'])
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['report.transaction','report.transactioninvoice', 'report.transactionproduct','report.stock', 'report.receive', 'report.receiveno', 'report.receiveproduct']) }}"
-                            href="javascript:void(0)"><i data-feather="package"></i><span>Report</span></a>
+                            href="javascript:void(0)"><i data-feather="file-text"></i><span>Report</span></a>
                         <ul class="nav-submenu menu-content">
                             @can('RS Show')
                             <li>
@@ -97,6 +97,18 @@
                         </ul>
                     </li>
                     @endcanany
+
+                    <!-- skill -->
+                    @can('Receive')
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['membership.index', 'membership.show', 'membership.edit', 'membership.create'])}}"
+                            href="{{ route('membership.index') }}">
+                            <i data-feather="users"></i>
+                            <span>Membership</span>
+                        </a>
+                    </li>
+                    @endcan
+                    <!-- End skill -->
 
                     @canany(['Transaction', 'Receive'])
                     <li class="sidebar-main-title">
