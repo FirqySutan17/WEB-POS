@@ -171,9 +171,9 @@ CMS | Transaction
                                                 </label>
                                                 <select id="payment_method" name="payment_method" class="custom-select"
                                                     tabindex="2">
-                                                    <option value="Tunai">Tunai</option>
-                                                    <option value="EDC - BCA">EDC - BCA</option>
-                                                    <option value="EDC - QRIS">EDC - QRIS</option>
+                                                    <option value="Tunai" {{ $transaction->payment_method == 'Tunai' ? 'selected' : '' }}>Tunai</option>
+                                                    <option value="EDC - BCA" {{ $transaction->payment_method == 'EDC - BCA' ? 'selected' : '' }}>EDC - BCA</option>
+                                                    <option value="EDC - QRIS" {{ $transaction->payment_method == 'EDC - QRIS' ? 'selected' : '' }}>EDC - QRIS</option>
                                                 </select>
                                             </div>
                                             <div id="elm_receipt" class="form-group _form-group">
@@ -182,7 +182,7 @@ CMS | Transaction
                                                 </label>
                                                 <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
                                                     class="form-control elm_receipt_input"
-                                                    style="text-transform:uppercase" readonly tabindex="3" />
+                                                    style="text-transform:uppercase" {{ $transaction->payment_method == 'Tunai' ? 'readonly' : '' }} tabindex="3" />
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -191,21 +191,22 @@ CMS | Transaction
                                                     Nominal Tunai
                                                 </label>
                                                 <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
-                                                    class="form-control elm_cash_input" tabindex="4" />
+                                                    {{ $transaction->payment_method != 'Tunai' ? 'readonly' : '' }}
+                                                    class="form-control elm_cash_input" tabindex="4" value="{{ number_format($transaction->cash) }}" />
                                             </div>
                                             <div class="form-group _form-group elm_cash">
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Kembalian
                                                 </label>
+                                                <?php $kembalian = !empty($transaction->kembalian) ? $transaction->kembalian : $transaction->cash - $transaction->total_price; ?>
                                                 <input id="kembalian" placeholder="Hitungan otomatis" type="text"
-                                                    class="form-control" disabled tabindex="0" />
+                                                    class="form-control" readonly tabindex="0" value="{{ number_format($kembalian) }}" />
                                             </div>
                                         </div>
 
                                         <div class="col-4" style="text-align: right">
                                             <h6>Total</h6>
                                             <h2 id="total_transaction">Rp 0</h2>
-                                            <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
                                             <div
                                                 style="width: 100%; display: flex; align-items: center; margin-top: 10px">
                                                 <button id="btn_delete_1" onblur="onblur_color('1')"
@@ -297,6 +298,24 @@ CMS | Transaction
 
         function submit_form(status) {
             $("#input_status").val(status);
+            let payment_method = $("#payment_method option:selected").val();
+
+            let cash_input  = $("#tanpa-rupiah").val();
+            let cash_amount = Number(cash_input.replace(".", ""));
+
+            let total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+            // console.log(status, payment_method, cash_amount, total_price_item);
+            if ((status == 'FINISH' && payment_method.toUpperCase() == 'TUNAI') && total_price_item > cash_amount) {
+                return Swal.fire({
+                    title: 'Oops...',
+                    text: 'Uang tunai kurang dari total belanja',
+                    icon: 'error'
+                });
+            }
             $("#form-transaction").submit();
         }
 
@@ -307,9 +326,9 @@ CMS | Transaction
                 var price_item = Number($(this).val());
                 total_price_item += price_item;
             });
-            var vat_price = total_price_item * (vat_amount / 100);
-            final_total_price_item = total_price_item + vat_price;
-            $("#total_transaction").text(formatRupiah(final_total_price_item.toString()));
+            // var vat_price = total_price_item * (vat_amount / 100);
+            // final_total_price_item = total_price_item + vat_price;
+            $("#total_transaction").text(formatRupiah(total_price_item.toString()));
         }
 
         function calculate_total() {

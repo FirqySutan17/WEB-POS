@@ -163,6 +163,13 @@
             <?php 
                 $vat_amount = ($sub_total / 100) * $transaction->vat_ppn;
                 $total_price = $sub_total + $vat_amount;
+
+                $kembalian  = 0;
+                $uang_cust = 0;
+                if ($transaction->payment_method == 'Tunai') {
+                    $uang_cust = $transaction->cash;
+                    $kembalian = !empty($transaction->kembalian) ? $transaction->kembalian : $transaction->cash - $total_price;
+                }
             ?>
             <tbody>
                 <tr>
@@ -181,6 +188,17 @@
                     <td class="description">GRAND TOTAL</td>
                     <td class="price">@currency($total_price)</td>
                 </tr>
+
+                @if ($transaction->payment_method == 'Tunai')
+                <tr>
+                    <td class="description">UANG YANG DIBAYARKAN</td>
+                    <td class="price">@currency($uang_cust)</td>
+                </tr>
+                <tr>
+                    <td class="description">KEMBALIAN</td>
+                    <td class="price">@currency($kembalian)</td>
+                </tr>
+                @endif
             </tbody>
         </table>
 

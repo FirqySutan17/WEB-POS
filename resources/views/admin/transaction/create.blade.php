@@ -242,21 +242,20 @@ CMS | Transaction
                                                     Nominal Tunai
                                                 </label>
                                                 <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
-                                                    class="form-control elm_cash_input" tabindex="4" />
+                                                    class="form-control elm_cash_input" value="{{ old('cash') }}" tabindex="4" />
                                             </div>
                                             <div class="form-group _form-group elm_cash">
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Kembalian
                                                 </label>
-                                                <input id="kembalian" placeholder="Hitungan otomatis" type="text"
-                                                    class="form-control" disabled tabindex="0" />
+                                                <input id="kembalian" placeholder="Hitungan otomatis" name="kembalian" type="text"
+                                                    class="form-control" readonly value="{{ old('kembalian') }}" tabindex="0" />
                                             </div>
                                         </div>
 
                                         <div class="col-4" style="text-align: right">
                                             <h6>Total</h6>
                                             <h2 id="total_transaction">Rp 0</h2>
-                                            <p style="margin-bottom: 0px">*Termasuk PPN 11%</p>
                                             {{-- @if(Session::get('receipt'))
                                             ada receipt {{ Session::get('receipt') }}
                                             @endif --}}
@@ -301,7 +300,7 @@ CMS | Transaction
     <script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
+    {{-- <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js">
     </script>
     @endpush
@@ -354,6 +353,24 @@ CMS | Transaction
         function submit_form(status) {
             // let url = `{{ route('transaction.receipt', ['transaction' => 'INV1012200231693282703']) }}`;
             $("#input_status").val(status);
+            let payment_method = $("#payment_method option:selected").val();
+
+            let cash_input  = $("#tanpa-rupiah").val();
+            let cash_amount = Number(cash_input.replace(".", ""));
+
+            let total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+            // console.log(status, payment_method, cash_amount, total_price_item);
+            if ((status == 'FINISH' && payment_method.toUpperCase() == 'TUNAI') && total_price_item > cash_amount) {
+                return Swal.fire({
+                    title: 'Oops...',
+                    text: 'Uang tunai kurang dari total belanja',
+                    icon: 'error'
+                });
+            }
             // printExternal(url);
             $("#form-transaction").submit();
         }
@@ -365,9 +382,9 @@ CMS | Transaction
                 var price_item = Number($(this).val());
                 total_price_item += price_item;
             });
-            var vat_price = total_price_item * (vat_amount / 100);
-            final_total_price_item = total_price_item + vat_price;
-            $("#total_transaction").text(formatRupiah(final_total_price_item.toString()));
+            // var vat_price = total_price_item * (vat_amount / 100);
+            // final_total_price_item = total_price_item + vat_price;
+            $("#total_transaction").text(formatRupiah(total_price_item.toString()));
         }
 
         function calculate_total() {

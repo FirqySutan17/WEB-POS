@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use App\Models\Product;
 use Session;
+use App\Models\User;
 
 class TransactionController extends Controller
 {
@@ -116,9 +117,12 @@ class TransactionController extends Controller
                 $sub_price += $final_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
-            $vat_amount = config('app.vat_amount');
-            $vat_price  = ($sub_price / 100) * $vat_amount;
-            $total_price = $sub_price + $vat_price;
+            $total_price = $sub_price;
+            $vat_amount = 0;
+            // $vat_amount = config('app.vat_amount');
+            // $vat_price  = ($sub_price / 100) * $vat_amount;
+            // $total_price = $sub_price + $vat_price;
+            $kembalian = $request->payment_method == 'Tunai' && $status == 'FINISH' ? $cash - $total_price : 0;
 
             if ($status == 'FINISH' && $request->payment_method == 'Tunai' && $cash < $total_price) {
                 return redirect()->back()->withInput($request->all())->withErrors("Cash less than total transaction!");
@@ -134,10 +138,11 @@ class TransactionController extends Controller
                 'sub_price'     => $sub_price,
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
-                'status'        => $status
+                'status'        => $status,
+                'kembalian'     => $kembalian
             ];
+            // dd($trans, $transaction_details);
             $transaction = Transaction::create($trans);
-            // dd($transaction, $transaction_details);
             
             if ($transaction) {
                 foreach ($transaction_details as $v) {
@@ -264,9 +269,12 @@ class TransactionController extends Controller
                 $sub_price += $final_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
-            $vat_amount = config('app.vat_amount');
-            $vat_price  = ($sub_price / 100) * $vat_amount;
-            $total_price = $sub_price + $vat_price;
+            $total_price = $sub_price;
+            $vat_amount = 0;
+            // $vat_amount = config('app.vat_amount');
+            // $vat_price  = ($sub_price / 100) * $vat_amount;
+            // $total_price = $sub_price + $vat_price;
+            $kembalian = $request->payment_method == 'Tunai' && $status == 'FINISH' ? $cash - $total_price : 0;
             if ($request->payment_method == 'Tunai' && $cash < $total_price) {
                 return redirect()->back()->withInput($request->all())->withErrors("Cash less than total transaction!");
             }
@@ -278,7 +286,8 @@ class TransactionController extends Controller
                 'sub_price'     => $sub_price,
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
-                'status'        => $status
+                'status'        => $status,
+                'kembalian'        => $kembalian
             ];
             $transaction_update = Transaction::find($transaction->id)->update($trans);
             // dd($transaction, $transaction_details);
@@ -320,5 +329,16 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         //
+        dd($transaction);
+    }
+
+    public function check_pin(Request $request)
+    {
+        $user = [];
+        if ($request->has('pin')) {
+            $user = User::select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+        }
+
+        return response()->json($user);
     }
 }

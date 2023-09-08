@@ -128,7 +128,7 @@ CMS | Transaction
                         <td class="center-text" style="width: 15%; vertical-align: middle">
                             {{ $transaction->trans_date }}
                         </td>
-                        <td style="width: 20%; vertical-align: middle">{{ $transaction->user->name }}</td>
+                        <td style="width: 15%; vertical-align: middle">{{ $transaction->user->name }}</td>
                         <td style="width: 20%; vertical-align: middle">
                             #{{ $transaction->invoice_no }}
                         </td>
@@ -142,7 +142,7 @@ CMS | Transaction
                         <td class="center-text" style="width: 10%; vertical-align: middle">
                             {{ $transaction->status }}
                         </td>
-                        <td style="width: 5%;" class="center-text boxAction fontField">
+                        <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
                                 @if ($transaction->status == 'FINISH')
                                 <div class="boxEdit">
@@ -158,6 +158,23 @@ CMS | Transaction
                                         <i class='bx bx-receipt'></i>
                                     </a>
                                 </div>
+                                <div class="boxEdit">
+                                    <a href="javascript:void(0)"
+                                        onclick="adminConfirmation(`{{ route('transaction.edit', ['transaction' => $transaction]) }}`)"
+                                        class="btn-sm btn-info" role="button">
+                                        <i class="bx bx-edit"></i>
+                                    </a>
+                                </div>
+                                <div class="boxDelete">
+									<form id="form-delete-{{ $transaction->invoice_no }}" action="{{ route('transaction.destroy', ['transaction' => $transaction]) }}"
+										method="POST" role="alert">
+										@csrf
+										@method('DELETE')
+										<button type="button" class="btn btn-sm btn-danger" onclick="adminConfirmation(``, 'delete-{{ $transaction->invoice_no }}')">
+											<i class="bx bx-trash"></i>
+										</button>
+									</form>
+								</div>
                                 @endif
 
                                 @if ($transaction->status == 'DRAFT')
@@ -203,7 +220,37 @@ CMS | Transaction
     </div>
 </div>
 
-
+<div class="modal fade" id="modal-edit-transaction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">EDIT TRANSAKSI</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">INPUT KODE PIN ATASAN</th>
+                        </tr>
+                        <tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="hidden" id="confirmation-url">
+                                <input id="confirmation-pin" type="text" class="form-control">
+                            </td>
+                            <td><button id="confirmation-pin-btn" class="btn btn-primary">CONFIRM</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -212,6 +259,52 @@ CMS | Transaction
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    function adminConfirmation(url, action = 'edit') {
+        $("#confirmation-url").val(url);
+        if (action != 'edit') {
+            $("#confirmation-url").val(action);  
+        }
+        $("#confirmation-pin").val('');
+        $("#modal-edit-transaction").modal('show');
+        $("#confirmation-pin").focus();
+    }
+
+    $('#confirmation-pin-btn').click(function() {
+        let pin = $("#confirmation-pin").val();
+        let url = $("#confirmation-url").val();
+        $.ajax({
+            url: "{{ route('transaction.checkpin') }}",
+            type: "POST",
+            data: {
+                "_token": `{{ csrf_token() }}`,
+                "pin": pin,
+            },
+            beforeSend: function () {
+            },
+            success: function(response) {
+                if (JSON.stringify(response) === "{}") {
+                    return Swal.fire({
+                        title: 'Oops...',
+                        text: "Wrong PIN!",
+                        icon: 'error'
+                    });
+                }
+                
+                if (url.includes("delete-")) {
+                    $("#form-" + url).submit();
+                } else {
+                    setTimeout(() => {
+                        window.open(url, '_self');
+                    }, 1500);
+                    return Swal.fire({
+                        title: 'Success',
+                        text: "Waiting for redirect",
+                        icon: 'success'
+                    });
+                }
+            }
+        });
+    });
     $(document).ready(function() {
 		$("form[role='alert']").submit(function(event) {
 			event.preventDefault();
