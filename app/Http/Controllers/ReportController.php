@@ -699,20 +699,42 @@ class ReportController extends Controller
     // END REPORT CASH FLOW
 
     // START REPORT BEST SELLER
-    public function report_best_seller(Request $request) {
-        $data   = [];
-        $sdate  = "";
-        $edate  = "";
-        $search  = ""; 
-        // if ($request->_token) {
-        //     $sdate = $request->sdate;
-        //     $edate = $request->edate;
-        //     $search = trim($request->search);
-        //     $data = $this->get_stock($sdate, $edate, $search);
-        // }
-        return view('admin.report.best-seller', compact('data', 'sdate', 'edate', 'search'));
-    }
+        public function report_best_seller(Request $request) {
+            $data   = [];
+            $sdate  = "";
+            $search  = ""; 
+            if ($request->_token) {
+                $sdate = $request->sdate;
+                $search = trim($request->search);
+                $data = $this->get_bestseller($sdate, $search);
+            }
+            return view('admin.report.best-seller', compact('data', 'sdate', 'search'));
+        }
 
+        private function get_bestseller($sdate, $search) {
+            $sdate_exp = explode("-", $sdate);
+            $year   = $sdate_exp[0];
+            $month  = $sdate_exp[1];
+            $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
+            $query = "
+                SELECT
+                    products.name as product_name,
+                    trans_detail.product_code, 
+                    SUM(trans_detail.quantity) AS total_sales,
+                    (SUM(trans_detail.quantity) / COUNT(trans.invoice_no)) AS sales_per_invoice
+                FROM tr_transaction_detail AS trans_detail
+                INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
+                INNER JOIN products ON trans_detail.product_code = products.code
+                WHERE 
+                    MONTH(trans.trans_date) = '$month' AND YEAR(trans.trans_date) = '$year' AND trans.status = 'FINISH'
+                    ".$where."
+                GROUP BY products.name, trans_detail.product_code
+                ORDER BY total_sales DESC
+                LIMIT 5
+            ";
+            $db_query = DB::select(DB::raw($query));
+            return $db_query;
+        }
     
-// END REPORT BEST SELLER
+    // END REPORT BEST SELLER
 }
