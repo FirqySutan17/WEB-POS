@@ -683,7 +683,16 @@ class ReportController extends Controller
     // START REPORT CASH FLOW
         public function report_cash_flow(Request $request) {
             $data   = [];
-            return view('admin.report.cash-flow', compact('data'));
+            $sdate  = "";
+            $edate  = "";
+            $search  = ""; 
+            // if ($request->_token) {
+            //     $sdate = $request->sdate;
+            //     $edate = $request->edate;
+            //     $search = trim($request->search);
+            //     $data = $this->get_stock($sdate, $edate, $search);
+            // }
+            return view('admin.report.cash-flow', compact('data', 'sdate', 'edate', 'search'));
         }
     // END REPORT CASH FLOW
 }

@@ -25,21 +25,12 @@ CMS | Report Cash Flow
 @endcomponent
 
 <div class="container-fluid">
-    <div class="menu-rt">
-        <a class="{{routeActive('report.cashflow')}}" href="{{ route('report.cashflow') }}">By Date</a>
-        <a class="{{routeActive('report.cashflowinvoice')}}" href="{{ route('report.cashflowinvoice') }}">By
-            Invoice</a>
-        <a class="{{routeActive('report.cashflowproduct')}}" href="{{ route('report.cashflowproduct') }}">By
-            Product</a>
-        <a class="{{routeActive('report.cashflowcashier')}}" href="{{ route('report.cashflowcashier') }}">By
-            Cashier</a>
-    </div>
     <div class="card border-add">
         <div class="tr-shadow"
             style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-top-left-radius: 0px">
             <div class="boxHeader" style="margin-bottom: 0px">
                 {{-- filter:start --}}
-                <form action="{{ route('report.transaction') }}" class="row" method="POST">
+                <form action="{{ route('report.cashflow') }}" class="row" method="POST">
                     @csrf
                     <div class="col-5">
                         <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
@@ -60,12 +51,11 @@ CMS | Report Cash Flow
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button"
-                            formaction="{{ route('report.transaction.excel') }}">EXCEL</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="">EXCEL</button>
                     </div>
                     <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button"
-                            formaction="{{ route('report.transaction.pdf') }}" formtarget="_blank">PDF</button>
+                        <button type="submit" class="btn btn-primary _btn" role="button" formaction=""
+                            formtarget="_blank">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
@@ -87,36 +77,31 @@ CMS | Report Cash Flow
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $grand_total = 0; ?>
-                    @if (!empty($data))
-                    @foreach ($data as $item)
-                    <?php $grand_total += $item->total_price; ?>
+
                     <tr>
-                        <td class="center-text">{{ $loop->iteration }}</td>
+                        <td class="center-text">1</td>
 
                         <td class="center-text" style="vertical-align: middle">
-                            {{ date('d-m-Y',strtotime($item->trans_date)) }}
+                            2023-09-12
                         </td>
                         <td style="vertical-align: middle">
-                            {{ $item->invoice_no }}
+                            #INV-00001
                         </td>
                         <td style="vertical-align: middle">
-                            {{ $item->name." ( ".$item->employee_id." )" }}
+                            John Doe
                         </td>
                         <td class="center-text" style="vertical-align: middle">
-                            {{ $item->payment_method }}
+                            Tunai
                         </td>
                         <td class="center-text" style="vertical-align: middle;">
-                            @currency($item->total_price)
+                            Rp 375.000
                         </td>
                     </tr>
-                    @endforeach
-                    @endif
                 </tbody>
                 <tfoot>
                     <tr class="head-report">
                         <th colspan="5" class="heightHr right-text">Grand Total <span class="dividerHr"></span></th>
-                        <th class="center-text" class="heightHr">@currency($grand_total) <span class="dividerHr"></span>
+                        <th class="center-text" class="heightHr">Rp 375.000 <span class="dividerHr"></span>
                         </th>
                     </tr>
                 </tfoot>

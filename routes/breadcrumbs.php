@@ -139,6 +139,7 @@ Breadcrumbs::for('edit_membership', function ($trail, $membership) {
     $trail->push($membership->code, route('membership.edit', ['membership' => $membership]));
 });
 
+
 // Master
 Breadcrumbs::for('report', function ($trail) {
     $trail->push('Report');
@@ -187,5 +188,10 @@ Breadcrumbs::for('report_receive_by_no', function ($trail) {
 // Report Receive by Product
 Breadcrumbs::for('report_receive_by_product', function ($trail) {
     $trail->push("Report Receive by Product", route('report.receiveproduct'));
+});
+
+// Report Cashflow
+Breadcrumbs::for('report_cashflow', function ($trail) {
+    $trail->push("Report cashflow", route('report.cashflow'));
 });
 
