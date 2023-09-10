@@ -326,10 +326,34 @@ class TransactionController extends Controller
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Transaction $transaction)
+    public function destroy(Transaction $transaction, Request $request)
     {
-        //
-        dd($transaction);
+        $reason = $request->del_reason;
+        $emp_appr = $request->del_emp_appr;
+
+        $invoice_no = $transaction->invoice_no;
+        $trans_detail = DB::table('tr_transaction_detail')->where('invoice_no', $invoice_no)->get();
+        $transaction = (array) $transaction;
+        unset($transaction['id']);
+        $transaction_details = [];
+        foreach ($trans_detail as $v) {
+            $td = (array) $v;
+            unset($td['id']);
+            $transaction_details[] = $td;
+        }
+
+        $transaction['del_by'] = Auth::user()->employee_id;
+        $transaction['del_at'] = date('Y-m-d H:i:s');
+        $transaction['del_reason'] = $reason;
+        $transaction['del_emp_appr'] = $emp_appr;
+        
+        DB::table('tr_transaction_log')->insert($transaction);
+        DB::table('tr_transaction_detail_log')->insert($transaction_details);
+
+        DB::table('tr_transaction')->where('invoice_no', $invoice_no)->delete();
+        DB::table('tr_transaction_detail')->where('invoice_no', $invoice_no)->delete();
+        
+        return redirect()->route('transaction.create');
     }
 
     public function check_pin(Request $request)

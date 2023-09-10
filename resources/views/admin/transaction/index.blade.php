@@ -170,6 +170,8 @@ CMS | Transaction
 										method="POST" role="alert">
 										@csrf
 										@method('DELETE')
+                                        <input type="hidden" name="del_emp_appr" id="del_emp_appr_delete-{{ $transaction->invoice_no }}">
+                                        <input type="hidden" name="del_reason" id="del_reason_delete-{{ $transaction->invoice_no }}">
 										<button type="button" class="btn btn-sm btn-danger" onclick="adminConfirmation(``, 'delete-{{ $transaction->invoice_no }}')">
 											<i class="bx bx-trash"></i>
 										</button>
@@ -224,7 +226,7 @@ CMS | Transaction
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">EDIT TRANSAKSI</h5>
+                <h5 class="modal-title" id="exampleModalLabel">TRANSAKSI</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -243,7 +245,12 @@ CMS | Transaction
                                 <input type="hidden" id="confirmation-url">
                                 <input id="confirmation-pin" type="text" class="form-control">
                             </td>
-                            <td><button id="confirmation-pin-btn" class="btn btn-primary">CONFIRM</button></td>
+                            <td>
+                                <div class="form-group">
+                                    <input class="form-control" type="text" style="display: none" id="reason" placeholder="Masukkan alasan penghapusan transaksi disini">
+                                </div>
+                                <button id="confirmation-pin-btn" class="btn btn-primary">CONFIRM</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -260,11 +267,14 @@ CMS | Transaction
 
 <script>
     function adminConfirmation(url, action = 'edit') {
+        $("#reason").hide();
         $("#confirmation-url").val(url);
         if (action != 'edit') {
+            $("#reason").show();
             $("#confirmation-url").val(action);  
         }
         $("#confirmation-pin").val('');
+        $("#reason").val('');
         $("#modal-edit-transaction").modal('show');
         $("#confirmation-pin").focus();
     }
@@ -291,7 +301,20 @@ CMS | Transaction
                 }
                 
                 if (url.includes("delete-")) {
-                    $("#form-" + url).submit();
+                    let reason = $("#reason").val();
+                    if (reason == '') {
+                        return Swal.fire({
+                            title: 'Oops...',
+                            text: "Alasan penghapusan transaksi wajib diisi!",
+                            icon: 'error'
+                        });
+                    }
+                    $("#del_reason_" + url).val(reason);
+                    $("#del_emp_appr_" + url).val(response.employee_id);
+                    setTimeout(() => {
+                        $("#form-" + url).submit();
+                    }, 1500);
+                    
                 } else {
                     setTimeout(() => {
                         window.open(url, '_self');
