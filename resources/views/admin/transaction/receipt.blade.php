@@ -93,7 +93,7 @@
     </style>
 </head>
 
-<body onload="printOut()">
+<body>
     <div class="ticket">
         <img src="{{ asset('images/logo-placeholder.png')}}" alt="Logo">
         <p class="centered">
@@ -164,7 +164,6 @@
                 $vat_amount = ($sub_total / 100) * $transaction->vat_ppn;
                 $total_price = $sub_total + $vat_amount;
 
-                $kembalian  = 0;
                 $uang_cust = 0;
                 if ($transaction->payment_method == 'Tunai') {
                     $uang_cust = $transaction->cash;
@@ -191,12 +190,12 @@
 
                 @if ($transaction->payment_method == 'Tunai')
                 <tr>
-                    <td class="description">UANG YANG DIBAYARKAN</td>
-                    <td class="price">@currency($uang_cust)</td>
+                    <td class="description">TUNAI</td>
+                    <td class="price">Rp {{$transaction->cash}}</td>
                 </tr>
                 <tr>
                     <td class="description">KEMBALIAN</td>
-                    <td class="price">@currency($kembalian)</td>
+                    <td class="price">Rp {{$transaction->kembalian}}</td>
                 </tr>
                 @endif
             </tbody>
@@ -226,20 +225,20 @@
         </p>
     </div>
     <button id="btnPrint" class="hidden-print">Print</button>
-    {{-- <script>
+    <script>
         let buttonPrint = document.getElementById("btnPrint");
         buttonPrint.addEventListener("click", function() {
             window.print()
         });
-    </script> --}}
-    <script>
+    </script>
+    {{-- <script>
         var lama = 1000;
         t = null;
         function printOut(){
             window.print();
             t = setTimeout("self.close()",lama);
         }
-    </script>
+    </script> --}}
 </body>
 
 </html>

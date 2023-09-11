@@ -764,7 +764,13 @@ CMS | Transaction
             var nominal_number = Number(nominal.replace(".", ""));
             tanpa_rupiah.value = formatRupiah(nominal);
 
-            var kembali = final_total_price_item - nominal_number;
+            var total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+
+            var kembali = total_price_item - nominal_number;
             kembalian.value = formatRupiah(kembali.toString());
         });
         

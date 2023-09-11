@@ -178,14 +178,20 @@ CMS | Transaction
                                         @endforeach
                                         @endif
                                     </marquee> --}}
-                                    <div class="tr-input tr-shadow" style="padding: 0px 20px">
-                                        <input id="input-scanner" type="text" class="form-control"
-                                            placeholder="Klik disini untuk Scan Barcode"
-                                            style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
-                                            tabindex="1" />
-                                        <div>
-                                            <input type="text" id="input-scanner"
-                                                placeholder="Klik disini untuk scan barcode" tabindex="1" />
+                                    <div class="tr-input">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input id="input-scanner" type="text" class="form-control"
+                                                    placeholder="Klik disini untuk Scan Barcode"
+                                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
+                                                    tabindex="1" autofocus />
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="text" id="input-typing"
+                                                    placeholder="Cari barang manual disini" class="form-control"
+                                                    tabindex="2"
+                                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " />
+                                            </div>
                                         </div>
                                         <ul class="list stay-hidden"></ul>
                                     </div>
@@ -531,7 +537,7 @@ CMS | Transaction
                 if (final_price_item != basic_price_item) {
                     discount = basic_price_item - final_price_item;
                 }
-                total_discount += discount;
+                total_discount += discount * quantity_item;
                 total_qty += quantity_item;
                 sub_total += sub_total_item;
             });
@@ -718,7 +724,13 @@ CMS | Transaction
             var nominal_number = Number(nominal.replace(".", ""));
             tanpa_rupiah.value = formatRupiah(nominal);
 
-            var kembali = final_total_price_item - nominal_number;
+            var total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+
+            var kembali = total_price_item - nominal_number;
             kembalian.value = formatRupiah(kembali.toString());
         });
         
@@ -750,60 +762,60 @@ CMS | Transaction
 
     <script>
         $(function() {
-    //parent category
-    $('#select_membership').select2({
-        theme: 'bootstrap4',
-        language: "{{ app()->getLocale() }}",
-        allowClear: true,
-        ajax: {
-            url: "{{ route('membership.select') }}",
-            dataType: 'json',
-            delay: 250,
-            processResults: function(data) {
-                return {
-                    results: $.map(data, function(item) {
-                        return {
-                            text: item.name,
-                            phone: item.phone,
-                            id: item.id
-                        }
-                    })
-                };
+        //parent category
+        $('#select_membership').select2({
+            theme: 'bootstrap4',
+            language: "{{ app()->getLocale() }}",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('membership.select') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.name,
+                                phone: item.phone,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
             }
-        }
-    });
-    });
+        });
+        });
     </script>
 
     <script>
         $('#click').on('click', function () {
-    if ($('#click').html() === `<i class='bx bx-info-circle'
-                    style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`) {
+        if ($('#click').html() === `<i class='bx bx-info-circle'
+                        style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`) {
 
-        // This block is executed when
-        // you click the show button
-        $('#click').html(`<i class='bx bx-x'
-                    style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
-    }
-    else {
+            // This block is executed when
+            // you click the show button
+            $('#click').html(`<i class='bx bx-x'
+                        style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
+        }
+        else {
 
-        // This block is executed when
-        // you click the hide button
-        $('#click').html(`<i class='bx bx-info-circle'
-                    style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
-    }
-    $('#element').toggle();
-    });
+            // This block is executed when
+            // you click the hide button
+            $('#click').html(`<i class='bx bx-info-circle'
+                        style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
+        }
+        $('#element').toggle();
+        });
     </script>
 
     <script>
         function addMembers() {
-    $("#modal-add-membership").modal('show');
-    }
+        $("#modal-add-membership").modal('show');
+        }
 
-    $('.close').on('click', function () {
-        $('#modal-add-membership').removeClass("show");
-        $('#modal-add-membership').modal("hide");
-    });
+        $('.close').on('click', function () {
+            $('#modal-add-membership').removeClass("show");
+            $('#modal-add-membership').modal("hide");
+        });
     </script>
     @endpush

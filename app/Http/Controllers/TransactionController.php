@@ -137,12 +137,12 @@ class TransactionController extends Controller
                 'receipt_no'    => $receipt_no,
                 'trans_date'    => date('Y-m-d'),
                 'payment_method'    => $request->payment_method,
-                'cash'          => $cash,
+                'cash'          => $request->cash,
                 'sub_price'     => $sub_price,
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
                 'status'        => $status,
-                'kembalian'     => $kembalian
+                'kembalian'     => $request->kembalian
             ];
             // dd($trans, $transaction_details);
             $transaction = Transaction::create($trans);
@@ -223,7 +223,7 @@ class TransactionController extends Controller
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
         $memberships = Membership::all();
         $membershipSelected = $transaction->membership;
-        return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount', 'memberships', 'membershipSeleted'));
+        return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount', 'memberships', 'membershipSelected'));
     }
 
     public function summary(Transaction $transaction) {
