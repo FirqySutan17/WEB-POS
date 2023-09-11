@@ -68,7 +68,7 @@ CMS | Edit Membership
                                                 Phone <span class="wajib">*</span>
                                             </label>
                                             <input id="input_user_name" value="{{ old('phone', $membership->phone) }}"
-                                                name="phone" type="text"
+                                                name="number" type="text"
                                                 class="form-control @error('phone') is-invalid @enderror"
                                                 placeholder="Input Phone Number" readonly />
                                             @error('phone')

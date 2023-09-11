@@ -13,7 +13,6 @@ CMS | Transaction
     .tr-input {
         width: 100%;
         position: relative;
-        margin-bottom: 10px
     }
 
     .tr-input input[type="text"] {
@@ -53,6 +52,32 @@ CMS | Transaction
     .stay-hidden {
         display: none;
     }
+
+    .wrap-cashier {
+        display: flex;
+        margin: auto;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .info-disc {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    #element {
+        position: absolute;
+        top: 41px;
+        right: 10px;
+        background: #000000c4;
+        color: #fff;
+        z-index: 1000;
+        width: 520px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        border-top-right-radius: 0px;
+    }
 </style>
 @endpush
 
@@ -69,25 +94,41 @@ CMS | Transaction
 @endif
 
 <div class="container-fluid">
-    @if(Auth::user()->roles->first()->name == 'Cashier')
-    <div class="menu-rt">
-        <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
-        <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
-        <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
-        <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+    <div class="wrap-cashier">
+        @if(Auth::user()->roles->first()->name == 'Cashier')
+        <div class="menu-rt">
+            <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
+            <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
+            <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
+            <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
 
-        <button class="btn " type="button">
-            <a href="{{ route('logout') }}"
-                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
-            </a>
-        </button>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
+            <button class="btn " type="button">
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                    <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
+                </a>
+            </button>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </div>
+        @else
+        @endif
+        <div class="info-disc">
+            <div class="button-container">
+                <button id="click" class="btn-disc">
+                    <i class='bx bx-x' style="font-size: 18px; display: inline-block; vertical-align: middle"></i>
+                </button>
+            </div>
+            <div id="element">
+                @if (!empty($product_discount))
+                @foreach ($product_discount as $item)
+                <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
+                @endforeach
+                @endif
+            </div>
+        </div>
     </div>
-    @else
-    @endif
 
     @if(Auth::user()->roles->first()->name == 'Cashier')
     <div class="row" style="padding: 10px">
@@ -100,7 +141,7 @@ CMS | Transaction
                     enctype="multipart/form-data">
                     @csrf
                     <input id="input_status" type="hidden" name="status" value="FINISH">
-                    <div class="card" style="margin: auto; padding-bottom: 20px">
+                    <div class="card" style="margin: auto;">
                         <div class="card-body _card-body">
                             <div class="row d-flex align-items-stretch">
                                 <div class="col-md-3 col-sm-12">
@@ -142,7 +183,8 @@ CMS | Transaction
                                         <div class="form-group _form-group">
                                             <label for="select_membership" class="font-weight-bold" style="width: 100%">
                                                 Membership <span class="wajib">*</span>
-                                                <a href="#" class="new-mem" style="float: right;">
+                                                <a href="javascript:void(0)" onclick="addMembers()" class="new-mem"
+                                                    style="float: right;">
                                                     <i class='bx bx-plus'
                                                         style="display: inline-block; vertical-align: middle; font-weight: 700; font-size: 14px"></i>
                                                     New member
@@ -170,13 +212,9 @@ CMS | Transaction
                                     </div>
                                 </div>
                                 <div class="col-md-9 col-sm-12" style="padding-right: 0px">
-                                    <marquee width="100%" direction="left">
-                                        @if (!empty($product_discount))
-                                        @foreach ($product_discount as $item)
-                                        <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
-                                        @endforeach
-                                        @endif
-                                    </marquee>
+                                    {{-- <marquee width="100%" direction="left">
+
+                                    </marquee> --}}
                                     <div class="tr-input">
                                         <div class="row">
                                             <div class="col-6">
@@ -245,7 +283,7 @@ CMS | Transaction
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-12 tr-shadow" style="margin-top: 20px">
+                                <div class="col-12 tr-shadow" style="padding: 20px 20px 10px 20px; margin-top: 20px">
                                     <div class="row">
                                         <div class="col-4">
                                             <div class="form-group _form-group">
@@ -259,7 +297,8 @@ CMS | Transaction
                                                     <option value="EDC - QRIS">EDC - QRIS</option>
                                                 </select>
                                             </div>
-                                            <div id="elm_receipt" class="form-group _form-group">
+                                            <div id="elm_receipt" class="form-group _form-group"
+                                                style="margin-bottom: 10px !important">
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Receipt <span class="wajib">* </span>
                                                 </label>
@@ -277,7 +316,8 @@ CMS | Transaction
                                                     class="form-control elm_cash_input" value="{{ old('cash') }}"
                                                     tabindex="4" />
                                             </div>
-                                            <div class="form-group _form-group elm_cash">
+                                            <div class="form-group _form-group elm_cash"
+                                                style="margin-bottom: 10px !important">
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Kembalian
                                                 </label>
@@ -320,6 +360,106 @@ CMS | Transaction
             </div>
         </div>
 
+    </div>
+
+    <div class="modal" id="modal-add-membership" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">ADD NEW MEMBERSHIP</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="width: 40%; margin: auto">
+                        <div class="col-12">
+                            <!-- Employee ID -->
+                            <div class="form-group _form-group">
+                                <label for="input_user_name" class="font-weight-bold">
+                                    Membership ID <span class="wajib">*</span>
+                                </label>
+                                <input id="input_user_name" value="{{ old('code') }}" name="code" type="text"
+                                    class="form-control @error('code') is-invalid @enderror"
+                                    placeholder="Input Employee ID.." />
+                                @error('code')
+                                <span class="invalid-feedback">
+                                    {{ $message }}
+                                </span>
+                                @enderror
+                                <!-- error message -->
+                            </div>
+                            <!-- end Employee ID -->
+
+                            <!-- name -->
+                            <div class="form-group _form-group">
+                                <label for="input_user_name" class="font-weight-bold">
+                                    Name <span class="wajib">*</span>
+                                </label>
+                                <input id="input_user_name" value="{{ old('name') }}" name="name" type="text"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    placeholder="Write name here.." />
+                                @error('name')
+                                <span class="invalid-feedback">
+                                    {{ $message }}
+                                </span>
+                                @enderror
+                                <!-- error message -->
+                            </div>
+                            <!-- end name -->
+
+                            <!-- Phone Number -->
+                            <div class="form-group _form-group">
+                                <label for="input_user_name" class="font-weight-bold">
+                                    Phone Number <span class="wajib">*</span>
+                                </label>
+                                <input id="input_user_name" value="{{ old('phone') }}" name="phone" type="number"
+                                    class="form-control @error('phone') is-invalid @enderror"
+                                    placeholder="Input Phone Number" />
+                                @error('phone')
+                                <span class="invalid-feedback">
+                                    {{ $message }}
+                                </span>
+                                @enderror
+                                <!-- error message -->
+                            </div>
+                            <!-- end name -->
+
+                            <!-- email -->
+                            <div class="form-group _form-group">
+                                <label for="input_user_email" class="font-weight-bold">
+                                    Email <span class="wajib">*</span>
+                                </label>
+                                <input id="input_user_email" value="{{ old('email') }}" name="email" type="email"
+                                    class="form-control @error('email') is-invalid @enderror"
+                                    placeholder="Write email here.." autocomplete="email" />
+                                @error('email')
+                                <span class="invalid-feedback">
+                                    {{ $message }}
+                                </span>
+                                @enderror
+                                <!-- error message -->
+                            </div>
+                            <!-- end email -->
+
+
+                        </div>
+
+                        <div class="col-12">
+                            <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
+                                <a style="width: 50%; margin-right: 5px"
+                                    class="btn btn-outline-primary _btn-primary px-4"
+                                    href="{{ route('membership.index') }}">Back</a>
+                                <button style="width: 50%; margin-left: 5px" type="submit"
+                                    class="btn btn-primary _btn-primary px-4">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     @endsection
@@ -436,7 +576,7 @@ CMS | Transaction
                 if (final_price_item != basic_price_item) {
                     discount = basic_price_item - final_price_item;
                 }
-                total_discount += discount;
+                total_discount += discount * quantity_item;
                 total_qty += quantity_item;
                 sub_total += sub_total_item;
             });
@@ -702,6 +842,38 @@ CMS | Transaction
                 }
             }
         });
-    });
+        });
+    </script>
+
+    <script>
+        $('#click').on('click', function () {
+        if ($('#click').html() === `<i class='bx bx-info-circle'
+                        style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`) {
+
+            // This block is executed when
+            // you click the show button
+            $('#click').html(`<i class='bx bx-x'
+                        style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
+        }
+        else {
+
+            // This block is executed when
+            // you click the hide button
+            $('#click').html(`<i class='bx bx-info-circle'
+                        style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
+        }
+        $('#element').toggle();
+        });
+    </script>
+
+    <script>
+        function addMembers() {
+        $("#modal-add-membership").modal('show');
+        }
+
+        $('.close').on('click', function () {
+            $('#modal-add-membership').removeClass("show");
+            $('#modal-add-membership').modal("hide");
+        });
     </script>
     @endpush

@@ -11,6 +11,32 @@ CMS | Transaction
     .head-report th {
         background: #f3f2f7 !important;
     }
+
+    .wrap-cashier {
+        display: flex;
+        margin: auto;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .info-disc {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    #element {
+        position: absolute;
+        top: 41px;
+        right: 10px;
+        background: #000000c4;
+        color: #fff;
+        z-index: 1000;
+        width: 520px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        border-top-right-radius: 0px;
+    }
 </style>
 @endpush
 
@@ -27,25 +53,28 @@ CMS | Transaction
 @endif
 
 <div class="container-fluid">
-    @if(Auth::user()->roles->first()->name == 'Cashier')
-    <div class="menu-rt">
-        <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
-        <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
-        <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
-        <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+    <div class="wrap-cashier">
+        @if(Auth::user()->roles->first()->name == 'Cashier')
+        <div class="menu-rt">
+            <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
+            <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
+            <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
+            <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
 
-        <button class="btn " type="button">
-            <a href="{{ route('logout') }}"
-                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
-            </a>
-        </button>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
+            <button class="btn " type="button">
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                    <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
+                </a>
+            </button>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </div>
+        @else
+        @endif
+
     </div>
-    @else
-    @endif
     <div class="card">
         <div class="card-header">
             <div class="boxHeader">
@@ -166,17 +195,21 @@ CMS | Transaction
                                     </a>
                                 </div>
                                 <div class="boxDelete">
-									<form id="form-delete-{{ $transaction->invoice_no }}" action="{{ route('transaction.destroy', ['transaction' => $transaction]) }}"
-										method="POST" role="alert">
-										@csrf
-										@method('DELETE')
-                                        <input type="hidden" name="del_emp_appr" id="del_emp_appr_delete-{{ $transaction->invoice_no }}">
-                                        <input type="hidden" name="del_reason" id="del_reason_delete-{{ $transaction->invoice_no }}">
-										<button type="button" class="btn btn-sm btn-danger" onclick="adminConfirmation(``, 'delete-{{ $transaction->invoice_no }}')">
-											<i class="bx bx-trash"></i>
-										</button>
-									</form>
-								</div>
+                                    <form id="form-delete-{{ $transaction->invoice_no }}"
+                                        action="{{ route('transaction.destroy', ['transaction' => $transaction]) }}"
+                                        method="POST" role="alert">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="del_emp_appr"
+                                            id="del_emp_appr_delete-{{ $transaction->invoice_no }}">
+                                        <input type="hidden" name="del_reason"
+                                            id="del_reason_delete-{{ $transaction->invoice_no }}">
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                            onclick="adminConfirmation(``, 'delete-{{ $transaction->invoice_no }}')">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                                 @endif
 
                                 @if ($transaction->status == 'DRAFT')
@@ -222,7 +255,7 @@ CMS | Transaction
     </div>
 </div>
 
-<div class="modal fade" id="modal-edit-transaction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" id="modal-edit-transaction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -247,7 +280,8 @@ CMS | Transaction
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input class="form-control" type="text" style="display: none" id="reason" placeholder="Masukkan alasan penghapusan transaksi disini">
+                                    <input class="form-control" type="text" style="display: none" id="reason"
+                                        placeholder="Masukkan alasan penghapusan transaksi disini">
                                 </div>
                                 <button id="confirmation-pin-btn" class="btn btn-primary">CONFIRM</button>
                             </td>
@@ -348,6 +382,13 @@ CMS | Transaction
 			});
 		});
 	});
+</script>
+
+<script>
+    $('.close').on('click', function () {
+        $('#modal-edit').removeClass("show");
+        $('#modal-edit').modal("hide");
+        });
 </script>
 @include('admin.transaction.show')
 

@@ -58,6 +58,32 @@ CMS | Transaction
         font-weight: 600;
         margin-bottom: 0px
     }
+
+    .wrap-cashier {
+        display: flex;
+        margin: auto;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .info-disc {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    #element {
+        position: absolute;
+        top: 41px;
+        right: 10px;
+        background: #000000c4;
+        color: #fff;
+        z-index: 1000;
+        width: 520px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        border-top-right-radius: 0px;
+    }
 </style>
 @endpush
 
@@ -74,25 +100,28 @@ CMS | Transaction
 @endif
 
 <div class="container-fluid">
-    @if(Auth::user()->roles->first()->name == 'Cashier')
-    <div class="menu-rt">
-        <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
-        <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
-        <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
-        <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+    <div class="wrap-cashier">
+        @if(Auth::user()->roles->first()->name == 'Cashier')
+        <div class="menu-rt">
+            <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
+            <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
+            <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
+            <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
 
-        <button class="btn " type="button">
-            <a href="{{ route('logout') }}"
-                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
-            </a>
-        </button>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
+            <button class="btn " type="button">
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                    <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
+                </a>
+            </button>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </div>
+        @else
+        @endif
+
     </div>
-    @else
-    @endif
     <div class="card">
         <div class="card-body table-responsive">
             <div class="summary">

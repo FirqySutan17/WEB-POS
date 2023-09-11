@@ -69,7 +69,7 @@ CMS | Add Membership
                                                 Phone Number <span class="wajib">*</span>
                                             </label>
                                             <input id="input_user_name" value="{{ old('phone') }}" name="phone"
-                                                type="text" class="form-control @error('phone') is-invalid @enderror"
+                                                type="number" class="form-control @error('phone') is-invalid @enderror"
                                                 placeholder="Input Phone Number" />
                                             @error('phone')
                                             <span class="invalid-feedback">

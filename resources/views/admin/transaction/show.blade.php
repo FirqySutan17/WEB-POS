@@ -106,7 +106,7 @@
 </style>
 
 <!-- Modal -->
-<div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -174,7 +174,8 @@
                         </tr>
                         <tr>
                             <th style="width: 75%">GRAND TOTAL</th>
-                            <td class="footer_clear" id="grand_total" style="width: 25%;text-align: right">Rp 100.000</td>
+                            <td class="footer_clear" id="grand_total" style="width: 25%;text-align: right">Rp 100.000
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -286,4 +287,11 @@
         });
     });
 
+</script>
+
+<script>
+    $('.close').on('click', function () {
+        $('#modal-edit').removeClass("show");
+        $('#modal-edit').modal("hide");
+        });
 </script>
