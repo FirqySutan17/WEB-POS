@@ -15,7 +15,7 @@ class Membership extends Model
 
     public function scopeSearch($query, $title)
     {
-        return $query->where('name', 'LIKE', "%{$title}%")->orWhere('code', 'LIKE', "%{$title}%");
+        return $query->where('name', 'LIKE', "%{$title}%")->orWhere('phone', 'LIKE', "%{$title}%");
     }
 
     public function getRouteKeyName()

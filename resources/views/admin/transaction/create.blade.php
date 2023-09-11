@@ -136,6 +136,38 @@ CMS | Transaction
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="row tr-shadow" style="margin-top: 20px">
+                                        <!-- role -->
+                                        <div class="form-group _form-group">
+                                            <label for="select_membership" class="font-weight-bold" style="width: 100%">
+                                                Membership <span class="wajib">*</span>
+                                                <a href="#" class="new-mem" style="float: right;">
+                                                    <i class='bx bx-plus'
+                                                        style="display: inline-block; vertical-align: middle; font-weight: 700; font-size: 14px"></i>
+                                                    New member
+                                                </a>
+                                            </label>
+                                            <select id="select_membership" name="membership_id"
+                                                data-placeholder="Choose membership"
+                                                class="js-example-placeholder-multiple">
+                                                <option value="0">Choose membership</option>
+                                                @foreach($memberships as $membership)
+                                                <option value="{{$membership->id}}">
+                                                    {{$membership->phone}} - {{$membership->name}}
+                                                </option>
+
+                                                @endforeach
+                                            </select>
+                                            @error('membership')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                            <!-- error message -->
+                                        </div>
+                                        <!-- end role -->
+                                    </div>
                                 </div>
                                 <div class="col-md-9 col-sm-12" style="padding-right: 0px">
                                     <marquee width="100%" direction="left">
@@ -242,14 +274,16 @@ CMS | Transaction
                                                     Nominal Tunai
                                                 </label>
                                                 <input id="tanpa-rupiah" placeholder="Ex: 50000" name="cash" type="text"
-                                                    class="form-control elm_cash_input" value="{{ old('cash') }}" tabindex="4" />
+                                                    class="form-control elm_cash_input" value="{{ old('cash') }}"
+                                                    tabindex="4" />
                                             </div>
                                             <div class="form-group _form-group elm_cash">
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Kembalian
                                                 </label>
-                                                <input id="kembalian" placeholder="Hitungan otomatis" name="kembalian" type="text"
-                                                    class="form-control" readonly value="{{ old('kembalian') }}" tabindex="0" />
+                                                <input id="kembalian" placeholder="Hitungan otomatis" name="kembalian"
+                                                    type="text" class="form-control" readonly
+                                                    value="{{ old('kembalian') }}" tabindex="0" />
                                             </div>
                                         </div>
 
@@ -300,7 +334,7 @@ CMS | Transaction
     <script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-    {{-- <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script> --}}
+    <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js">
     </script>
     @endpush
@@ -642,5 +676,32 @@ CMS | Transaction
                 }
             });
         });
+    </script>
+
+    <script>
+        $(function() {
+        //parent category
+        $('#select_membership').select2({
+            theme: 'bootstrap4',
+            language: "{{ app()->getLocale() }}",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('membership.select') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.name,
+                                phone: item.phone,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+            }
+        });
+    });
     </script>
     @endpush

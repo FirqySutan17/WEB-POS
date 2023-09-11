@@ -10,6 +10,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
 use App\Models\Product;
+use App\Models\Membership;
 use Session;
 use App\Models\User;
 
@@ -68,11 +69,12 @@ class TransactionController extends Controller
         // $session_user = $request->session()->get('role');
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
         $no_invoice = "INV".$userdata->id.$userdata->employee_id.strtotime(date('YmdHis'));
+        $memberships = Membership::all();
         // if (Session::get('receipt')) {
         //     dd(Session::get('receipt'));
         // }
         // dd($session_user);
-        return view('admin.transaction.create', compact('no_invoice', 'product_discount'));
+        return view('admin.transaction.create', compact('no_invoice', 'product_discount', 'memberships'));
     }
 
     /**
@@ -106,6 +108,7 @@ class TransactionController extends Controller
             $sub_price = 0;
             foreach ($product_code as $i => $v) {
                 $trans_detail = [
+                    "membership_id"   => $request->membership_id,
                     "invoice_no"    => $request->invoice_no,
                     "product_code"  => $v,
                     "quantity"      => $quantity[$i],
@@ -218,7 +221,9 @@ class TransactionController extends Controller
         // dd($transaction, $user);
         $transaction_details = TransactionDetail::select('product_code', 'invoice_no', 'quantity')->where('invoice_no', $transaction->invoice_no)->get();
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
-        return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount'));
+        $memberships = Membership::all();
+        $membershipSelected = $transaction->membership;
+        return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount', 'memberships', 'membershipSeleted'));
     }
 
     public function summary(Transaction $transaction) {
@@ -258,6 +263,7 @@ class TransactionController extends Controller
             $sub_price = 0;
             foreach ($product_code as $i => $v) {
                 $trans_detail = [
+                    "membership_id" => $request->membership_id,
                     "invoice_no"    => $request->invoice_no,
                     "product_code"  => $v,
                     "quantity"      => $quantity[$i],
@@ -280,6 +286,7 @@ class TransactionController extends Controller
             }
 
             $trans = [
+                'membership_id' => $request->membership_id,
                 'receipt_no'    => $receipt_no,
                 'payment_method'    => $request->payment_method,
                 'cash'          => $cash,

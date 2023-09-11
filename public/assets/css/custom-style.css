@@ -1000,7 +1000,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .tr-shadow {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-  padding: 20px;
+  padding: 20px 10px;
   border-radius: 10px;
 }
 
@@ -1019,6 +1019,10 @@ input[type="number"]::-webkit-outer-spin-button {
   display: table;
   width: 100%;
   table-layout: fixed;
+}
+
+.new-mem:hover {
+  color: #1890ff;
 }
 /* END TRANSACTION STYLE */
 

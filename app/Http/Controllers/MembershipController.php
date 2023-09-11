@@ -30,6 +30,18 @@ class MembershipController extends Controller
         ]);
     }
 
+    public function select(Request $request)
+    {
+        $memberships = [];
+        if ($request->has('q')) {
+            $memberships = Membership::select('id', 'name', 'phone')->search($request->q)->get();
+        } else {
+            $memberships = Membership::select('id', 'name', 'phone')->limit(10)->get();
+        }
+
+        return response()->json($memberships);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

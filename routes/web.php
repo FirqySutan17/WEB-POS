@@ -87,6 +87,7 @@ Route::resource('/product-categories', App\Http\Controllers\ProductCategoriesCon
 Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
 
 // Membership Route
+Route::get('/membership/select', [App\Http\Controllers\MembershipController::class, 'select'])->name('membership.select');
 Route::resource('/membership', App\Http\Controllers\MembershipController::class);
 
 // Cashflow Route

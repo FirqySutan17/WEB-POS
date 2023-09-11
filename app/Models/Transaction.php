@@ -39,4 +39,9 @@ class Transaction extends Model
     {
         return $this->hasMany(ReceiveDetail::class, 'receive_code');
     }
+
+    public function membership()
+    {
+        return $this->belongsTo(Membership::class);
+    }
 }
