@@ -108,7 +108,6 @@ class TransactionController extends Controller
             $sub_price = 0;
             foreach ($product_code as $i => $v) {
                 $trans_detail = [
-                    "membership_id"   => $request->membership_id,
                     "invoice_no"    => $request->invoice_no,
                     "product_code"  => $v,
                     "quantity"      => $quantity[$i],
@@ -132,6 +131,7 @@ class TransactionController extends Controller
             }
 
             $trans = [
+                "membership_id"   => $request->membership_id,
                 'emp_no'        => Auth::user()->employee_id,
                 'invoice_no'    => $request->invoice_no,
                 'receipt_no'    => $receipt_no,
@@ -170,7 +170,7 @@ class TransactionController extends Controller
         } finally {
             DB::commit();
         }
-        return redirect()->route('transaction.create');
+        return redirect()->route('transaction.receipt', $request->invoice_no);
     }
 
     public function print_receipt(Transaction $transaction) {

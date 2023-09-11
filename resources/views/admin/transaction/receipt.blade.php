@@ -93,7 +93,7 @@
     </style>
 </head>
 
-<body>
+<body onload="printOut()">
     <div class="ticket">
         <img src="{{ asset('images/logo-placeholder.png')}}" alt="Logo">
         <p class="centered">
@@ -226,11 +226,19 @@
         </p>
     </div>
     <button id="btnPrint" class="hidden-print">Print</button>
-    <script>
+    {{-- <script>
         let buttonPrint = document.getElementById("btnPrint");
         buttonPrint.addEventListener("click", function() {
             window.print()
         });
+    </script> --}}
+    <script>
+        var lama = 1000;
+        t = null;
+        function printOut(){
+            window.print();
+            t = setTimeout("self.close()",lama);
+        }
     </script>
 </body>
 

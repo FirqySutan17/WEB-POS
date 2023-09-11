@@ -525,7 +525,7 @@ CMS | Transaction
         }
 
         function submit_form(status) {
-            // let url = `{{ route('transaction.receipt', ['transaction' => 'INV1012200231693282703']) }}`;
+            
             $("#input_status").val(status);
             let payment_method = $("#payment_method option:selected").val();
 
@@ -546,6 +546,7 @@ CMS | Transaction
                 });
             }
             // printExternal(url);
+            // window.location.href = url
             $("#form-transaction").submit();
         }
 
