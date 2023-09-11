@@ -73,6 +73,18 @@
                     <!-- skill -->
                     @can('Receive')
                     <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['shift.index', 'shift.show', 'shift.edit', 'shift.create'])}}"
+                            href="{{ route('shift.index') }}">
+                            <i data-feather="dollar-sign"></i>
+                            <span>Shift Management</span>
+                        </a>
+                    </li>
+                    @endcan
+                    <!-- End skill -->
+
+                    <!-- skill -->
+                    @can('Receive')
+                    <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['membership.index', 'membership.show', 'membership.edit', 'membership.create'])}}"
                             href="{{ route('membership.index') }}">
                             <i data-feather="users"></i>

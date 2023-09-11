@@ -93,6 +93,11 @@ Route::resource('/membership', App\Http\Controllers\MembershipController::class)
 // Cashflow Route
 Route::resource('/cashflow', App\Http\Controllers\CashflowController::class);
 
+// Shift Management Route
+Route::resource('/shift', App\Http\Controllers\ShiftManagementController::class);
+Route::get('/shift_summary', [App\Http\Controllers\ShiftManagementController::class, 'summary_shift'])->name('shift_summary');
+Route::post('/closing_shift', [App\Http\Controllers\ShiftManagementController::class, 'closing_shift'])->name('closing_shift');
+
 // Transaction Route
 Route::resource('/transaction', App\Http\Controllers\TransactionController::class);
 Route::get('/transaction/receipt/{transaction}', [App\Http\Controllers\TransactionController::class, 'receipt'])->name('transaction.receipt');

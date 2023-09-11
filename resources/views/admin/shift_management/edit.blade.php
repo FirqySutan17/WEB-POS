@@ -20,48 +20,12 @@ CMS | Add Cashflow
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div id="form-authorization" class="card _card" style="width: 60%; margin: auto; padding-bottom: 20px">
-                <div class="card-body _card-body">
-                    <div class="row d-flex align-items-stretch">
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-12">
-                                    <!-- Phone Number -->
-                                    <div class="form-group _form-group">
-                                        <label for="input_user_cash" class="font-weight-bold">
-                                            PIN <span class="wajib">*</span>
-                                        </label>
-                                        <input id="confirmation-pin"
-                                            style="height: 50px; font-size: 20px" type="password"
-                                            class="form-control"
-                                            placeholder="Insert Supervisor PIN here" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div style="width: 100; display: flex; align-items: center; justify-content: center;">
-                                <a style="width: 50%; margin-right: 5px"
-                                    class="btn btn-outline-primary _btn-primary px-4"
-                                    href="{{ route('cashflow.index') }}">Back</a>
-                                <button id="btn-authorize" style="width: 50%; margin-left: 5px" type="button"
-                                    class="btn btn-primary _btn-primary px-4">
-                                    Authorize
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <form id="form-add" action="{{ route('cashflow.store') }}" method="POST" enctype="multipart/form-data" style="display: none">
+            <form action="{{ route('cashflow.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card _card" style="width: 60%; margin: auto; padding-bottom: 20px">
                     <div class="card-body _card-body">
                         <div class="row d-flex align-items-stretch">
-                            <input type="hidden" name="approval" id="approval">
+
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col-12">
@@ -109,8 +73,8 @@ CMS | Add Cashflow
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Cashier <span class="wajib">*</span>
                                                     </label>
-                                                    <input type="hidden" name="employee_id" value="{{ Auth::user()->id }}">
-                                                    <input id="input_user_name" value="{{ Auth::user()->name }}" type="text"
+                                                    <input id="input_user_name" value="{{ Auth::user()->name }}"
+                                                        name="employee_id" type="text"
                                                         class="form-control @error('name') is-invalid @enderror"
                                                         readonly />
                                                     @error('name')
@@ -130,9 +94,9 @@ CMS | Add Cashflow
                                                     <select id="select_user_categories" name="categories"
                                                         data-placeholder="Choose categories"
                                                         class="js-example-placeholder-multiple">
-                                                        <option value="IN">In - Cash</option>
-                                                        <option value="OUT">Out - Cash</option>
-                                                        <option value="STR">Setoran - Cash</option>
+                                                        <option value="In - Cash">In - Cash</option>
+                                                        <option value="Out - Cash">Out - Cash</option>
+                                                        <option value="Setoran - Cash">Setoran - Cash</option>
                                                     </select>
                                                     @error('role')
                                                     <span class="invalid-feedback">
@@ -217,63 +181,17 @@ CMS | Add Cashflow
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 
 @push('javascript-internal')
 
 
 <script>
-    let chance = 0;
-    $('#btn-authorize').click(function() {
-        let pin = $("#confirmation-pin").val();
-        let url = "{{ route('cashflow.index') }}";
-        $.ajax({
-            url: "{{ route('transaction.checkpin') }}",
-            type: "POST",
-            data: {
-                "_token": `{{ csrf_token() }}`,
-                "pin": pin,
-            },
-            beforeSend: function () {
-            },
-            success: function(response) {
-                if (JSON.stringify(response) === "{}") {
-                    chance += 1;
-                    if (chance >= 3) {
-                        setTimeout(() => {
-                            window.open(url, '_self');
-                        }, 3000);
-                        return Swal.fire({
-                            title: 'Oops...',
-                            text: `Wrong PIN Number! You already try ${chance}x and will be moved to index`,
-                            icon: 'error'
-                        });
-                    }
-                    
-                    return Swal.fire({
-                        title: 'Oops...',
-                        text: `Wrong PIN Number! You already try ${chance}x`,
-                        icon: 'error'
-                    });
-                }
-
-                $("#approval").val(pin);
-                $("#form-authorization").remove();
-                Swal.fire({
-                    title: 'Success',
-                    text: `Authorized!`,
-                    icon: 'success'
-                });
-                $("#form-add").show();
-            }
-        });
-    });
-
     $(function() {
         $('#select_user_categories').select2({
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}",
+            allowClear: true,
             // ajax: {
             //     url: "{{ route('roles.select') }}",
             //     dataType: 'json',
@@ -291,31 +209,5 @@ CMS | Add Cashflow
             // }
         });
     });
-
-    /* Tanpa Rupiah */
-        var tanpa_rupiah    = document.getElementById('input_user_cash');
-        tanpa_rupiah.addEventListener('keyup', function(e) {
-            var nominal = this.value;
-            var nominal_number = Number(nominal.replace(".", ""));
-            tanpa_rupiah.value = formatRupiah(nominal);
-        });
-
-        /* Fungsi */
-        function formatRupiah(angka, prefix)
-        {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split    = number_string.split(','),
-                sisa     = split[0].length % 3,
-                rupiah     = split[0].substr(0, sisa),
-                ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
-                
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-            
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
-        }
 </script>
 @endpush
