@@ -20,7 +20,43 @@ CMS | Add Cashflow
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <form action="{{ route('cashflow.store') }}" method="POST" enctype="multipart/form-data">
+            <div id="form-authorization" class="card _card" style="width: 60%; margin: auto; padding-bottom: 20px">
+                <div class="card-body _card-body">
+                    <div class="row d-flex align-items-stretch">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <!-- Phone Number -->
+                                    <div class="form-group _form-group">
+                                        <label for="input_user_cash" class="font-weight-bold">
+                                            PIN <span class="wajib">*</span>
+                                        </label>
+                                        <input id="confirmation-pin"
+                                            style="height: 50px; font-size: 20px" name="cash" type="password"
+                                            class="form-control"
+                                            placeholder="Insert Supervisor PIN here" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div style="width: 100; display: flex; align-items: center; justify-content: center;">
+                                <a style="width: 50%; margin-right: 5px"
+                                    class="btn btn-outline-primary _btn-primary px-4"
+                                    href="{{ route('cashflow.index') }}">Back</a>
+                                <button id="btn-authorize" style="width: 50%; margin-left: 5px" type="button"
+                                    class="btn btn-primary _btn-primary px-4">
+                                    Authorize
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <form id="form-add" action="{{ route('cashflow.store') }}" method="POST" enctype="multipart/form-data" style="display: none">
                 @csrf
                 <div class="card _card" style="width: 60%; margin: auto; padding-bottom: 20px">
                     <div class="card-body _card-body">
@@ -181,12 +217,58 @@ CMS | Add Cashflow
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 
 @push('javascript-internal')
 
 
 <script>
+    let chance = 0;
+    $('#btn-authorize').click(function() {
+        let pin = $("#confirmation-pin").val();
+        let url = "{{ route('cashflow.index') }}";
+        $.ajax({
+            url: "{{ route('transaction.checkpin') }}",
+            type: "POST",
+            data: {
+                "_token": `{{ csrf_token() }}`,
+                "pin": pin,
+            },
+            beforeSend: function () {
+            },
+            success: function(response) {
+                if (JSON.stringify(response) === "{}") {
+                    chance += 1;
+                    if (chance >= 3) {
+                        setTimeout(() => {
+                            window.open(url, '_self');
+                        }, 3000);
+                        return Swal.fire({
+                            title: 'Oops...',
+                            text: `Wrong PIN Number! You already try ${chance}x and will be moved to index`,
+                            icon: 'error'
+                        });
+                    }
+                    
+                    return Swal.fire({
+                        title: 'Oops...',
+                        text: `Wrong PIN Number! You already try ${chance}x`,
+                        icon: 'error'
+                    });
+                }
+
+                $("#form-authorization").remove();
+                Swal.fire({
+                    title: 'Success',
+                    text: `Authorized!`,
+                    icon: 'success'
+                });
+                $("#form-add").show();
+            }
+        });
+    });
+
     $(function() {
         $('#select_user_categories').select2({
             theme: 'bootstrap4',

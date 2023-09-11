@@ -110,6 +110,7 @@ class CashflowController extends Controller
      */
     public function update(Request $request, Cashflow $cashflow)
     {
+        dd($cashflow);
         $validator = Validator::make(
             $request->all(),
             [

@@ -72,12 +72,12 @@ CMS | Cashflow
                         <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
 
-                                <div class="boxEdit">
+                                {{-- <div class="boxEdit">
                                     <a href="{{ route('cashflow.edit', ['cashflow' => $cashflow]) }}"
                                         class="btn-sm btn-info" role="button">
                                         <i class="bx bx-edit"></i>
                                     </a>
-                                </div>
+                                </div> --}}
 
                                 {{-- <div class="boxDelete">
                                     <form action="{{ route('cashflow.destroy', ['cashflow' => $cashflow]) }}"
