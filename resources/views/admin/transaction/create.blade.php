@@ -112,8 +112,6 @@ CMS | Transaction
                 @csrf
             </form>
         </div>
-        @else
-        @endif
         <div class="info-disc">
             <div class="button-container">
                 <button id="click" class="btn-disc">
@@ -128,6 +126,9 @@ CMS | Transaction
                 @endif
             </div>
         </div>
+        @else
+        @endif
+
     </div>
 
     @if(Auth::user()->roles->first()->name == 'Cashier')

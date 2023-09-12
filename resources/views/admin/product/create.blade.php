@@ -215,7 +215,7 @@ CMS | Add Product
                                 <div class="float-right">
                                     <a class="btn btn-outline-primary _btn-primary px-4"
                                         href="{{ route('product.index') }}">Back</a>
-                                    <button type="submit" class="btn btn-primary _btn-primary px-4">
+                                    <button type="button" class="btn btn-primary _btn-primary px-4">
                                         Save
                                     </button>
                                 </div>
@@ -249,6 +249,7 @@ CMS | Add Product
 
 @push('javascript-internal')
 <script>
+    function
     $(document).ready(function() {
         $("#input_post_title").change(function(event) {
             $("#input_post_slug").val(

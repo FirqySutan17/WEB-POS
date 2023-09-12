@@ -66,11 +66,11 @@ class ProductController extends Controller
                 $result["message"]  = "";
                 $result["status"]   = "success";
                 $result["data"]     = $products;
-                if ($products->stock < 1) {
-                    $result["message"]  = "Empty stock!";
-                    $result["status"]   = "failed";
-                    $result["data"]     = [];
-                }
+                // if ($products->stock < 1) {
+                //     $result["message"]  = "Empty stock!";
+                //     $result["status"]   = "failed";
+                //     $result["data"]     = [];
+                // }
 
                 if ($products->is_vat == 1) {
                     $vat_percent    = config('app.vat_amount');
