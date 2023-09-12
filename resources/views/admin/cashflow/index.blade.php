@@ -53,46 +53,21 @@ CMS | Cashflow
                         <th class="heightHr">Cashier <span class="dividerHr"></span></th>
                         <th class="heightHr">Categories <span class="dividerHr"></span></th>
                         <th class="heightHr">Description <span class="dividerHr"></span></th>
-                        <th class="center-text">Action</th>
+                        <th class="center-text">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (count($cashflows))
-                    @forelse ($cashflows as $cashflow)
+                    @if (count($cashflow))
+                    @forelse ($cashflow as $cl)
                     <tr>
                         <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
                         <td class="center-text" style="width: 15%; vertical-align: middle">
-                            {{ $cashflow->date }}
-                            <br>
-                            {{ $cashflow->time }}
+                            {{ $cl->date." ".$cl->time }}
                         </td>
-                        <td style="width: 20%; vertical-align: middle">{{ $cashflow->employee_id }}</td>
-                        <td style="width: 20%; vertical-align: middle">{{ $cashflow->categories }}</td>
-                        <td style="width: 30%; vertical-align: middle">{!! $cashflow->description !!}</td>
-                        <td style="width: 10%;" class="center-text boxAction fontField">
-                            <div class="boxInside">
-
-                                {{-- <div class="boxEdit">
-                                    <a href="{{ route('cashflow.edit', ['cashflow' => $cashflow]) }}"
-                                        class="btn-sm btn-info" role="button">
-                                        <i class="bx bx-edit"></i>
-                                    </a>
-                                </div> --}}
-
-                                {{-- <div class="boxDelete">
-                                    <form action="{{ route('cashflow.destroy', ['cashflow' => $cashflow]) }}"
-                                        method="POST" role="alert">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    </form>
-                                </div> --}}
-
-                            </div>
-
-                        </td>
+                        <td style="width: 20%; vertical-align: middle">{{ $cl->user?->name }}</td>
+                        <td style="width: 20%; vertical-align: middle">{{ $cl->categories }}</td>
+                        <td style="width: 30%; vertical-align: middle">{!! $cl->description !!}</td>
+                        <td style="width: 10%;" class="center-text boxAction fontField">@currency($cl->cash)</td>
                     </tr>
                     @endforeach
                     @else
@@ -110,9 +85,9 @@ CMS | Cashflow
         </div>
         <div class="card-footer">
             <div class="boxFooter">
-                @if ($cashflows->hasPages())
+                @if ($cashflow->hasPages())
                 <div class="boxPagination">
-                    {{ $cashflows->links('vendor.pagination.bootstrap-4') }}
+                    {{ $cashflow->links('vendor.pagination.bootstrap-4') }}
                 </div>
                 @endif
             </div>

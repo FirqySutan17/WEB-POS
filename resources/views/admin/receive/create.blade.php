@@ -76,6 +76,18 @@ CMS | Add Receive
                                     <div class="col-3">
                                         <div class="form-group _form-group not_warehouse">
                                             <label for="driver" class="font-weight-bold">
+                                                Supplier
+                                            </label>
+                                            <select name="supplier_code" id="select_suppliers">
+                                                @foreach ($suppliers as $sp)
+                                                    <option value="{{ $sp->supplier_code }}">{{ $sp->supplier_code.' | '.$sp->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group _form-group not_warehouse">
+                                            <label for="driver" class="font-weight-bold">
                                                 Driver Name
                                             </label>
                                             <input id="driver" value="{{ old('driver') }}" name="driver" type="text" class="form-control not_warehouse_input  @error('driver') is-invalid @enderror" placeholder="Input driver name here"/>
@@ -100,7 +112,7 @@ CMS | Add Receive
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-3">
                                         <div class="form-group _form-group not_warehouse">
                                             <label for="plate_no" class="font-weight-bold">
                                                 Vehicle License Number
@@ -200,6 +212,13 @@ CMS | Add Receive
 @push('javascript-internal')
 
 <script>
+    $(function() {
+        $('#select_suppliers').select2({
+            theme: 'bootstrap4',
+            language: "{{ app()->getLocale() }}"
+        });
+    });
+
     $("#is_warehouse").on('change', function() {
         var val = $("#is_warehouse option:selected").val();
         if (val == "0") {
@@ -223,6 +242,7 @@ CMS | Add Receive
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
                 var quantity_product = parseInt(str_quantity_product) + 1;
                 $(`#quantity_${item_product}`).val(quantity_product);
+                calculate_from_qty(item_product);
             } else {
                 add_product_item(product_code);
             }
@@ -230,6 +250,49 @@ CMS | Add Receive
         }
         
     });
+
+    function calculate_from_qty(item_id) {
+        let str_qty = $(`#quantity_${item_id}`).val();
+        let qty = Number(str_qty.replace(".", ""));
+
+        let str_unitprice = $(`#unit_price_${item_id}`).val();
+        let unitprice = Number(str_unitprice.replace(".", ""));
+
+        let amount = qty * unitprice;
+        let str_amount = amount.toString();
+        $(`#amount_${item_id}`).val(formatRupiah(str_amount));
+
+        console.log(str_qty, qty, str_unitprice, unitprice, str_amount, amount);
+    }
+
+    function calculate_from_amount(item_id) {
+        let str_qty = $(`#quantity_${item_id}`).val();
+        let qty = Number(str_qty.replace(".", ""));
+
+        let str_amount = $(`#amount_${item_id}`).val();
+        let amount = Number(str_amount.replace(".", ""));
+
+        let unitprice = Math.round(amount / qty);
+        let str_unitprice = unitprice.toString();
+        $(`#unit_price_${item_id}`).val(formatRupiah(str_unitprice));
+    }
+
+    function formatRupiah(angka, prefix)
+    {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split    = number_string.split(','),
+            sisa     = split[0].length % 3,
+            rupiah     = split[0].substr(0, sisa),
+            ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
+            
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
 
     function add_product_item(product_code) {
         $.ajax({
@@ -266,12 +329,28 @@ CMS | Add Receive
                                     <input id="product_code_text_${item_id}" type="text" class="form-control" value="${product.code + ' - ' + product.name }" readonly/>
                                 </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <div  class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
                                         Quantity 
                                     </label>
-                                    <input id="quantity_${item_id}" name="quantity[]" type="number" class="form-control" value="1" />
+                                    <input data-itemid="${item_id}" id="quantity_${item_id}" name="quantity[]" type="number" class="form-control" value="1" onkeyup="calculate_from_qty('${item_id}')" />
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div  class="form-group _form-group">
+                                    <label for="input_post_description" class="font-weight-bold">
+                                        Unit Price 
+                                    </label>
+                                    <input data-itemid="${item_id}" id="unit_price_${item_id}" name="unit_price[]" type="number" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_qty('${item_id}')" />
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div  class="form-group _form-group">
+                                    <label for="input_post_description" class="font-weight-bold">
+                                        Amount 
+                                    </label>
+                                    <input data-itemid="${item_id}" id="amount_${item_id}" name="amount[]" type="number" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_amount('${item_id}')" />
                                 </div>
                             </div>
                         </div>

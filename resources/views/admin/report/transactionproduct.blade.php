@@ -49,10 +49,17 @@ CMS | Report Transaction
                 {{-- filter:start --}}
                 <form action="{{ route('report.transactionproduct') }}" class="row" method="POST">
                     @csrf
-                    <div class="col-5">
+                    <div class="col-3">
                         <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
                             class="form-control" placeholder="Search employee name or id"
                             style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                    </div>
+                    <div class="col-2">
+                        <select name="categories" class="form-control" style="height: 100%; font-size: 14px">
+                            <option {{ $categories == 'ALL' ? "selected" : "" }} value="ALL">All Categories</option>
+                            <option {{ $categories == 'Internal' ? "selected" : "" }} value="Internal">Internal</option>
+                            <option {{ $categories == 'External' ? "selected" : "" }} value="External">External</option>
+                        </select>
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"

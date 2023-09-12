@@ -109,7 +109,7 @@ CMS | Add Cashflow
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Cashier <span class="wajib">*</span>
                                                     </label>
-                                                    <input type="hidden" name="employee_id" value="{{ Auth::user()->id }}">
+                                                    <input type="hidden" name="employee_id" value="{{ Auth::user()->employee_id }}">
                                                     <input id="input_user_name" value="{{ Auth::user()->name }}" type="text"
                                                         class="form-control @error('name') is-invalid @enderror"
                                                         readonly />
@@ -164,8 +164,9 @@ CMS | Add Cashflow
                                                 Cash <span class="wajib">*</span>
                                             </label>
                                             <input id="input_user_cash" value="{{ old('cash') }}"
-                                                style="height: 50px; font-size: 20px" name="cash" type="number"
+                                                style="height: 50px; font-size: 20px" name="cash" type="text"
                                                 class="form-control @error('cash') is-invalid @enderror"
+                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                                                 placeholder="Rp 0" />
                                             @error('cash')
                                             <span class="invalid-feedback">
@@ -188,7 +189,7 @@ CMS | Add Cashflow
                                     <a style="width: 50%; margin-right: 5px"
                                         class="btn btn-outline-primary _btn-primary px-4"
                                         href="{{ route('cashflow.index') }}">Back</a>
-                                    <button style="width: 50%; margin-left: 5px" type="submit"
+                                    <button id="btn-save" style="width: 50%; margin-left: 5px" type="button"
                                         class="btn btn-primary _btn-primary px-4">
                                         Save
                                     </button>
@@ -225,6 +226,24 @@ CMS | Add Cashflow
 
 <script>
     let chance = 0;
+    $("#btn-save").click(function() {
+        Swal.fire({
+            title: `Do you want to save this cash flow ?`,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: 'No',
+            icon: 'question',
+            customClass: {
+                actions: 'my-actions',
+                cancelButton: 'order-1 right-gap',
+                confirmButton: 'order-2',
+            }
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $("#form-add").submit();
+            }
+        })
+    });
     $('#btn-authorize').click(function() {
         let pin = $("#confirmation-pin").val();
         let url = "{{ route('cashflow.index') }}";
@@ -296,7 +315,6 @@ CMS | Add Cashflow
         var tanpa_rupiah    = document.getElementById('input_user_cash');
         tanpa_rupiah.addEventListener('keyup', function(e) {
             var nominal = this.value;
-            var nominal_number = Number(nominal.replace(".", ""));
             tanpa_rupiah.value = formatRupiah(nominal);
         });
 
@@ -304,16 +322,17 @@ CMS | Add Cashflow
         function formatRupiah(angka, prefix)
         {
             var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split    = number_string.split(','),
-                sisa     = split[0].length % 3,
-                rupiah     = split[0].substr(0, sisa),
-                ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
-                
-            if (ribuan) {
+            split   		= number_string.split(','),
+            sisa     		= split[0].length % 3,
+            rupiah     		= split[0].substr(0, sisa),
+            ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+        
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if(ribuan){
                 separator = sisa ? '.' : '';
                 rupiah += separator + ribuan.join('.');
             }
-            
+        
             rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
             return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
         }

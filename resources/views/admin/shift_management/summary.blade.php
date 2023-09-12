@@ -114,7 +114,27 @@ CMS | Shift Management
                                             <!-- error message -->
                                         </div>
 
-                                        @foreach ($data['cash_balance'] as $item)
+                                        <div class="form-group _form-group">
+                                            <label for="input_user_cash" class="font-weight-bold">
+                                                CASH IN
+                                            </label>
+                                            <input id="input_user_cash" value="{{ $data['cash_in'] }}"
+                                                style="height: 50px; font-size: 20px" type="number"
+                                                class="form-control" readonly/>
+                                            <!-- error message -->
+                                        </div>
+
+                                        <div class="form-group _form-group">
+                                            <label for="input_user_cash" class="font-weight-bold">
+                                                CASH OUT
+                                            </label>
+                                            <input id="input_user_cash" value="{{ $data['cash_out'] }}"
+                                                style="height: 50px; font-size: 20px" type="number"
+                                                class="form-control" readonly/>
+                                            <!-- error message -->
+                                        </div>
+
+                                        {{-- @foreach ($data['cash_balance'] as $item)
                                             <div class="form-group _form-group">
                                                 <label for="inp" class="font-weight-bold">
                                                     {{ $item->code_data }}
@@ -130,7 +150,7 @@ CMS | Shift Management
                                                 </div>
                                                 <!-- error message -->
                                             </div>
-                                        @endforeach
+                                        @endforeach --}}
                                         <div class="form-group _form-group">
                                             <label for="inp" class="font-weight-bold">
                                                 ESTIMATED ENDING CASH IN DRAWER
@@ -147,7 +167,7 @@ CMS | Shift Management
                                             </label>
                                             <input id="input_user_cash" value="{{ $data['estimated_ending'] }}"
                                                 style="height: 50px; font-size: 20px" name="cash" type="number"
-                                                class="form-control"/>
+                                                class="form-control" readonly/>
                                             <!-- error message -->
                                         </div>
 

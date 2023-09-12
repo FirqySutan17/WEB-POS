@@ -111,7 +111,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">DETAIL TRANSAKSI</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button onclick="close_modal_receive()" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -161,6 +161,10 @@
 <div id="loader" class="lds-dual-ring display-none overlay"></div>
 
 <script>
+    function close_modal_receive() {
+        $("#modal-receive").modal('hide');
+    }
+
     function clear_detail() {
         $(".detail_clear").text("");
         $(".row_clear").remove();

@@ -243,28 +243,32 @@ class ReportController extends Controller
             $sdate  = "";
             $edate  = ""; 
             $search = "";
+            $categories = "ALL";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
                 $order_by = "ORDER BY trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", $categories);
                 $data     = $this->convert_transaction_by_product($data_raw);
             }
-            return view('admin.report.transactionproduct', compact('data', 'sdate', 'edate', 'search'));
+            return view('admin.report.transactionproduct', compact('data', 'sdate', 'edate', 'search', 'categories'));
         }
 
         public function report_transaction_by_product_excel(Request $request) {
             $data   = [];
             $sdate  = "";
-            $edate  = "";
-            $search  = ""; 
+            $edate  = ""; 
+            $search = "";
+            $categories = "ALL";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $categories = $request->categories;
+                $order_by = "ORDER BY trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", $categories);
                 $data     = $this->convert_transaction_by_product($data_raw);
             }
             return Excel::download(new ReportExport($data, 'transactionproduct'), 'transactionproduct.xlsx');
@@ -273,14 +277,16 @@ class ReportController extends Controller
         public function report_transaction_by_product_pdf(Request $request) {
             $data   = [];
             $sdate  = "";
-            $edate  = "";
-            $search  = ""; 
+            $edate  = ""; 
+            $search = "";
+            $categories = "ALL";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $categories = $request->categories;
+                $order_by = "ORDER BY trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", $categories);
                 $data     = $this->convert_transaction_by_product($data_raw);
             }
             $pdf = PDF::loadview('exports/transactionproduct',['data'=>$data])->setPaper('a4', 'landscape');
@@ -317,13 +323,16 @@ class ReportController extends Controller
             return $db_query;
         }
 
-        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search, $by = "") {
+        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search, $by = "", $categories = "") {
             $where = "";
             if (!empty($search)) {
                 $where = " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%' OR products.name LIKE '%".$search."%' OR products.code LIKE '%".$search."%')";
                 if ($by == "cashier") {
                     $where = " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%')";
                 }
+            }
+            if (!empty($categories) && $categories != "ALL") {
+                $where = " AND products.categories = '".$categories."'";
             }
             $query = "
                 SELECT 

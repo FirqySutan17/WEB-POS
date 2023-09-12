@@ -197,10 +197,9 @@ class ShiftManagementController extends Controller
     }
 
     public function closing_shift(Request $request) {
-
         $shift_id = $request->id;
         $end_time = $request->end_time;
-        $estimated_ending = $request->estimated_ending;
+        $estimated_end = $request->estimated_end;
         $end        = $request->cash;
         $status = "FINISH";
 
@@ -231,22 +230,30 @@ class ShiftManagementController extends Controller
         $data = [
             "current_shift" => $current_shift,
             "cash_balance"  => $cash_balance,
+            "cash_in" => 0,
+            "cash_out" => 0,
             "estimated_ending" => 0,
             "end_time"      => $end_time
         ];
 
+        $cash_in = 0;
+        $cash_out = 0;
         $estimated_ending = (int) $current_shift->begin;
         foreach ($cash_balance as $v) {
             $amount = (int) $v->amount;
             if ($v->type_balance == "D") {
                 // PLUS CASHFLOW
+                $cash_in += $amount;
                 $estimated_ending += $amount;
             } elseif ($v->type_balance == "K") {
                 // MINUS CASHFLOW
+                $cash_out += $amount;
                 $estimated_ending -= $amount;
             }
         }
 
+        $data["cash_in"] = $cash_in;
+        $data["cash_out"] = $cash_out;
         $data["estimated_ending"] = $estimated_ending;
         return $data;
     }

@@ -85,7 +85,7 @@ CMS | Shift Management
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Clock In
                                                     </label>
-                                                    <input value="{{ !empty($data['shift_data']) ? $data['shift_data']->start_time : "" }}" type="text" class="form-control" readonly />
+                                                    <input value="{{ !empty($data['shift_data']) ? $data['shift_data']->start_time : date('H:i:s') }}" type="text" class="form-control" readonly />
                                                     <!-- error message -->
                                                 </div>
                                                 <!-- end name -->

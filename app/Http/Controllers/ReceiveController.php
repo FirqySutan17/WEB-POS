@@ -49,7 +49,8 @@ class ReceiveController extends Controller
      */
     public function create()
     {
-        return view('admin.receive.create');
+        $suppliers = DB::table('suppliers')->orderBy('supplier_code', 'ASC')->get();
+        return view('admin.receive.create', compact('suppliers'));
     }
 
     /**
@@ -63,6 +64,7 @@ class ReceiveController extends Controller
         // dd($request->all());
         $request->validate([
             'receive_date' => 'required',
+            'receive_time' => 'required',
             'delivery_number' => 'required|string',
             // 'delivery_file' => 'required'
         ]);
@@ -74,14 +76,17 @@ class ReceiveController extends Controller
         DB::beginTransaction();
         try {
             $receive_code = "RCV".date("YmdHis");
+            $supplier_code = $request->is_warehouse == 1 ? NULL : $request->supplier_code;
             $insertdata = [
                 'receive_code'  => $receive_code,
                 'receive_date'  => $request->receive_date,
+                'receive_time'  => $request->receive_time,
                 'driver'        => $request->driver,
                 'driver_phone'  => $request->driver_phone,
                 'plate_no'       => $request->plate_no,
                 'delivery_no'   => $request->delivery_number,
-                'is_warehouse'   => $request->is_warehouse
+                'is_warehouse'   => $request->is_warehouse,
+                'supplier_code'   => $supplier_code,
             ];
             // dd($insertdata, $request->all());
             $receive = Receive::create($insertdata);
@@ -98,15 +103,21 @@ class ReceiveController extends Controller
             }
 
             $product_code   = $request->product_code;
-            $quantity         = $request->quantity;
+            $quantity       = $request->quantity;
+            $unit_price       = $request->unit_price;
+            $amount         = $request->amount;
             $product_arr    = [];
             if (!empty($receive) && !empty($product_code)) {
                 foreach ($product_code as $key => $v) {
                     $qty = $quantity[$key];
+                    $up     = $unit_price[$key];
+                    $amt    = $amount[$key];
                     $product_arr[] = [
                         'receive_code'  => $receive_code,
                         'product_code'  => $v,
-                        'quantity'        => $qty
+                        'quantity'        => $qty,
+                        'unit_price'        => $up,
+                        'amount'        => $amt
                     ];
 
                     // Update amount

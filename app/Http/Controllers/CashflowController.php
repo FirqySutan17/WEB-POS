@@ -18,15 +18,20 @@ class CashflowController extends Controller
      */
     public function index(Request $request)
     {
-        $cashflows = [];
+        $user   = Auth::user();
+        $role   = $user->roles->first()->name;
+        $day    = date('Y-m-d');
+        $query = Cashflow::whereDate('date', $day)->with('user')->orderBy('created_at', 'desc');
         if ($request->get('keyword')) {
-            $cashflows = Cashflow::search($request->keyword)->orderBy('created_at', 'asc')->orderBy('id', 'desc')->paginate(9);
-        } else {
-            $cashflows = Cashflow::orderBy('created_at', 'asc')->orderBy('id', 'desc')->paginate(9);
+            $query->search($request->keyword);
         }
+        if ($role == 'Cashier') {
+            $query->where('employee_id', $user->employee_id);
+        }
+        $cashflow = $query->paginate(5);
         // dd($cashflows);
         return view('admin.cashflow.index', [
-            'cashflows' => $cashflows
+            'cashflow' => $cashflow
         ]);
     }
 
@@ -61,11 +66,11 @@ class CashflowController extends Controller
             $cashflow = Cashflow::create([
                 'date' => $request->date,
                 'time' => $request->time,
-                'employee_id' => $request->employee_id,
+                'employee_id' => Auth::user()->employee_id,
                 'categories' => $request->categories,
                 'description'   => $request->description,
                 'approval'   => $request->approval,
-                'cash'   => $request->cash,
+                'cash'   => str_replace(".", "", $request->cash),
             ]);
 
             Alert::success('Add Cashflow', 'Success');
