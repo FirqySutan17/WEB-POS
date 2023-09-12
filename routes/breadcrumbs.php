@@ -109,6 +109,22 @@ Breadcrumbs::for('edit_product', function ($trail, $product) {
     $trail->push($product->name, route('product.edit', ['product' => $product]));
 });
 
+// Master > Product Categories
+Breadcrumbs::for('product-categories', function ($trail) {
+    $trail->parent('master');
+    $trail->push("Product Categories", route('product-category.index'));
+});
+
+Breadcrumbs::for('add_product_categories', function ($trail) {
+    $trail->parent('product-categories');
+    $trail->push('Add Product Categories', route('product-category.create'));
+});
+
+Breadcrumbs::for('edit_product_categories', function ($trail, $productCategory) {
+    $trail->parent('product-categories');
+    $trail->push($productCategory->categories, route('product-category.edit', ['product_categories' => $productCategory]));
+});
+
 // Penerimaan Barang 
 Breadcrumbs::for('receive', function ($trail) {
     $trail->push("Receive", route('receive.index'));
@@ -212,5 +228,10 @@ Breadcrumbs::for('report_cashflow', function ($trail) {
 // Report Cashflow
 Breadcrumbs::for('report_bestseller', function ($trail) {
     $trail->push("Report bestseller", route('report.bestseller'));
+});
+
+// Closing date
+Breadcrumbs::for('closing_date', function ($trail) {
+    $trail->push('Closing Date');
 });
 

@@ -55,22 +55,24 @@ class ProductController extends Controller
     public function select_one(Request $request)
     {
         $product_code = $request->product_code;
+        $source = !empty($request->source) ? $request->source : "";
         $result = [
             "status"    => "failed",
             "message"   => "Product not found",
             "data"      => []
         ];
+
         if (!empty($product_code)) {
             $products = Product::select('id', 'code', 'name', 'price_store', 'discount_store', 'stock', 'is_vat')->where('code', $product_code)->first();
             if (!empty($products)) {
                 $result["message"]  = "";
                 $result["status"]   = "success";
                 $result["data"]     = $products;
-                // if ($products->stock < 1) {
-                //     $result["message"]  = "Empty stock!";
-                //     $result["status"]   = "failed";
-                //     $result["data"]     = [];
-                // }
+                if ($source == 'transaction' && $products->stock < 1) {
+                    $result["message"]  = "Empty stock!";
+                    $result["status"]   = "failed";
+                    $result["data"]     = [];
+                }
 
                 if ($products->is_vat == 1) {
                     $vat_percent    = config('app.vat_amount');
@@ -122,6 +124,8 @@ class ProductController extends Controller
                 'is_active' => ($request->is_active) ? '1' : '0',
                 'is_vat' => ($request->is_vat) ? '1' : '0',
             ]);
+
+            $product->skills()->attach($request->skill);
 
             if ($product) {
                 $this->insert_price_logs($product);
@@ -184,6 +188,13 @@ class ProductController extends Controller
             [],
         );
 
+        if ($validator->fails()) {
+            if ($request['categories']) {
+                $request['categories'] = ProductCategory::select('id', 'categories')->whereIn('id', $request->categories)->get();
+            }
+            return redirect()->back()->withInput($request->all())->withErrors($validator);
+        }
+
         DB::beginTransaction();
         try {
             $update_data = [
@@ -196,6 +207,7 @@ class ProductController extends Controller
                 'is_active' => ($request->is_active) ? '1' : '0',
             ];
 
+            $product->categories()->sync($request->categories);
             $update= DB::table('products')->where('id', $product->id)->update($update_data);
             $check_price_logs = ProductPriceLog::where('product_code')->first();
 
@@ -216,6 +228,9 @@ class ProductController extends Controller
             DB::rollBack();
             // Alert::success('Update Career', 'Success', ['error' => $th->getMessage()]);
             dd($th->getMessage());
+            if ($request['categories']) {
+                $request['categories'] = ProductCategory::select('id', 'categories')->whereIn('id', $request->categories)->get();
+            }
             return redirect()->back()->withInput($request->all())->withErrors($validator);
         } finally {
             DB::commit();

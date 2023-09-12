@@ -75,7 +75,7 @@
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['shift.index', 'shift.show', 'shift.edit', 'shift.create'])}}"
                             href="{{ route('shift.index') }}">
-                            <i data-feather="dollar-sign"></i>
+                            <i data-feather="send"></i>
                             <span>Shift Management</span>
                         </a>
                     </li>
@@ -176,6 +176,27 @@
                         </div>
                     </li>
                     @endcan
+
+                    <li class="dropdown">
+                        <a class="nav-link navSubMenu menu-title{{routeActive(['closing-date.edit','product-category.edit', 'product-category.index', 'product-category.create'])}}"
+                            href="javascript:void(0)"><i data-feather="settings"></i><span>System</span></a>
+                        <ul class="nav-submenu menu-content">
+
+                            <li>
+                                <a href="{{ route('closing-date.edit', 1) }}"
+                                    class="{{routeActive('closing-date.edit')}}">Closing
+                                    Date
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('product-category.index') }}"
+                                    class="{{routeActive(['product-category.edit', 'product-category.index', 'product-category.create'])}}">Product
+                                    Categories
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
 
                     @canany(['Manage Users', 'Manage Roles'])
                     <li class="dropdown">

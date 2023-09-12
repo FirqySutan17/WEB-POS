@@ -22,6 +22,11 @@ class Product extends Model
         return $query->where('name', 'LIKE', "%{$title}%")->orWhere('code', 'LIKE', "%{$title}%");
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(ProductCategory::class, 'product_category');
+    }
+
     public function getRouteKeyName()
     {
         return 'id';

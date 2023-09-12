@@ -27,10 +27,6 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
   Route::view('/', 'admin.dashboard.default')->name('index');
   Route::view('home', 'admin.dashboard.default')->name('dashboard.index');
 
-  Route::group(['prefix' => 'filemanager'], function () {
-    Route::get('/folder', [App\Http\Controllers\FileManagerController::class, 'index'])->name('filemanager.index');
-    \UniSharp\LaravelFilemanager\Lfm::routes();
-  });
 });
 
 //Roles Route
@@ -80,8 +76,13 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 Route::post('/product/select_one', [App\Http\Controllers\ProductController::class, 'select_one'])->name('product.select_one');
 Route::post('/product/select', [App\Http\Controllers\ProductController::class, 'select'])->name('product.select');
 Route::resource('/product', App\Http\Controllers\ProductController::class);
-// Product Categories Route
-Route::resource('/product-categories', App\Http\Controllers\ProductCategoriesController::class);
+
+// Closing Date Route
+Route::resource('/closing-date', App\Http\Controllers\ClosingdateController::class);
+
+// Product Category Route
+Route::get('/product-category/select', [App\Http\Controllers\ProductCategoryController::class, 'select'])->name('product-category.select');
+Route::resource('/product-category', App\Http\Controllers\ProductCategoryController::class);
 
 // Receive Route
 Route::resource('/receive', App\Http\Controllers\ReceiveController::class);
