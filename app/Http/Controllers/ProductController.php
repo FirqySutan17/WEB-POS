@@ -108,6 +108,7 @@ class ProductController extends Controller
             'code' => 'required|string|unique:products,code',
             'price_store' => 'required|string',
             'price_olshop' => 'required',
+            'categories' => 'required',
         ]);
 
         DB::beginTransaction();

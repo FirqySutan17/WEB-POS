@@ -216,7 +216,7 @@
                     </li>
                     @endcan
 
-                    @can('Manage Meta')
+                    {{-- @can('Manage Meta')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['metas.index', 'metas.show', 'metas.edit', 'metas.create'])}}"
                             href="{{ route('metas.index') }}">
@@ -224,7 +224,7 @@
                             <span>Meta Pages</span>
                         </a>
                     </li>
-                    @endcan
+                    @endcan --}}
 
                 </ul>
             </div>

@@ -30,6 +30,22 @@ CMS | Add Product
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col-6">
+                                        <!-- code -->
+                                        <div class="form-group _form-group">
+                                            <label for="input_post_code" class="font-weight-bold">
+                                                Barcode <span class="wajib">* </span>
+                                            </label>
+                                            <input id="input_post_code" value="{{ old('code') }}" name="code"
+                                                type="text" class="form-control @error('code') is-invalid @enderror"
+                                                placeholder="Scan barcode here.." />
+                                            @error('code')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
                                         <!-- title -->
                                         <div class="form-group _form-group">
                                             <label for="input_post_title" class="font-weight-bold">
@@ -37,31 +53,13 @@ CMS | Add Product
                                             </label>
                                             <input id="input_post_title" value="{{ old('name') }}" name="name"
                                                 type="text" class="form-control @error('name') is-invalid @enderror"
-                                                placeholder="Input name here" required />
+                                                placeholder="Type name here.." required />
                                             @error('name')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                             @enderror
                                         </div>
-
-                                    </div>
-                                    <div class="col-6">
-                                        <!-- code -->
-                                        <div class="form-group _form-group">
-                                            <label for="input_post_code" class="font-weight-bold">
-                                                Code
-                                            </label>
-                                            <input id="input_post_code" value="{{ old('code') }}" name="code"
-                                                type="text" class="form-control @error('code') is-invalid @enderror"
-                                                placeholder="Input product code here" />
-                                            @error('code')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-
                                     </div>
                                 </div>
 
@@ -74,7 +72,7 @@ CMS | Add Product
                                             <input id="price_store" value="{{ old('price_store') }}" name="price_store"
                                                 type="number"
                                                 class="form-control @error('price_store') is-invalid @enderror"
-                                                placeholder="" required />
+                                                placeholder="Ex: 5.000" required />
                                             @error('price_store')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -90,7 +88,7 @@ CMS | Add Product
                                             <input id="price_olshop" value="{{ old('price_olshop') }}"
                                                 name="price_olshop" type="number"
                                                 class="form-control @error('price_olshop') is-invalid @enderror"
-                                                placeholder="" required />
+                                                placeholder="Ex: 5.000" required />
                                             @error('price_olshop')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -107,7 +105,7 @@ CMS | Add Product
                                             <input id="discount_store" value="{{ old('discount_store') }}"
                                                 name="discount_store" type="number"
                                                 class="form-control @error('discount_store') is-invalid @enderror"
-                                                placeholder="" />
+                                                placeholder="Ex: 5" />
                                             @error('discount_store')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -124,7 +122,7 @@ CMS | Add Product
                                             <input id="discount_olshop" value="{{ old('discount_olshop') }}"
                                                 name="discount_olshop" type="number"
                                                 class="form-control @error('discount_olshop') is-invalid @enderror"
-                                                placeholder="" />
+                                                placeholder="Ex: 5" />
                                             @error('discount_olshop')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -135,22 +133,42 @@ CMS | Add Product
                                 </div>
 
                                 <!-- Kategori -->
-                                <div class="form-group _form-group">
-                                    <label for="select_user_kategori" class="font-weight-bold">
-                                        Categories <span class="wajib">*</span>
-                                    </label>
-                                    <select id="select_user_kategori" name="kategori"
-                                        data-placeholder="Choose categories" class="js-example-placeholder-multiple">
-                                        <option value="Internal">Internal</option>
-                                        <option value="External">External</option>
-                                    </select>
-                                    @error('role')
-                                    <span class="invalid-feedback">
-                                        {{ $message }}
-                                    </span>
-                                    @enderror
-                                    <!-- error message -->
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group _form-group">
+                                            <label for="select_user_kategori" class="font-weight-bold">
+                                                Category <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_user_kategori" name="kategori"
+                                                data-placeholder="Choose categories"
+                                                class="js-example-placeholder-multiple">
+                                                <option value="Internal">Internal</option>
+                                                <option value="External">External</option>
+                                            </select>
+                                            @error('role')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                            <!-- error message -->
+                                        </div>
+
+                                    </div>
+                                    <div class="col-6">
+                                        {{-- Skill --}}
+                                        <div class="form-group  _form-group">
+                                            <label for="select_product_category" class="font-weight-bold">
+                                                Type <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_product_category" name="categories[]"
+                                                data-placeholder="Choose product type.." class="custom-select" multiple>
+
+                                            </select>
+                                        </div>
+                                        {{-- End Skill --}}
+                                    </div>
                                 </div>
+
                                 <!-- end role -->
 
                                 <!-- description -->
@@ -242,112 +260,12 @@ CMS | Add Product
 <script src="{{ asset('vendor/tinymce5/jquery.tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
-<script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
+{{-- <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 @endpush
 
 
 @push('javascript-internal')
-<script>
-    function
-    $(document).ready(function() {
-        $("#input_post_title").change(function(event) {
-            $("#input_post_slug").val(
-                event.target.value
-                .trim()
-                .toLowerCase()
-                .replace(/[^a-z\d-]/gi, "-")
-                .replace(/-+/g, "-")
-                .replace(/^-|-$/g, "")
-            );
-        });
-
-        $('#button_post_thumbnail').filemanager('image');
-
-        $("#input_post_description").tinymce({
-            relative_urls: false,
-            language: "en",
-            height: 300,
-            plugins: [
-                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-                "searchreplace wordcount visualblocks visualchars code fullscreen",
-                "insertdatetime media nonbreaking save table directionality",
-                "emoticons template paste textpattern",
-            ],
-            toolbar2: "styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link",
-
-            file_picker_callback: function(callback, value, meta) {
-                let x = window.innerWidth || document.documentElement.clientWidth || document
-                    .getElementsByTagName('body')[0].clientWidth;
-                let y = window.innerHeight || document.documentElement.clientHeight || document
-                    .getElementsByTagName('body')[0].clientHeight;
-
-                let cmsURL =
-                    "{{ route('unisharp.lfm.show') }}" +
-                    '?editor=' + meta.fieldname;
-                if (meta.filetype == 'image') {
-                    cmsURL = cmsURL + "&type=Images";
-                } else {
-                    cmsURL = cmsURL + "&type=Files";
-                }
-
-                tinyMCE.activeEditor.windowManager.openUrl({
-                    url: cmsURL,
-                    title: 'Filemanager',
-                    width: x * 0.8,
-                    height: y * 0.8,
-                    resizable: "yes",
-                    close_previous: "no",
-                    onMessage: (api, message) => {
-                        callback(message.content);
-                    }
-                });
-            }
-        });
-
-        $("#input_post_description_2").tinymce({
-            relative_urls: false,
-            language: "en",
-            height: 300,
-            plugins: [
-                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-                "searchreplace wordcount visualblocks visualchars code fullscreen",
-                "insertdatetime media nonbreaking save table directionality",
-                "emoticons template paste textpattern",
-            ],
-            toolbar2: "styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link",
-
-            file_picker_callback: function(callback, value, meta) {
-                let x = window.innerWidth || document.documentElement.clientWidth || document
-                    .getElementsByTagName('body')[0].clientWidth;
-                let y = window.innerHeight || document.documentElement.clientHeight || document
-                    .getElementsByTagName('body')[0].clientHeight;
-
-                let cmsURL =
-                    "{{ route('unisharp.lfm.show') }}" +
-                    '?editor=' + meta.fieldname;
-                if (meta.filetype == 'image') {
-                    cmsURL = cmsURL + "&type=Images";
-                } else {
-                    cmsURL = cmsURL + "&type=Files";
-                }
-
-                tinyMCE.activeEditor.windowManager.openUrl({
-                    url: cmsURL,
-                    title: 'Filemanager',
-                    width: x * 0.8,
-                    height: y * 0.8,
-                    resizable: "yes",
-                    close_previous: "no",
-                    onMessage: (api, message) => {
-                        callback(message.content);
-                    }
-                });
-            }
-        });
-    });
-
-</script>
 <script>
     $(function() {
         $('#select_user_kategori').select2({
@@ -370,6 +288,28 @@ CMS | Add Product
             //     }
             // }
         });
+
+        //select2 tag
+    $('#select_product_category').select2({
+            theme: 'bootstrap4',
+            language: "",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('product-category.select') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.categories,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+            }
+    });
     });
 </script>
 
