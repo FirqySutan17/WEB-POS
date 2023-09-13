@@ -111,7 +111,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">DETAIL TRANSAKSI</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button onclick="close_modal_product()" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -120,31 +120,27 @@
                     <thead>
                         <tr>
                             <th>BARCODE</th>
-                            <td class="detail_clear"></td>
+                            <td class="detail_clear" id="detail_code"></td>
                             <th>PRODUCT</th>
-                            <td class="detail_clear"></td>
+                            <td class="detail_clear" id="detail_name"></td>
                         </tr>
                         <tr>
                             <th>STORE PRICE</th>
-                            <td class="detail_clear"></td>
+                            <td class="detail_clear" id="detail_price_store"></td>
                             <th>STORE DISCOUNT</th>
-                            <td class="detail_clear"></td>
+                            <td class="detail_clear" id="detail_discount_store"></td>
                         </tr>
                         <tr>
                             <th>OL-SHOP PRICE</th>
-                            <td class="detail_clear"></td>
+                            <td class="detail_clear" id="detail_price_olshop"></td>
                             <th>OL-SHOP DISCOUNT</th>
-                            <td class="detail_clear"></td>
+                            <td class="detail_clear" id="detail_discount_olshop"></td>
                         </tr>
                         <tr>
                             <th>CATEGORY</th>
-                            <td class="detail_clear"></td>
+                            <td class="detail_clear" id="detail_categories"></td>
                             <th>Types</th>
-                            <td class="detail_clear">
-                                @foreach ($product->types as $category)
-                                <span>{{ $category->categories }}</span>
-                                @endforeach
-                            </td>
+                            <td class="detail_clear" id="detail_types"></td>
                         </tr>
                         <tr>
                             <th colspan="4" class="center-text">PRICE LOG</th>
@@ -152,23 +148,17 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-                <table class="modal-table-detail">
-                    <thead>
-
-                    </thead>
-                    <tbody id="transaction_detail">
-                        <tr>
-                            <th class="center-text">No.</th>
-                            <th>Date</th>
-                            <th class="center-text">Store price</th>
-                            <th class="center-text">Olshop price</th>
-                        </tr>
-                    </tbody>
-
-                </table>
                 <table class="modal-table-total">
-                    <tbody>
-                        @if (count($price_logs))
+                    <thead>
+                        <tr>
+                            <th class="center-text">Date</th>
+                            <th class="center-text">Store Price</th>
+                            <th class="center-text">Olshop Price</th>
+                            <th class="center-text">PPN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="price_logs">
+                        {{-- @if (count($price_logs))
                         @forelse ($price_logs as $plog)
                         <tr>
                             <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
@@ -179,7 +169,7 @@
                                 }} ( {{ $product->discount_olshop }} %)</td>
                         </tr>
                         @endforeach
-                        @endif
+                        @endif --}}
                     </tbody>
                 </table>
             </div>
@@ -205,11 +195,13 @@
             },
             success:function(response){
                 console.log(response);
-                let transaction = response.transaction;
-                let transaction_detail = response.details;
-                //fill data to form
-                fill_transaction(transaction);
-                fill_transaction_detail(transaction_detail);
+                let product = response.product;
+                let types = response.types;
+                let price_logs = response.price_logs;
+                // //fill data to form
+                fill_product(product);
+                fill_types(types);
+                fill_price_logs(price_logs);
 
                 //open modal
                 $('#modal-product').modal('show');
@@ -229,54 +221,42 @@
 
     function clear_detail() {
         $(".detail_clear").text("");
-        $(".row_clear").remove();
+        $("#price_logs").empty();
     }
     function fill_product(product) {
-        $('#code').text(product.code);
-        $('#namedate').text(product.created_at);
-        $('#delivery_no').text(product.delivery_no);
-        $('#pic').text(product.user.name);
-        $('#sender').text(sender);
+        $('#detail_code').text(product.code);
+        $('#detail_name').text(product.name);
+        $('#detail_price_store').text(product.price_store);
+        $('#detail_price_olshop').text(product.price_olshop);
+        $('#detail_discount_store').text(product.discount_store);
+        $('#detail_categories').text(product.categories);
     }
 
-    function fill_product_detail(product_detail) {
+    function fill_types(types) {
         let html = '';
-        $.each(product_detail, function(i, item) {
+        if (types.length > 0) {
+            
+            $.each(types, function(i, item) {
+                if (i == 0) {
+                    html = item.categories;
+                } else {
+                    html += ", " + item.categories;
+                }
+            });
+        }
+        $('#detail_types').text(html);
+    }
+
+    function fill_price_logs(price_logs) {
+        let html = '';
+        $.each(price_logs, function(i, item) {
             html += `<tr class="row_clear">`;
-                html += `<td class="center-text" style="width: 5%">${i + 1}</td>`;
-                html += `<td>${item.code} - ${item.name}</td>`;
-                html += `<td class="center-text" style="width: 5%">${item.quantity}</td>`;
+                html += `<td class="center-text" style="width: 5%">${item.created_at}</td>`;
+                html += `<td>${item.price_store} (${item.discount_store == null ? 0 : item.discount_store} %)</td>`;
+                html += `<td>${item.price_olshop} (${item.discount_olshop == null ? 0 : item.discount_olshop} %)</td>`;
+                html += `<td class="center-text" style="width: 5%">${item.is_vat == 1 ? "YES" : "NO"}</td>`;
             html += `</tr>`;
         });
-        $('#product_detail').append(html);
+        $('#price_logs').html(html);
     }
-    //button create post event
-    $('.btn-show-product').click(function () {
-        let url_show = $(this).data('url');
-        console.log(url_show);
-        //fetch detail post with ajax
-        $.ajax({
-            url: url_show,
-            type: "GET",
-            cache: false,
-            beforeSend: function () {
-                clear_detail();
-                $('#loader').removeClass('display-none')
-            },
-            success:function(response){
-                console.log(response);
-                let product = response.product;
-                let product_detail = response.details;
-                //fill data to form
-                fill_product(product);
-                fill_product_detail(product_detail);
-
-                //open modal
-                $('#modal-product').modal('show');
-            },
-            complete: function () {
-                $('#loader').addClass('display-none')
-            },
-        });
-    });
 </script>

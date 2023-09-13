@@ -31,12 +31,16 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
         $transactions = [];
+        $query = Transaction::where('trans_date', date('Y-m-d'))->orderBy('id', 'desc')->with(['user']);
         if ($request->get('keyword')) {
-            $transactions = Transaction::where('invoice_no', $request->keyword)->with(['user'])->orderBy('id', 'desc')->paginate(9);
-        } else {
-            $transactions = Transaction::orderBy('id', 'desc')->with(['user'])->orderBy('id', 'desc')->paginate(9);
+            $query->where('invoice_no', $request->keyword);
         }
+        if ($user->roles->first()->name == 'Cashier') {
+            $query->where('emp_no', $user->employee_id);
+        }
+        $transactions = $query->paginate(9);
         // $session_user = Auth::user()->roles()->first()->name;
         // dd($transaction);
         // dd($session_user);
@@ -47,7 +51,7 @@ class TransactionController extends Controller
     {
         $user = Auth::user();
 
-        $query = Transaction::where('status', 'DRAFT')->where('created_at', $user->id)->with(['user'])->orderBy('id', 'desc');
+        $query = Transaction::where('trans_date', date('Y-m-d'))->where('status', 'DRAFT')->where('emp_no', $user->employee_id)->with(['user'])->orderBy('id', 'desc');
         if ($request->get('keyword')) {
             $query->where('invoice_no', $request->keyword);
         }

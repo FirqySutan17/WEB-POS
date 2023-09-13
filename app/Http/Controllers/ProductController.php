@@ -153,7 +153,12 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $price_logs = ProductPriceLog::where('product_code', $product->code)->orderBy('id', 'DESC')->get();
-        return view('admin.product.detail', compact('product', 'price_logs'));
+        $data = [
+            "product"       => $product,
+            "price_logs"    => $price_logs,
+            "types"         => $product->types,
+        ];
+        return response()->json($data);
     }
 
     /**
