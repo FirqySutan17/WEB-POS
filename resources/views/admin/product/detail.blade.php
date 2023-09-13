@@ -120,25 +120,25 @@
                     <thead>
                         <tr>
                             <th>BARCODE</th>
-                            <td class="detail_clear">{{ $product->code }}</td>
+                            <td class="detail_clear"></td>
                             <th>PRODUCT</th>
-                            <td class="detail_clear">{{ $product->name }}</td>
+                            <td class="detail_clear"></td>
                         </tr>
                         <tr>
                             <th>STORE PRICE</th>
-                            <td class="detail_clear">{{ number_format($product->price_store) }}</td>
+                            <td class="detail_clear"></td>
                             <th>STORE DISCOUNT</th>
-                            <td class="detail_clear">{{ number_format($product->discount_store) }}</td>
+                            <td class="detail_clear"></td>
                         </tr>
                         <tr>
                             <th>OL-SHOP PRICE</th>
-                            <td class="detail_clear">{{ number_format($product->price_olshop) }}</td>
+                            <td class="detail_clear"></td>
                             <th>OL-SHOP DISCOUNT</th>
-                            <td class="detail_clear">{{ number_format($product->discount_olshop) }}</td>
+                            <td class="detail_clear"></td>
                         </tr>
                         <tr>
                             <th>CATEGORY</th>
-                            <td class="detail_clear">{{ $product->categories }}</td>
+                            <td class="detail_clear"></td>
                             <th>Types</th>
                             <td class="detail_clear">
                                 @foreach ($product->types as $category)

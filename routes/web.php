@@ -105,6 +105,7 @@ Route::get('/transaction/receipt/{transaction}', [App\Http\Controllers\Transacti
 Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::class, 'summary'])->name('transaction.summary');
 Route::get('/list-draft', [App\Http\Controllers\TransactionController::class, 'index_draft'])->name('transaction.listdraft');
 Route::post('/check-pin', [App\Http\Controllers\TransactionController::class, 'check_pin'])->name('transaction.checkpin');
+Route::post('/transaction/add-member', [App\Http\Controllers\TransactionController::class, 'add_member'])->name('transaction.addmember');
 
 // Report Route
 Route::match(['get', 'post'], '/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');

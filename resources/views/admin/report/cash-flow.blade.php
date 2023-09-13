@@ -33,29 +33,22 @@ CMS | Report Cash Flow
                 <form action="{{ route('report.cashflow') }}" class="row" method="POST">
                     @csrf
                     <div class="col-5">
-                        <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
+                        <input name="search" value="{{ $column['search'] }}" type="text"
                             class="form-control" placeholder="Search employee name or id"
                             style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"
-                            value="{{ empty($sdate) ? date('Y-m-d') : $sdate }}"
+                            value="{{ empty($column['sdate']) ? date('Y-m-d') : $column['sdate'] }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="edate"
-                            value="{{ empty($edate) ? date('Y-m-d') : $edate }}"
+                            value="{{ empty($column['edate']) ? date('Y-m-d') : $column['edate'] }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-1">
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
-                    </div>
-                    <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction="">EXCEL</button>
-                    </div>
-                    <div class="col-1">
-                        <button type="submit" class="btn btn-primary _btn" role="button" formaction=""
-                            formtarget="_blank">PDF</button>
                     </div>
                 </form>
                 {{-- filter:end --}}
@@ -68,39 +61,31 @@ CMS | Report Cash Flow
                     <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="center-text">Tanggal<span class="dividerHr"></span></th>
-                        <th class="heightHr" style="vertical-align: middle">Nama Kasir <span class="dividerHr"></span>
-                        </th>
-                        <th class="heightHr" style="vertical-align: middle">Begin <span class="dividerHr"></span>
-                        </th>
-                        <th class="center-text" class="heightHr">Action <span class="dividerHr"></span></th>
+                        <th class="heightHr" style="vertical-align: middle">Kasir <span class="dividerHr"></span></th>
+                        <th class="heightHr" style="vertical-align: middle">Penanggung Jawab <span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">Deskripsi<span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">Total<span class="dividerHr"></span></th>
                     </tr>
                 </thead>
                 <tbody>
-
-                    <tr>
-                        <td class="center-text">1</td>
-                        <td class="center-text" style="vertical-align: middle">
-                            2023-09-12
-                        </td>
-                        <td style="vertical-align: middle">
-                            John Doe
-                        </td>
-                        <td class="center-text" style="vertical-align: middle">
-                            Rp 2.000.000
-                        </td>
-                        <td style="width: 10%;" class="center-text boxAction fontField">
-                            <div class="boxInside">
-                                <div class="boxEdit">
-                                    <a href="javascript:void(0)"
-                                        data-url="{{ route('transaction.show', $transaction->invoice_no) }}"
-                                        class="btn-sm btn-info btn-show-post" role="button">
-                                        <i class='bx bx-show'></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                        </td>
-                    </tr>
+                    @if (!empty($data))
+                        @foreach ($data as $item)
+                            <tr>
+                                <td class="center-text">{{ $loop->iteration }}</td>
+                                <td class="center-text" style="vertical-align: middle">{{ $item->cash_date }}</td>
+                                <td style="vertical-align: middle">{{ $item->created_by }}</td>
+                                <td style="vertical-align: middle">{{ $item->approved_by }}</td>
+                                <td style="vertical-align: middle">{{ $item->description }}</td>
+                                <td style="width: 15%;" class="center-text boxAction fontField">
+                                    @if ($item->category == "IN")
+                                        <span class="text-success">+ @currency($item->amount)</span>
+                                    @else
+                                        <span class="text-danger">- @currency($item->amount)</span>
+                                    @endif
+                                </td>
+                            </tr>  
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -108,11 +93,11 @@ CMS | Report Cash Flow
         <div class="card-footer">
             <div class="boxFooter">
                 <div class="boxPagination">
-                    @if ($transactions->hasPages())
+                    {{-- @if ($transactions->hasPages())
                     <div class="boxPagination">
                         {{ $transactions->links('vendor.pagination.bootstrap-4') }}
                     </div>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
         </div>

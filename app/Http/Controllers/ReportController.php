@@ -692,16 +692,45 @@ class ReportController extends Controller
     // START REPORT CASH FLOW
         public function report_cash_flow(Request $request) {
             $data   = [];
-            $sdate  = "";
-            $edate  = "";
-            $search  = ""; 
-            // if ($request->_token) {
-            //     $sdate = $request->sdate;
-            //     $edate = $request->edate;
-            //     $search = trim($request->search);
-            //     $data = $this->get_stock($sdate, $edate, $search);
-            // }
-            return view('admin.report.cash-flow', compact('data', 'sdate', 'edate', 'search'));
+            $column = [
+                "sdate" => "",
+                "edate" => "",
+                "search" => "",
+            ];
+            if ($request->_token) {
+                $column = [
+                    "sdate" => $request->sdate,
+                    "edate" => $request->edate,
+                    "search" => trim($request->search),
+                ];
+                $data = $this->get_cashflow($column);
+            }
+            return view('admin.report.cash-flow', compact('data', 'column'));
+        }
+
+        private function get_cashflow($column) {
+            $sdate  = $column['sdate'];
+            $edate  = $column['edate'];
+            $search = $column['search'];
+            $where = empty($search) ? "" : " AND (emp_user.employee_id LIKE '%".$search."%' OR emp_user.name LIKE '%".$search."%')";
+            $query = "
+                SELECT
+                    CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                    cf.categories AS category, 
+                    CONCAT(cf.employee_id, ' | ', emp_user.name) AS created_by,
+                    CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                    cf.description,
+                    cf.cash AS amount
+                FROM cash_flow AS cf
+                INNER JOIN users AS emp_user ON cf.employee_id = emp_user.employee_id
+                INNER JOIN users AS apprv_user ON cf.approval = apprv_user.pin
+                WHERE 
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
+                    ".$where."
+                ORDER BY cf.created_at DESC
+            ";
+            $db_query = DB::select(DB::raw($query));
+            return $db_query;
         }
 
         

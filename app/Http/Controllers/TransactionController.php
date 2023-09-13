@@ -363,6 +363,16 @@ class TransactionController extends Controller
         return redirect()->route('transaction.create');
     }
 
+    public function add_member(Request $request)
+    {
+        $user = [];
+        if ($request->has('pin')) {
+            $user = User::select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+        }
+
+        return response()->json($user);
+    }
+
     public function check_pin(Request $request)
     {
         $user = [];
