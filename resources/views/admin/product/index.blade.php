@@ -90,25 +90,13 @@ CMS | Product
 
 								@can('P Update')
 								<div class="boxEdit">
-									<a href="{{ route('product.show', ['product' => $product]) }}"
-										class="btn-sm btn-info" role="button">
-										<i class="bx bx-user"></i>
+									<a href="javascript:void(0)"
+										data-url="{{ route('product.show', ['product' => $product]) }}"
+										class="btn-sm btn-info btn-show-product" role="button">
+										<i class='bx bx-show'></i>
 									</a>
 								</div>
 								@endcan
-
-								{{-- @can('P Delete')
-								<div class="boxDelete">
-									<form action="{{ route('product.destroy', ['product' => $product]) }}" method="POST"
-										role="alert">
-										@csrf
-										@method('DELETE')
-										<button type="submit" class="btn btn-sm btn-danger">
-											<i class="bx bx-trash"></i>
-										</button>
-									</form>
-								</div>
-								@endcan --}}
 							</div>
 
 						</td>
@@ -167,4 +155,6 @@ CMS | Product
 		});
 	});
 </script>
+
+@include('admin.product.detail')
 @endpush

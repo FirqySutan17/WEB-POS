@@ -199,7 +199,7 @@ table.dataTable th.dataTables_empty {
   font-weight: 600;
 }
 tr {
-  background: #c2797c;
+  /* background: #c2797c; */
   border: none !important;
   font-family: "Poppins", sans-serif;
 }
@@ -1023,6 +1023,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .new-mem:hover {
   color: #1890ff;
+}
+
+.bg-danger i {
+  color: #fff;
 }
 /* END TRANSACTION STYLE */
 

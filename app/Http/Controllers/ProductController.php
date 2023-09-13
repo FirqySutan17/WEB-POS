@@ -104,8 +104,8 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
             'code' => 'required|string|unique:products,code',
+            'name' => 'required',
             'price_store' => 'required|string',
             'price_olshop' => 'required',
             'categories' => 'required',
@@ -116,17 +116,18 @@ class ProductController extends Controller
             $product = Product::create([
                 'name' => $request->name,
                 'code' => $request->code,
-                'price_store' => $request->price_store,
-                'price_olshop' => $request->price_olshop,
+                'price_store' => str_replace(".", "", $request->price_store),
+                'price_olshop' => str_replace(".", "", $request->price_olshop),
                 'discount_store' => $request->discount_store,
                 'discount_olshop' => $request->discount_olshop,
                 'description'   => $request->description,
+                'categories'   => $request->kategori,
                 'stock'   => 0,
                 'is_active' => ($request->is_active) ? '1' : '0',
                 'is_vat' => ($request->is_vat) ? '1' : '0',
             ]);
 
-            $product->skills()->attach($request->skill);
+            $product->types()->attach($request->categories);
 
             if ($product) {
                 $this->insert_price_logs($product);
@@ -182,9 +183,10 @@ class ProductController extends Controller
             $request->all(),
             [
                 'name' => 'required',
-                'code' => 'required|string|unique:products,code' .  $product->id,
+                'code' => 'required|string|unique:products,code,' .  $product->id,
                 'price_store' => 'required|string',
-                'price_olshop' => 'required'
+                'price_olshop' => 'required',
+                'categories' => 'required',
             ],
             [],
         );
@@ -200,20 +202,22 @@ class ProductController extends Controller
         try {
             $update_data = [
                 'name' => $request->name,
-                'price_store' => $request->price_store,
-                'price_olshop' => $request->price_olshop,
+                'price_store' => str_replace(".", "", $request->price_store),
+                'price_olshop' => str_replace(".", "", $request->price_olshop),
                 'discount_store' => $request->discount_store,
                 'discount_olshop' => $request->discount_olshop,
                 'description'   => $request->description,
+                'categories'   => $request->kategori,
                 'is_active' => ($request->is_active) ? '1' : '0',
+                'is_vat' => ($request->is_vat) ? '1' : '0',
             ];
 
-            $product->categories()->sync($request->categories);
+            $product->types()->sync($request->categories);
             $update= DB::table('products')->where('id', $product->id)->update($update_data);
             $check_price_logs = ProductPriceLog::where('product_code')->first();
 
-            $product->price_store       = $request->price_store;
-            $product->price_olshop      = $request->price_olshop;
+            $product->price_store       = str_replace(".", "", $request->price_store);
+            $product->price_olshop      = str_replace(".", "", $request->price_olshop);
             $product->discount_store    = $request->discount_store;
             $product->discount_olshop   = $request->discount_olshop;
             if (empty($check_price_logs)) {

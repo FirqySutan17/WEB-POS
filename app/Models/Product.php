@@ -13,7 +13,7 @@ class Product extends Model
     use Blameable;
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $fillable = ['code', 'name', 'description', 'price_store', 'price_olshop', 'stock', 'discount_store', 'discount_olshop', 'is_vat'];
+    protected $fillable = ['code', 'name', 'description', 'price_store', 'price_olshop', 'stock', 'discount_store', 'discount_olshop', 'categories', 'is_vat'];
         // public $timestamps = false;
 
 
@@ -22,9 +22,9 @@ class Product extends Model
         return $query->where('name', 'LIKE', "%{$title}%")->orWhere('code', 'LIKE', "%{$title}%");
     }
 
-    public function categories()
+    public function types()
     {
-        return $this->belongsToMany(ProductCategory::class, 'product_category');
+        return $this->belongsToMany(ProductCategory::class, 'product_category', 'product_id', 'category_id')->withTimestamps();
     }
 
     public function getRouteKeyName()

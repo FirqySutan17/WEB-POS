@@ -26,6 +26,23 @@ CMS | Edit Product
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col-6">
+                                        <!-- slug -->
+                                        <div class="form-group _form-group">
+                                            <label for="input_post_code" class="font-weight-bold">
+                                                Barcode <span class="wajib">* </span>
+                                            </label>
+                                            <input id="input_post_code" value="{{ old('code', $product->code) }}"
+                                                name="code" type="text"
+                                                class="form-control @error('code') is-invalid @enderror"
+                                                placeholder="Cannot changed" required readonly />
+                                            @error('code')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
                                         <!-- title -->
                                         <div class="form-group _form-group">
                                             <label for="input_post_title" class="font-weight-bold">
@@ -34,26 +51,8 @@ CMS | Edit Product
                                             <input id="input_post_title" value="{{ old('name', $product->name) }}"
                                                 name="name" type="text"
                                                 class="form-control @error('name') is-invalid @enderror"
-                                                placeholder="Input name here" />
+                                                placeholder="Input name here" required />
                                             @error('name')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-
-                                    </div>
-                                    <div class="col-6">
-                                        <!-- slug -->
-                                        <div class="form-group _form-group">
-                                            <label for="input_post_code" class="font-weight-bold">
-                                                Code
-                                            </label>
-                                            <input id="input_post_code" value="{{ old('code', $product->code) }}"
-                                                name="code" type="text"
-                                                class="form-control @error('code') is-invalid @enderror"
-                                                placeholder="Cannot changed" readonly />
-                                            @error('code')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -71,9 +70,10 @@ CMS | Edit Product
                                             </label>
                                             <input id="price_store"
                                                 value="{{ old('price_store', $product->price_store) }}"
-                                                name="price_store" type="number"
+                                                name="price_store" type="text"
                                                 class="form-control @error('price_store') is-invalid @enderror"
-                                                placeholder="" required />
+                                                placeholder="" required
+                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
                                             @error('price_store')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -88,9 +88,10 @@ CMS | Edit Product
                                             </label>
                                             <input id="price_olshop"
                                                 value="{{ old('price_olshop', $product->price_olshop) }}"
-                                                name="price_olshop" type="number"
+                                                name="price_olshop" type="text"
                                                 class="form-control @error('price_olshop') is-invalid @enderror"
-                                                placeholder="" required />
+                                                placeholder="" required
+                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
                                             @error('price_olshop')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -108,7 +109,7 @@ CMS | Edit Product
                                                 value="{{ old('discount_store', $product->discount_store) }}"
                                                 name="discount_store" type="number"
                                                 class="form-control @error('discount_store') is-invalid @enderror"
-                                                placeholder="" />
+                                                placeholder="Ex: 5" />
                                             @error('discount_store')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -127,7 +128,7 @@ CMS | Edit Product
                                                 value="{{ old('discount_olshop', $product->discount_olshop) }}"
                                                 name="discount_olshop" type="number"
                                                 class="form-control @error('discount_olshop') is-invalid @enderror"
-                                                placeholder="" />
+                                                placeholder="Ex: 5" />
                                             @error('discount_olshop')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -137,26 +138,54 @@ CMS | Edit Product
                                     </div>
                                 </div>
 
-                                <!-- Kategori -->
-                                <div class="form-group _form-group">
-                                    <label for="select_user_categories" class="font-weight-bold">
-                                        Categories <span class="wajib">*</span>
-                                    </label>
-                                    <select id="select_user_categories" name="kategori"
-                                        data-placeholder="Choose categories" class="js-example-placeholder-multiple">
-                                        <option value="Internal" {{ $product->categories == 'Internal' ? 'selected':''
-                                            }}>Internal</option>
-                                        <option value="External" {{ $product->categories == 'External' ? 'selected':''
-                                            }}>External</option>
-                                    </select>
-                                    @error('role')
-                                    <span class="invalid-feedback">
-                                        {{ $message }}
-                                    </span>
-                                    @enderror
-                                    <!-- error message -->
+                                <div class="row">
+                                    <div class="col-6">
+                                        <!-- Kategori -->
+                                        <div class="form-group _form-group">
+                                            <label for="select_user_categories" class="font-weight-bold">
+                                                Categories <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_user_categories" name="kategori"
+                                                data-placeholder="Choose categories"
+                                                class="js-example-placeholder-multiple">
+                                                <option value="Internal" {{ $product->categories == 'Internal' ?
+                                                    'selected':''
+                                                    }}>Internal</option>
+                                                <option value="External" {{ $product->categories == 'External' ?
+                                                    'selected':''
+                                                    }}>External</option>
+                                            </select>
+                                            @error('role')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                            <!-- error message -->
+                                        </div>
+                                        <!-- end role -->
+                                    </div>
+                                    <div class="col-6">
+                                        {{-- Skill --}}
+                                        <div class="form-group  _form-group">
+                                            <label for="select_product_category" class="font-weight-bold">
+                                                Type <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_product_category" name="categories[]"
+                                                data-placeholder="Choose product type.." class="custom-select" required
+                                                multiple>
+                                                @if(old('categories', $product->types))
+                                                @foreach (old('categories', $product->types) as $category)
+                                                <option value="{{ $category->id }}" selected>{{ $category->categories }}
+                                                </option>
+                                                @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                        {{-- End Skill --}}
+                                    </div>
                                 </div>
-                                <!-- end role -->
+
+
 
                                 <!-- description -->
                                 <div class="form-group _form-group">
@@ -255,54 +284,6 @@ CMS | Edit Product
 
 @push('javascript-internal')
 <script>
-    $(document).ready(function() {
-  
-          $("#input_post_description").tinymce({
-              relative_urls: false,
-              language: "en",
-              height: 300,
-              plugins: [
-                  "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-                  "searchreplace wordcount visualblocks visualchars code fullscreen",
-                  "insertdatetime media nonbreaking save table directionality",
-                  "emoticons template paste textpattern",
-              ],
-              toolbar2: "styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link",
-  
-              file_picker_callback: function(callback, value, meta) {
-                  let x = window.innerWidth || document.documentElement.clientWidth || document
-                      .getElementsByTagName('body')[0].clientWidth;
-                  let y = window.innerHeight || document.documentElement.clientHeight || document
-                      .getElementsByTagName('body')[0].clientHeight;
-  
-                  let cmsURL =
-                      "{{ route('unisharp.lfm.show') }}" +
-                      '?editor=' + meta.fieldname;
-                  if (meta.filetype == 'image') {
-                      cmsURL = cmsURL + "&type=Images";
-                  } else {
-                      cmsURL = cmsURL + "&type=Files";
-                  }
-  
-                  tinyMCE.activeEditor.windowManager.openUrl({
-                      url: cmsURL,
-                      title: 'Filemanager',
-                      width: x * 0.8,
-                      height: y * 0.8,
-                      resizable: "yes",
-                      close_previous: "no",
-                      onMessage: (api, message) => {
-                          callback(message.content);
-                      }
-                  });
-              }
-          });
-
-      });
-  
-</script>
-
-<script>
     $(function() {
         $('#select_user_categories').select2({
             theme: 'bootstrap4',
@@ -324,6 +305,61 @@ CMS | Edit Product
             //     }
             // }
         });
+
+        $('#select_product_category').select2({
+            theme: 'bootstrap4',
+            language: "",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('product-category.select') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.categories,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+            }
+        });
     });
+</script>
+
+<script>
+    /* Tanpa Rupiah */
+    var price_store    = document.getElementById('price_store');
+        price_store.addEventListener('keyup', function(e) {
+            var nominal = this.value;
+            price_store.value = formatRupiah(nominal);
+        });
+
+    var price_olshop    = document.getElementById('price_olshop');
+        price_olshop.addEventListener('keyup', function(e) {
+            var nominal = this.value;
+            price_olshop.value = formatRupiah(nominal);
+        });
+
+        /* Fungsi */
+        function formatRupiah(angka, prefix)
+        {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split   		= number_string.split(','),
+            sisa     		= split[0].length % 3,
+            rupiah     		= split[0].substr(0, sisa),
+            ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+        
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if(ribuan){
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+        
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
 </script>
 @endpush

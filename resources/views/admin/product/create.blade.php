@@ -37,7 +37,7 @@ CMS | Add Product
                                             </label>
                                             <input id="input_post_code" value="{{ old('code') }}" name="code"
                                                 type="text" class="form-control @error('code') is-invalid @enderror"
-                                                placeholder="Scan barcode here.." />
+                                                placeholder="Scan barcode here.." required tabindex="1" autofocus />
                                             @error('code')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -70,9 +70,11 @@ CMS | Add Product
                                                 Store Price <span class="wajib">* </span>
                                             </label>
                                             <input id="price_store" value="{{ old('price_store') }}" name="price_store"
-                                                type="number"
+                                                type="text"
                                                 class="form-control @error('price_store') is-invalid @enderror"
-                                                placeholder="Ex: 5.000" required />
+                                                placeholder="Ex: 5.000"
+                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                required />
                                             @error('price_store')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -86,9 +88,11 @@ CMS | Add Product
                                                 E-Commerce Price <span class="wajib">* </span>
                                             </label>
                                             <input id="price_olshop" value="{{ old('price_olshop') }}"
-                                                name="price_olshop" type="number"
+                                                name="price_olshop" type="text"
                                                 class="form-control @error('price_olshop') is-invalid @enderror"
-                                                placeholder="Ex: 5.000" required />
+                                                placeholder="Ex: 5.000"
+                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                required />
                                             @error('price_olshop')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -161,7 +165,8 @@ CMS | Add Product
                                                 Type <span class="wajib">*</span>
                                             </label>
                                             <select id="select_product_category" name="categories[]"
-                                                data-placeholder="Choose product type.." class="custom-select" multiple>
+                                                data-placeholder="Choose product type.." class="custom-select" required
+                                                multiple>
 
                                             </select>
                                         </div>
@@ -233,7 +238,7 @@ CMS | Add Product
                                 <div class="float-right">
                                     <a class="btn btn-outline-primary _btn-primary px-4"
                                         href="{{ route('product.index') }}">Back</a>
-                                    <button type="button" class="btn btn-primary _btn-primary px-4">
+                                    <button type="submit" class="btn btn-primary _btn-primary px-4">
                                         Save
                                     </button>
                                 </div>
@@ -314,112 +319,36 @@ CMS | Add Product
 </script>
 
 <script>
-    $(document).ready(function(){
-      $("#datepicker").datepicker({
-         format: "yyyy",
-         viewMode: "years", 
-         minViewMode: "years",
-         autoclose:true
-      });   
-      $("#datepickerend").datepicker({
-         format: "yyyy",
-         viewMode: "years", 
-         minViewMode: "years",
-         autoclose:true
-      });  
-    })
-</script>
+    /* Tanpa Rupiah */
+    var price_store    = document.getElementById('price_store');
+        price_store.addEventListener('keyup', function(e) {
+            var nominal = this.value;
+            price_store.value = formatRupiah(nominal);
+        });
 
-<script>
-    function add_image() {
-        var id = $('.images_data').length + 1;
-        var txtarea_id = "element_desc_" + id;
-        var item_id = "item_" + id;
-        var html = `
-            <div id="${item_id}">
-                <div class="row">
-                    <div class="col-4">
-                        <div class="form-group _form-group">
-                            <label for="images" class="font-weight-bold">
-                                Image <span class="wajib">* </span>
-                            </label>
-                            <div class="float-right">
-                                <button onclick="delete_row('${item_id}')" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                            </div>
-                            <input name="image[]" type="file" class="form-control images_data" />
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div  class="form-group _form-group">
-                            <label for="images" class="font-weight-bold">
-                                Alt Text 
-                            </label>
-                            <input name="alt_text[]" type="text" class="form-control" placeholder="Input alt text" />
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div  class="form-group _form-group">
-                            <label for="images" class="font-weight-bold">
-                                Hover Text 
-                            </label>
-                            <input name="hover_text[]" type="text" class="form-control" placeholder="Input hover text" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        $("#images_group").append(html);
+    var price_olshop    = document.getElementById('price_olshop');
+        price_olshop.addEventListener('keyup', function(e) {
+            var nominal = this.value;
+            price_olshop.value = formatRupiah(nominal);
+        });
 
-    }
-
-    function delete_row(eid) {
-        $("#" + eid).remove();
-    }
-
-    function add_image_slider() {
-        var id_slider = $('.images_data_slider').length + 1;
-        var txtarea_slider_id = "element_desc_slider_" + id_slider;
-        var item_slider_id = "item_slider_" + id_slider;
-        var html_slider = `
-            <div id="${item_slider_id}">
-                <div class="row">
-                    <div class="col-4">
-                        <div class="form-group _form-group">
-                            <label for="input_post_description" class="font-weight-bold">
-                                Image <span class="wajib">* </span>
-                            </label>
-                            <div class="float-right">
-                                <button onclick="delete_row_slider('${item_slider_id}')" type="button" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                            </div>
-                            <input name="image_slider[]" type="file" class="form-control images_data" />
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div  class="form-group _form-group">
-                            <label for="input_post_description" class="font-weight-bold">
-                                Alt Text 
-                            </label>
-                            <input name="alt_text_slider[]" type="text" class="form-control" placeholder="Input alt text" />
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div  class="form-group _form-group">
-                            <label for="input_post_description" class="font-weight-bold">
-                                Hover Text 
-                            </label>
-                            <input name="hover_text_slider[]" type="text" class="form-control" placeholder="Input hover text" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        $("#images_group_slider").append(html_slider);
-
-    }
-
-    function delete_row_slider(eid_slider) {
-        $("#" + eid_slider).remove();
-    }
-
+        /* Fungsi */
+        function formatRupiah(angka, prefix)
+        {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split   		= number_string.split(','),
+            sisa     		= split[0].length % 3,
+            rupiah     		= split[0].substr(0, sisa),
+            ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+        
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if(ribuan){
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+        
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
 </script>
 @endpush

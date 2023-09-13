@@ -15,4 +15,5 @@ class ProductCategory extends Model
     {
         return $query->where('categories', 'LIKE', "%{$title}%");
     }
+
 }
