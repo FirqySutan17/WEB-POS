@@ -8,6 +8,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use DB;
 
 class LoginController extends Controller
 {
@@ -55,7 +56,8 @@ class LoginController extends Controller
         if (auth()->attempt(['employee_id' => $request->employee_id, 'password' => $request->password])) {
             Alert::toast('Login Successfull', 'success');
             if (auth()->user()->roles()->first()->name == 'Cashier') {
-                return redirect()->intended('transaction/create');
+                return redirect()->intended('shift');
+                // return redirect()->intended('transaction/create');
             }
             return redirect()->intended('home');
         } else {

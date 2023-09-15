@@ -18,6 +18,27 @@ CMS | Shift Management
 @endcomponent
 
 <div class="container-fluid">
+    <div class="wrap-cashier">
+        @if(Auth::user()->roles->first()->name == 'Cashier')
+        <div class="menu-rt">
+            <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
+            <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
+            <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
+            <a class="{{routeActive('cashflow.index')}}" href="{{ route('cashflow.index') }}">Cash Flow</a>
+            <a class="{{routeActive('shift.index')}}" href="{{ route('shift.index') }}">Shift Management</a>
+
+            <button class="btn " type="button">
+                <a href="{{ route('logout') }}"
+                    onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                    <i class='bx bx-log-out-circle'></i> {{__('Logout') }}
+                </a>
+            </button>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </div>
+        @endif
+    </div>
     <div class="row">
         <div class="col-12">
             <form id="form-shift" action="{{ route('closing_shift') }}" method="POST" enctype="multipart/form-data">

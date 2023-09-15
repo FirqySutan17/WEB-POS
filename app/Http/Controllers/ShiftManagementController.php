@@ -104,7 +104,7 @@ class ShiftManagementController extends Controller
         } finally {
             DB::commit();
         }
-        return redirect()->route('shift.index');
+        return redirect()->route('transaction.create');
     }
     
 
