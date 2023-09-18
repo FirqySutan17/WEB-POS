@@ -793,35 +793,35 @@ class ReportController extends Controller
 
         private function convert_labarugi($data_raw) {
             $data = [];
-            foreach ($data_raw as $products) {
-                if ($products->is_vat == 1) {
-                    $vat_percent    = config('app.vat_amount');
-                    $vat_amount     = ($products->price_store / 100) * $vat_percent;
-                    $products->price_store = $products->price_store + $vat_amount;
+            if (!empty($data_raw)) {
+                foreach ($data_raw as $products) {
+                    if ($products->is_vat == 1) {
+                        $vat_percent    = config('app.vat_amount');
+                        $vat_amount     = ($products->price_store / 100) * $vat_percent;
+                        $products->price_store = $products->price_store + $vat_amount;
+                    }
+    
+                    if ($products->discount_store > 0) {
+                        $discount_price = $products->price_store * ($products->discount_store / 100);
+                        $final_price = $products->price_store - $discount_price;
+                        $products->price_store = $final_price;
+                    }
+                    $selisih = $products->price_store - $products->harga_beli;
+                    $type = $selisih < 0 ? "-" : "+";
+                    
+                    $product = (array) $products;
+                    $product['selisih'] = $selisih;
+                    $product['type'] = $type;
+    
+                    $data[] = $product;
                 }
-
-                if ($products->discount_store > 0) {
-                    $discount_price = $products->price_store * ($products->discount_store / 100);
-                    $final_price = $products->price_store - $discount_price;
-                    $products->price_store = $final_price;
-                }
-                $selisih = $products->price_store - $products->harga_beli;
-                $type = $selisih < 0 ? "-" : "+";
-                
-                $product = (array) $products;
-                $product['selisih'] = $selisih;
-                $product['type'] = $type;
-
-                $data[] = $product;
             }
+            
 
             return $data;
         }
 
-        private function get_labarugi($sdate, $search) {
-            $sdate_exp = explode("-", $sdate);
-            $year   = $sdate_exp[0];
-            $month  = $sdate_exp[1];
+        private function get_labarugi($search) {
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
             $query = "
                 SELECT 
