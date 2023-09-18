@@ -52,6 +52,16 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    public function select2_product(Request $request)
+    {
+        $products = Product::select('code', 'name')->orderBy('code', 'ASC')->orderBy('name', 'ASC')->limit(7);
+        if ($request->has('q')) {
+            $products->where('code', 'LIKE', $request->q.'%')->orWhere('name', 'LIKE', $request->q.'%');
+        }
+
+        return response()->json($products->get());
+    }
+
     public function select_one(Request $request)
     {
         $product_code = $request->product_code;

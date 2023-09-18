@@ -75,6 +75,7 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 // Product Route
 Route::post('/product/select_one', [App\Http\Controllers\ProductController::class, 'select_one'])->name('product.select_one');
 Route::post('/product/select', [App\Http\Controllers\ProductController::class, 'select'])->name('product.select');
+Route::get('/product/select2_product', [App\Http\Controllers\ProductController::class, 'select2_product'])->name('product.select2_product');
 Route::resource('/product', App\Http\Controllers\ProductController::class);
 
 // Closing Date Route
@@ -93,6 +94,9 @@ Route::resource('/membership', App\Http\Controllers\MembershipController::class)
 
 // Cashflow Route
 Route::resource('/cashflow', App\Http\Controllers\CashflowController::class);
+
+// Adjust Stock Route
+Route::resource('/adjust_stock', App\Http\Controllers\AdjustStockController::class);
 
 // Shift Management Route
 Route::resource('/shift', App\Http\Controllers\ShiftManagementController::class);

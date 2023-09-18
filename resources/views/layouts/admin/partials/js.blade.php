@@ -19,3 +19,4 @@
 <script src="{{asset('assets/js/script.js')}}"></script>
 <!-- <script src="{{asset('assets/js/theme-customizer/customizer.js')}}"></script> -->
 <!-- Plugin used-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
