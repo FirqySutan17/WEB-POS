@@ -6,11 +6,11 @@ CMS | Login
 
 @push('css')
 <style>
-.danger-suspend {
-    border-radius: 5px !important;
-    padding: 10px 15px !important;
-    font-weight: 600;
-}
+    .danger-suspend {
+        border-radius: 5px !important;
+        padding: 10px 15px !important;
+        font-weight: 600;
+    }
 </style>
 
 @endpush
@@ -22,31 +22,38 @@ CMS | Login
     <div class="boxAlert">
         @foreach ($errors->all() as $error)
         <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ $error }}
-            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+            <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title=""
+                title=""></button>
         </div>
         @endforeach
     </div>
     @endif
     {{-- Content --}}
     <div class="row">
-        <div class="col-xl-5"><img class="bg-img-cover bg-center" src="{{ asset('assets/images/login/3.jpg') }}" alt="loginpage" /></div>
+        <div class="col-xl-5"><img class="bg-img-cover bg-center" src="{{ asset('assets/images/login/3.jpg') }}"
+                alt="loginpage" /></div>
         <div class="col-xl-7 p-0">
-            <div class="login-card">
 
+            <div class="login-card"
+                style="display: flex; align-items: center: justify-content: center; flex-direction: column">
+                <h1 style="text-align: center">POS <br> MEATSHOP</h1>
                 <form class="theme-form login-form" method="POST" action="{{ route('login') }}">
                     @csrf
+
                     <h4>Login</h4>
                     <h6>Welcome back! Log in to your account.</h6>
                     @if (session('error'))
                     <div class="alert alert-danger danger-suspend">
-                            {{ session('error') }}
+                        {{ session('error') }}
                     </div>
                     @endif
                     <div class="form-group _form-group">
-                        <label>Employee ID</label>
+                        <label>Username</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="icon-user"></i></span>
-                            <input name="employee_id" class="form-control @error('employee_id') is-invalid @enderror" id="input_login_employee_id" type="text" placeholder="Enter Employee ID" value="{{ old('employee_id') }}">
+                            <input name="employee_id" class="form-control @error('employee_id') is-invalid @enderror"
+                                id="input_login_employee_id" type="text" placeholder="Enter Employee ID"
+                                value="{{ old('employee_id') }}">
                         </div>
                     </div>
 
@@ -54,8 +61,12 @@ CMS | Login
                         <label>Password</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="icon-lock"></i></span>
-                            <input name="password" class="form-control @error('password') is-invalid @enderror" id="input_login_password" type="password" placeholder="Enter password" autocomplete="current-password" style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" />
-                            <i class="fa fa-eye" id="togglePassword" style="cursor: pointer; position: absolute; right: 30px; top: 10px; z-index: 1000"></i>
+                            <input name="password" class="form-control @error('password') is-invalid @enderror"
+                                id="input_login_password" type="password" placeholder="Enter password"
+                                autocomplete="current-password"
+                                style="border-top-right-radius: 4px; border-bottom-right-radius: 4px;" />
+                            <i class="fa fa-eye" id="togglePassword"
+                                style="cursor: pointer; position: absolute; right: 30px; top: 10px; z-index: 1000"></i>
                         </div>
                     </div>
 
