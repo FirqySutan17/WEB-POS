@@ -209,7 +209,7 @@ class TransactionController extends Controller
         // $transaction = Transaction::with(['user', 'membership'])->where('tr_transaction.invoice_no', $transaction->invoice_no)->first();
         $details = TransactionDetail::select('tr_transaction_detail.*', 'products.name' , 'products.code')->where('invoice_no', $transaction->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
         // dd($details);
-        return view('admin.transaction.query', compact('transaction', 'details'));
+        return view('admin.transaction.receipt', compact('transaction', 'details'));
     }
 
     public function query(Transaction $transaction)
