@@ -775,4 +775,76 @@ class ReportController extends Controller
         }
     
     // END REPORT BEST SELLER
+
+    // START REPORT LABA RUGI
+        public function report_laba_rugi(Request $request) {
+            $data   = [];
+            $sdate  = "";
+            $search  = ""; 
+            if ($request->_token) {
+                $sdate = $request->sdate;
+                $search = trim($request->search);
+            }
+
+            $data_raw = $this->get_labarugi($sdate, $search);
+            $data = $this->convert_labarugi($data_raw);
+            return view('admin.report.labarugi', compact('data', 'sdate', 'search'));
+        }
+
+        private function convert_labarugi($data_raw) {
+            $data = [];
+            foreach ($data_raw as $products) {
+                if ($products->is_vat == 1) {
+                    $vat_percent    = config('app.vat_amount');
+                    $vat_amount     = ($products->price_store / 100) * $vat_percent;
+                    $products->price_store = $products->price_store + $vat_amount;
+                }
+
+                if ($products->discount_store > 0) {
+                    $discount_price = $products->price_store * ($products->discount_store / 100);
+                    $final_price = $products->price_store - $discount_price;
+                    $products->price_store = $final_price;
+                }
+                $selisih = $products->price_store - $products->harga_beli;
+                $type = $selisih < 0 ? "-" : "+";
+                
+                $product = (array) $products;
+                $product['selisih'] = $selisih;
+                $product['type'] = $type;
+
+                $data[] = $product;
+            }
+
+            return $data;
+        }
+
+        private function get_labarugi($sdate, $search) {
+            $sdate_exp = explode("-", $sdate);
+            $year   = $sdate_exp[0];
+            $month  = $sdate_exp[1];
+            $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
+            $query = "
+                SELECT 
+                    products.code, products.name, products.categories, 
+                    products.price_store, products.discount_store, products.is_vat,
+                    COALESCE(
+                        (
+                            SELECT COALESCE(rc_detail.unit_price, 0) AS unit_price
+                            FROM tr_receive_detail rc_detail
+                            INNER JOIN tr_receive rc ON rc_detail.receive_code = rc.receive_code
+                            WHERE rc_detail.product_code = products.code
+                            ORDER BY rc.receive_date DESC, rc.receive_time DESC
+                            LIMIT 1
+                        )
+                        , 0
+                    ) AS harga_beli
+                FROM products
+                WHERE products.is_active = 1
+                ORDER BY products.code ASC, products.name ASC
+            ";
+            $db_query = DB::select(DB::raw($query));
+            return $db_query;
+        }
+
+    // END REPORT LABA RUGI
 }

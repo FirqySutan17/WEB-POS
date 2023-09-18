@@ -100,7 +100,8 @@ CMS | Transaction
             <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
             <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
             <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
-            <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+            <a class="{{routeActive('cashflow.index')}}" href="{{ route('cashflow.index') }}">Cash Flow</a>
+            <a class="{{routeActive('shift.index')}}" href="{{ route('shift.index') }}">Shift Management</a>
 
             <button class="btn " type="button">
                 <a href="{{ route('logout') }}"
@@ -112,7 +113,6 @@ CMS | Transaction
                 @csrf
             </form>
         </div>
-        @else
         @endif
         <div class="info-disc">
             <div class="button-container">
@@ -376,68 +376,48 @@ CMS | Transaction
                         <div class="col-12">
                             <!-- Employee ID -->
                             <div class="form-group _form-group">
-                                <label for="input_user_name" class="font-weight-bold">
+                                <label for="input_membership_id" class="font-weight-bold">
                                     Membership ID <span class="wajib">*</span>
                                 </label>
-                                <input id="input_user_name" value="{{ old('code') }}" name="code" type="text"
-                                    class="form-control @error('code') is-invalid @enderror"
+                                <input id="input_membership_id" type="text"
+                                    class="form-control input_membership"
                                     placeholder="Input Employee ID.." />
-                                @error('code')
-                                <span class="invalid-feedback">
-                                    {{ $message }}
-                                </span>
-                                @enderror
                                 <!-- error message -->
                             </div>
                             <!-- end Employee ID -->
 
                             <!-- name -->
                             <div class="form-group _form-group">
-                                <label for="input_user_name" class="font-weight-bold">
+                                <label for="input_membership_name" class="font-weight-bold">
                                     Name <span class="wajib">*</span>
                                 </label>
-                                <input id="input_user_name" value="{{ old('name') }}" name="name" type="text"
-                                    class="form-control @error('name') is-invalid @enderror"
+                                <input id="input_membership_name" type="text"
+                                    class="form-control input_membership"
                                     placeholder="Write name here.." />
-                                @error('name')
-                                <span class="invalid-feedback">
-                                    {{ $message }}
-                                </span>
-                                @enderror
                                 <!-- error message -->
                             </div>
                             <!-- end name -->
 
                             <!-- Phone Number -->
                             <div class="form-group _form-group">
-                                <label for="input_user_name" class="font-weight-bold">
+                                <label for="input_membership_phone" class="font-weight-bold">
                                     Phone Number <span class="wajib">*</span>
                                 </label>
-                                <input id="input_user_name" value="{{ old('phone') }}" name="phone" type="number"
-                                    class="form-control @error('phone') is-invalid @enderror"
+                                <input id="input_membership_phone" type="number"
+                                    class="form-control input_membership"
                                     placeholder="Input Phone Number" />
-                                @error('phone')
-                                <span class="invalid-feedback">
-                                    {{ $message }}
-                                </span>
-                                @enderror
                                 <!-- error message -->
                             </div>
                             <!-- end name -->
 
                             <!-- email -->
                             <div class="form-group _form-group">
-                                <label for="input_user_email" class="font-weight-bold">
+                                <label for="input_membership_email" class="font-weight-bold">
                                     Email <span class="wajib">*</span>
                                 </label>
-                                <input id="input_user_email" value="{{ old('email') }}" name="email" type="email"
-                                    class="form-control @error('email') is-invalid @enderror"
+                                <input id="input_membership_email" type="email"
+                                    class="form-control input_membership"
                                     placeholder="Write email here.." autocomplete="email" />
-                                @error('email')
-                                <span class="invalid-feedback">
-                                    {{ $message }}
-                                </span>
-                                @enderror
                                 <!-- error message -->
                             </div>
                             <!-- end email -->
@@ -448,9 +428,9 @@ CMS | Transaction
                         <div class="col-12">
                             <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
                                 <a style="width: 50%; margin-right: 5px"
-                                    class="btn btn-outline-primary _btn-primary px-4"
-                                    href="{{ route('membership.index') }}">Back</a>
-                                <button style="width: 50%; margin-left: 5px" type="submit"
+                                    class="btn btn-outline-primary _btn-primary px-4 close"
+                                    href="javascript:void(0)">Back</a>
+                                <button id="add_member" style="width: 50%; margin-left: 5px" type="button"
                                     class="btn btn-primary _btn-primary px-4">
                                     Save
                                 </button>
@@ -551,6 +531,7 @@ CMS | Transaction
         }
 
         function calculate_vat() {
+            clearInputItem();
             calculate_total();
             var total_price_item = 0;
             $('.total_price_item').each(function(i, obj) {
@@ -631,9 +612,12 @@ CMS | Transaction
             } else {
                 add_product_item(product_code);
             }
+            removeElements();
+        }
+
+        function clearInputItem() {
             $('#input-scanner').val('');
             $('#input-typing').val('');
-            removeElements();
         }
 
         function search_product(keyword) {
@@ -693,7 +677,7 @@ CMS | Transaction
                         discount_price = basic_price * (discount_store / 100);
                         final_price = basic_price - discount_price;
                         html_price = `
-                            <p style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</p>
+                            <span style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</span>
                             ${formatRupiah(final_price.toString())}
                         `;
                     }
@@ -840,7 +824,7 @@ CMS | Transaction
                     return {
                         results: $.map(data, function(item) {
                             return {
-                                text: item.name,
+                                text: item.code + " | " + item.name + " | " + item.phone,
                                 phone: item.phone,
                                 id: item.id
                             }
@@ -874,8 +858,47 @@ CMS | Transaction
     </script>
 
     <script>
+        $("#add_member").on('click', function() {
+            let code    = $("#input_membership_id").val().trim();
+            let name    = $("#input_membership_name").val().trim();
+            let phone   = $("#input_membership_phone").val().trim();
+            let email   = $("#input_membership_email").val().trim();
+
+            if (code == '' || name == '' || phone == '' || email == '') {
+
+            } else {
+                $.ajax({
+                    url: "{{ route('transaction.addmember') }}",
+                    type: "POST",
+                    data: {
+                        "_token": `{{ csrf_token() }}`,
+                        "code": code,
+                        "name": name,
+                        "phone": phone,
+                        "email": email
+                    },
+                    beforeSend: function () {
+                        // removeElements();
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if (response.status == 'failed') {
+                            return Swal.fire({
+                                title: 'Oops...',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        }
+
+                        $(".close").trigger('click');
+                    }
+                });
+            }
+        });
+
         function addMembers() {
-        $("#modal-add-membership").modal('show');
+            $(".input_membership").val('');
+            $("#modal-add-membership").modal('show');
         }
 
         $('.close').on('click', function () {

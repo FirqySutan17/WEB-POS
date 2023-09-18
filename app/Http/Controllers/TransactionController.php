@@ -141,14 +141,13 @@ class TransactionController extends Controller
                 'receipt_no'    => $receipt_no,
                 'trans_date'    => date('Y-m-d'),
                 'payment_method'    => $request->payment_method,
-                'cash'          => $request->cash,
+                'cash'          => str_replace(".", "", $request->cash),
                 'sub_price'     => $sub_price,
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
                 'status'        => $status,
-                'kembalian'     => $request->kembalian
+                'kembalian'     => str_replace(".", "", $request->kembalian)
             ];
-            // dd($trans, $transaction_details);
             $transaction = Transaction::create($trans);
             
             if ($transaction) {
@@ -170,9 +169,11 @@ class TransactionController extends Controller
         } catch (\Throwable $th) {
             dd($th->getMessage());
             DB::rollBack();
-            dd($th->getMessage());
         } finally {
             DB::commit();
+        }
+        if ($status == "DRAFT") {
+            return redirect()->back();
         }
         return redirect()->route('transaction.receipt', $request->invoice_no);
     }
@@ -202,11 +203,20 @@ class TransactionController extends Controller
 
     public function receipt(Transaction $transaction)
     {
-        $transaction = Transaction::with(['user'])->where('tr_transaction.invoice_no', $transaction->invoice_no)->first();
+        // $transaction = Transaction::with(['user', 'membership'])->where('tr_transaction.invoice_no', $transaction->invoice_no)->first();
         $details = TransactionDetail::select('tr_transaction_detail.*', 'products.name' , 'products.code')->where('invoice_no', $transaction->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
         // dd($details);
-        return view('admin.transaction.receipt', compact('transaction', 'details'));
+        return view('admin.transaction.query', compact('transaction', 'details'));
     }
+
+    public function query(Transaction $transaction)
+    {
+        $transaction = Transaction::with(['user'])->where('tr_transaction.invoice_no', $transaction->invoice_no)->first();
+        $transaction_details = TransactionDetail::select('tr_transaction_detail.*', 'products.name' , 'products.code')->where('invoice_no', $transaction->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
+        // dd($transaction_details);
+        return view('admin.transaction.query', compact('transaction', 'transaction_details'));
+    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -225,9 +235,7 @@ class TransactionController extends Controller
         // dd($transaction, $user);
         $transaction_details = TransactionDetail::select('product_code', 'invoice_no', 'quantity')->where('invoice_no', $transaction->invoice_no)->get();
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
-        $memberships = Membership::all();
-        $membershipSelected = $transaction->membership;
-        return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount', 'memberships', 'membershipSelected'));
+        return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount'));
     }
 
     public function summary(Transaction $transaction) {
@@ -267,7 +275,6 @@ class TransactionController extends Controller
             $sub_price = 0;
             foreach ($product_code as $i => $v) {
                 $trans_detail = [
-                    "membership_id" => $request->membership_id,
                     "invoice_no"    => $request->invoice_no,
                     "product_code"  => $v,
                     "quantity"      => $quantity[$i],
@@ -290,7 +297,6 @@ class TransactionController extends Controller
             }
 
             $trans = [
-                'membership_id' => $request->membership_id,
                 'receipt_no'    => $receipt_no,
                 'payment_method'    => $request->payment_method,
                 'cash'          => $cash,
@@ -300,8 +306,9 @@ class TransactionController extends Controller
                 'status'        => $status,
                 'kembalian'        => $kembalian
             ];
-            $transaction_update = Transaction::find($transaction->id)->update($trans);
             // dd($transaction, $transaction_details);
+            $transaction_update = Transaction::find($transaction->id)->update($trans);
+            
             
             if ($transaction_update) {
                 //  CLEAR DETAIL
@@ -369,12 +376,29 @@ class TransactionController extends Controller
 
     public function add_member(Request $request)
     {
-        $user = [];
-        if ($request->has('pin')) {
-            $user = User::select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+        $return_data = [
+            "status"    => "failed",
+            "message"   => "",
+            "data"      => []
+        ];
+        $check_existing = Membership::where('code', $request->code)->orWhere('phone', $request->phone)->orWhere('email', $request->email)->first();
+        if (!empty($check_existing)) {
+            $return_data["message"] = "Code / Phone Number / Email already used!";
+        } else {
+            $membership = Membership::create([
+                'code' => $request->code,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'email'   => $request->email,
+            ]);
+            $return_data["status"] = "success";
+            $return_data["message"] = "Success!";
+            $return_data["data"] = $membership;
         }
 
-        return response()->json($user);
+        
+
+        return response()->json($return_data);
     }
 
     public function check_pin(Request $request)

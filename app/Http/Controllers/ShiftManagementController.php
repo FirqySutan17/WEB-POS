@@ -20,13 +20,12 @@ class ShiftManagementController extends Controller
     {
         $shift      = 1;
         $today      = date('Y-m-d');
-        $ystrdy  = date('Y-m-d', strtotime('-1 days'));
         $user       = Auth::user();
         $authorized = 1;
         $begin      = 0;
         $auth_pin   = $user->pin;
         $current_shift  = Shift::whereDate('date', $today)->with('user')->orderBy('seq', 'DESC')->first();
-        $prev_shift     = Shift::whereDate('date', $ystrdy)->with('user')->orderBy('seq', 'DESC')->first();
+        $prev_shift     = Shift::whereDate('date', '<', $today)->with('user')->orderBy('seq', 'DESC')->first();
         if (!empty($prev_shift)) {
             $begin = $prev_shift->end;
         }
@@ -104,7 +103,7 @@ class ShiftManagementController extends Controller
         } finally {
             DB::commit();
         }
-        return redirect()->route('shift.index');
+        return redirect()->route('transaction.create');
     }
     
 

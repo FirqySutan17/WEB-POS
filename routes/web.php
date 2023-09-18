@@ -106,6 +106,7 @@ Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::clas
 Route::get('/list-draft', [App\Http\Controllers\TransactionController::class, 'index_draft'])->name('transaction.listdraft');
 Route::post('/check-pin', [App\Http\Controllers\TransactionController::class, 'check_pin'])->name('transaction.checkpin');
 Route::post('/transaction/add-member', [App\Http\Controllers\TransactionController::class, 'add_member'])->name('transaction.addmember');
+Route::get('/transaction/query/{transaction}', [App\Http\Controllers\TransactionController::class, 'query'])->name('transaction.query');
 
 // Report Route
 Route::match(['get', 'post'], '/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');
@@ -140,5 +141,5 @@ Route::match(['get', 'post'], '/report/transaction-by-cashier', [App\Http\Contro
 Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');
 
 Route::match(['get', 'post'], '/report/cash-flow', [App\Http\Controllers\ReportController::class, 'report_cash_flow'])->name('report.cashflow');
-
+Route::match(['get', 'post'], '/report/laba-rugi', [App\Http\Controllers\ReportController::class, 'report_laba_rugi'])->name('report.labarugi');
 Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');

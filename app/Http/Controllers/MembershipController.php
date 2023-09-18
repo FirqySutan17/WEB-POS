@@ -34,9 +34,9 @@ class MembershipController extends Controller
     {
         $memberships = [];
         if ($request->has('q')) {
-            $memberships = Membership::select('id', 'name', 'phone')->search($request->q)->get();
+            $memberships = Membership::select('id', 'code', 'name', 'phone')->search($request->q)->get();
         } else {
-            $memberships = Membership::select('id', 'name', 'phone')->limit(10)->get();
+            $memberships = Membership::select('id', 'code', 'name', 'phone')->limit(10)->get();
         }
 
         return response()->json($memberships);

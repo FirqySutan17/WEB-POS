@@ -134,6 +134,13 @@
                                     Best Seller
                                 </a>
                             </li>
+
+                            <li>
+                                <a href="{{ route('report.labarugi') }}"
+                                    class="{{routeActive(['report.labarugi'])}}">
+                                    Laba Rugi
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @endcanany

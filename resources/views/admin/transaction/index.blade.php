@@ -59,7 +59,8 @@ CMS | Transaction
             <a class="{{routeActive('transaction.create')}}" href="{{ route('transaction.create') }}">Transaction</a>
             <a class="{{routeActive('transaction.listdraft')}}" href="{{ route('transaction.listdraft') }}">Draft</a>
             <a class="{{routeActive('transaction.index')}}" href="{{ route('transaction.index') }}">List</a>
-            <a class="{{routeActive('transaction.summary')}}" href="{{ route('transaction.summary') }}">Profile</a>
+            <a class="{{routeActive('cashflow.index')}}" href="{{ route('cashflow.index') }}">Cash Flow</a>
+            <a class="{{routeActive('shift.index')}}" href="{{ route('shift.index') }}">Shift Management</a>
 
             <button class="btn " type="button">
                 <a href="{{ route('logout') }}"
@@ -71,9 +72,7 @@ CMS | Transaction
                 @csrf
             </form>
         </div>
-        @else
         @endif
-
     </div>
     <div class="card">
         <div class="card-header">
@@ -174,6 +173,12 @@ CMS | Transaction
                         <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
                                 @if ($transaction->status == 'FINISH')
+                                <div class="boxEdit">
+                                    <a href="{{ route('transaction.query', ['transaction' => $transaction]) }}"
+                                        class="btn-sm btn-info" role="button" target="_blank">
+                                        <i class='bx bx-show'></i>
+                                    </a>
+                                </div>
                                 <div class="boxEdit">
                                     <a href="javascript:void(0)"
                                         data-url="{{ route('transaction.show', $transaction->invoice_no) }}"
