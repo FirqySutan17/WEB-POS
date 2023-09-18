@@ -6,7 +6,7 @@ CMS | Receive
 
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
+<link href="{{ asset('assets/css/fancybox.min.css') }}" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -62,8 +62,12 @@ CMS | Receive
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
 						<td style="width: 30%; vertical-align: middle">{{ $receive->receive_code }}</td>
 						<td style="width: 25%; vertical-align: middle">{{ $receive->receive_date }}</td>
-						<td style="width: 15%; vertical-align: middle"><a href="{{ asset('file_upload/'.$receive->delivery_file) }}">{{ $receive->delivery_no }}</a></td>
-						<td style="width: 25%; vertical-align: middle">{!! empty($receive->driver) ? "Delivery from Warehouse" : $receive->driver."<br/>".$receive->driver_phone."<br/>".$receive->plate_no !!}</td>
+						<td style="width: 15%; vertical-align: middle"><a
+								href="{{ asset('file_upload/'.$receive->delivery_file) }}">{{ $receive->delivery_no
+								}}</a></td>
+						<td style="width: 25%; vertical-align: middle">{!! empty($receive->driver) ? "Delivery from
+							Warehouse" : $receive->driver."<br />".$receive->driver_phone."<br />".$receive->plate_no
+							!!}</td>
 					</tr>
 					@endforeach
 					@else
@@ -94,8 +98,8 @@ CMS | Receive
 @endsection
 
 @push('javascript-internal')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/fancybox.min.js') }}"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 
 <script>
 	$(document).ready(function() {

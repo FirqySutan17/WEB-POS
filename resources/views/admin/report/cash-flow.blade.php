@@ -6,8 +6,8 @@ CMS | Report Cash Flow
 
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link href="{{ asset('assets/css/fancybox.min.css') }}" rel="stylesheet" />
+<link href="{{ asset('assets/css/datepicker.min.css') }}" rel="stylesheet">
 
 <style>
     .head-report th {
@@ -33,8 +33,8 @@ CMS | Report Cash Flow
                 <form action="{{ route('report.cashflow') }}" class="row" method="POST">
                     @csrf
                     <div class="col-5">
-                        <input name="search" value="{{ $column['search'] }}" type="text"
-                            class="form-control" placeholder="Search employee name or id"
+                        <input name="search" value="{{ $column['search'] }}" type="text" class="form-control"
+                            placeholder="Search employee name or id"
                             style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
                     <div class="col-2">
@@ -62,29 +62,30 @@ CMS | Report Cash Flow
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="center-text">Tanggal<span class="dividerHr"></span></th>
                         <th class="heightHr" style="vertical-align: middle">Kasir <span class="dividerHr"></span></th>
-                        <th class="heightHr" style="vertical-align: middle">Penanggung Jawab <span class="dividerHr"></span></th>
+                        <th class="heightHr" style="vertical-align: middle">Penanggung Jawab <span
+                                class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Deskripsi<span class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Total<span class="dividerHr"></span></th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (!empty($data))
-                        @foreach ($data as $item)
-                            <tr>
-                                <td class="center-text">{{ $loop->iteration }}</td>
-                                <td class="center-text" style="vertical-align: middle">{{ $item->cash_date }}</td>
-                                <td style="vertical-align: middle">{{ $item->created_by }}</td>
-                                <td style="vertical-align: middle">{{ $item->approved_by }}</td>
-                                <td style="vertical-align: middle">{{ $item->description }}</td>
-                                <td style="width: 15%;" class="center-text boxAction fontField">
-                                    @if ($item->category == "IN")
-                                        <span class="text-success">+ @currency($item->amount)</span>
-                                    @else
-                                        <span class="text-danger">- @currency($item->amount)</span>
-                                    @endif
-                                </td>
-                            </tr>  
-                        @endforeach
+                    @foreach ($data as $item)
+                    <tr>
+                        <td class="center-text">{{ $loop->iteration }}</td>
+                        <td class="center-text" style="vertical-align: middle">{{ $item->cash_date }}</td>
+                        <td style="vertical-align: middle">{{ $item->created_by }}</td>
+                        <td style="vertical-align: middle">{{ $item->approved_by }}</td>
+                        <td style="vertical-align: middle">{{ $item->description }}</td>
+                        <td style="width: 15%;" class="center-text boxAction fontField">
+                            @if ($item->category == "IN")
+                            <span class="text-success">+ @currency($item->amount)</span>
+                            @else
+                            <span class="text-danger">- @currency($item->amount)</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
                     @endif
                 </tbody>
             </table>
@@ -107,9 +108,9 @@ CMS | Report Cash Flow
 @endsection
 
 @push('javascript-internal')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+<script src="{{ asset('assets/js/fancybox.min.js') }}"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+<script src="{{ asset('assets/js/datepicker.min.js') }}"></script>
 
 <script>
     $(document).ready(function(){

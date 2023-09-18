@@ -6,7 +6,7 @@ CMS | Single Upload
 
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
+<link href="{{ asset('assets/css/fancybox.min.css') }}" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -23,22 +23,24 @@ CMS | Single Upload
 			<div class="boxHeader">
 				{{-- filter:start --}}
 				<form class="row" method="GET">
-                    <div class="col-8">
-                        @can('Hww Create')
-                        <a href="{{ route('single_upload.create') }}" class="btn btn-primary _btn" role="button">
-                            <i class='bx bx-plus'></i> Add new
-                        </a>
-                       @endcan
-                    </div>
-                    <div class="col-4 boxContent">
-                        <div class="boxSearch _form-group">
-                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control" placeholder="Search for data.." style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
-                        </div>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </form>
+					<div class="col-8">
+						@can('Hww Create')
+						<a href="{{ route('single_upload.create') }}" class="btn btn-primary _btn" role="button">
+							<i class='bx bx-plus'></i> Add new
+						</a>
+						@endcan
+					</div>
+					<div class="col-4 boxContent">
+						<div class="boxSearch _form-group">
+							<input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
+								placeholder="Search for data.."
+								style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+						</div>
+						<button class="btn btn-primary" type="submit">
+							<i class="fa fa-search"></i>
+						</button>
+					</div>
+				</form>
 				{{-- filter:end --}}
 			</div>
 		</div>
@@ -57,12 +59,13 @@ CMS | Single Upload
 					@forelse ($singleuploads as $su)
 					<tr>
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 30%;" class="center-text">{{ $su->title }}</td>
-                        <td style="width: 50%;" class="center-text">{{ $su->description }}</td>
+						<td style="width: 30%;" class="center-text">{{ $su->title }}</td>
+						<td style="width: 50%;" class="center-text">{{ $su->description }}</td>
 						<td style="width: 15%;" class="center-text boxAction fontField">
 							<div class="boxInside">
 								<div class="boxEdit">
-									<a href="{{ route('single_upload.edit', ['single_upload' => $su]) }}" class="btn-sm btn-info" role="button">
+									<a href="{{ route('single_upload.edit', ['single_upload' => $su]) }}"
+										class="btn-sm btn-info" role="button">
 										<i class="bx bx-edit"></i>
 									</a>
 								</div>
@@ -70,7 +73,8 @@ CMS | Single Upload
 								@endcan
 
 								<div class="boxDelete">
-									<form action="{{ route('single_upload.destroy', ['single_upload' => $su]) }}" method="POST">
+									<form action="{{ route('single_upload.destroy', ['single_upload' => $su]) }}"
+										method="POST">
 										@csrf
 										@method('DELETE')
 										<button type="submit" class="btn btn-sm btn-danger">
@@ -113,7 +117,7 @@ CMS | Single Upload
 @endsection
 
 @push('javascript-internal')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.js"></script>
+<script src="{{ asset('assets/js/fancybox.min.js') }}"></script>
 
 <script>
 	$(document).ready(function() {

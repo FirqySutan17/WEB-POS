@@ -57,8 +57,7 @@ CMS | Shift Management
                                                     <label for="date" class="font-weight-bold">
                                                         Date <span class="wajib">* </span>
                                                     </label>
-                                                    <input id="date"
-                                                        value="{{ $data['current_shift']->date }}"
+                                                    <input id="date" value="{{ $data['current_shift']->date }}"
                                                         name="date" type="text"
                                                         class="form-control @error('date') is-invalid @enderror"
                                                         required readonly />
@@ -74,11 +73,10 @@ CMS | Shift Management
                                                     <label for="seq" class="font-weight-bold">
                                                         Shift
                                                     </label>
-                                                    <input
-                                                        value="{{ $data['current_shift']->seq }}"
-                                                        name="seq" type="text"
-                                                        class="form-control @error('seq') is-invalid @enderror"
-                                                        required readonly />
+                                                    <input value="{{ $data['current_shift']->seq }}" name="seq"
+                                                        type="text"
+                                                        class="form-control @error('seq') is-invalid @enderror" required
+                                                        readonly />
                                                     @error('seq')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -95,7 +93,8 @@ CMS | Shift Management
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Cashier ON DUTY
                                                     </label>
-                                                    <input value="{{ $data['current_shift']->user->name }}" type="text" class="form-control" readonly />
+                                                    <input value="{{ $data['current_shift']->user->name }}" type="text"
+                                                        class="form-control" readonly />
                                                     <!-- error message -->
                                                 </div>
                                                 <!-- end name -->
@@ -106,7 +105,8 @@ CMS | Shift Management
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Clock In
                                                     </label>
-                                                    <input value="{{ $data['current_shift']->start_time }}" type="text" class="form-control" readonly />
+                                                    <input value="{{ $data['current_shift']->start_time }}" type="text"
+                                                        class="form-control" readonly />
                                                     <!-- error message -->
                                                 </div>
                                                 <!-- end name -->
@@ -117,7 +117,9 @@ CMS | Shift Management
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Clock Out
                                                     </label>
-                                                    <input name="end_time" value="{{ date('H:i:s', strtotime($data['end_time'])) }}" type="text" class="form-control" readonly />
+                                                    <input name="end_time"
+                                                        value="{{ date('H:i:s', strtotime($data['end_time'])) }}"
+                                                        type="text" class="form-control" readonly />
                                                     <!-- error message -->
                                                 </div>
                                                 <!-- end name -->
@@ -131,7 +133,7 @@ CMS | Shift Management
                                             </label>
                                             <input id="inp" value="{{ $data['current_shift']->begin }}"
                                                 style="height: 50px; font-size: 20px" name="cash" type="number"
-                                                class="form-control" readonly/>
+                                                class="form-control" readonly />
                                             <!-- error message -->
                                         </div>
 
@@ -140,8 +142,8 @@ CMS | Shift Management
                                                 CASH IN
                                             </label>
                                             <input id="input_user_cash" value="{{ $data['cash_in'] }}"
-                                                style="height: 50px; font-size: 20px" type="number"
-                                                class="form-control" readonly/>
+                                                style="height: 50px; font-size: 20px" type="number" class="form-control"
+                                                readonly />
                                             <!-- error message -->
                                         </div>
 
@@ -150,27 +152,27 @@ CMS | Shift Management
                                                 CASH OUT
                                             </label>
                                             <input id="input_user_cash" value="{{ $data['cash_out'] }}"
-                                                style="height: 50px; font-size: 20px" type="number"
-                                                class="form-control" readonly/>
+                                                style="height: 50px; font-size: 20px" type="number" class="form-control"
+                                                readonly />
                                             <!-- error message -->
                                         </div>
 
                                         {{-- @foreach ($data['cash_balance'] as $item)
-                                            <div class="form-group _form-group">
-                                                <label for="inp" class="font-weight-bold">
-                                                    {{ $item->code_data }}
-                                                </label>
-                                                <div class="float-right">
-                                                    {{ date('d M Y H:i:s', strtotime($item->created_at)) }}
-                                                    <br>
-                                                    @if ($item->type_balance == 'D')
-                                                        <span class="text-success">+ @currency($item->amount)</span>
-                                                    @else
-                                                        <span class="text-danger">- @currency($item->amount)</span>
-                                                    @endif
-                                                </div>
-                                                <!-- error message -->
+                                        <div class="form-group _form-group">
+                                            <label for="inp" class="font-weight-bold">
+                                                {{ $item->code_data }}
+                                            </label>
+                                            <div class="float-right">
+                                                {{ date('d M Y H:i:s', strtotime($item->created_at)) }}
+                                                <br>
+                                                @if ($item->type_balance == 'D')
+                                                <span class="text-success">+ @currency($item->amount)</span>
+                                                @else
+                                                <span class="text-danger">- @currency($item->amount)</span>
+                                                @endif
                                             </div>
+                                            <!-- error message -->
+                                        </div>
                                         @endforeach --}}
                                         <div class="form-group _form-group">
                                             <label for="inp" class="font-weight-bold">
@@ -181,14 +183,14 @@ CMS | Shift Management
                                             </div>
                                             <!-- error message -->
                                         </div>
-                                        
+
                                         <div class="form-group _form-group">
                                             <label for="input_user_cash" class="font-weight-bold">
                                                 ACTUAL ENDING CASH DRAWER
                                             </label>
                                             <input id="input_user_cash" value="{{ $data['estimated_ending'] }}"
                                                 style="height: 50px; font-size: 20px" name="cash" type="number"
-                                                class="form-control" readonly/>
+                                                class="form-control" readonly />
                                             <!-- error message -->
                                         </div>
 
@@ -196,7 +198,8 @@ CMS | Shift Management
                                             <label for="input_pin" class="font-weight-bold">
                                                 AUTHORIZED PIN (Current Shift Cashier)
                                             </label>
-                                            <input id="input_pin" style="height: 50px; font-size: 20px" name="pin" type="password" class="form-control"/>
+                                            <input id="input_pin" style="height: 50px; font-size: 20px" name="pin"
+                                                type="password" class="form-control" />
                                             <!-- error message -->
                                         </div>
                                     </div>
@@ -238,7 +241,7 @@ CMS | Shift Management
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('javascript-internal')

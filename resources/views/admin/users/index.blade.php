@@ -22,23 +22,25 @@ CMS | Users
 			<div class="boxHeader">
 				{{-- filter:start --}}
 				<form class="row" method="GET">
-                    <div class="col-8">
-                        
-                        <a href="{{ route('users.create') }}" class="btn btn-primary _btn" role="button">
-                            <i class='bx bx-plus'></i> Add User
-                        </a>
-                       
-                    </div>
-                    <div class="col-4 boxContent">
-                        <div class="boxSearch _form-group">
-                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control" placeholder="Search for user.." style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
-                        </div>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
+					<div class="col-8">
 
-                    </div>
-                </form>
+						<a href="{{ route('users.create') }}" class="btn btn-primary _btn" role="button">
+							<i class='bx bx-plus'></i> Add User
+						</a>
+
+					</div>
+					<div class="col-4 boxContent">
+						<div class="boxSearch _form-group">
+							<input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
+								placeholder="Search for user.."
+								style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+						</div>
+						<button class="btn btn-primary" type="submit">
+							<i class="fa fa-search"></i>
+						</button>
+
+					</div>
+				</form>
 				{{-- filter:end --}}
 			</div>
 		</div>
@@ -49,9 +51,9 @@ CMS | Users
 						<th class="center-text">No <span class="dividerHr"></span></th>
 						<th class="center-text">Employee ID <span class="dividerHr"></span></th>
 						<th class="center-text heightHr">Name <span class="dividerHr"></span></th>
-						<th class="center-text heightHr" >Email <span class="dividerHr"></span></th>
-						<th class="center-text heightHr" >Role <span class="dividerHr"></span></th>
-						<th class="center-text heightHr" >Status <span class="dividerHr"></span></th>
+						<th class="center-text heightHr">Email <span class="dividerHr"></span></th>
+						<th class="center-text heightHr">Role <span class="dividerHr"></span></th>
+						<th class="center-text heightHr">Status <span class="dividerHr"></span></th>
 						<th class="center-text">Action</th>
 					</tr>
 				</thead>
@@ -66,16 +68,17 @@ CMS | Users
 						<td style="width: 15%;" class="center-text">{{ $user->roles->first()->name??null }}</td>
 						<td style="width: 15%;" class="center-text">
 							@if ($user->status == 1)
-								<span class="status-active">Active</span>
+							<span class="status-active">Active</span>
 							@else
-								<span class="status-nonactive">Suspended</span>
+							<span class="status-nonactive">Suspended</span>
 							@endif
 						</td>
 						<td style="width: 10%;" class="center-text boxAction fontField">
 							<div class="boxInside">
 								@can('User Update')
 								<div class="boxEdit">
-									<a href="{{ route('users.edit', ['user' => $user]) }}" class="btn-sm btn-info" role="button">
+									<a href="{{ route('users.edit', ['user' => $user]) }}" class="btn-sm btn-info"
+										role="button">
 										<i class="bx bx-edit"></i>
 									</a>
 								</div>
@@ -83,7 +86,8 @@ CMS | Users
 
 								@can('User Delete')
 								<div class="boxDelete">
-									<form role="alert" action="{{ route('users.destroy', ['user' => $user]) }}" method="POST">
+									<form role="alert" action="{{ route('users.destroy', ['user' => $user]) }}"
+										method="POST">
 										@csrf
 										@method('DELETE')
 										<button type="submit" class="btn btn-sm btn-danger">
@@ -125,7 +129,7 @@ CMS | Users
 @endsection
 
 @push('javascript-internal')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 
 <script>
 	$(document).ready(function() {

@@ -52,9 +52,8 @@ CMS | Add Cashflow
                                         <label for="input_user_cash" class="font-weight-bold">
                                             PIN <span class="wajib">*</span>
                                         </label>
-                                        <input id="confirmation-pin"
-                                            style="height: 50px; font-size: 20px" type="password"
-                                            class="form-control"
+                                        <input id="confirmation-pin" style="height: 50px; font-size: 20px"
+                                            type="password" class="form-control"
                                             placeholder="Insert Supervisor PIN here" />
                                     </div>
                                 </div>
@@ -77,7 +76,8 @@ CMS | Add Cashflow
                     </div>
                 </div>
             </div>
-            <form id="form-add" action="{{ route('cashflow.store') }}" method="POST" enctype="multipart/form-data" style="display: none">
+            <form id="form-add" action="{{ route('cashflow.store') }}" method="POST" enctype="multipart/form-data"
+                style="display: none">
                 @csrf
                 <div class="card _card" style="width: 60%; margin: auto; padding-bottom: 20px">
                     <div class="card-body _card-body">
@@ -130,8 +130,10 @@ CMS | Add Cashflow
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Cashier <span class="wajib">*</span>
                                                     </label>
-                                                    <input type="hidden" name="employee_id" value="{{ Auth::user()->employee_id }}">
-                                                    <input id="input_user_name" value="{{ Auth::user()->name }}" type="text"
+                                                    <input type="hidden" name="employee_id"
+                                                        value="{{ Auth::user()->employee_id }}">
+                                                    <input id="input_user_name" value="{{ Auth::user()->name }}"
+                                                        type="text"
                                                         class="form-control @error('name') is-invalid @enderror"
                                                         readonly />
                                                     @error('name')
@@ -239,7 +241,7 @@ CMS | Add Cashflow
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('javascript-internal')

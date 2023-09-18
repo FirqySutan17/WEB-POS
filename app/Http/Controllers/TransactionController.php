@@ -198,7 +198,10 @@ class TransactionController extends Controller
             "details" => $details
         ];
         return response()->json($data);
+    }
 
+    public function customer_display(Transaction $transaction) {
+        return view('admin.transaction.display');
     }
 
     public function receipt(Transaction $transaction)

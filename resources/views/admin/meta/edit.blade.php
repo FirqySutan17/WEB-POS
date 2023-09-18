@@ -475,7 +475,7 @@ CMS | Edit Meta pages
 @push('css-external')
 <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('vendor/select2/css/select2-bootstrap4.min.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link href="{{ asset('assets/css/datepicker.min.css') }}" rel="stylesheet">
 @endpush
 
 @push('javascript-external')
@@ -484,7 +484,7 @@ CMS | Edit Meta pages
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+<script src="{{ asset('assets/js/datepicker.min.js') }}"></script>
 @endpush
 
 @push('javascript-internal')

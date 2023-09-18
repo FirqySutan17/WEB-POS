@@ -7,7 +7,7 @@ CMS | Transaction
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/sweetalert2.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link href="{{ asset('assets/css/datepicker.min.css') }}" rel="stylesheet">
 
 <style>
     .tr-input {
@@ -379,8 +379,7 @@ CMS | Transaction
                                 <label for="input_membership_id" class="font-weight-bold">
                                     Membership ID <span class="wajib">*</span>
                                 </label>
-                                <input id="input_membership_id" type="text"
-                                    class="form-control input_membership"
+                                <input id="input_membership_id" type="text" class="form-control input_membership"
                                     placeholder="Input Employee ID.." />
                                 <!-- error message -->
                             </div>
@@ -391,8 +390,7 @@ CMS | Transaction
                                 <label for="input_membership_name" class="font-weight-bold">
                                     Name <span class="wajib">*</span>
                                 </label>
-                                <input id="input_membership_name" type="text"
-                                    class="form-control input_membership"
+                                <input id="input_membership_name" type="text" class="form-control input_membership"
                                     placeholder="Write name here.." />
                                 <!-- error message -->
                             </div>
@@ -403,8 +401,7 @@ CMS | Transaction
                                 <label for="input_membership_phone" class="font-weight-bold">
                                     Phone Number <span class="wajib">*</span>
                                 </label>
-                                <input id="input_membership_phone" type="number"
-                                    class="form-control input_membership"
+                                <input id="input_membership_phone" type="number" class="form-control input_membership"
                                     placeholder="Input Phone Number" />
                                 <!-- error message -->
                             </div>
@@ -415,8 +412,7 @@ CMS | Transaction
                                 <label for="input_membership_email" class="font-weight-bold">
                                     Email <span class="wajib">*</span>
                                 </label>
-                                <input id="input_membership_email" type="email"
-                                    class="form-control input_membership"
+                                <input id="input_membership_email" type="email" class="form-control input_membership"
                                     placeholder="Write email here.." autocomplete="email" />
                                 <!-- error message -->
                             </div>
@@ -455,13 +451,13 @@ CMS | Transaction
     <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js">
+    <script src="{{ asset('assets/js/datepicker.min.js') }}">
     </script>
     @endpush
 
 
     @push('javascript-internal')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 
     <script>
         window.onload = function() {

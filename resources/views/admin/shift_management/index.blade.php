@@ -6,7 +6,7 @@ CMS | Shift Management
 
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
+<link href="{{ asset('assets/css/fancybox.min.css') }}" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -123,8 +123,8 @@ CMS | Shift Management
 @endsection
 
 @push('javascript-internal')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/fancybox.min.js') }}"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 
 <script>
     $(document).ready(function() {

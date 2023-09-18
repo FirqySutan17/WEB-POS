@@ -6,8 +6,8 @@ CMS | Best Seller
 
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link href="{{ asset('assets/css/fancybox.min.css') }}" rel="stylesheet" />
+<link href="{{ asset('assets/css/datepicker.min.css') }}" rel="stylesheet">
 
 <style>
     .head-report th {
@@ -75,9 +75,9 @@ CMS | Best Seller
                         </td>
                         <td class="center-text" style="width: 15%; vertical-align: middle">
                             @if ($item['type'] == "+")
-                                <span class="text-success">+ @currency($item['selisih'])</span>
+                            <span class="text-success">+ @currency($item['selisih'])</span>
                             @else
-                                <span class="text-danger">- @currency($item['selisih'])</span>
+                            <span class="text-danger">- @currency($item['selisih'])</span>
                             @endif
                         </td>
                     </tr>
@@ -102,9 +102,9 @@ CMS | Best Seller
 @endsection
 
 @push('javascript-internal')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+<script src="{{ asset('assets/js/fancybox.min.js') }}"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+<script src="{{ asset('assets/js/datepicker.min.js') }}"></script>
 
 <script>
     $(document).ready(function(){

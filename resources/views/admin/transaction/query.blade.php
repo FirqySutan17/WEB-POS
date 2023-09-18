@@ -8,7 +8,7 @@ CMS | Transaction
 {{--
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}"> --}}
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/sweetalert2.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link href="{{ asset('assets/css/datepicker.min.css') }}" rel="stylesheet">
 
 <style>
     .wrap-cashier {
@@ -96,8 +96,8 @@ CMS | Transaction
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Kasir
                                                 </label>
-                                                <input value="{{ $transaction->user->name }}" type="text" class="form-control"
-                                                    required readonly tabindex="0" />
+                                                <input value="{{ $transaction->user->name }}" type="text"
+                                                    class="form-control" required readonly tabindex="0" />
                                             </div>
                                         </div>
 
@@ -124,16 +124,18 @@ CMS | Transaction
                                     </div>
 
                                     @if (!empty($transaction->membership))
-                                        <div class="row tr-shadow" style="margin-top: 20px">
-                                            <!-- role -->
-                                            <div class="form-group _form-group">
-                                                <label for="select_membership" class="font-weight-bold" style="width: 100%">
-                                                    Membership
-                                                </label>
-                                                <span>{!! $transaction->membership->code." <br/> ".$transaction->membership->name." <br/> ".$transaction->membership->phone !!}</span>
-                                            </div>
-                                            <!-- end role -->
+                                    <div class="row tr-shadow" style="margin-top: 20px">
+                                        <!-- role -->
+                                        <div class="form-group _form-group">
+                                            <label for="select_membership" class="font-weight-bold" style="width: 100%">
+                                                Membership
+                                            </label>
+                                            <span>{!! $transaction->membership->code." <br />
+                                                ".$transaction->membership->name." <br />
+                                                ".$transaction->membership->phone !!}</span>
                                         </div>
+                                        <!-- end role -->
+                                    </div>
                                     @endif
                                 </div>
                                 <div class="col-md-9 col-sm-12" style="padding-right: 0px">
@@ -193,14 +195,16 @@ CMS | Transaction
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Metode Pembayaran <span class="wajib">* </span>
                                                 </label>
-                                                <input type="text" class="form-control" tabindex="4" value="{{ $transaction->payment_method }}" readonly/>
+                                                <input type="text" class="form-control" tabindex="4"
+                                                    value="{{ $transaction->payment_method }}" readonly />
                                             </div>
                                             <div id="elm_receipt" class="form-group _form-group"
                                                 style="margin-bottom: 10px !important">
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Receipt <span class="wajib">* </span>
                                                 </label>
-                                                <input type="text" class="form-control" tabindex="4" value="{{ $transaction->receipt_no }}" readonly/>
+                                                <input type="text" class="form-control" tabindex="4"
+                                                    value="{{ $transaction->receipt_no }}" readonly />
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -208,7 +212,8 @@ CMS | Transaction
                                                 <label for="receive_date" class="font-weight-bold">
                                                     Nominal Tunai
                                                 </label>
-                                                <input type="text" class="form-control" tabindex="4" value="{{ number_format($transaction->cash) }}" readonly/>
+                                                <input type="text" class="form-control" tabindex="4"
+                                                    value="{{ number_format($transaction->cash) }}" readonly />
                                             </div>
                                             <div class="form-group _form-group elm_cash"
                                                 style="margin-bottom: 10px !important">
@@ -216,16 +221,16 @@ CMS | Transaction
                                                     Kembalian
                                                 </label>
                                                 <?php $kembalian = !empty($transaction->kembalian) ? $transaction->kembalian : $transaction->cash - $transaction->total_price; ?>
-                                                <input id="kembalian" type="text"
-                                                    class="form-control" readonly tabindex="0"
-                                                    value="{{ number_format($kembalian) }}" />
+                                                <input id="kembalian" type="text" class="form-control" readonly
+                                                    tabindex="0" value="{{ number_format($kembalian) }}" />
                                             </div>
                                         </div>
 
                                         <div class="col-4" style="text-align: right">
                                             <h6>Total</h6>
                                             <h2 id="total_transaction">Rp 0</h2>
-                                            <div style="width: 100%; display: flex; align-items: center; margin-top: 10px">
+                                            <div
+                                                style="width: 100%; display: flex; align-items: center; margin-top: 10px">
                                                 <a class="btn btn-primary _btn-primary px-4" style="width: 100%"
                                                     href="{{ route('transaction.create')}}">BACK TO TRANSACTION</a>
                                             </div>
@@ -255,9 +260,9 @@ CMS | Transaction
     <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
     <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js">
+    <script src="{{ asset('assets/js/datepicker.min.js') }}">
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
     @endpush
 
 

@@ -6,7 +6,7 @@ CMS | Project Type
 
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.css" rel="stylesheet" />
+<link href="{{ asset('assets/css/fancybox.min.css') }}" rel="stylesheet" />
 @endpush
 
 @section('content')
@@ -23,22 +23,24 @@ CMS | Project Type
 			<div class="boxHeader">
 				{{-- filter:start --}}
 				<form class="row" method="GET">
-                    <div class="col-8">
+					<div class="col-8">
 						@can('Project Type Create')
-                        <a href="{{ route('project-type.create') }}" class="btn btn-primary _btn" role="button">
-                            <i class='bx bx-plus'></i> Add new
-                        </a>
-                       @endcan
-                    </div>
-                    <div class="col-4 boxContent">
-                        <div class="boxSearch _form-group">
-                            <input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control" placeholder="Search for data.." style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
-                        </div>
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </form>
+						<a href="{{ route('project-type.create') }}" class="btn btn-primary _btn" role="button">
+							<i class='bx bx-plus'></i> Add new
+						</a>
+						@endcan
+					</div>
+					<div class="col-4 boxContent">
+						<div class="boxSearch _form-group">
+							<input name="keyword" value="{{ request('keyword') }}" type="search" class="form-control"
+								placeholder="Search for data.."
+								style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+						</div>
+						<button class="btn btn-primary" type="submit">
+							<i class="fa fa-search"></i>
+						</button>
+					</div>
+				</form>
 				{{-- filter:end --}}
 			</div>
 		</div>
@@ -56,13 +58,14 @@ CMS | Project Type
 					@forelse ($types as $pt)
 					<tr>
 						<td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 85%; vertical-align: middle">{{ $pt->name }}</td>
+						<td style="width: 85%; vertical-align: middle">{{ $pt->name }}</td>
 
 						<td style="width: 10%;" class="center-text boxAction fontField">
 							<div class="boxInside">
 								@can('Project Type Update')
 								<div class="boxEdit">
-									<a href="{{ route('project-type.edit', ['project_type' => $pt]) }}" class="btn-sm btn-info" role="button">
+									<a href="{{ route('project-type.edit', ['project_type' => $pt]) }}"
+										class="btn-sm btn-info" role="button">
 										<i class="bx bx-edit"></i>
 									</a>
 								</div>
@@ -70,7 +73,8 @@ CMS | Project Type
 
 								@can('Project Type Delete')
 								<div class="boxDelete">
-									<form action="{{ route('project-type.destroy', ['project_type' => $pt]) }}" method="POST" role="alert">
+									<form action="{{ route('project-type.destroy', ['project_type' => $pt]) }}"
+										method="POST" role="alert">
 										@csrf
 										@method('DELETE')
 										<button type="submit" class="btn btn-sm btn-danger">
@@ -112,8 +116,8 @@ CMS | Project Type
 @endsection
 
 @push('javascript-internal')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.0/jquery.fancybox.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/fancybox.min.js') }}"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 
 <script>
 	$(document).ready(function() {

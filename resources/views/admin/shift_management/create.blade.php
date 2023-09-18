@@ -73,11 +73,10 @@ CMS | Shift Management
                                                     <label for="seq" class="font-weight-bold">
                                                         Shift
                                                     </label>
-                                                    <input
-                                                        value="{{ $data['shift_number'] }}"
-                                                        name="seq" type="text" value="{{ date('H:i:s') }}"
-                                                        class="form-control @error('seq') is-invalid @enderror"
-                                                        required readonly />
+                                                    <input value="{{ $data['shift_number'] }}" name="seq" type="text"
+                                                        value="{{ date('H:i:s') }}"
+                                                        class="form-control @error('seq') is-invalid @enderror" required
+                                                        readonly />
                                                     @error('seq')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -94,8 +93,16 @@ CMS | Shift Management
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Cashier ON DUTY
                                                     </label>
-                                                    <input value="{{ !empty($data['shift_data']) ? $data['shift_data']->user->employee_id : Auth::user()->employee_id }}" name="employee_id" type="hidden" class="form-control @error('employee_id') is-invalid @enderror" readonly />
-                                                    <input value="{{ !empty($data['shift_data']) ? $data['shift_data']->user->name : Auth::user()->name }}" type="text" class="form-control @error('employee_name') is-invalid @enderror" readonly />
+                                                    <input
+                                                        value="{{ !empty($data['shift_data']) ? $data['shift_data']->user->employee_id : Auth::user()->employee_id }}"
+                                                        name="employee_id" type="hidden"
+                                                        class="form-control @error('employee_id') is-invalid @enderror"
+                                                        readonly />
+                                                    <input
+                                                        value="{{ !empty($data['shift_data']) ? $data['shift_data']->user->name : Auth::user()->name }}"
+                                                        type="text"
+                                                        class="form-control @error('employee_name') is-invalid @enderror"
+                                                        readonly />
                                                     <!-- error message -->
                                                 </div>
                                                 <!-- end name -->
@@ -106,7 +113,9 @@ CMS | Shift Management
                                                     <label for="input_user_name" class="font-weight-bold">
                                                         Clock In
                                                     </label>
-                                                    <input value="{{ !empty($data['shift_data']) ? $data['shift_data']->start_time : date('H:i:s') }}" type="text" class="form-control" readonly />
+                                                    <input
+                                                        value="{{ !empty($data['shift_data']) ? $data['shift_data']->start_time : date('H:i:s') }}"
+                                                        type="text" class="form-control" readonly />
                                                     <!-- error message -->
                                                 </div>
                                                 <!-- end name -->
@@ -120,18 +129,19 @@ CMS | Shift Management
                                             </label>
                                             <input id="input_user_cash" value="{{ $data['begin'] }}"
                                                 style="height: 50px; font-size: 20px" name="cash" type="number"
-                                                class="form-control" readonly/>
+                                                class="form-control" readonly />
                                             <!-- error message -->
                                         </div>
                                         <!-- end name -->
                                         @if ($data['authorized'] == 1)
-                                            <div class="form-group _form-group">
-                                                <label for="input_pin" class="font-weight-bold">
-                                                    AUTHORIZED PIN (Current Shift Cashier)
-                                                </label>
-                                                <input id="input_pin" style="height: 50px; font-size: 20px" name="pin" type="password" class="form-control"/>
-                                                <!-- error message -->
-                                            </div>
+                                        <div class="form-group _form-group">
+                                            <label for="input_pin" class="font-weight-bold">
+                                                AUTHORIZED PIN (Current Shift Cashier)
+                                            </label>
+                                            <input id="input_pin" style="height: 50px; font-size: 20px" name="pin"
+                                                type="password" class="form-control" />
+                                            <!-- error message -->
+                                        </div>
                                         @endif
                                     </div>
                                 </div>
@@ -142,17 +152,17 @@ CMS | Shift Management
                             <div class="col-12">
                                 <div style="width: 100; display: flex; align-items: center; justify-content: center;">
                                     @if ($data['authorized'] == 1)
-                                        @if (!empty($data['shift_data']) && $data['shift_data']->status == 'IN_PROGRESS')
-                                            <button data-status="FINISH" style="width: 100%;" type="button"
-                                                class="btn-shift btn btn-primary _btn-primary px-4">
-                                                END SHIFT
-                                            </button>
-                                        @else
-                                            <button data-status="START" style="width: 100%;" type="button"
-                                                class="btn-shift btn btn-primary _btn-primary px-4">
-                                                START SHIFT
-                                            </button>
-                                        @endif
+                                    @if (!empty($data['shift_data']) && $data['shift_data']->status == 'IN_PROGRESS')
+                                    <button data-status="FINISH" style="width: 100%;" type="button"
+                                        class="btn-shift btn btn-primary _btn-primary px-4">
+                                        END SHIFT
+                                    </button>
+                                    @else
+                                    <button data-status="START" style="width: 100%;" type="button"
+                                        class="btn-shift btn btn-primary _btn-primary px-4">
+                                        START SHIFT
+                                    </button>
+                                    @endif
                                     @endif
                                 </div>
                             </div>
@@ -181,7 +191,7 @@ CMS | Shift Management
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
 @endpush
 
 @push('javascript-internal')

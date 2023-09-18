@@ -7,7 +7,7 @@ CMS | Add Receive
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/sweetalert2.css') }}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+<link href="{{ asset('assets/css/datepicker.min.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -33,9 +33,11 @@ CMS | Add Receive
                                             <label for="receive_date" class="font-weight-bold">
                                                 Receive Date <span class="wajib">* </span>
                                             </label>
-                                            <input id="receive_date" value="{{ empty(old('receive_date')) ? date('Y-m-d') : old('receive_date') }}" name="receive_date"
-                                                type="text"
-                                                class="form-control @error('receive_date') is-invalid @enderror" required readonly />
+                                            <input id="receive_date"
+                                                value="{{ empty(old('receive_date')) ? date('Y-m-d') : old('receive_date') }}"
+                                                name="receive_date" type="text"
+                                                class="form-control @error('receive_date') is-invalid @enderror"
+                                                required readonly />
                                             @error('receive_date')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -48,10 +50,11 @@ CMS | Add Receive
                                             <label for="receive_time" class="font-weight-bold">
                                                 Receive Time <span class="wajib">* </span>
                                             </label>
-                                            <input id="receive_time" value="{{ empty(old('receive_time')) ? date('H:i') : old('receive_time') }}" name="receive_time"
-                                                type="text"
-                                                value="{{ date('H:i:s') }}"
-                                                class="form-control @error('receive_time') is-invalid @enderror" required readonly />
+                                            <input id="receive_time"
+                                                value="{{ empty(old('receive_time')) ? date('H:i') : old('receive_time') }}"
+                                                name="receive_time" type="text" value="{{ date('H:i:s') }}"
+                                                class="form-control @error('receive_time') is-invalid @enderror"
+                                                required readonly />
                                             @error('receive_time')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -67,7 +70,9 @@ CMS | Add Receive
                                             <label for="driver" class="font-weight-bold">
                                                 Driver Name
                                             </label>
-                                            <input id="driver" value="{{ old('driver') }}" name="driver" type="text" class="form-control  @error('driver') is-invalid @enderror" placeholder="Input driver name here"/>
+                                            <input id="driver" value="{{ old('driver') }}" name="driver" type="text"
+                                                class="form-control  @error('driver') is-invalid @enderror"
+                                                placeholder="Input driver name here" />
                                             @error('driver')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -81,7 +86,10 @@ CMS | Add Receive
                                             <label for="driver_phone" class="font-weight-bold">
                                                 Driver Phone Number
                                             </label>
-                                            <input id="driver_phone" value="{{ old('driver_phone') }}" name="driver_phone" type="text" class="form-control  @error('driver_phone') is-invalid @enderror" placeholder="Input Driver Phone Number here"/>
+                                            <input id="driver_phone" value="{{ old('driver_phone') }}"
+                                                name="driver_phone" type="text"
+                                                class="form-control  @error('driver_phone') is-invalid @enderror"
+                                                placeholder="Input Driver Phone Number here" />
                                             @error('driver_phone')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -94,7 +102,10 @@ CMS | Add Receive
                                             <label for="plate_no" class="font-weight-bold">
                                                 Vehicle License Number
                                             </label>
-                                            <input id="plate_no" value="{{ old('plate_no') }}" name="plate_no" type="text" class="form-control  @error('plate_no') is-invalid @enderror" placeholder="Input Plat Nomor Kendaraan disini"/>
+                                            <input id="plate_no" value="{{ old('plate_no') }}" name="plate_no"
+                                                type="text"
+                                                class="form-control  @error('plate_no') is-invalid @enderror"
+                                                placeholder="Input Plat Nomor Kendaraan disini" />
                                             @error('plate_no')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -113,7 +124,7 @@ CMS | Add Receive
                                     <input id="delivery_number" value="{{ old('delivery_number') }}"
                                         name="delivery_number" type="text"
                                         class="form-control  @error('delivery_number') is-invalid @enderror"
-                                        placeholder="Input surat jalan number here"/>
+                                        placeholder="Input surat jalan number here" />
                                     @error('delivery_number')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -124,9 +135,9 @@ CMS | Add Receive
                                 <!-- title -->
                                 <div class="form-group _form-group">
                                     <label for="input_post_link" class="font-weight-bold">
-                                        Delivery File  <span class="wajib">* </span>
+                                        Delivery File <span class="wajib">* </span>
                                     </label>
-                                    <input name="delivery_file" type="file" class="form-control"  />
+                                    <input name="delivery_file" type="file" class="form-control" />
                                     @error('delivery_file')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -136,8 +147,12 @@ CMS | Add Receive
 
                                 <div class="row req-box">
                                     <div class="col-6">
-                                        <p style="vertical-align: middle; font-weight: 600; color: rgba(0, 0, 0, 0.85); padding: 6px 0px;font-size: 13px">Product / Item <span class="wajib">*</span></p>
-                                        <input id="input-scanner" type="text" class="form-control" placeholder="Fokuskan kursor kesini untuk scan barcode" autocomplete="off"/>
+                                        <p
+                                            style="vertical-align: middle; font-weight: 600; color: rgba(0, 0, 0, 0.85); padding: 6px 0px;font-size: 13px">
+                                            Product / Item <span class="wajib">*</span></p>
+                                        <input id="input-scanner" type="text" class="form-control"
+                                            placeholder="Fokuskan kursor kesini untuk scan barcode"
+                                            autocomplete="off" />
                                     </div>
                                 </div>
 
@@ -152,7 +167,8 @@ CMS | Add Receive
                                 <div class="float-right">
                                     <a class="btn btn-outline-primary _btn-primary px-4"
                                         href="{{ route('receive.index') }}">Back</a>
-                                    <button onclick="submit_form()" type="button" class="btn btn-primary _btn-primary px-4">
+                                    <button onclick="submit_form()" type="button"
+                                        class="btn btn-primary _btn-primary px-4">
                                         Save
                                     </button>
                                 </div>
@@ -180,8 +196,8 @@ CMS | Add Receive
 <script src="{{ asset('vendor/tinymce5/tinymce.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/select2.min.js') }}"></script>
 <script src="{{ asset('vendor/select2/js/' . app()->getLocale() . '.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="{{ asset('assets/js/datepicker.min.js') }}"></script>
+<script src="{{ asset('assets/js/moment.min.js') }}"></script>
 @endpush
 
 
