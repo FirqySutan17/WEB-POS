@@ -18,7 +18,7 @@ class CreateTrAdjustStock extends Migration
             $table->string('date');
             $table->string('time');
             $table->string('employee_id');
-            $table->string('item');
+            $table->string('product_code');
             $table->string('type');
             $table->string('qty');
             $table->text('remark');
