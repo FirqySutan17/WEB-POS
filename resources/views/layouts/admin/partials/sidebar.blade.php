@@ -161,6 +161,13 @@
                             <span>Receive</span>
                         </a>
                     </li>
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['adjust_stock.index', 'adjust_stock.show', 'adjust_stock.edit', 'adjust_stock.create'])}}"
+                            href="{{ route('adjust_stock.index') }}">
+                            <i data-feather="circle"></i>
+                            <span>Adjust Stock</span>
+                        </a>
+                    </li>
                     @endcan
                     <!-- End skill -->
 
@@ -174,13 +181,7 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a class="nav-link menu-title link-nav {{routeActive(['adjust_stock.index', 'adjust_stock.show', 'adjust_stock.edit', 'adjust_stock.create'])}}"
-                            href="{{ route('adjust_stock.index') }}">
-                            <i data-feather="circle"></i>
-                            <span>Adjust Stock</span>
-                        </a>
-                    </li>
+                    
                     @endcan
 
                     

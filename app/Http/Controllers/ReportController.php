@@ -65,8 +65,8 @@ class ReportController extends Controller
         }
 
         private function get_stock($sdate, $edate, $search) {
-            $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
-            $query = "
+            $where = empty($search) ? "" : " AND (cd.code LIKE '%".$search."%' OR cd.name LIKE '%".$search."%')";
+            $query1 = "
                 SELECT 
                     products.code, 
                     products.name,
@@ -131,7 +131,66 @@ class ReportController extends Controller
                 ORDER BY products.name ASC, products.code ASC       
             ";
 
+            $query = "
+                SELECT product_code as code,
+                name,
+                Sum(bg)                                         qty_begin,
+                Sum(in_rcv)                                     qty_in,
+                Sum(in_adj)                                     IN_adj,
+                Sum(out_trans)                                  qty_out,
+                Sum(out_adj)                                    out_adj,
+                Sum(bg + in_rcv + in_adj - out_trans - out_adj) qty_end
+                FROM   (
+                    SELECT product_code,
+                                quantity * -1 AS bg,
+                                0             IN_rcv,
+                                0             in_adj,
+                                0             out_trans,
+                                0             out_adj
+                        FROM   tr_transaction_detail a,
+                                tr_transaction b
+                        WHERE  a.invoice_no = b.invoice_no
+                                AND b.trans_date < '".$sdate."'
+                        UNION ALL
+                        SELECT product_code,
+                                quantity AS bg,
+                                0        IN_rcv,
+                                0        in_adj,
+                                0        out_trans,
+                                0        out_adj
+                        FROM   tr_receive_detail a,
+                                tr_receive b
+                        WHERE  a.receive_code = b.receive_code
+                                AND b.receive_date < '".$sdate."'
+                        UNION ALL
+                        SELECT product_code,
+                                0        AS bg,
+                                quantity IN_rcv,
+                                0        in_adj,
+                                0        out_trans,
+                                0        out_adj
+                        FROM   tr_receive_detail a,
+                                tr_receive b
+                        WHERE  a.receive_code = b.receive_code
+                                AND b.receive_date BETWEEN '".$sdate."' AND '".$edate."'
+                        UNION ALL
+                        SELECT product_code,
+                                0        AS bg,
+                                0        IN_rcv,
+                                0        in_adj,
+                                quantity out_trans,
+                                0        out_adj
+                        FROM   tr_transaction_detail a,
+                                tr_transaction b
+                        WHERE  a.invoice_no = b.invoice_no
+                                AND b.trans_date BETWEEN '".$sdate."' AND '".$edate."') AS tbl,
+                        products cd
+                WHERE  tbl.product_code = cd.code ".$where."
+                GROUP  BY product_code, cd.name 
+            ";
+            // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));
+            // dd($db_query);
             return $db_query;
         }
     /* END REPORT TRANSACTION */
