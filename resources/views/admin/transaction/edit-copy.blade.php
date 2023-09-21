@@ -78,6 +78,21 @@ CMS | Transaction
         border-radius: 5px;
         border-top-right-radius: 0px;
     }
+
+    .select2-container.select-product-custom .select2-selection--single {
+        height: 50px !important;
+        box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    }
+
+    .select2-container--bootstrap4.select-product-custom .select2-selection--single .select2-selection__placeholder {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .select2-container--bootstrap4.select-product-custom .select2-selection--single .select2-selection__rendered {
+        margin-top: 6px;
+        margin-left: 0px
+    }
 </style>
 @endpush
 
@@ -164,10 +179,21 @@ CMS | Transaction
                                                     tabindex="1" autofocus />
                                             </div>
                                             <div class="col-6">
-                                                <input type="text" id="input-typing"
+                                                {{-- <input type="text" id="input-typing"
                                                     placeholder="Cari barang manual disini" class="form-control"
                                                     tabindex="2"
                                                     style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " />
+                                                --}}
+                                                <div class="form-group  _form-group">
+                                                    {{-- <label for="select_product" class="font-weight-bold">
+                                                        Categories <span class="wajib">*</span>
+                                                    </label> --}}
+                                                    <select id="select_product" name="product"
+                                                        data-placeholder="Cari barang manual disini"
+                                                        class="custom-select">
+
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                         <ul class="list stay-hidden"></ul>
@@ -208,7 +234,10 @@ CMS | Transaction
 
                                     <div class="row tr-shadow" style="margin-bottom: 10px; height: 130px">
                                         <div class="col-12" style="margin: auto">
-                                            <h2 id="total_transaction" style="text-align: right">Rp 0</h2>
+                                            <h5 style="text-align: right">Grand Total</h5>
+                                            <h2 id="total_transaction"
+                                                style="text-align: right; font-size: 46px; font-weight: 800; margin-bottom: 0px">
+                                                Rp 0</h2>
                                         </div>
                                     </div>
                                     <div class="row tr-shadow"
@@ -791,6 +820,27 @@ CMS | Transaction
                 }
             }
         });
+
+        $('#select_product').select2({
+            theme: 'bootstrap4 select-product-custom',
+            language: "",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('product.select_trans') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.name,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+            }
+    });
         });
     </script>
 

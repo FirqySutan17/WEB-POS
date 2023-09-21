@@ -212,7 +212,10 @@ CMS | Transaction
 
                                     <div class="row tr-shadow" style="margin-bottom: 10px; height: 130px">
                                         <div class="col-12" style="margin: auto">
-                                            <h2 id="total_transaction" style="text-align: right">Rp 0</h2>
+                                            <h5 style="text-align: right">Grand Total</h5>
+                                            <h2 id="total_transaction"
+                                                style="text-align: right; font-size: 46px; font-weight: 800; margin-bottom: 0px">
+                                                Rp 0</h2>
                                         </div>
                                     </div>
                                     <div class="row tr-shadow"

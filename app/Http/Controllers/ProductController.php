@@ -95,6 +95,18 @@ class ProductController extends Controller
         return response()->json($result);
     }
 
+    public function select_trans(Request $request)
+    {
+        $products = [];
+        if ($request->has('q')) {
+            $products = Product::select('id', 'name')->search($request->q)->get();
+        } else {
+            $products = Product::select('id', 'name')->limit(10)->get();
+        }
+
+        return response()->json($products);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
