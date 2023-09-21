@@ -33,13 +33,13 @@ class TransactionController extends Controller
     {
         $user = Auth::user();
         $transactions = [];
-        $query = Transaction::where('trans_date', date('Y-m-d'))->orderBy('id', 'desc')->with(['user']);
+        $query = Transaction::orderBy('id', 'desc')->with('user');
         if ($request->get('keyword')) {
             $query->where('invoice_no', $request->keyword);
         }
-        if ($user->roles->first()->name == 'Cashier') {
-            $query->where('emp_no', $user->employee_id);
-        }
+        // if ($user->roles->first()->name == 'Cashier') {
+        //     $query->where('emp_no', $user->employee_id);
+        // }
         $transactions = $query->paginate(9);
         // $session_user = Auth::user()->roles()->first()->name;
         // dd($transaction);
@@ -78,7 +78,7 @@ class TransactionController extends Controller
         //     dd(Session::get('receipt'));
         // }
         // dd($session_user);
-        return view('admin.transaction.create', compact('no_invoice', 'product_discount', 'memberships'));
+        return view('admin.transaction.create-copy', compact('no_invoice', 'product_discount', 'memberships'));
     }
 
     /**
@@ -214,10 +214,12 @@ class TransactionController extends Controller
 
     public function query(Transaction $transaction)
     {
+        $membership = Membership::all();
+        $membershipSelected = $transaction->membership;
         $transaction = Transaction::with(['user'])->where('tr_transaction.invoice_no', $transaction->invoice_no)->first();
         $transaction_details = TransactionDetail::select('tr_transaction_detail.*', 'products.name' , 'products.code')->where('invoice_no', $transaction->invoice_no)->join('products', 'tr_transaction_detail.product_code', 'products.code')->get();
         // dd($transaction_details);
-        return view('admin.transaction.query', compact('transaction', 'transaction_details'));
+        return view('admin.transaction.query-copy', compact('transaction', 'transaction_details', 'membership', 'membershipSelected'));
     }
 
 
@@ -232,13 +234,16 @@ class TransactionController extends Controller
     public function edit(Transaction $transaction)
     {
         $user = Auth::user();
+        $membership = Membership::all();
+        $membershipSelected = $transaction->membership;
         if ($user->employee_id != $transaction->emp_no) {
             // return redirect()->back()->withErrors("You dont have permission to draft this transaction!");
         }
         // dd($transaction, $user);
         $transaction_details = TransactionDetail::select('product_code', 'invoice_no', 'quantity')->where('invoice_no', $transaction->invoice_no)->get();
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
-        return view('admin.transaction.edit', compact('transaction', 'transaction_details', 'product_discount'));
+        
+        return view('admin.transaction.edit-copy', compact('transaction', 'transaction_details', 'product_discount', 'membership', 'membershipSelected'));
     }
 
     public function summary(Transaction $transaction) {

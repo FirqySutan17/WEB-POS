@@ -156,7 +156,8 @@ CMS | Transaction
                         <td class="center-text" style="width: 15%; vertical-align: middle">
                             {{ $transaction->trans_date }}
                         </td>
-                        <td style="width: 15%; vertical-align: middle">{{ $transaction->user->name }}</td>
+                        <td style="width: 15%; vertical-align: middle">{{
+                            $transaction->user->name }}</td>
                         <td style="width: 20%; vertical-align: middle">
                             #{{ $transaction->invoice_no }}
                         </td>

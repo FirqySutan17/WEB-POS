@@ -1005,12 +1005,12 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .tr-shadow .table td {
-  padding: 5px 10px !important;
+  padding: 5px 10px;
 }
 
 .tr-shadow tbody {
   display: block;
-  height: 172px;
+  height: 455px;
   overflow: auto;
 }
 
