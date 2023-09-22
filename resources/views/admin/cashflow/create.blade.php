@@ -7,15 +7,49 @@ CMS | Add Cashflow
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/sweetalert2.css') }}">
-@endpush
+<style>
+    .head-report th {
+        background: #f3f2f7 !important;
+    }
+
+    .wrap-cashier {
+        display: flex;
+        margin: auto;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .info-disc {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    #element {
+        position: absolute;
+        top: 41px;
+        right: 10px;
+        background: #000000c4;
+        color: #fff;
+        z-index: 1000;
+        width: 520px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        border-top-right-radius: 0px;
+    }
+</style>
 
 @section('content')
+
+@if(Auth::user()->roles->first()->name == 'Cashier')
+@else
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
 <h3>Add Cashflow</h3>
 @endslot
 {{ Breadcrumbs::render('add_cashflow') }}
 @endcomponent
+@endif
 
 <div class="container-fluid">
     <div class="wrap-cashier" style="display: none">
@@ -41,7 +75,14 @@ CMS | Add Cashflow
     </div>
     <div class="row">
         <div class="col-12">
-            <div id="form-authorization" class="card _card" style="width: 60%; margin: auto; padding-bottom: 20px">
+            @if(Auth::user()->roles->first()->name == 'Cashier')
+            <style>
+                #form-authorization {
+                    padding: 270px 0px;
+                }
+            </style>
+            @endif
+            <div id="form-authorization" class="card _card" style="width: 30%; margin: auto; padding-bottom: 20px">
                 <div class="card-body _card-body">
                     <div class="row d-flex align-items-stretch">
                         <div class="col-12">
@@ -52,9 +93,9 @@ CMS | Add Cashflow
                                         <label for="input_user_cash" class="font-weight-bold">
                                             PIN <span class="wajib">*</span>
                                         </label>
-                                        <input id="confirmation-pin" style="height: 50px; font-size: 20px"
-                                            type="password" class="form-control"
-                                            placeholder="Insert Supervisor PIN here" />
+                                        <input id="confirmation-pin"
+                                            style="height: 50px; font-size: 20px; text-align: center" type="password"
+                                            class="form-control" placeholder="Insert Supervisor PIN here" />
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +103,7 @@ CMS | Add Cashflow
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <div style="width: 100; display: flex; align-items: center; justify-content: center;">
+                            <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
                                 <a style="width: 50%; margin-right: 5px"
                                     class="btn btn-outline-primary _btn-primary px-4"
                                     href="{{ route('cashflow.index') }}">Back</a>
@@ -76,6 +117,13 @@ CMS | Add Cashflow
                     </div>
                 </div>
             </div>
+            @if(Auth::user()->roles->first()->name == 'Cashier')
+            <style>
+                #form-add {
+                    padding: 70px 0px;
+                }
+            </style>
+            @endif
             <form id="form-add" action="{{ route('cashflow.store') }}" method="POST" enctype="multipart/form-data"
                 style="display: none">
                 @csrf
@@ -208,7 +256,7 @@ CMS | Add Cashflow
                         <div class="row">
 
                             <div class="col-12">
-                                <div style="width: 100; display: flex; align-items: center; justify-content: center;">
+                                <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
                                     <a style="width: 50%; margin-right: 5px"
                                         class="btn btn-outline-primary _btn-primary px-4"
                                         href="{{ route('cashflow.index') }}">Back</a>

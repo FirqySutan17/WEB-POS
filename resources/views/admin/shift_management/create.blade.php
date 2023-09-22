@@ -7,15 +7,51 @@ CMS | Shift Management
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/sweetalert2.css') }}">
+<style>
+    .head-report th {
+        background: #f3f2f7 !important;
+    }
+
+    .wrap-cashier {
+        display: flex;
+        margin: auto;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .info-disc {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    #element {
+        position: absolute;
+        top: 41px;
+        right: 10px;
+        background: #000000c4;
+        color: #fff;
+        z-index: 1000;
+        width: 520px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        border-top-right-radius: 0px;
+    }
+</style>
 @endpush
 
 @section('content')
+
+
+@if(Auth::user()->roles->first()->name == 'Cashier')
+@else
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
 <h3>Shift Management</h3>
 @endslot
 {{ Breadcrumbs::render('add_cashflow') }}
 @endcomponent
+@endif
 
 <div class="container-fluid">
     <div class="wrap-cashier">
@@ -41,6 +77,13 @@ CMS | Shift Management
     </div>
     <div class="row">
         <div class="col-12">
+            @if(Auth::user()->roles->first()->name == 'Cashier')
+            <style>
+                #form-shift {
+                    padding: 120px 0px;
+                }
+            </style>
+            @endif
             <form id="form-shift" action="{{ route('shift.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" id="status" name="status">
@@ -138,7 +181,8 @@ CMS | Shift Management
                                             <label for="input_pin" class="font-weight-bold">
                                                 AUTHORIZED PIN (Current Shift Cashier)
                                             </label>
-                                            <input id="input_pin" style="height: 50px; font-size: 20px" name="pin"
+                                            <input id="input_pin"
+                                                style="height: 50px; font-size: 20px; text-align: center" name="pin"
                                                 type="password" class="form-control" />
                                             <!-- error message -->
                                         </div>

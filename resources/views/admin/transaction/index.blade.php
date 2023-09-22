@@ -181,13 +181,6 @@ CMS | Transaction
                                     </a>
                                 </div>
                                 <div class="boxEdit">
-                                    <a href="javascript:void(0)"
-                                        data-url="{{ route('transaction.show', $transaction->invoice_no) }}"
-                                        class="btn-sm btn-info btn-show-post" role="button">
-                                        <i class='bx bx-show'></i>
-                                    </a>
-                                </div>
-                                <div class="boxEdit">
                                     <a href="{{ route('transaction.receipt', ['transaction' => $transaction]) }}"
                                         class="btn-sm btn-info" role="button" target="_blank">
                                         <i class='bx bx-receipt'></i>
@@ -200,7 +193,7 @@ CMS | Transaction
                                         <i class="bx bx-edit"></i>
                                     </a>
                                 </div>
-                                <div class="boxDelete">
+                                <div class="boxDelete" style="padding-top: 7px">
                                     <form id="form-delete-{{ $transaction->invoice_no }}"
                                         action="{{ route('transaction.destroy', ['transaction' => $transaction]) }}"
                                         method="POST" role="alert">

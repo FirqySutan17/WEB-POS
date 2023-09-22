@@ -7,15 +7,52 @@ CMS | Cashflow
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
 <link href="{{ asset('assets/css/fancybox.min.css') }}" rel="stylesheet" />
+
+<style>
+    .head-report th {
+        background: #f3f2f7 !important;
+    }
+
+    .wrap-cashier {
+        display: flex;
+        margin: auto;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    .info-disc {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    #element {
+        position: absolute;
+        top: 41px;
+        right: 10px;
+        background: #000000c4;
+        color: #fff;
+        z-index: 1000;
+        width: 520px;
+        padding: 20px 10px;
+        border-radius: 5px;
+        border-top-right-radius: 0px;
+    }
+</style>
 @endpush
 
 @section('content')
+@if(Auth::user()->roles->first()->name == 'Cashier')
+@else
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
 <h3>Cashflow</h3>
 @endslot
 {{ Breadcrumbs::render('cashflow') }}
 @endcomponent
+@endif
+
+
 
 <div class="container-fluid">
     <div class="wrap-cashier">
@@ -44,12 +81,20 @@ CMS | Cashflow
             <div class="boxHeader">
                 {{-- filter:start --}}
                 <form class="row" method="GET">
-                    <div class="col-8">
+                    @if(Auth::user()->roles->first()->name == 'Cashier')
+                    <div class="col-4">
 
+                    </div>
+                    <div class="col-8" style="text-align: right;">
                         <a href="{{ route('cashflow.create') }}" class="btn btn-primary _btn" role="button">
                             <i class='bx bx-plus'></i> Add new
                         </a>
-
+                    </div>
+                    @else
+                    <div class="col-8">
+                        <a href="{{ route('cashflow.create') }}" class="btn btn-primary _btn" role="button">
+                            <i class='bx bx-plus'></i> Add new
+                        </a>
                     </div>
                     <div class="col-4 boxContent">
                         <div class="boxSearch _form-group">
@@ -61,6 +106,7 @@ CMS | Cashflow
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
+                    @endif
                 </form>
                 {{-- filter:end --}}
             </div>
@@ -68,7 +114,7 @@ CMS | Cashflow
         <div class="card-body table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
-                    <tr>
+                    <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">Datetime <span class="dividerHr"></span></th>
                         <th class="heightHr">Cashier <span class="dividerHr"></span></th>

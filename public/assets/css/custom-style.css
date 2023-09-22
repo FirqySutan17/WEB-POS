@@ -379,7 +379,7 @@ textarea.form-control {
   display: flex;
   justify-content: right;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .fa-folder-open {
