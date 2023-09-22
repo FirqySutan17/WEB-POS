@@ -603,7 +603,7 @@ CMS | Transaction
 
         function proceed_enter() {
             removeElements();
-            var product_code = $('#input-scanner').val().trim() == '' ? $('#input-typing').val().trim() : $('#input-scanner').val().trim();
+            var product_code = $('#input-scanner').val().trim() == '' ? $('#select_product').val().trim() : $('#input-scanner').val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
@@ -622,7 +622,7 @@ CMS | Transaction
 
         function clearInputItem() {
             $('#input-scanner').val('');
-            $('#input-typing').val('');
+            $('#select_product').val(null).trigger('change');
         }
 
         function search_product(keyword) {
@@ -816,49 +816,55 @@ CMS | Transaction
 
     <script>
         $(function() {
-        //parent category
-        $('#select_membership').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('membership.select') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.code + " | " + item.name + " | " + item.phone,
-                                phone: item.phone,
-                                id: item.id
-                            }
-                        })
-                    };
+            //parent category
+            $('#select_membership').select2({
+                theme: 'bootstrap4',
+                language: "{{ app()->getLocale() }}",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route('membership.select') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    text: item.code + " | " + item.name + " | " + item.phone,
+                                    phone: item.phone,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    }
                 }
-            }
-        });
+            });
 
-        $('#select_product').select2({
-            theme: 'bootstrap4 select-product-custom',
-            language: "",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('product.select_trans') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
+            $('#select_product').select2({
+                theme: 'bootstrap4 select-product-custom',
+                language: "",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route('product.select2_product') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    text: item.code + " | " + item.name,
+                                    id: item.code
+                                }
+                            })
+                        };
+                    }
                 }
-            }
-    });
+            });
+
+            $("#select_product").on('change', function() {
+                if ($("#select_product").val()) {
+                    proceed_enter();
+                }
+            });
         });
     </script>
 
