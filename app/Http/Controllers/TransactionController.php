@@ -81,6 +81,10 @@ class TransactionController extends Controller
         return view('admin.transaction.create-copy', compact('no_invoice', 'product_discount', 'memberships'));
     }
 
+    public function display_second() {
+        return view('admin.transaction.display-second');
+    }
+
     /**
      * Store a newly created resource in storage.
      *

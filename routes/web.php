@@ -107,6 +107,7 @@ Route::post('/closing_shift', [App\Http\Controllers\ShiftManagementController::c
 // Transaction Route
 Route::resource('/transaction', App\Http\Controllers\TransactionController::class);
 Route::get('/transaction/receipt/{transaction}', [App\Http\Controllers\TransactionController::class, 'receipt'])->name('transaction.receipt');
+Route::get('/customer-display', [App\Http\Controllers\TransactionController::class, 'display_second'])->name('transaction.displaysecond');
 Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::class, 'summary'])->name('transaction.summary');
 Route::get('/list-draft', [App\Http\Controllers\TransactionController::class, 'index_draft'])->name('transaction.listdraft');
 Route::post('/check-pin', [App\Http\Controllers\TransactionController::class, 'check_pin'])->name('transaction.checkpin');
