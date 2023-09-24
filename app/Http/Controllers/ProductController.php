@@ -86,7 +86,7 @@ class ProductController extends Controller
 
                 if ($products->is_vat == 1) {
                     $vat_percent    = config('app.vat_amount');
-                    $vat_amount     = ($products->price_store / 100) * $vat_percent;
+                    $vat_amount     = round(($products->price_store / 100) * $vat_percent);
                     $products->price_store = $products->price_store + $vat_amount;
                 }
             }

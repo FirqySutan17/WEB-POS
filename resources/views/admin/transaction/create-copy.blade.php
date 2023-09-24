@@ -155,6 +155,7 @@ CMS | Transaction
                 <form id="form-transaction" action="{{ route('transaction.store') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
+                    <input name="invoice_no" type="hidden" value="{{ $no_invoice }}" required readonly tabindex="0" />
                     <input id="input_status" type="hidden" name="status" value="FINISH">
                     <div class="card" style="margin: auto;">
                         <div class="card-body _card-body">
@@ -515,6 +516,7 @@ CMS | Transaction
             let payment_method = $("#payment_method option:selected").val();
 
             let cash_input  = $("#tanpa-rupiah").val();
+            cash_input = cash_input.replace(",", "");
             let cash_amount = Number(cash_input.replace(".", ""));
 
             let total_price_item = 0;
@@ -572,17 +574,6 @@ CMS | Transaction
             $("#total_qty").text(total_qty);
         }
 
-        $('#input-typing').unbind('keyup');
-        $('#input-typing').bind('keyup', function (e) {
-            removeElements();
-            var code = e.keyCode || e.which;
-            let value = $('#input-typing').val();
-            let len_char = value.length;
-            if (len_char >= 3 && code != 13) {
-                search_product(value);
-            }
-        });
-
         $('#input-scanner').unbind('keyup');
         $('#input-scanner').bind('keyup', function (e) {
             var code = e.keyCode || e.which;
@@ -596,13 +587,8 @@ CMS | Transaction
             $("#input-typing").val(value);
             proceed_enter();
         }
-        function removeElements() {
-            $(".list").empty();
-            $(".list").addClass('stay-hidden');
-        }
 
         function proceed_enter() {
-            removeElements();
             var product_code = $('#input-scanner').val().trim() == '' ? $('#select_product').val().trim() : $('#input-scanner').val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
@@ -617,38 +603,11 @@ CMS | Transaction
             } else {
                 add_product_item(product_code);
             }
-            removeElements();
         }
 
         function clearInputItem() {
             $('#input-scanner').val('');
             $('#select_product').val(null).trigger('change');
-        }
-
-        function search_product(keyword) {
-            $.ajax({
-                url: "{{ route('product.select') }}",
-                type: "POST",
-                data: {
-                    "_token": `{{ csrf_token() }}`,
-                    "q": keyword,
-                },
-                beforeSend: function () {
-                    removeElements();
-                },
-                success: function(response) {
-                    console.log(response);
-                    let data = response;
-                    let html_input = "";
-                    if (data.length > 0) {
-                        $.each(data, function(i, item) {
-                            html_input += `<option onclick="displayNames('${item.code}', '${item.code} | ${item.name}')" class="list-items" value="${item.code}">${item.code} | ${item.name}</option>`;
-                        })
-                    }
-                    $(".list").html(html_input);
-                    $(".list").removeClass("stay-hidden");
-                }
-            });
         }
 
         function add_product_item(product_code) {
@@ -760,7 +719,9 @@ CMS | Transaction
             });
 
             var kembali = total_price_item - nominal_number;
-            kembalian.value = formatRupiah(kembali.toString());
+            if (nominal_number >= total_price_item) {
+                kembalian.value = formatRupiah(kembali.toString());
+            }
         });
         
         /* Dengan Rupiah */
@@ -910,7 +871,6 @@ CMS | Transaction
                         "email": email
                     },
                     beforeSend: function () {
-                        // removeElements();
                     },
                     success: function(response) {
                         console.log(response);

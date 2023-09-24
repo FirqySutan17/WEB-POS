@@ -286,22 +286,19 @@ CMS | Transaction
                                             </div>
 
                                             <!-- role -->
-                                            <div class="form-group _form-group">
-                                                <label for="select_membership" class="font-weight-bold"
-                                                    style="width: 100%">
-                                                    Membership <span class="wajib">*</span>
-                                                    <a href="javascript:void(0)" onclick="addMembers()" class="new-mem"
-                                                        style="float: right;">
-                                                        <i class='bx bx-plus'
-                                                            style="display: inline-block; vertical-align: middle; font-weight: 700; font-size: 14px"></i>
-                                                        New member
-                                                    </a>
-                                                </label>
-                                                <input type="text" class="form-control"
-                                                    value="{{ $transaction->membership->code }} | {{ $transaction->membership->name }} | {{ $transaction->membership->phone }}"
+                                            @if (!empty($transaction->membership_id))
+                                                <div class="form-group _form-group">
+                                                    <label for="select_membership" class="font-weight-bold"
+                                                        style="width: 100%">
+                                                        Membership
+                                                    </label>
+                                                    <input type="text" class="form-control"
+                                                    value="{{ $transaction->membership?->code }} | {{ $transaction->membership?->name }} | {{ $transaction->membership?->phone }}"
                                                     readonly />
-                                                <!-- error message -->
-                                            </div>
+                                                    
+                                                    <!-- error message -->
+                                                </div>
+                                            @endif
                                             <!-- end role -->
 
                                             <div
@@ -494,8 +491,6 @@ CMS | Transaction
                 var price_item = Number($(this).val());
                 total_price_item += price_item;
             });
-            // var vat_price = total_price_item * (vat_amount / 100);
-            // final_total_price_item = total_price_item + vat_price;
             $("#total_transaction").text(formatRupiah(total_price_item.toString()));
         }
 
@@ -638,6 +633,7 @@ CMS | Transaction
                             ${formatRupiah(final_price.toString())}
                         `;
                     }
+                    var total_price_item = final_price * qty;
                     var html_item = `
                         <tr id="${item_id}">
                             <td style="width: 45%; vertical-align: middle">
@@ -645,7 +641,7 @@ CMS | Transaction
                                 <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
                                 <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
                                 <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
-                                <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
+                                <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${total_price_item}" tabindex="0"/>
                                 ${product.code + ' - ' + product.name}
                             </td>
                             <td style="width: 19%; vertical-align: middle; text-align: center">

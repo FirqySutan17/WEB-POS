@@ -191,11 +191,11 @@
                 @if ($transaction->payment_method == 'Tunai')
                 <tr>
                     <td class="description">TUNAI</td>
-                    <td class="price">Rp {{$transaction->cash}}</td>
+                    <td class="price">Rp {{ number_format($transaction->cash) }}</td>
                 </tr>
                 <tr>
                     <td class="description">KEMBALIAN</td>
-                    <td class="price">Rp {{$transaction->kembalian}}</td>
+                    <td class="price">Rp {{ number_format($transaction->kembalian) }}</td>
                 </tr>
                 @endif
             </tbody>
@@ -225,6 +225,7 @@
         </p>
     </div>
     <button id="btnPrint" class="hidden-print">Print</button>
+    <a href="{{ route('transaction.create') }}" class="hidden-print">Back to Transaction</button>
     <script>
         let buttonPrint = document.getElementById("btnPrint");
         buttonPrint.addEventListener("click", function() {

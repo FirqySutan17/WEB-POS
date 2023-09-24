@@ -70,7 +70,9 @@ CMS | Report Stock
                         <th>Item <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">Begin <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">In <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">In Adj<span class="dividerHr"></span></th>
                         <th class="heightHr center-text">Out <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">Out Adj<span class="dividerHr"></span></th>
                         <th class="heightHr center-text">End <span class="dividerHr"></span></th>
                     </tr>
                 </thead>
@@ -79,7 +81,7 @@ CMS | Report Stock
                     @foreach ($data as $item)
                     <tr>
                         <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 50%; vertical-align: middle">
+                        <td style="width: 35%; vertical-align: middle">
                             {{ $item->name." - ".$item->code }}
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">{{
@@ -88,7 +90,13 @@ CMS | Report Stock
                             {{ number_format($item->qty_in) }}
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">
+                            {{ number_format($item->IN_adj) }}
+                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">
                             {{ number_format($item->qty_out) }}
+                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                            {{ number_format($item->out_adj) }}
                         </td>
                         <td class="center-text" style="width: 10%; vertical-align: middle">
                             {{ number_format($item->qty_end) }}

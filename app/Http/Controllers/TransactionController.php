@@ -33,17 +33,15 @@ class TransactionController extends Controller
     {
         $user = Auth::user();
         $transactions = [];
-        $query = Transaction::orderBy('id', 'desc')->with('user');
+        $query = Transaction::orderBy('trans_date', 'desc')->orderBy('id', 'desc')->with('user');
         if ($request->get('keyword')) {
             $query->where('invoice_no', $request->keyword);
         }
-        // if ($user->roles->first()->name == 'Cashier') {
-        //     $query->where('emp_no', $user->employee_id);
-        // }
+        if ($user->roles->first()->name == 'Cashier') {
+            $query->where('emp_no', $user->employee_id);
+        }
         $transactions = $query->paginate(9);
         // $session_user = Auth::user()->roles()->first()->name;
-        // dd($transaction);
-        // dd($session_user);
         return view('admin.transaction.index', compact('transactions'));
     }
 
@@ -94,12 +92,12 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'invoice_no' => 'required|string|unique:tr_transaction,invoice_no',
-            'payment_method' => 'required',
+            'invoice_no' => 'required|string|unique:tr_transaction,invoice_no'
         ]);
 
         $receipt_no = $request->payment_method == 'Tunai' ? rand(10000000, 99999999) : $request->receipt_no;
         $product_code       = $request->product_code;
+        
         if (empty($product_code)) {
             return redirect()->back()->withInput($request->all())->withErrors("No product chosen!");
         }
@@ -107,8 +105,8 @@ class TransactionController extends Controller
         $discount     = $request->discount_store;
         $quantity     = $request->quantity;
         $final_price  = $request->final_price;
+        $total_price  = $request->total_price;
         $status  = $request->status;
-        // dd($request->all());
         DB::beginTransaction();
         try {
             
@@ -124,14 +122,11 @@ class TransactionController extends Controller
                     "price"         => $final_price[$i],
                 ];
                 $transaction_details[] = $trans_detail;
-                $sub_price += $final_price[$i];
+                $sub_price += $total_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
             $total_price = $sub_price;
             $vat_amount = 0;
-            // $vat_amount = config('app.vat_amount');
-            // $vat_price  = ($sub_price / 100) * $vat_amount;
-            // $total_price = $sub_price + $vat_price;
             $kembalian = $request->payment_method == 'Tunai' && $status == 'FINISH' ? $cash - $total_price : 0;
 
             if ($status == 'FINISH' && $request->payment_method == 'Tunai' && $cash < $total_price) {
@@ -145,13 +140,14 @@ class TransactionController extends Controller
                 'receipt_no'    => $receipt_no,
                 'trans_date'    => date('Y-m-d'),
                 'payment_method'    => $request->payment_method,
-                'cash'          => str_replace(".", "", $request->cash),
+                'cash'          => (int) str_replace(".", "", $request->cash),
                 'sub_price'     => $sub_price,
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
                 'status'        => $status,
-                'kembalian'     => str_replace(".", "", $request->kembalian)
+                'kembalian'     => (int) str_replace(".", "", $request->kembalian)
             ];
+            
             $transaction = Transaction::create($trans);
             
             if ($transaction) {
@@ -278,8 +274,8 @@ class TransactionController extends Controller
         $discount     = $request->discount_store;
         $quantity     = $request->quantity;
         $final_price  = $request->final_price;
+        $total_price  = $request->total_price;
         $status         = $request->status;
-        
         DB::beginTransaction();
         try {
             
@@ -295,7 +291,7 @@ class TransactionController extends Controller
                     "price"         => $final_price[$i],
                 ];
                 $transaction_details[] = $trans_detail;
-                $sub_price += $final_price[$i];
+                $sub_price += $total_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
             $total_price = $sub_price;
@@ -318,7 +314,6 @@ class TransactionController extends Controller
                 'status'        => $status,
                 'kembalian'        => $kembalian
             ];
-            // dd($transaction, $transaction_details);
             $transaction_update = Transaction::find($transaction->id)->update($trans);
             
             

@@ -142,49 +142,89 @@ class ReportController extends Controller
                 Sum(bg + in_rcv + in_adj - out_trans - out_adj) qty_end
                 FROM   (
                     SELECT product_code,
-                                quantity * -1 AS bg,
-                                0             IN_rcv,
-                                0             in_adj,
-                                0             out_trans,
-                                0             out_adj
-                        FROM   tr_transaction_detail a,
-                                tr_transaction b
-                        WHERE  a.invoice_no = b.invoice_no
-                                AND b.trans_date < '".$sdate."'
-                        UNION ALL
-                        SELECT product_code,
-                                quantity AS bg,
-                                0        IN_rcv,
-                                0        in_adj,
-                                0        out_trans,
-                                0        out_adj
-                        FROM   tr_receive_detail a,
-                                tr_receive b
-                        WHERE  a.receive_code = b.receive_code
-                                AND b.receive_date < '".$sdate."'
-                        UNION ALL
-                        SELECT product_code,
-                                0        AS bg,
-                                quantity IN_rcv,
-                                0        in_adj,
-                                0        out_trans,
-                                0        out_adj
-                        FROM   tr_receive_detail a,
-                                tr_receive b
-                        WHERE  a.receive_code = b.receive_code
-                                AND b.receive_date BETWEEN '".$sdate."' AND '".$edate."'
-                        UNION ALL
-                        SELECT product_code,
-                                0        AS bg,
-                                0        IN_rcv,
-                                0        in_adj,
-                                quantity out_trans,
-                                0        out_adj
-                        FROM   tr_transaction_detail a,
-                                tr_transaction b
-                        WHERE  a.invoice_no = b.invoice_no
-                                AND b.trans_date BETWEEN '".$sdate."' AND '".$edate."') AS tbl,
-                        products cd
+                            quantity * -1 AS bg,
+                            0             IN_rcv,
+                            0             in_adj,
+                            0             out_trans,
+                            0             out_adj
+                    FROM   tr_transaction_detail a,
+                            tr_transaction b
+                    WHERE  a.invoice_no = b.invoice_no
+                            AND b.trans_date < '".$sdate."'
+                    UNION ALL
+                    SELECT product_code,
+                            quantity AS bg,
+                            0        IN_rcv,
+                            0        in_adj,
+                            0        out_trans,
+                            0        out_adj
+                    FROM   tr_receive_detail a,
+                            tr_receive b
+                    WHERE  a.receive_code = b.receive_code
+                            AND b.receive_date < '".$sdate."'
+                    UNION ALL
+                    SELECT product_code,
+                        qty * -1 AS bg,
+                        0             IN_rcv,
+                        0             in_adj,
+                        0             out_trans,
+                        0             out_adj
+                    FROM   tr_adjust_stock a
+                    WHERE a.type = 'OUT'
+                        AND a.date < '".$sdate."'
+                    UNION ALL
+                    SELECT product_code,
+                        qty AS bg,
+                        0             IN_rcv,
+                        0             in_adj,
+                        0             out_trans,
+                        0             out_adj
+                    FROM   tr_adjust_stock a
+                    WHERE a.type = 'IN'
+                        AND a.date < '".$sdate."'
+                    UNION ALL
+                    SELECT product_code,
+                            0        AS bg,
+                            quantity IN_rcv,
+                            0        in_adj,
+                            0        out_trans,
+                            0        out_adj
+                    FROM   tr_receive_detail a,
+                            tr_receive b
+                    WHERE  a.receive_code = b.receive_code
+                            AND b.receive_date BETWEEN '".$sdate."' AND '".$edate."'
+                    UNION ALL
+                    SELECT product_code,
+                            0 bg,
+                            0             IN_rcv,
+                            qty as             in_adj,
+                            0             out_trans,
+                            0 out_adj
+                    FROM   tr_adjust_stock a
+                    WHERE a.type = 'IN'
+                            AND a.date BETWEEN '".$sdate."' AND '".$edate."'
+                    UNION ALL
+                    SELECT product_code,
+                            0        AS bg,
+                            0        IN_rcv,
+                            0        in_adj,
+                            quantity out_trans,
+                            0        out_adj
+                    FROM   tr_transaction_detail a,
+                            tr_transaction b
+                    WHERE  a.invoice_no = b.invoice_no
+                            AND b.trans_date BETWEEN '".$sdate."' AND '".$edate."'
+                    UNION ALL
+                    SELECT product_code,
+                            0 bg,
+                            0             IN_rcv,
+                            0             in_adj,
+                            0             out_trans,
+                            qty as out_adj
+                    FROM   tr_adjust_stock a
+                    WHERE a.type = 'OUT'
+                            AND a.date BETWEEN '".$sdate."' AND '".$edate."'
+                ) AS tbl, products cd
                 WHERE  tbl.product_code = cd.code ".$where."
                 GROUP  BY product_code, cd.name 
             ";

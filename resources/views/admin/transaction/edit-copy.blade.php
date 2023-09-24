@@ -152,10 +152,12 @@ CMS | Transaction
             @endif
 
             <div class="col-12">
-                <form id="form-transaction" action="{{ route('transaction.store') }}" method="POST"
+                <form id="form-transaction" action="{{ route('transaction.update', ['transaction' => $transaction]) }}" method="POST"
                     enctype="multipart/form-data">
+                    @method('PUT')
                     @csrf
                     <input id="input_status" type="hidden" name="status" value="FINISH">
+                    <input name="invoice_no" type="hidden" value="{{ $transaction->invoice_no }}" required readonly tabindex="0" />
                     <div class="card" style="margin: auto;">
                         <div class="card-body _card-body">
                             <div class="row d-flex align-items-stretch">
@@ -179,7 +181,7 @@ CMS | Transaction
                                                     tabindex="1" autofocus />
                                             </div>
                                             <div class="col-6">
-                                                {{-- <input type="text" id="input-typing"
+                                                {{-- <input type="text" id="select_product"
                                                     placeholder="Cari barang manual disini" class="form-control"
                                                     tabindex="2"
                                                     style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " />
@@ -190,7 +192,7 @@ CMS | Transaction
                                                     </label> --}}
                                                     <select id="select_product" name="product"
                                                         data-placeholder="Cari barang manual disini"
-                                                        class="custom-select">
+                                                        class="custom-select" tabindex="1">
 
                                                     </select>
                                                 </div>
@@ -274,8 +276,7 @@ CMS | Transaction
                                                 <input id="tanpa-rupiah" style="text-align: right"
                                                     placeholder="Ex: 50000" name="cash" type="text" {{
                                                     $transaction->payment_method != 'Tunai' ? 'readonly' : '' }}
-                                                class="form-control elm_cash_input" tabindex="4" value="{{
-                                                number_format($transaction->cash) }}" />
+                                                class="form-control elm_cash_input" tabindex="4" value="{{ number_format(is_numeric($transaction->cash) ? $transaction->cash : 0) }}" />
                                             </div>
                                         </div>
 
@@ -350,11 +351,6 @@ CMS | Transaction
 
                                             <div
                                                 style="width: 100%; display: flex; align-items: center; margin-top: 10px">
-                                                <button onclick="submit_form('DRAFT')" type="button"
-                                                    class="btn btn-success _btn-success px-4"
-                                                    style="width: 100%; margin-right:5px" ; tabindex="6">
-                                                    SAVE DRAFT
-                                                </button>
                                                 <button id="btn_delete_1" onblur="onblur_color('1')"
                                                     onfocus="onfocus_color('1')" onclick="submit_form('FINISH')"
                                                     type="button" class="btn btn-primary _btn-primary px-4"
@@ -523,6 +519,7 @@ CMS | Transaction
             let payment_method = $("#payment_method option:selected").val();
 
             let cash_input  = $("#tanpa-rupiah").val();
+            cash_input = cash_input.replace(",", "");
             let cash_amount = Number(cash_input.replace(".", ""));
 
             let total_price_item = 0;
@@ -530,7 +527,6 @@ CMS | Transaction
                 var price_item = Number($(this).val());
                 total_price_item += price_item;
             });
-            // console.log(status, payment_method, cash_amount, total_price_item);
             if ((status == 'FINISH' && payment_method.toUpperCase() == 'TUNAI') && total_price_item > cash_amount) {
                 return Swal.fire({
                     title: 'Oops...',
@@ -578,17 +574,6 @@ CMS | Transaction
             $("#total_qty").text(total_qty);
         }
 
-        $('#input-typing').unbind('keyup');
-        $('#input-typing').bind('keyup', function (e) {
-            removeElements();
-            var code = e.keyCode || e.which;
-            let value = $('#input-typing').val();
-            let len_char = value.length;
-            if (len_char >= 3 && code != 13) {
-                search_product(value);
-            }
-        });
-
         $('#input-scanner').unbind('keyup');
         $('#input-scanner').bind('keyup', function (e) {
             var code = e.keyCode || e.which;
@@ -598,18 +583,8 @@ CMS | Transaction
             
         });
 
-        function displayNames(value, text) {
-            $("#input-typing").val(value);
-            proceed_enter();
-        }
-        function removeElements() {
-            $(".list").empty();
-            $(".list").addClass('stay-hidden');
-        }
-
         function proceed_enter() {
-            removeElements();
-            var product_code = $('#input-scanner').val().trim() == '' ? $('#input-typing').val().trim() : $('#input-scanner').val().trim();
+            var product_code = $('#input-scanner').val().trim() == '' ? $('#select_product').val().trim() : $('#input-scanner').val().trim();
             var item_product = "item_product_" + product_code;
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
@@ -623,39 +598,11 @@ CMS | Transaction
             } else {
                 add_product_item(product_code);
             }
-            removeElements();
         }
 
         function clearInputItem() {
             $('#input-scanner').val('');
-            $('#input-typing').val('');
-        }
-
-
-        function search_product(keyword) {
-            $.ajax({
-                url: "{{ route('product.select') }}",
-                type: "POST",
-                data: {
-                    "_token": `{{ csrf_token() }}`,
-                    "q": keyword,
-                },
-                beforeSend: function () {
-                    removeElements();
-                },
-                success: function(response) {
-                    console.log(response);
-                    let data = response;
-                    let html_input = "";
-                    if (data.length > 0) {
-                        $.each(data, function(i, item) {
-                            html_input += `<option onclick="displayNames('${item.code}', '${item.code} | ${item.name}')" class="list-items" value="${item.code}">${item.code} | ${item.name}</option>`;
-                        })
-                    }
-                    $(".list").html(html_input);
-                    $(".list").removeClass("stay-hidden");
-                }
-            });
+            $('#select_product').val(null).trigger('change');
         }
 
         function add_product_item(product_code, qty = 1) {
@@ -693,6 +640,8 @@ CMS | Transaction
                             ${formatRupiah(final_price.toString())}
                         `;
                     }
+                    
+                    var total_price_item = final_price * qty;
                     var html_item = `
                         <tr id="${item_id}">
                             <td style="width: 35%; vertical-align: middle">
@@ -700,7 +649,7 @@ CMS | Transaction
                                 <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
                                 <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
                                 <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
-                                <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
+                                <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${total_price_item}" tabindex="0"/>
                                 ${product.code + ' - ' + product.name}
                             </td>
                             <td style="width: 19%; vertical-align: middle; text-align: center">
@@ -826,7 +775,7 @@ CMS | Transaction
             language: "",
             allowClear: true,
             ajax: {
-                url: "{{ route('product.select_trans') }}",
+                url: "{{ route('product.select2_product') }}",
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
