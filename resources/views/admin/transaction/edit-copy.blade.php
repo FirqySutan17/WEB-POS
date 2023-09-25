@@ -152,12 +152,13 @@ CMS | Transaction
             @endif
 
             <div class="col-12">
-                <form id="form-transaction" action="{{ route('transaction.update', ['transaction' => $transaction]) }}" method="POST"
-                    enctype="multipart/form-data">
+                <form id="form-transaction" action="{{ route('transaction.update', ['transaction' => $transaction]) }}"
+                    method="POST" enctype="multipart/form-data">
                     @method('PUT')
                     @csrf
                     <input id="input_status" type="hidden" name="status" value="FINISH">
-                    <input name="invoice_no" type="hidden" value="{{ $transaction->invoice_no }}" required readonly tabindex="0" />
+                    <input name="invoice_no" type="hidden" value="{{ $transaction->invoice_no }}" required readonly
+                        tabindex="0" />
                     <div class="card" style="margin: auto;">
                         <div class="card-body _card-body">
                             <div class="row d-flex align-items-stretch">
@@ -192,7 +193,7 @@ CMS | Transaction
                                                     </label> --}}
                                                     <select id="select_product" name="product"
                                                         data-placeholder="Cari barang manual disini"
-                                                        class="custom-select" tabindex="1">
+                                                        class="custom-select">
 
                                                     </select>
                                                 </div>
@@ -276,7 +277,9 @@ CMS | Transaction
                                                 <input id="tanpa-rupiah" style="text-align: right"
                                                     placeholder="Ex: 50000" name="cash" type="text" {{
                                                     $transaction->payment_method != 'Tunai' ? 'readonly' : '' }}
-                                                class="form-control elm_cash_input" tabindex="4" value="{{ number_format(is_numeric($transaction->cash) ? $transaction->cash : 0) }}" />
+                                                class="form-control elm_cash_input" tabindex="4" value="{{
+                                                number_format(is_numeric($transaction->cash) ? $transaction->cash : 0)
+                                                }}" />
                                             </div>
                                         </div>
 
@@ -391,7 +394,7 @@ CMS | Transaction
                                     Membership ID <span class="wajib">*</span>
                                 </label>
                                 <input id="input_membership_id" type="text" class="form-control input_membership"
-                                    placeholder="Input Employee ID.." />
+                                    placeholder="Auto Generate" readonly />
                                 <!-- error message -->
                             </div>
                             <!-- end Employee ID -->
@@ -600,6 +603,28 @@ CMS | Transaction
             }
         }
 
+        function displayNames(value, text) {
+            $("#input-typing").val(value);
+            proceed_enter();
+        }
+
+        function proceed_enter() {
+            var product_code = $('#input-scanner').val().trim() == '' ? $('#select_product').val().trim() : $('#input-scanner').val().trim();
+            var item_product = "item_product_" + product_code;
+            if ($(`#${item_product}`).length > 0) {
+                var str_quantity_product = $(`#quantity_${item_product}`).val();
+                var quantity_product = parseInt(str_quantity_product) + 1;
+                var final_price = Number($(`#final_price_${item_product}`).val()) * quantity_product;
+                
+                $(`#quantity_${item_product}`).val(quantity_product);
+                $(`#total_price_${item_product}`).val(final_price);
+                $(`#text_final_price_${item_product}`).text(formatRupiah(final_price.toString()));
+                calculate_vat();
+            } else {
+                add_product_item(product_code);
+            }
+        }
+
         function clearInputItem() {
             $('#input-scanner').val('');
             $('#select_product').val(null).trigger('change');
@@ -771,25 +796,31 @@ CMS | Transaction
         });
 
         $('#select_product').select2({
-            theme: 'bootstrap4 select-product-custom',
-            language: "",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('product.select2_product') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.name,
-                                id: item.id
-                            }
-                        })
-                    };
+                theme: 'bootstrap4 select-product-custom',
+                language: "",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route('product.select2_product') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    text: item.code + " | " + item.name,
+                                    id: item.code
+                                }
+                            })
+                        };
+                    }
                 }
-            }
-    });
+            });
+
+            $("#select_product").on('change', function() {
+                if ($("#select_product").val()) {
+                    proceed_enter();
+                }
+            });
         });
     </script>
 

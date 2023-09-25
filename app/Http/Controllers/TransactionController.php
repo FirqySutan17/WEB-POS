@@ -70,7 +70,7 @@ class TransactionController extends Controller
         $userdata = Auth::user();
         // $session_user = $request->session()->get('role');
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
-        $no_invoice = "INV".$userdata->id.$userdata->employee_id.strtotime(date('YmdHis'));
+        $no_invoice = "INV".$userdata->id.strtotime(date('YmdHis'));
         $memberships = Membership::all();
         // if (Session::get('receipt')) {
         //     dd(Session::get('receipt'));
@@ -393,7 +393,7 @@ class TransactionController extends Controller
             $return_data["message"] = "Code / Phone Number / Email already used!";
         } else {
             $membership = Membership::create([
-                'code' => $request->code,
+                'code' => "MBR-".$userdata->id.strtotime(date('YmdHis')),
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'email'   => $request->email,

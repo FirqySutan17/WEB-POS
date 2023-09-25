@@ -390,7 +390,7 @@ CMS | Transaction
                                     Membership ID <span class="wajib">*</span>
                                 </label>
                                 <input id="input_membership_id" type="text" class="form-control input_membership"
-                                    placeholder="Input Employee ID.." />
+                                    placeholder="Auto Generate" readonly />
                                 <!-- error message -->
                             </div>
                             <!-- end Employee ID -->
