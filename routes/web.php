@@ -113,6 +113,8 @@ Route::get('/list-draft', [App\Http\Controllers\TransactionController::class, 'i
 Route::post('/check-pin', [App\Http\Controllers\TransactionController::class, 'check_pin'])->name('transaction.checkpin');
 Route::post('/transaction/add-member', [App\Http\Controllers\TransactionController::class, 'add_member'])->name('transaction.addmember');
 Route::get('/transaction/query/{transaction}', [App\Http\Controllers\TransactionController::class, 'query'])->name('transaction.query');
+Route::post('/transaction/item-display-store', [App\Http\Controllers\TransactionController::class, 'item_display_store'])->name('transaction.itemdisplay_store');
+Route::get('/item-display', [App\Http\Controllers\TransactionController::class, 'item_display'])->name('transaction.itemdisplay');
 
 // Report Route
 Route::match(['get', 'post'], '/report/stock', [App\Http\Controllers\ReportController::class, 'report_stock'])->name('report.stock');

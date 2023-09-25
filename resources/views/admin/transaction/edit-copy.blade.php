@@ -540,17 +540,68 @@ CMS | Transaction
             $("#form-transaction").submit();
         }
 
+        function store_to_display() {
+            let product_code = $("input[name^=product_code]").map(function(idx, elem) {
+                return $(elem).val();
+            }).get();
+
+            let product_name = $("input[name^=product_name]").map(function(idx, elem) {
+                return $(elem).val();
+            }).get();
+
+            let basic_price = $("input[name^=basic_price]").map(function(idx, elem) {
+                return $(elem).val();
+            }).get();
+
+            let discount_store = $("input[name^=discount_store]").map(function(idx, elem) {
+                return $(elem).val();
+            }).get();
+
+            let final_price = $("input[name^=final_price]").map(function(idx, elem) {
+                return $(elem).val();
+            }).get();
+
+            // let total_price = $("input[name^=total_price]").map(function(idx, elem) {
+            //     return $(elem).val();
+            // }).get();
+
+            let quantity = $("input[name^=quantity]").map(function(idx, elem) {
+                return $(elem).val();
+            }).get();
+
+            // <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
+            // <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
+            // <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
+            // <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
+            // <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
+            // <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
+            $.ajax({
+                url: "{{ route('transaction.itemdisplay_store') }}",
+                type: "POST",
+                data: {
+                    "_token": `{{ csrf_token() }}`,
+                    "product_code": product_code,
+                    "product_name": product_name,
+                    "basic_price": basic_price,
+                    "discount_store": discount_store,
+                    "final_price": final_price,
+                    // "total_price": total_price,
+                    "quantity": quantity,
+                },
+                success: function(response) {
+                   console.log(response)
+                }
+            });
+        }
+
         function calculate_vat() {
             clearInputItem();
-            calculate_total();
-            var total_price_item = 0;
-            $('.total_price_item').each(function(i, obj) {
-                var price_item = Number($(this).val());
-                total_price_item += price_item;
-            });
-            // var vat_price = total_price_item * (vat_amount / 100);
-            // final_total_price_item = total_price_item + vat_price;
-            $("#total_transaction").text(formatRupiah(total_price_item.toString()));
+            (function(next) {
+                calculate_total();
+                next()
+            }(function() {
+                store_to_display();
+            }))
         }
 
         function calculate_total() {
@@ -575,6 +626,13 @@ CMS | Transaction
             $("#total_discount").text(formatRupiah(total_discount.toString()));
             $("#sub_total").text(formatRupiah(sub_total.toString()));
             $("#total_qty").text(total_qty);
+
+            var total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+            $("#total_transaction").text(formatRupiah(total_price_item.toString()));
         }
 
         $('#input-scanner').unbind('keyup');
@@ -671,6 +729,7 @@ CMS | Transaction
                         <tr id="${item_id}">
                             <td style="width: 35%; vertical-align: middle">
                                 <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
+                                <input id="product_name_${item_id}" name="product_name[]" type="hidden" class="form-control" value="${product.name}" tabindex="0"/>
                                 <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
                                 <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
                                 <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>

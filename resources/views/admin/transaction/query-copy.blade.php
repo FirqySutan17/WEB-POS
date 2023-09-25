@@ -486,12 +486,7 @@ CMS | Transaction
         function calculate_vat() {
             clearInputItem();
             calculate_total();
-            var total_price_item = 0;
-            $('.total_price_item').each(function(i, obj) {
-                var price_item = Number($(this).val());
-                total_price_item += price_item;
-            });
-            $("#total_transaction").text(formatRupiah(total_price_item.toString()));
+            
         }
 
         function calculate_total() {
@@ -516,6 +511,13 @@ CMS | Transaction
             $("#total_discount").text(formatRupiah(total_discount.toString()));
             $("#sub_total").text(formatRupiah(sub_total.toString()));
             $("#total_qty").text(total_qty);
+
+            var total_price_item = 0;
+            $('.total_price_item').each(function(i, obj) {
+                var price_item = Number($(this).val());
+                total_price_item += price_item;
+            });
+            $("#total_transaction").text(formatRupiah(total_price_item.toString()));
         }
 
         $('#input-typing').unbind('keyup');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
@@ -67,6 +68,7 @@ class TransactionController extends Controller
      */
     public function create()
     {
+        Cache::forget('item_display');
         $userdata = Auth::user();
         // $session_user = $request->session()->get('role');
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
@@ -91,6 +93,7 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        Cache::forget('item_display');
         $request->validate([
             'invoice_no' => 'required|string|unique:tr_transaction,invoice_no'
         ]);
@@ -259,7 +262,7 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
-        //
+        Cache::forget('item_display');
         $request->validate([
             'invoice_no' => 'required|string',
             'payment_method' => 'required',
@@ -416,5 +419,55 @@ class TransactionController extends Controller
         }
 
         return response()->json($user);
+    }
+
+    public function item_display_store(Request $request) {
+        $product_code   = $request->product_code;
+        $product_name   = $request->product_name;
+        $basic_price    = $request->basic_price;
+        $discount_store = $request->discount_store;
+        $final_price    = $request->final_price;
+        // $total_price    = $request->total_price;
+        $quantity       = $request->quantity;
+
+        $products = [];
+        $sub_total      = 0;
+        $sub_disc       = 0;
+        $grand_total    = 0;
+        Cache::forget('item_display');
+        if (!empty($product_code)) {
+            foreach ($product_code as $i => $v) {
+                $discount_amount    = $final_price[$i] != $basic_price[$i] ? ($basic_price[$i] - $final_price[$i]) * $quantity[$i] : 0;
+                $total_price        = $basic_price[$i] * $quantity[$i];
+                $prod = [
+                    "product_code" => $v,
+                    "product_name" => $product_name[$i],
+                    "basic_price" => $basic_price[$i],
+                    "discount_store" => $discount_store[$i],
+                    "discount_amount" => $discount_amount,
+                    "final_price"   => $final_price[$i] * $quantity[$i],
+                    "total_price"   => $total_price,
+                    "quantity"      => $quantity[$i]
+                ];
+
+                $sub_total += $total_price;
+                $sub_disc = $discount_amount > 0 ? $sub_disc + $discount_amount : $sub_disc;
+                $products[] = $prod;
+            }
+            $grand_total = $sub_total - $sub_disc;
+
+            $item_display = [
+                "products"  => $products,
+                "sub_total" => $sub_total,
+                "sub_disc"  => $sub_disc,
+                "grand_total"   => $grand_total
+            ];
+            Cache::forever('item_display', $item_display);
+        }
+    }
+
+    public function item_display() {
+        $item_display = Cache::has('item_display') ? Cache::get('item_display') : [];
+        return response()->json($item_display);
     }
 }

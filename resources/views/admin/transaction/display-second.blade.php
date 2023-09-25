@@ -156,110 +156,7 @@ CMS | Transaction
                 <div class="card-body">
                     <div class="list-product" style="height: 100%; overflow-y: auto">
                         <table class="item-order">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp; Disc 5%</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-                                        <p>(- Rp 1.500)</p>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp;</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp;</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp;</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp;</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp;</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp;</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">Lorem Ipsum
-                                            Dolor
-                                        </p>
-                                        <p>3x &nbsp; @10.000 &nbsp; &nbsp;</p>
-                                    </td>
-                                    <td>
-                                        <p style="margin-bottom: 0px; font-size: 16px">Rp 30.000</p>
-
-                                    </td>
-                                </tr>
+                            <tbody id="item-table">
                             </tbody>
                         </table>
                     </div>
@@ -307,7 +204,7 @@ CMS | Transaction
                                 </p>
                             </td>
                             <td>
-                                <p style="margin-bottom: 0px; font-size: 18px">Rp 120.000</p>
+                                <p style="margin-bottom: 0px; font-size: 18px" id="sub_total"></p>
                             </td>
                         </tr>
 
@@ -317,7 +214,7 @@ CMS | Transaction
                                 </p>
                             </td>
                             <td>
-                                <p style="margin-bottom: 0px; font-size: 18px">Rp 1.500</p>
+                                <p style="margin-bottom: 0px; font-size: 18px" id="sub_disc"></p>
 
                             </td>
                         </tr>
@@ -329,7 +226,7 @@ CMS | Transaction
                                 </p>
                             </td>
                             <td style="border-bottom: none !important">
-                                <p style="margin-bottom: 0px; font-size: 26px;font-weight: 600">Rp 118.500</p>
+                                <p style="margin-bottom: 0px; font-size: 26px;font-weight: 600" id="grand_total"></p>
 
                             </td>
                         </tr>
@@ -340,4 +237,111 @@ CMS | Transaction
     </div>
 </div>
 
+@push('javascript-internal')
+<script>
+    $(document).ready(function() {
+        setInterval(() => {
+            $.ajax({
+                url: "{{ route('transaction.itemdisplay') }}",
+                type: "GET",
+                data: {
+                },
+                success: function(data) {
+                    console.log(data)
+                    if (data.length < 1) {
+                        $("#sub_total").text('Rp 0')
+                        $("#sub_disc").text('Rp 0')
+                        $("#grand_total").text('Rp 0')
+                        return $("#item-table").empty()
+                    }
+
+                    let product_data = data.products
+                    let existing_product = []
+                    $.each(product_data, function(i, obj) {
+                        let code = obj.product_code
+                        let row_product = "item_product_" + code
+                        existing_product.push(row_product)
+                        if ($("#" + row_product).length > 0) {
+                            update_row(obj)
+                        } else {
+                            add_row(obj)
+                        }
+                    })
+
+                    let displayed_product = $(".item_product")
+                    $.each(displayed_product, function(i, obj) {
+                        let row_product = $(this).attr('id')
+                        console.log(row_product)
+                        if (!existing_product.includes(row_product)) {
+                            $("#" + row_product).remove();
+                        }
+                    })
+
+                    let sub_total    = data.sub_total
+                    let sub_disc     = data.sub_disc
+                    let grand_total  = data.grand_total
+                    $("#sub_total").text('Rp ' + formatRupiah(sub_total.toString()))
+                    $("#sub_disc").text('Rp ' + formatRupiah(sub_disc.toString()))
+                    $("#grand_total").text('Rp ' + formatRupiah(grand_total.toString()))
+                }
+            })
+        }, 3000);
+    });
+
+    function update_row(obj) {
+        let code = obj.product_code
+        let row_product = "item_product_" + code
+
+        let qty = obj.quantity
+        let discount_amount = obj.discount_amount
+        let final_price = obj.final_price
+
+        $(`#${row_product}_qty`).text(qty)
+        $(`#${row_product}_discount_amount`).text(formatRupiah(discount_amount.toString()))
+        $(`#${row_product}_final_price`).text(formatRupiah(final_price.toString()))
+    }
+
+    function add_row(obj) {
+        let code = obj.product_code
+        let row_product = "item_product_" + code
+
+        let text_discount = obj.discount_amount > 0 ? `&nbsp; &nbsp; Disc ${obj.discount_store}%` : '';
+        let text_discount_amount = obj.discount_amount > 0 ? `<p>(- Rp <span id="${row_product}_discount_amount">${formatRupiah(obj.discount_amount.toString())}</span>)</p>` : '';
+        let html = `
+            <tr class="item_product" id="${row_product}">
+                <td>
+                    <p style="font-weight: 600; margin-bottom: 0px; font-size: 16px">${obj.product_name}</p>
+                    <p>
+                        <span id="${row_product}_qty">${obj.quantity}x</span>
+                        &nbsp; @<span id="${row_product}_basic_price">${formatRupiah(obj.basic_price.toString())}</span>
+                        ${text_discount}
+                    </p>
+                </td>
+                <td>
+                    <p style="margin-bottom: 0px; font-size: 16px">Rp <span id="${row_product}_final_price">${formatRupiah(obj.final_price.toString())}</span></p>
+                    ${text_discount_amount}
+                </td>
+            </tr>
+        `;
+
+        $("#item-table").append(html);
+    }
+
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split    = number_string.split(','),
+            sisa     = split[0].length % 3,
+            rupiah     = split[0].substr(0, sisa),
+            ribuan     = split[0].substr(sisa).match(/\d{3}/gi);
+            
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+        
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+    }
+</script>
+@endpush
 @endsection
