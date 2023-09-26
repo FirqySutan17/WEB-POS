@@ -14,6 +14,12 @@
             font-family: 'Times New Roman';
         }
 
+        body {
+            margin: 0;
+            padding: 0;
+            width: 48mm;
+        }
+
         td,
         th,
         tr,
@@ -49,13 +55,13 @@
         }
 
         .ticket {
-            width: 302px;
-            max-width: 302px;
+            width: 48mm;
+            padding: 5px
         }
 
         img {
-            max-width: 100%;
-            width: 100%;
+            text-align: center;
+            width: 75%;
         }
 
         .add-note td {
@@ -95,7 +101,9 @@
 
 <body>
     <div class="ticket">
-        <img src="{{ asset('images/logo-placeholder.png')}}" alt="Logo">
+        <center>
+            <img src="{{ asset('images/logo-placeholder.png')}}" alt="Logo">
+        </center>
         <p class="centered">
             Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus
             Ibukota Jakarta 12710
@@ -226,20 +234,20 @@
     </div>
     <button id="btnPrint" class="hidden-print">Print</button>
     <a href="{{ route('transaction.create') }}" class="hidden-print">Back to Transaction</button>
-    <script>
-        let buttonPrint = document.getElementById("btnPrint");
+        <script>
+            let buttonPrint = document.getElementById("btnPrint");
         buttonPrint.addEventListener("click", function() {
             window.print()
         });
-    </script>
-    {{-- <script>
-        var lama = 1000;
+        </script>
+        {{-- <script>
+            var lama = 1000;
         t = null;
         function printOut(){
             window.print();
             t = setTimeout("self.close()",lama);
         }
-    </script> --}}
+        </script> --}}
 </body>
 
 </html>
