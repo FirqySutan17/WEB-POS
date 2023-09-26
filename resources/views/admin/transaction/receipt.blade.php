@@ -17,7 +17,7 @@
         body {
             margin: 0;
             padding: 0;
-            width: 48mm;
+            width: 58mm;
         }
 
         td,
@@ -55,7 +55,7 @@
         }
 
         .ticket {
-            width: 48mm;
+            width: 58mm;
             padding: 5px
         }
 
@@ -182,10 +182,6 @@
                 <tr>
                     <td class="description">SUB TOTAL</td>
                     <td class="price">@currency($sub_total)</td>
-                </tr>
-                <tr>
-                    <td class="description">VAT</td>
-                    <td class="price">@currency($vat_amount)</td>
                 </tr>
                 <tr>
                     <td class="description">DISC TOTAL</td>

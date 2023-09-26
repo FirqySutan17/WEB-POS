@@ -128,21 +128,24 @@ CMS | Transaction
                 @csrf
             </form>
         </div>
-        @endif
+
         <div class="info-disc">
             <div class="button-container">
                 <button id="click" class="btn-disc">
                     <i class='bx bx-x' style="font-size: 18px; display: inline-block; vertical-align: middle"></i>
                 </button>
             </div>
-            {{-- <div id="element">
+            <div id="element">
                 @if (!empty($product_discount))
-                @foreach ($product_discount as $item)
-                <span class="m-2">{{ $item->name." DISC ".$item->discount_store."%" }}</span>
-                @endforeach
+                <ul>
+                    @foreach ($product_discount as $item)
+                    <li><span class="m-2">{{ $item->name." - DISC ".$item->discount_store."%" }}</span></li>
+                    @endforeach
+                </ul>
                 @endif
-            </div> --}}
+            </div>
         </div>
+        @endif
     </div>
 
     @if(Auth::user()->roles->first()->name == 'Cashier')
