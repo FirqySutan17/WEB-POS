@@ -153,7 +153,7 @@
                             {{-- @if( $d->discount > 0)
                             @currency($d->basic_price)&nbsp; &nbsp;
                             @endif --}}
-                            @currency($d->basic_price)} &nbsp;
+                            @currency($d->basic_price) &nbsp;
                             @if( $d->discount > 0)
                             {{$d->discount}}%
                             @endif
