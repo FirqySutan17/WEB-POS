@@ -90,11 +90,11 @@
         }
 
         .item-order td:nth-child(1) {
-            width: 65%;
+            width: 60%;
         }
 
         .item-order td:nth-child(2) {
-            width: 35%;
+            width: 40%;
             text-align: right
         }
 
@@ -153,7 +153,7 @@
                             {{-- @if( $d->discount > 0)
                             @currency($d->basic_price)&nbsp; &nbsp;
                             @endif --}}
-                            @currency($d->basic_price) &nbsp;
+                            @currency($d->basic_price)} &nbsp;
                             @if( $d->discount > 0)
                             {{$d->discount}}%
                             @endif
