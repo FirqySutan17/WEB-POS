@@ -9,9 +9,14 @@
     <title>Receipt example</title>
 
     <style>
+        @font-face {
+            font-family: 'Inconsolata', monospace;
+            src: url("{{ asset('fonts/inconsolata.ttf') }}");
+        }
+
         * {
-            font-size: 12px;
-            font-family: 'Times New Roman';
+            font-size: 11px;
+            font-family: 'Inconsolata', monospace;
         }
 
         body {
@@ -80,12 +85,16 @@
             width: 100%
         }
 
+        .item-order p {
+            margin: 0px
+        }
+
         .item-order td:nth-child(1) {
-            width: 70%;
+            width: 65%;
         }
 
         .item-order td:nth-child(2) {
-            width: 30%;
+            width: 35%;
             text-align: right
         }
 
@@ -139,14 +148,14 @@
                 ?>
                 <tr>
                     <td>
-                        <p style="font-weight: 600">{{ $d->name}}</p>
-                        <p>{{ $d->quantity}}x &nbsp; &nbsp;
+                        <p style="text-transform: uppercase; font-weight: 500">{{ $d->name}}</p>
+                        <p>{{ $d->quantity}}x
+                            {{-- @if( $d->discount > 0)
+                            @currency($d->basic_price)&nbsp; &nbsp;
+                            @endif --}}
+                            @currency($d->basic_price) &nbsp;
                             @if( $d->discount > 0)
-                            <s>@currency($d->basic_price)</s>&nbsp; &nbsp;
-                            @endif
-                            @currency($d->price)&nbsp; &nbsp;
-                            @if( $d->discount > 0)
-                            Disc {{$d->discount}}%
+                            {{$d->discount}}%
                             @endif
                         </p>
                     </td>
@@ -155,7 +164,7 @@
                         @if ($d->discount > 0)
                         <p style="padding-top: 15px">@currency($total_item_price)</p>
                         <p>
-                            (@currency($total_discount))
+                            (- @currency($total_discount))
                         </p>
                         @else
                         <p style="padding-top: 15px">@currency($total_item_price)</p>
