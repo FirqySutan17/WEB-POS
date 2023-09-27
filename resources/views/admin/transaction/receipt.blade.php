@@ -98,6 +98,11 @@
             text-align: right
         }
 
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+        }
+
         @media print {
 
             .hidden-print,
@@ -111,7 +116,7 @@
 <body>
     <div class="ticket">
         <center>
-            <img src="{{ asset('images/logo-placeholder.png')}}" alt="Logo">
+            <h1>MEAT STORE</h1>
         </center>
         <p class="centered">
             Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus
@@ -127,7 +132,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Order INV</td>
+                <td>Order</td>
                 <td style="text-align: right">#{{ $transaction->invoice_no }}</td>
             </tr>
             <tr>
