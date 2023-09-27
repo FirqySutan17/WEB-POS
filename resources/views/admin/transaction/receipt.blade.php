@@ -175,7 +175,7 @@
                 @endforeach
             </tbody>
         </table>
-        <hr class="dotted">
+        <hr class="dotted" style="margin-top: 15px">
         <table class="item-order">
             <?php 
                 $vat_amount = ($sub_total / 100) * $transaction->vat_ppn;
