@@ -180,6 +180,7 @@ CMS | Transaction
                                         <i class='bx bx-show'></i>
                                     </a>
                                 </div>
+                                @can('T Create')
                                 <div class="boxEdit">
                                     <a href="{{ route('transaction.receipt', ['transaction' => $transaction]) }}"
                                         class="btn-sm btn-info" role="button" target="_blank">
@@ -209,16 +210,19 @@ CMS | Transaction
                                         </button>
                                     </form>
                                 </div>
+                                @endcan
                                 @endif
 
-                                @if ($transaction->status == 'DRAFT')
-                                <div class="boxEdit">
-                                    <a href="{{ route('transaction.edit', ['transaction' => $transaction]) }}"
-                                        class="btn-sm btn-info" role="button">
-                                        <i class="bx bx-edit"></i>
-                                    </a>
-                                </div>
-                                @endif
+                                @can('T Create')
+                                    @if ($transaction->status == 'DRAFT')
+                                    <div class="boxEdit">
+                                        <a href="{{ route('transaction.edit', ['transaction' => $transaction]) }}"
+                                            class="btn-sm btn-info" role="button">
+                                            <i class="bx bx-edit"></i>
+                                        </a>
+                                    </div>
+                                    @endif
+                                @endcan
 
                             </div>
 

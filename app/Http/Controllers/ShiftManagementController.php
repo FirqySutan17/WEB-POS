@@ -11,6 +11,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ShiftManagementController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:T Show', ['only' => ['index']]);
+        $this->middleware('permission:T Create', ['only' => ['create', 'store']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -138,7 +144,6 @@ class ShiftManagementController extends Controller
      */
     public function update(Request $request, Cashflow $cashflow)
     {
-        dd($cashflow);
         $validator = Validator::make(
             $request->all(),
             [

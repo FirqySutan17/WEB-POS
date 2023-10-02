@@ -105,5 +105,24 @@ class AuthServiceProvider extends ServiceProvider
         'Role Delete'
       ]);
     });
+
+    Gate::define('Adjust Stock', function ($user) {
+      return $user->hasAnyPermission([
+        'AS Show',
+        'AS Create',
+        'AS Update',
+        'AS Delete'
+      ]);
+    });
+
+    Gate::define('Cashflow', function ($user) {
+      return $user->hasAnyPermission([
+        'CF Show',
+        'CF Create',
+        'CF Update',
+        'CF Delete'
+      ]);
+    });
+
   }
 }

@@ -56,6 +56,18 @@ return [
       'Role Update',
       'Role Delete'
     ],
+    'Adjust Stock' => [
+      'AS Show',
+      'AS Create',
+      'AS Update',
+      'AS Delete'
+    ],
+    'Cashflow' => [
+      'CF Show',
+      'CF Create',
+      'CF Update',
+      'CF Delete'
+    ],
   ],
 
   'models' => [
