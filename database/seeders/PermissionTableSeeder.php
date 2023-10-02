@@ -66,7 +66,7 @@ class PermissionTableSeeder extends Seeder
 
         //User
         $editor = Role::create([
-            'name' => "Editor",
+            'name' => "Cashier",
             'guard_name' => 'web',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),

@@ -967,5 +967,4 @@ CMS | Transaction
         $('#modal-detail-print').modal("hide");
         });
     </script>
-    @include('admin.transaction.receipt')
     @endpush

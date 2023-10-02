@@ -59,7 +59,7 @@
                     @endcan
 
                     <!-- skill -->
-                    @can('Receive')
+                    @can('Cashflow')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['cashflow.index', 'cashflow.show', 'cashflow.edit', 'cashflow.create'])}}"
                             href="{{ route('cashflow.index') }}">
@@ -71,7 +71,7 @@
                     <!-- End skill -->
 
                     <!-- skill -->
-                    @can('Receive')
+                    @can('T Create')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['shift.index', 'shift.show', 'shift.edit', 'shift.create'])}}"
                             href="{{ route('shift.index') }}">
@@ -83,7 +83,7 @@
                     <!-- End skill -->
 
                     <!-- skill -->
-                    @can('Receive')
+                    @can('P Show')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['membership.index', 'membership.show', 'membership.edit', 'membership.create'])}}"
                             href="{{ route('membership.index') }}">
@@ -161,6 +161,8 @@
                             <span>Receive</span>
                         </a>
                     </li>
+                    @endcan
+                    @can('Adjust Stock')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['adjust_stock.index', 'adjust_stock.show', 'adjust_stock.edit', 'adjust_stock.create'])}}"
                             href="{{ route('adjust_stock.index') }}">
@@ -187,14 +189,12 @@
                     
                     <!-- End Portfolio -->
 
-                    @canany(['Manage Users', 'Manage Roles'])
+                    @can('Product Categories')
                     <li class="sidebar-main-title">
                         <div>
                             <h6>Settings</h6>
                         </div>
                     </li>
-                    @endcan
-
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title{{routeActive(['closing-date.edit','product-category.edit', 'product-category.index', 'product-category.create'])}}"
                             href="javascript:void(0)"><i data-feather="settings"></i><span>System</span></a>
@@ -215,6 +215,9 @@
 
                         </ul>
                     </li>
+                    @endcan
+
+                    
 
                     @canany(['Manage Users', 'Manage Roles'])
                     <li class="dropdown">
