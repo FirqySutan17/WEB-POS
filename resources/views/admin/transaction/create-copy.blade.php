@@ -961,11 +961,4 @@ CMS | Transaction
         });
     </script>
 
-    <script>
-        $('.close').on('click', function () {
-        $('#modal-detail-print').removeClass("show");
-        $('#modal-detail-print').modal("hide");
-        });
-    </script>
-    @include('admin.transaction.receipt')
     @endpush
