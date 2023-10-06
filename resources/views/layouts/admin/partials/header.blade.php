@@ -15,11 +15,14 @@
 <div class="page-main-header">
   <div class="main-header-right row m-0">
     <div class="main-header-left">
-      <div class="logo-wrapper"><a href="{{ route('home') }}">
-          {{-- <h5 style="margin-top:10px; font-family: 'Poppins', sans-serif; color: #fff"><strong>RIMBA CMS</strong>
-          </h5> --}}
-          <img class="img-fluid" style="width: 120px" src="{{ asset('images/logo-placeholder.png')}}" alt=""></a>
-      </div>
+      <center>
+        <div class="logo-wrapper"><a href="{{ route('home') }}">
+            {{-- <h5 style="margin-top:10px; font-family: 'Poppins', sans-serif; color: #fff"><strong>RIMBA CMS</strong>
+            </h5> --}}
+            <img class="img-fluid" width="25%" src="{{ asset('assets/images/meatmaster_logo_png.png')}}" alt=""></a>
+        </div>
+      </center>
+      
       {{-- <div class="dark-logo-wrapper"><a href="{{ route('index') }}"><img class="img-fluid"
             src="{{asset('assets/images/logo/dark-logo.png')}}" alt=""></a></div> --}}
 
