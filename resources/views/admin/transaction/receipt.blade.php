@@ -116,7 +116,7 @@
 <body>
     <div class="ticket">
         <center>
-            <img class="img-fluid" src="{{ asset('assets/images/meatmaster_logo.jpeg')}}" alt="">
+            <img style="width: 100%;" src="{{ asset('assets/images/meatmaster_logo.jpeg')}}" alt="">
         </center>
         <center>
             <h1>MEAT MASTER</h1>
