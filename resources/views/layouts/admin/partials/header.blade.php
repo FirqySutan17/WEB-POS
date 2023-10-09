@@ -19,10 +19,11 @@
         <div class="logo-wrapper"><a href="{{ route('home') }}">
             {{-- <h5 style="margin-top:10px; font-family: 'Poppins', sans-serif; color: #fff"><strong>RIMBA CMS</strong>
             </h5> --}}
-            <img class="img-fluid" width="25%" src="{{ asset('assets/images/meatmaster_logo_png.png')}}" alt=""></a>
+            <img class="img-fluid" style="width: 91px; text-align: left"
+              src="{{ asset('assets/images/meatmaster_logo_png.png')}}" alt=""></a>
         </div>
       </center>
-      
+
       {{-- <div class="dark-logo-wrapper"><a href="{{ route('index') }}"><img class="img-fluid"
             src="{{asset('assets/images/logo/dark-logo.png')}}" alt=""></a></div> --}}
 

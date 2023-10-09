@@ -18,13 +18,9 @@ class UserTableSeeder extends Seeder
     {
         DB::table('users')->insert([
             'name' => 'Admin',
-            'employee_id' => '01220023',
             'email' => 'admin@rimba.com',
             'email_verified_at' => now(),
-            'phone_number' => '08123456789',
-            'office' => 'Rimba House, Cipondoh',
-            'password' => Hash::make('rimba1234'),
-            'image' => 'placeholder/user-placeholder.png',
+            'password' => Hash::make('init1234'),
             'remember_token' => Str::random(10),
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
