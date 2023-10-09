@@ -960,4 +960,11 @@ CMS | Transaction
             $('#modal-add-membership').modal("hide");
         });
     </script>
+
+    <script>
+        $('.close').on('click', function () {
+        $('#modal-detail-print').removeClass("show");
+        $('#modal-detail-print').modal("hide");
+        });
+    </script>
     @endpush

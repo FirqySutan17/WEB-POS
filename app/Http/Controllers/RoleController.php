@@ -89,13 +89,14 @@ class RoleController extends Controller
                 'name' => $request->name,
                 'description' => $request->description
             ]);
+            
             $role->givePermissionTo($request->permissions);
             // Alert::toast('Role Added', 'success');
             Alert::success('New Role', 'Success');
             return redirect()->route('roles.index');
         } catch (\Throwable $th) {
             DB::rollBack();
-            //dd($th->getMessage());
+            dd($th->getMessage());
             return redirect()->back()->withInput($request->all())->withErrors($validator);
         } finally {
             DB::commit();
@@ -158,6 +159,8 @@ class RoleController extends Controller
         try {
             $role->name = $request->name;
             $role->description = $request->description;
+            
+            // dd($request->permissions);
             $role->syncPermissions($request->permissions);
             $role->save();
             // Alert::toast('Role Updated', 'success');

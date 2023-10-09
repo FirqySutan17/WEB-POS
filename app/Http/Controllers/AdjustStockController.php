@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdjustStock;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -75,6 +76,10 @@ class AdjustStockController extends Controller
                 'approval'   => $request->approval,
                 'qty'   => $request->qty,
             ]);
+
+            $product = Product::where('code', $request->product_code)->first();
+            $product->stock = $product->stock + $request->qty;
+            $product->save();
 
             Alert::success('Add Adjustment Stock', 'Success');
             // dd($request->all());

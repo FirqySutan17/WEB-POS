@@ -30,14 +30,23 @@ CMS | Login
     @endif
     {{-- Content --}}
     <div class="row">
-        <div class="col-xl-5"><img class="bg-img-cover bg-center" src="{{ asset('assets/images/login/3.jpg') }}"
-                alt="loginpage" /></div>
-        <div class="col-xl-7 p-0">
+        {{-- <div class="col-xl-5"><img class="bg-img-cover bg-center" src="{{ asset('assets/images/login/3.jpg') }}"
+                alt="loginpage" /></div> --}}
+        <div class="col-xl-12 p-0">
 
             <div class="login-card"
-                style="display: flex; align-items: center: justify-content: center; flex-direction: column">
-                <h1 style="text-align: center">POS <br> MEATSHOP</h1>
-                <form class="theme-form login-form" method="POST" action="{{ route('login') }}">
+                style="display: flex; align-items: center: justify-content: center; flex-direction: column;">
+                {{-- <h1 style="text-align: center">POS <br> MEAT MASTER</h1> --}}
+                <div class="company-img">
+                    <img class="img-fluid"
+                        style="width: 200px; object-fit: cover; margin-bottom: 20px; margin-right: 20px"
+                        src="{{ asset('assets/images/meatmaster_logo_png.png')}}" alt="">
+                    <img class="img-fluid" style="width: 130px; object-fit: cover; margin-bottom: 20px"
+                        src="{{ asset('assets/images/meatmaster_suja_logo.png')}}" alt="">
+                </div>
+
+                <form class="theme-form login-form" method="POST" action="{{ route('login') }}"
+                    style="border-radius: 10px">
                     @csrf
 
                     <h4>Login</h4>

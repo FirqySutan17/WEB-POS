@@ -7,7 +7,7 @@ CMS | Transaction
 @push('css-internal')
 <style>
     .page-wrapper.compact-wrapper .page-body-wrapper .page-body {
-        background: #a12a2f !important;
+        background: #000 !important;
     }
 
     .wrapper-customer {
@@ -30,7 +30,7 @@ CMS | Transaction
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #ff5c639d !important;
+        background: #a12a2f !important;
         color: #fff;
         font-weight: 700
     }
@@ -42,7 +42,7 @@ CMS | Transaction
     }
 
     .card-footer {
-        background: #ff5c639d !important;
+        background: #a12a2f !important;
         height: 10% !important;
         margin: auto;
         display: flex;
@@ -142,6 +142,10 @@ CMS | Transaction
         height: 528px;
         object-fit: cover;
     }
+
+    .carousel-inner {
+        border: 1px solid #000
+    }
 </style>
 @endpush
 
@@ -151,7 +155,9 @@ CMS | Transaction
         <div class="box">
             <div class="card">
                 <div class="card-header">
-                    <h2 style="text-align: center">MEAT STORE</h2>
+                    <img class="img-fluid" style="width: 120px; text-align: left"
+                        src="{{ asset('assets/images/meatmaster_logo_png.png')}}" alt="">
+                    {{-- <h2 style="text-align: center">MEAT STORE</h2> --}}
                 </div>
                 <div class="card-body">
                     <div class="list-product" style="height: 100%; overflow-y: auto">
@@ -163,8 +169,8 @@ CMS | Transaction
 
                 </div>
                 <div class="card-footer">
-                    Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus
-                    Ibukota Jakarta 12710
+                    Ruko Kemang Pratama Raya Blok MM, Jl. Kemang Pratama Raya No.10, Bojong Rawalaumbu, Kec. Rawalumbu,
+                    Kota Bks, Jawa Barat
                 </div>
             </div>
         </div>
@@ -173,14 +179,12 @@ CMS | Transaction
                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="{{ asset('images/banner-png.png')}}" class="d-block w-100" alt="">
+                            <img src="{{ asset('images/banner-meatmaster.png')}}" class="d-block w-100" alt="">
                         </div>
                         <div class="carousel-item">
-                            <img src="{{ asset('images/feed4.jpg')}}" class="d-block w-100" alt="">
+                            <img src="{{ asset('images/banner-suja.png')}}" class="d-block w-100" alt="">
                         </div>
-                        <div class="carousel-item">
-                            <img src="{{ asset('images/feed7.jpg')}}" class="d-block w-100" alt="">
-                        </div>
+
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
                         data-bs-slide="prev">
@@ -195,7 +199,8 @@ CMS | Transaction
                 </div>
             </div>
 
-            <div class="card-header" style="height: 30% !important; background: #fff !important; color: #000">
+            <div class="card-header"
+                style="height: 30% !important; background: #fff !important; color: #000; border: 1px solid #000">
                 <table class="item-order">
                     <tbody>
                         <tr>
