@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Receipt example</title>
+    <title>Receipt</title>
 
     <style>
         @font-face {
@@ -116,12 +116,15 @@
 <body>
     <div class="ticket">
         <center>
-            <h1>MEAT STORE</h1>
+            <img style="width: 100%;" src="{{ asset('assets/images/meatmaster_logo.jpeg')}}" alt="">
+        </center>
+        <center>
+            <h1>MEAT MASTER</h1>
         </center>
         <p class="centered">
-            Jl. Gatot Subroto No.Kav. 38, RT.6/RW.1, Kuningan Bar., Kec. Mampang Prpt., Jakarta, Daerah Khusus
-            Ibukota Jakarta 12710
+            Ruko Kemang Pratama Raya Blok MM, Jl. Kemang Pratama Raya No.10, Bojong Rawalaumbu, Kec. Rawalumbu, Kota Bks, Jawa Barat
         </p>
+        <p style="text-align: center">NPWP XXX-12345-678910</p>
         <p style="text-align: center">{{ $transaction->created_at->format('d-m-Y h:m:s') }}</p>
         <hr class="dotted">
         <table class="add-note">
@@ -239,7 +242,7 @@
         </table> --}}
         <hr class="dotted">
         <p class="centered">Thanks for your purchase!
-            <br>CHICKEN SHOP
+            <br>PREMIUM FRESH CHICKEN MEAT
         </p>
     </div>
     <button id="btnPrint" class="hidden-print">Print</button>

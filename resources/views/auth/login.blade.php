@@ -36,7 +36,9 @@ CMS | Login
 
             <div class="login-card"
                 style="display: flex; align-items: center: justify-content: center; flex-direction: column">
-                <h1 style="text-align: center">POS <br> MEATSHOP</h1>
+                {{-- <h1 style="text-align: center">POS <br> MEAT MASTER</h1> --}}
+                <img class="img-fluid" width="100%" src="{{ asset('assets/images/meatmaster_logo.jpeg')}}" alt="">
+                <br>
                 <form class="theme-form login-form" method="POST" action="{{ route('login') }}">
                     @csrf
 

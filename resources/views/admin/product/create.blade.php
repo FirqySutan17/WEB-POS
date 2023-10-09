@@ -35,7 +35,7 @@ CMS | Add Product
                                             <label for="input_post_code" class="font-weight-bold">
                                                 Barcode <span class="wajib">* </span>
                                             </label>
-                                            <input id="input_post_code" value="{{ old('code') }}" name="code"
+                                            <input id="input_post_code" value="{{ old('code', '890101') }}" name="code"
                                                 type="text" class="form-control @error('code') is-invalid @enderror"
                                                 placeholder="Scan barcode here.." required tabindex="1" autofocus />
                                             @error('code')
