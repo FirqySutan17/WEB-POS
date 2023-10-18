@@ -17,7 +17,7 @@ CMS | Dashboard
 
 <div id="dashboard" class="container-fluid" style="padding-bottom: 20px; display: flex; align-items: center;">
   <div class="wrapper-dashboard" style="display: block; text-align: center; width: 100%">
-    <div class="db-tab">
+    {{-- <div class="db-tab">
       <div class="db-box">
         <h2>0</h2>
         <p>Montly</p>
@@ -38,10 +38,10 @@ CMS | Dashboard
         <p>Total Revenue</p>
         <i class='bx bx-dollar'></i>
       </div>
-    </div>
+    </div> --}}
     <div class="db-table">
       <div class="db-box">
-        <h4>Today Purchase</h4>
+        <h4>Today Sales</h4>
         <div class="table-responsive">
           <table class="table table-striped table-hover">
             <thead>
@@ -52,136 +52,106 @@ CMS | Dashboard
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td style="width: 5%;" class="center-text">1</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00006</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
-              </tr>
-
-              <tr>
-                <td style="width: 5%;" class="center-text">2</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00005</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
-              </tr>
-
-              <tr>
-                <td style="width: 5%;" class="center-text">3</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00004</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
-              </tr>
-
-              <tr>
-                <td style="width: 5%;" class="center-text">4</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00003</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
-              </tr>
-
-              <tr>
-                <td style="width: 5%;" class="center-text">5</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00002</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
-              </tr>
-
-              <tr>
-                <td style="width: 5%;" class="center-text">6</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00001</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
-              </tr>
-
-              {{-- <table></table>
-              <p style="text-align: center; padding-top: 50px;">
-
-                <strong> Search not found</strong>
-
-                <strong> No data yet</strong>
-
-              </p> --}}
+              <?php $total = 0; ?>
+              @if (!empty($transactions))
+                  @foreach ($transactions as $transaction)
+                  <?php $total += $transaction->total_price; ?>
+                    <tr class="tr-list">
+                      <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
+                      <td style="width: 30%; vertical-align: middle; text-align: left">
+                          <a href="{{ route('transaction.query', ['transaction' => $transaction]) }}" class="text-primary" target="_blank">
+                            {{ $transaction->invoice_no }}
+                          </a>
+                      </td>
+                      <td style="width: 55%; vertical-align: middle; text-align: right">
+                        @currency($transaction->total_price)
+                      </td>
+                    </tr>
+                  @endforeach
+              @endif
 
             </tbody>
+            <tfoot>
+              <tr>
+                <th  align="left" colspan="2" style="text-align: left">Grand Total</th>
+                <th style="text-align: right">@currency($total)</th>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
       <div class="db-box">
-        <h4>Montly Purchase</h4>
+        <h4>Montly Sales {{ date('Y') }}</h4>
         <div class="table-responsive">
           <table class="table table-striped table-hover">
             <thead>
               <tr>
                 <th class="center-text">No <span class="dividerHr"></span></th>
-                <th class="heightHr" style="text-align: left">Invoice <span class="dividerHr"></span></th>
+                <th class="heightHr" style="text-align: left">Month <span class="dividerHr"></span></th>
                 <th class="heightHr" style="text-align: right">Total <span class="dividerHr"></span></th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td style="width: 5%;" class="center-text">1</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00006</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Januari</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[1])</td>
               </tr>
-
               <tr>
                 <td style="width: 5%;" class="center-text">2</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00005</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Februari</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[2])</td>
               </tr>
-
               <tr>
                 <td style="width: 5%;" class="center-text">3</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00004</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Maret</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[3])</td>
               </tr>
-
               <tr>
                 <td style="width: 5%;" class="center-text">4</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00003</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">April</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[4])</td>
               </tr>
-
               <tr>
                 <td style="width: 5%;" class="center-text">5</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00002</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Mei</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[5])</td>
               </tr>
-
               <tr>
                 <td style="width: 5%;" class="center-text">6</td>
-                <td style="width: 25%; vertical-align: middle; text-align: left">#INV00001</td>
-                <td style="width: 60%; vertical-align: middle; text-align: right">
-                  Rp 120.000,-
-                </td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Juni</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[6])</td>
               </tr>
-
-              {{-- <table></table>
-              <p style="text-align: center; padding-top: 50px;">
-
-                <strong> Search not found</strong>
-
-                <strong> No data yet</strong>
-
-              </p> --}}
-
+              <tr>
+                <td style="width: 5%;" class="center-text">7</td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Juli</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[7])</td>
+              </tr>
+              <tr>
+                <td style="width: 5%;" class="center-text">8</td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Agustus</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[8])</td>
+              </tr>
+              <tr>
+                <td style="width: 5%;" class="center-text">9</td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">September</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[9])</td>
+              </tr>
+              <tr>
+                <td style="width: 5%;" class="center-text">10</td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Oktober</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[10])</td>
+              </tr>
+              <tr>
+                <td style="width: 5%;" class="center-text">11</td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">November</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[11])</td>
+              </tr>
+              <tr>
+                <td style="width: 5%;" class="center-text">12</td>
+                <td style="width: 25%; vertical-align: middle; text-align: left">Desember</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[12])</td>
+              </tr>
             </tbody>
           </table>
         </div>

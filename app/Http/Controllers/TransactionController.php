@@ -415,11 +415,28 @@ class TransactionController extends Controller
     {
         $user = [];
         if ($request->has('pin')) {
-            $user = User::select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+            $user = User::select('employee_id', 'name', 'pin')->where('employee_id', Auth::user()->employee_id)->where('pin', $request->pin)->first();
         }
 
         return response()->json($user);
     }
+
+    public function check_svppin(Request $request)
+    {
+        $user = [];
+        if ($request->has('pin')) {
+            $user_admin = User::role('Admin')->select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+            if (!empty($user_admin)) {
+                $user = $user_admin;
+            } else {
+                $user_superadmin = User::role('Super admin')->select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+                $user = $user_superadmin;
+            }
+        }
+
+        return response()->json($user);
+    }
+
 
     public function item_display_store(Request $request) {
         $product_code   = $request->product_code;

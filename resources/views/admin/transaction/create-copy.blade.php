@@ -535,6 +535,14 @@ CMS | Transaction
                     icon: 'error'
                 });
             }
+
+            if (status == 'FINISH' && payment_method.toUpperCase() != 'TUNAI' && $(".elm_receipt_input").val() == "") {
+                return Swal.fire({
+                    title: 'Oops...',
+                    text: 'Nomor Receipt wajib diisi',
+                    icon: 'error'
+                });
+            }
             // printExternal(url);
             // window.location.href = url
             $("#form-transaction").submit();
@@ -825,6 +833,7 @@ CMS | Transaction
                 if (val == "Tunai") {
                     // $("#elm_receipt").hide();
                     $(".elm_receipt_input").prop('readonly', true);
+                    $(".elm_receipt_input").prop('required', false);
                     // $(".elm_cash").show();
                     $(".elm_cash_input").prop('readonly', false);
                 } else {
@@ -832,6 +841,7 @@ CMS | Transaction
                     $(".elm_cash_input").prop('readonly', true);
                     // $("#elm_receipt").show();
                     $(".elm_receipt_input").prop('readonly', false);
+                    $(".elm_receipt_input").prop('required', true);
                 }
             });
         });

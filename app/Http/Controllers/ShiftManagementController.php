@@ -44,7 +44,7 @@ class ShiftManagementController extends Controller
                 $begin    = $current_shift->begin;
                 $auth_pin = $current_shift->user->pin;
             }
-            if ($current_shift->user->employee_id != $user->employee_id) {
+            if ($current_shift->user->employee_id != $user->employee_id && $current_shift->status == 'IN_PROGRESS') {
                 $authorized = 0;
             }
         }

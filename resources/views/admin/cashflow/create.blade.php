@@ -319,7 +319,7 @@ CMS | Add Cashflow
         let pin = $("#confirmation-pin").val();
         let url = "{{ route('cashflow.index') }}";
         $.ajax({
-            url: "{{ route('transaction.checkpin') }}",
+            url: "{{ route('transaction.checksvppin') }}",
             type: "POST",
             data: {
                 "_token": `{{ csrf_token() }}`,

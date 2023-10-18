@@ -157,7 +157,7 @@ CMS | Transaction
                             {{ $transaction->trans_date }}
                         </td>
                         <td style="width: 15%; vertical-align: middle">{{
-                            $transaction->user->name }}</td>
+                            $transaction->user?->name }}</td>
                         <td style="width: 20%; vertical-align: middle">
                             #{{ $transaction->invoice_no }}
                         </td>
@@ -320,7 +320,7 @@ CMS | Transaction
         let pin = $("#confirmation-pin").val();
         let url = $("#confirmation-url").val();
         $.ajax({
-            url: "{{ route('transaction.checkpin') }}",
+            url: "{{ route('transaction.checksvppin') }}",
             type: "POST",
             data: {
                 "_token": `{{ csrf_token() }}`,

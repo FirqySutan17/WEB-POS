@@ -111,6 +111,7 @@ Route::get('/customer-display', [App\Http\Controllers\TransactionController::cla
 Route::get('/summary-cashier', [App\Http\Controllers\TransactionController::class, 'summary'])->name('transaction.summary');
 Route::get('/list-draft', [App\Http\Controllers\TransactionController::class, 'index_draft'])->name('transaction.listdraft');
 Route::post('/check-pin', [App\Http\Controllers\TransactionController::class, 'check_pin'])->name('transaction.checkpin');
+Route::post('/check-svppin', [App\Http\Controllers\TransactionController::class, 'check_svppin'])->name('transaction.checksvppin');
 Route::post('/transaction/add-member', [App\Http\Controllers\TransactionController::class, 'add_member'])->name('transaction.addmember');
 Route::get('/transaction/query/{transaction}', [App\Http\Controllers\TransactionController::class, 'query'])->name('transaction.query');
 Route::post('/transaction/item-display-store', [App\Http\Controllers\TransactionController::class, 'item_display_store'])->name('transaction.itemdisplay_store');

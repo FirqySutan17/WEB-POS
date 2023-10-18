@@ -59,7 +59,7 @@
                     @endcan
 
                     <!-- skill -->
-                    @can('Cashflow')
+                    @can('P Show')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['cashflow.index', 'cashflow.show', 'cashflow.edit', 'cashflow.create'])}}"
                             href="{{ route('cashflow.index') }}">

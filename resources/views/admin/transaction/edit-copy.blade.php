@@ -289,7 +289,7 @@ CMS | Transaction
                                                 <label for="receive_date" class="font-weight-bold" style="width: 45%">
                                                     Kembalian
                                                 </label>
-                                                <?php $kembalian = !empty($transaction->kembalian) ? $transaction->kembalian : $transaction->cash - $transaction->total_price; ?>
+                                                <?php $kembalian = !empty($transaction->kembalian) ? $transaction->kembalian : $transaction->cash - $transaction->total_price; if ($transaction->payment_method != 'Tunai') { $kembalian = 0; } ?>
                                                 <input style="text-align: right" id="kembalian"
                                                     placeholder="Hitungan otomatis" type="text" class="form-control"
                                                     readonly tabindex="0" value="{{ number_format($kembalian) }}" />
@@ -303,10 +303,8 @@ CMS | Transaction
                                                     tabindex="2">
                                                     <option value="Tunai" {{ $transaction->payment_method == 'Tunai' ?
                                                         'selected' : '' }}>Tunai</option>
-                                                    <option value="EDC - BCA" {{ $transaction->payment_method == 'EDC -
-                                                        BCA' ? 'selected' : '' }}>EDC - BCA</option>
-                                                    <option value="EDC - QRIS" {{ $transaction->payment_method == 'EDC -
-                                                        QRIS' ? 'selected' : '' }}>EDC - QRIS</option>
+                                                    <option value="EDC - BCA" {{ $transaction->payment_method == 'EDC - BCA' ? 'selected' : '' }}>EDC - BCA</option>
+                                                    <option value="EDC - QRIS" {{ $transaction->payment_method == 'EDC - QRIS' ? 'selected' : '' }}>EDC - QRIS</option>
                                                 </select>
                                             </div>
                                             <div id="elm_receipt" class="form-group _form-group"
@@ -534,6 +532,13 @@ CMS | Transaction
                 return Swal.fire({
                     title: 'Oops...',
                     text: 'Uang tunai kurang dari total belanja',
+                    icon: 'error'
+                });
+            }
+            if (payment_method.toUpperCase() != 'TUNAI' && $(".elm_receipt_input").val() == "") {
+                return Swal.fire({
+                    title: 'Oops...',
+                    text: 'Nomor Receipt wajib diisi',
                     icon: 'error'
                 });
             }
