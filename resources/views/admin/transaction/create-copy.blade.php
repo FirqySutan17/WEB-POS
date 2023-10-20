@@ -924,20 +924,18 @@ CMS | Transaction
 
     <script>
         $("#add_member").on('click', function() {
-            let code    = $("#input_membership_id").val().trim();
             let name    = $("#input_membership_name").val().trim();
             let phone   = $("#input_membership_phone").val().trim();
             let email   = $("#input_membership_email").val().trim();
 
-            if (code == '' || name == '' || phone == '' || email == '') {
-
+            if (name == '' || phone == '' || email == '') {
+                console.log("KOSONG", code, name, phone, email);
             } else {
                 $.ajax({
                     url: "{{ route('transaction.addmember') }}",
                     type: "POST",
                     data: {
                         "_token": `{{ csrf_token() }}`,
-                        "code": code,
                         "name": name,
                         "phone": phone,
                         "email": email

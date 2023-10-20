@@ -31,6 +31,9 @@ class HomeController extends Controller
     public function index()
     {
         $user = Auth::user();
+        if ($user->roles->first()->name == 'Cashier') {
+            return redirect()->route('transaction.create');
+        }
 
         $transactions = Transaction::whereDate('trans_date', date('Y-m-d'))->orderBy('trans_date', 'desc')->orderBy('id', 'desc')->with('user')->get();
 

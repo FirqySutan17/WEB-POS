@@ -391,7 +391,8 @@ class TransactionController extends Controller
             "message"   => "",
             "data"      => []
         ];
-        $check_existing = Membership::where('code', $request->code)->orWhere('phone', $request->phone)->orWhere('email', $request->email)->first();
+        $code = "MBR".$this->generateRandomString();
+        $check_existing = Membership::where('phone', $request->phone)->orWhere('email', $request->email)->first();
         if (!empty($check_existing)) {
             $return_data["message"] = "Code / Phone Number / Email already used!";
         } else {
@@ -486,5 +487,15 @@ class TransactionController extends Controller
     public function item_display() {
         $item_display = Cache::has('item_display') ? Cache::get('item_display') : [];
         return response()->json($item_display);
+    }
+
+    private function generateRandomString($length = 15) {
+        $characters = '0123456789';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 }

@@ -910,6 +910,40 @@ CMS | Transaction
     </script>
 
     <script>
+        $("#add_member").on('click', function() {
+            let name    = $("#input_membership_name").val().trim();
+            let phone   = $("#input_membership_phone").val().trim();
+            let email   = $("#input_membership_email").val().trim();
+
+            if (name == '' || phone == '' || email == '') {
+                console.log("KOSONG", code, name, phone, email);
+            } else {
+                $.ajax({
+                    url: "{{ route('transaction.addmember') }}",
+                    type: "POST",
+                    data: {
+                        "_token": `{{ csrf_token() }}`,
+                        "name": name,
+                        "phone": phone,
+                        "email": email
+                    },
+                    beforeSend: function () {
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        if (response.status == 'failed') {
+                            return Swal.fire({
+                                title: 'Oops...',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        }
+
+                        $(".close").trigger('click');
+                    }
+                });
+            }
+        });
         function addMembers() {
         $("#modal-add-membership").modal('show');
         }
