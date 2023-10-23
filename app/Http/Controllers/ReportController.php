@@ -445,7 +445,7 @@ class ReportController extends Controller
                 WHERE trans.status = 'FINISH' AND trans.trans_date BETWEEN '$sdate' AND '$edate' ".$where."
                 $order_by
             ";
-
+            // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));
             return $db_query;
         }
@@ -812,22 +812,56 @@ class ReportController extends Controller
             $edate  = $column['edate'];
             $search = $column['search'];
             $where = empty($search) ? "" : " AND (emp_user.employee_id LIKE '%".$search."%' OR emp_user.name LIKE '%".$search."%')";
+            // $query = "
+            //     SELECT
+            //         CONCAT(cf.date, ' ', cf.time) AS cash_date,
+            //         cf.categories AS category, 
+            //         CONCAT(cf.employee_id, ' | ', emp_user.name) AS created_by,
+            //         CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+            //         cf.description,
+            //         cf.cash AS amount
+            //     FROM cash_flow AS cf
+            //     INNER JOIN users AS emp_user ON cf.employee_id = emp_user.employee_id
+            //     INNER JOIN users AS apprv_user ON cf.approval = apprv_user.pin
+            //     WHERE 
+            //         cf.date BETWEEN '".$sdate."' AND '".$edate."'
+            //         ".$where."
+            //     ORDER BY cf.created_at DESC
+            // ";
             $query = "
-                SELECT
-                    CONCAT(cf.date, ' ', cf.time) AS cash_date,
-                    cf.categories AS category, 
-                    CONCAT(cf.employee_id, ' | ', emp_user.name) AS created_by,
-                    CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
-                    cf.description,
-                    cf.cash AS amount
-                FROM cash_flow AS cf
-                INNER JOIN users AS emp_user ON cf.employee_id = emp_user.employee_id
-                INNER JOIN users AS apprv_user ON cf.approval = apprv_user.pin
-                WHERE 
-                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
-                    ".$where."
-                ORDER BY cf.created_at DESC
+                SELECT * 
+                FROM (
+                    SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        cf.categories AS category, 
+                        CONCAT(cf.employee_id, ' | ', emp_user.name) AS created_by,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        cf.description,
+                        cf.cash AS amount
+                    FROM cash_flow AS cf
+                    INNER JOIN users AS emp_user ON cf.employee_id = emp_user.employee_id
+                    INNER JOIN users AS apprv_user ON cf.approval = apprv_user.pin
+                    WHERE 
+                        cf.date BETWEEN '".$sdate."' AND '".$edate."'
+                        ".$where."
+
+                    UNION ALL
+
+                    SELECT 
+                        trans.created_at AS cash_date, 
+                        'IN' AS category, 
+                        CONCAT(trans.emp_no, ' | ', emp_user.name) AS created_by,
+                        CONCAT(trans.emp_no, ' | ', emp_user.name) AS approved_by,
+                        CONCAT('TRANS ', trans.invoice_no, ' ', trans.payment_method) AS description,
+                        trans.total_price AS amount
+                    FROM tr_transaction trans
+                    INNER JOIN users as emp_user ON trans.emp_no = emp_user.employee_id
+                    WHERE trans.status = 'FINISH' AND trans.trans_date BETWEEN '".$sdate."' AND '".$edate."'
+                        ".$where."
+                ) as CASHFLOW
+                ORDER BY cash_date DESC
             ";
+            // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));
             return $db_query;
         }
@@ -906,12 +940,14 @@ class ReportController extends Controller
                         $final_price = $products->price_store - $discount_price;
                         $products->price_store = $final_price;
                     }
+                    $products->harga_beli = $products->harga_beli == 0 ? $products->price_store : $products->harga_beli;
                     $selisih = $products->price_store - $products->harga_beli;
                     $type = $selisih < 0 ? "-" : "+";
                     
                     $product = (array) $products;
                     $product['selisih'] = $selisih;
                     $product['type'] = $type;
+                    
     
                     $data[] = $product;
                 }

@@ -65,29 +65,38 @@ CMS | Report Cash Flow
                         <th class="heightHr" style="vertical-align: middle">Penanggung Jawab <span
                                 class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Deskripsi<span class="dividerHr"></span></th>
-                        <th class="center-text" class="heightHr">Total<span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">Credit<span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">Debit<span class="dividerHr"></span></th>
                     </tr>
                 </thead>
+                <?php $total_credit = 0; $total_debit = 0; ?>
                 <tbody>
                     @if (!empty($data))
                     @foreach ($data as $item)
+                    <?php if ($item->category == 'OUT') { $total_credit += $item->amount; } else { $total_debit += $item->amount; } ?>
                     <tr>
                         <td class="center-text">{{ $loop->iteration }}</td>
                         <td class="center-text" style="vertical-align: middle">{{ $item->cash_date }}</td>
                         <td style="vertical-align: middle">{{ $item->created_by }}</td>
                         <td style="vertical-align: middle">{{ $item->approved_by }}</td>
                         <td style="vertical-align: middle">{{ $item->description }}</td>
-                        <td style="width: 15%;" class="center-text boxAction fontField">
-                            @if ($item->category == "IN")
-                            <span class="text-success">+ @currency($item->amount)</span>
-                            @else
-                            <span class="text-danger">- @currency($item->amount)</span>
-                            @endif
+                        <td style="width: 15%; text-align:right" class="boxAction fontField">
+                            <span class="text-danger">{{ $item->category == 'OUT' ? number_format($item->amount) : 0 }}</span>
+                        </td>
+                        <td style="width: 15%; text-align:right" class="boxAction fontField">
+                            <span class="text-success">{{ $item->category == 'IN' ? number_format($item->amount) : 0 }}</span>
                         </td>
                     </tr>
                     @endforeach
                     @endif
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th style="text-align:right" colspan="5">Total</th>
+                        <th style="text-align:right">{{ number_format($total_credit) }}</th>
+                        <th style="text-align:right">{{ number_format($total_debit) }}</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 
