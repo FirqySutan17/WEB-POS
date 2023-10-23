@@ -62,7 +62,17 @@ CMS | Best Seller
                 </thead>
                 <tbody>
                     @if (!empty($data))
+                    <?php 
+                    $sum_beli = 0;
+                    $sum_jual = 0;
+                    $sum_selisih = 0;
+                    ?>
                     @foreach ($data as $item)
+                    <?php 
+                    $sum_beli += $item['harga_beli'];
+                    $sum_jual += $item['price_store'];
+                    $sum_selisih += $item['selisih'];
+                    ?>
                     <tr>
                         <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
                         <td style="width: 35%; vertical-align: middle">
@@ -85,6 +95,15 @@ CMS | Best Seller
                     @endif
 
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">GRAND TOTAL</th>
+                        <th>@currency($sum_beli)</th>
+                        <th>@currency($sum_jual)</th>
+                        <th>@currency($sum_selisih)</th>
+                    </tr>
+
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">
