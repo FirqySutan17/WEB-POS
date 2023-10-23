@@ -97,10 +97,10 @@ CMS | Best Seller
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="2">GRAND TOTAL</th>
-                        <th>@currency($sum_beli)</th>
-                        <th>@currency($sum_jual)</th>
-                        <th>@currency($sum_selisih)</th>
+                        <th style="text-align: center" colspan="2">GRAND TOTAL</th>
+                        <th style="text-align: center">@currency($sum_beli)</th>
+                        <th style="text-align: center">@currency($sum_jual)</th>
+                        <th style="text-align: center">@currency($sum_selisih)</th>
                     </tr>
 
                 </tfoot>
