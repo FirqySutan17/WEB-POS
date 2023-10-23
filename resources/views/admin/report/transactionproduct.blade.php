@@ -94,7 +94,7 @@ CMS | Report Transaction
                     <tr class="head-report">
                         <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
                         <th rowspan="2" class="heightHr center-text">Produk <span class="dividerHr"></span></th>
-                        <th colspan="5" class="heightHr center-text">Detail <span class="dividerHr"></span></th>
+                        <th colspan="6" class="heightHr center-text">Detail <span class="dividerHr"></span></th>
                     </tr>
                     <tr class="head-report">
                         <th class="heightHr center-text">Harga/@</th>
@@ -102,9 +102,11 @@ CMS | Report Transaction
                         <th class="heightHr center-text">(%)</th>
                         <th class="heightHr center-text">Tanggal</th>
                         <th class="heightHr center-text">No Invoice</th>
+                        <th class="heightHr center-text">Total Per Invoice</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $total = 0; ?>
                     @if (!empty($data))
                     @foreach ($data as $item)
                     <?php $rowspan = 1 + count($item['details']); ?>
@@ -113,7 +115,7 @@ CMS | Report Transaction
                             <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
                             <td rowspan="{{ $rowspan }}" class="center-text" style=" vertical-align: middle">{{
                                 $item['code']." | ".$item['name'] }}</td>
-                            <td colspan="5" style="vertical-align: middle; padding: 0px">
+                            <td colspan="6" style="vertical-align: middle; padding: 0px">
 
                             </td>
                         </tr>
@@ -122,7 +124,7 @@ CMS | Report Transaction
                             <td class="center-text">
                                 @if ($inv['discount'] > 0)
                                 <span style="text-decoration: line-through; font-size: 12px">
-                                    @currency($inv['price'])</span> <br>
+                                    @currency($inv['basic_price'])</span> <br>
                                 @endif
                                 @currency($inv['price'])
                             </td>
@@ -130,12 +132,20 @@ CMS | Report Transaction
                             <td class="center-text">{{ $inv['discount'] }}</td>
                             <td class="center-text">{{ $inv['trans_date'] }}</td>
                             <td class="center-text">{{ $inv['invoice_no'] }}</td>
+                            <td class="center-text">@currency($inv['price'] * $inv['quantity'])</td>
                         </tr>
+                        <?php $total += $inv['price'] * $inv['quantity']; ?>
                         @endforeach
                     </div>
                     @endforeach
                     @endif
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="7" style="text-align: right">Total</th>
+                        <th style="text-align: right">@currency($total)</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">

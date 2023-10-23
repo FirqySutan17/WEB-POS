@@ -126,9 +126,10 @@ CMS | Report Transaction
                     <?php $pro_price = 0; ?>
                     <?php $disc = 0; ?>
                     <?php $disc_price = 0; ?>
-                    <?php $sub_total = 0; ?>
+                    <?php $total = 0; ?>
                     @if (!empty($data))
-                    @foreach ($data as $item)
+                    @foreach ($data as $i => $item)
+                    <?php $sub_total = 0; ?>
                     <?php $rowspan = 1 + count($item['products']) ?>
                     <div class="rt-invoice">
                         <tr>
@@ -151,14 +152,14 @@ CMS | Report Transaction
                             <td colspan="5" style="vertical-align: middle; padding: 0px">
 
                             </td>
-                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                            <td id="row-{{$i}}-subtotal" rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
                                 @currency($sub_total)
                             </td>
                         </tr>
                         @foreach ($item['products'] as $product)
                         <?php
-                            $disc = ($product['discount'] / 100) * $product['price'];
-                            $disc_price = $product['price'] - $disc;
+                            // if ($product['name'] == 'AYAM UTUH 700 GRAM') { dd($product); }
+                            $disc_price = $product['price'];
                             $pro_price = $disc_price * $product['quantity'];
                             $sub_total += $pro_price;
                         ?>
@@ -170,7 +171,7 @@ CMS | Report Transaction
                             <td class="center-text">
                                 @if ($product['discount'] > 0)
                                 <span style="text-decoration: line-through; font-size: 12px">
-                                    @currency($product['price'])</span> <br>
+                                    @currency($product['basic_price'])</span> <br>
                                 @endif
                                 @currency($disc_price)
                             </td>
@@ -179,9 +180,19 @@ CMS | Report Transaction
                         </tr>
                         @endforeach
                     </div>
+                    <?php $total += $sub_total; ?>
+                    <script>
+                        document.getElementById("row-{{ $i }}-subtotal").innerHTML="Rp {{ str_replace(',', '.', number_format($sub_total)) }}";
+                    </script>
                     @endforeach
                     @endif
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="10" style="text-align: right">Total</th>
+                        <th style="text-align: right">@currency($total)</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">
