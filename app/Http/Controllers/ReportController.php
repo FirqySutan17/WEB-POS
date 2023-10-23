@@ -25,13 +25,15 @@ class ReportController extends Controller
             $sdate  = "";
             $edate  = "";
             $search  = ""; 
+            $order = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $data = $this->get_stock($sdate, $edate, $search);
+                $order = $request->order;
+                $data = $this->get_stock($sdate, $edate, $search, $order);
             }
-            return view('admin.report.stock', compact('data', 'sdate', 'edate', 'search'));
+            return view('admin.report.stock', compact('data', 'sdate', 'edate', 'search', 'order'));
         }
 
         public function report_stock_excel(Request $request) {
@@ -39,11 +41,13 @@ class ReportController extends Controller
             $sdate  = "";
             $edate  = "";
             $search  = ""; 
+            $order = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $data = $this->get_stock($sdate, $edate, $search);
+                $order = $request->order;
+                $data = $this->get_stock($sdate, $edate, $search, $order);
             }
             return Excel::download(new StockExport($data), 'stock.xlsx');
         }
@@ -53,83 +57,21 @@ class ReportController extends Controller
             $sdate  = "";
             $edate  = "";
             $search  = ""; 
+            $order = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $data = $this->get_stock($sdate, $edate, $search);
+                $order = $request->order;
+                $data = $this->get_stock($sdate, $edate, $search, $order);
             }
             $pdf = PDF::loadview('exports/stock',['data'=>$data]);
             return $pdf->stream();
             // return $pdf->download('stock-opname-pdf');
         }
 
-        private function get_stock($sdate, $edate, $search) {
+        private function get_stock($sdate, $edate, $search, $order) {
             $where = empty($search) ? "" : " AND (cd.code LIKE '%".$search."%' OR cd.name LIKE '%".$search."%')";
-            $query1 = "
-                SELECT 
-                    products.code, 
-                    products.name,
-                    (
-                        COALESCE(
-                            (
-                                SELECT SUM(rc_detail.quantity)
-                                FROM tr_receive_detail AS rc_detail
-                                INNER JOIN tr_receive AS rc ON rc_detail.receive_code = rc.receive_code
-                                WHERE rc.receive_date < '$sdate' AND rc_detail.product_code = products.code
-                                GROUP BY rc_detail.product_code
-                            ), 0
-                        ) - COALESCE(
-                            (
-                                SELECT SUM(trans_detail.quantity)
-                                FROM tr_transaction_detail AS trans_detail
-                                INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
-                                WHERE trans.trans_date < '$sdate' AND trans_detail.product_code = products.code
-                                GROUP BY trans_detail.product_code
-                            ), 0
-                        )
-                    ) AS qty_begin,
-                    COALESCE(
-                        (
-                            SELECT SUM(rc_detail.quantity)
-                            FROM tr_receive_detail AS rc_detail
-                            INNER JOIN tr_receive AS rc ON rc_detail.receive_code = rc.receive_code
-                            WHERE (rc.receive_date BETWEEN '$sdate' AND '$edate') AND rc_detail.product_code = products.code
-                            GROUP BY rc_detail.product_code
-                        ), 0
-                    ) AS qty_in,
-                    COALESCE(
-                        (
-                            SELECT SUM(trans_detail.quantity)
-                            FROM tr_transaction_detail AS trans_detail
-                            INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
-                            WHERE (trans.trans_date BETWEEN '$sdate' AND '$edate') AND trans_detail.product_code = products.code
-                            GROUP BY trans_detail.product_code
-                        ), 0
-                    ) AS qty_out,
-                    (
-                        COALESCE(
-                            (
-                                SELECT SUM(rc_detail.quantity)
-                                FROM tr_receive_detail AS rc_detail
-                                INNER JOIN tr_receive AS rc ON rc_detail.receive_code = rc.receive_code
-                                WHERE rc.receive_date <= '$edate' AND rc_detail.product_code = products.code
-                                GROUP BY rc_detail.product_code
-                            ), 0
-                        ) - COALESCE(
-                            (
-                                SELECT SUM(trans_detail.quantity)
-                                FROM tr_transaction_detail AS trans_detail
-                                INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
-                                WHERE trans.trans_date <= '$edate' AND trans_detail.product_code = products.code
-                                GROUP BY trans_detail.product_code
-                            ), 0
-                        )
-                    ) AS qty_end
-                FROM products
-                WHERE deleted_at IS NULL ".$where."
-                ORDER BY products.name ASC, products.code ASC       
-            ";
 
             $query = "
                 SELECT product_code as code,
@@ -226,7 +168,8 @@ class ReportController extends Controller
                             AND a.date BETWEEN '".$sdate."' AND '".$edate."'
                 ) AS tbl, products cd
                 WHERE  tbl.product_code = cd.code ".$where."
-                GROUP  BY product_code, cd.name 
+                GROUP  BY product_code, cd.name
+                ORDER  BY qty_end ".$order."
             ";
             // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));

@@ -31,7 +31,7 @@ CMS | Report Stock
                 {{-- filter:start --}}
                 <form action="{{ route('report.stock') }}" class="row" method="POST">
                     @csrf
-                    <div class="col-5">
+                    <div class="col-3">
                         <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
                             class="form-control" placeholder="Search item by name or code"
                             style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
@@ -45,6 +45,12 @@ CMS | Report Stock
                         <input type="date" class="form-control" name="edate"
                             value="{{ empty($edate) ? date('Y-m-d') : $edate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
+                    </div>
+                    <div class="col-2">
+                        <select name="order" class="form-control">
+                            <option {{ $order == "DESC" ? "selected" : "" }} value="DESC">Terbesar ke Terkecil</option>
+                            <option {{ $order == "DESC" ? "selected" : "" }} value="ASC">Terkecil ke Terbesar</option>
+                        </select>
                     </div>
                     <div class="col-1">
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
@@ -63,7 +69,7 @@ CMS | Report Stock
         </div>
         <div class="table-responsive"
             style="box-shadow: 0 5px 10px rgb(0 0 0 / 0.2); border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
-            <table class="table table-striped table-hover">
+            <table class="table">
                 <thead>
                     <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
@@ -79,26 +85,27 @@ CMS | Report Stock
                 <tbody>
                     @if (!empty($data))
                     @foreach ($data as $item)
+                    <?php $low_stock = $item->qty_end < 5 ? "bg-danger" : ""; ?>
                     <tr>
-                        <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 35%; vertical-align: middle">
+                        <td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
+                        <td class="{{ $low_stock }}" style="width: 35%; vertical-align: middle">
                             {{ $item->name." - ".$item->code }}
                         </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">{{
+                        <td class="center-text {{ $low_stock }}" style="width: 10%; vertical-align: middle">{{
                             number_format($item->qty_begin) }}</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                        <td class="center-text {{ $low_stock }}" style="width: 10%; vertical-align: middle">
                             {{ number_format($item->qty_in) }}
                         </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                        <td class="center-text {{ $low_stock }}" style="width: 10%; vertical-align: middle">
                             {{ number_format($item->IN_adj) }}
                         </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                        <td class="center-text {{ $low_stock }}" style="width: 10%; vertical-align: middle">
                             {{ number_format($item->qty_out) }}
                         </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                        <td class="center-text {{ $low_stock }}" style="width: 10%; vertical-align: middle">
                             {{ number_format($item->out_adj) }}
                         </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
+                        <td class="center-text {{ $low_stock }}" style="width: 10%; vertical-align: middle">
                             {{ number_format($item->qty_end) }}
                         </td>
                     </tr>

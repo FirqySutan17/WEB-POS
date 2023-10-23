@@ -65,7 +65,7 @@ CMS | Product
 					@forelse ($products as $product)
 					@php
 					$low_stock = "";
-					if ($product->stock < 110) { $low_stock="bg-danger" ; } @endphp <tr>
+					if ($product->stock < 5) { $low_stock="bg-danger" ; } @endphp <tr>
 						<td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
 						<td style="width: 45%; vertical-align: middle" class="{{ $low_stock }}">{{ $product->name.' |
 							'.$product->code }}</td>
