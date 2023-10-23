@@ -59,7 +59,7 @@
                     @endcan
 
                     <!-- skill -->
-                    @can('P Show')
+                    @can('T Show')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['cashflow.index', 'cashflow.show', 'cashflow.edit', 'cashflow.create'])}}"
                             href="{{ route('cashflow.index') }}">
@@ -83,7 +83,7 @@
                     <!-- End skill -->
 
                     <!-- skill -->
-                    @can('P Show')
+                    @can('T Show')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['membership.index', 'membership.show', 'membership.edit', 'membership.create'])}}"
                             href="{{ route('membership.index') }}">
@@ -136,8 +136,7 @@
                             </li>
 
                             <li>
-                                <a href="{{ route('report.labarugi') }}"
-                                    class="{{routeActive(['report.labarugi'])}}">
+                                <a href="{{ route('report.labarugi') }}" class="{{routeActive(['report.labarugi'])}}">
                                     Laba Rugi
                                 </a>
                             </li>
@@ -183,10 +182,10 @@
                         </a>
                     </li>
 
-                    
+
                     @endcan
 
-                    
+
                     <!-- End Portfolio -->
 
                     @can('Product Categories')
@@ -217,7 +216,7 @@
                     </li>
                     @endcan
 
-                    
+
 
                     @canany(['Manage Users', 'Manage Roles'])
                     <li class="dropdown">
