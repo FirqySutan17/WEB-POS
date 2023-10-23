@@ -106,6 +106,11 @@ CMS | Transaction
                         <div class="col-4 boxContent">
                             @endif
                             <div class="boxSearch _form-group">
+                                <input type="month" class="form-control" name="sdate"
+                                    value="{{ empty($sdate) ? date('Y-m') : $sdate }}"
+                                    style="height: 100%; text-align: center; font-size: 14px">
+                            </div>
+                            <div class="boxSearch _form-group">
                                 <input name="keyword" value="{{ request('keyword') }}" type="search"
                                     class="form-control" placeholder="Search for data.."
                                     style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">

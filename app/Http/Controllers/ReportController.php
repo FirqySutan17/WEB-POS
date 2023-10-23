@@ -858,6 +858,7 @@ class ReportController extends Controller
                     products.name as product_name,
                     trans_detail.product_code, 
                     SUM(trans_detail.quantity) AS total_sales,
+                    SUM(trans_detail.quantity * trans_detail.price) AS total_amount,
                     (SUM(trans_detail.quantity) / COUNT(trans.invoice_no)) AS sales_per_invoice
                 FROM tr_transaction_detail AS trans_detail
                 INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no

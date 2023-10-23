@@ -34,16 +34,25 @@ class TransactionController extends Controller
     {
         $user = Auth::user();
         $transactions = [];
+        
+        $sdate = '';
         $query = Transaction::orderBy('trans_date', 'desc')->orderBy('id', 'desc')->with('user');
         if ($request->get('keyword')) {
             $query->where('invoice_no', $request->keyword);
+        }
+        if ($request->get('sdate')) {
+            $sdate  = $request->get('sdate');
+            $sdate_exp = explode("-", $sdate);
+            $year   = $sdate_exp[0];
+            $month  = $sdate_exp[1];
+            $query->whereYear('trans_date', $year)->whereMonth('trans_date', $month);
         }
         if ($user->roles->first()->name == 'Cashier') {
             $query->where('emp_no', $user->employee_id);
         }
         $transactions = $query->paginate(9);
         // $session_user = Auth::user()->roles()->first()->name;
-        return view('admin.transaction.index', compact('transactions'));
+        return view('admin.transaction.index', compact('transactions', 'sdate'));
     }
 
     public function index_draft(Request $request)
