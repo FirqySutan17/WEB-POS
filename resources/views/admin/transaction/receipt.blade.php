@@ -124,7 +124,7 @@
         <p class="centered">
             Ruko Kemang Pratama Raya Blok MM, Jl. Kemang Pratama Raya No.10, Bojong Rawalaumbu, Kec. Rawalumbu, Kota Bks, Jawa Barat
         </p>
-        <p style="text-align: center">NPWP XXX-12345-678910</p>
+        <p style="text-align: center"> NPWP 50.588.919.6-014.000 </p>
         <p style="text-align: center">{{ $transaction->created_at->format('d-m-Y h:m:s') }}</p>
         <hr class="dotted">
         <table class="add-note">
