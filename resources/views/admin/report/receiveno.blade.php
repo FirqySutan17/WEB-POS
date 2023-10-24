@@ -96,6 +96,7 @@ CMS | Report Receive
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $total_qty = 0; ?>
                     @if (!empty($data))
                     @foreach ($data as $item)
                     <?php $rowspan = 1 + count($item['details']) ?>
@@ -128,11 +129,18 @@ CMS | Report Receive
                             <td class="center-text">{{ $rcv['product'] }}</td>
                             <td class="center-text">{{ $rcv['quantity'] }}</td>
                         </tr>
+                        <?php $total_qty += $rcv['quantity']; ?>
                         @endforeach
                     </div>
                     @endforeach
                     @endif
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6" style="text-align: right">Total</td>
+                        <td class="center-text">{{ $total_qty }}</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">

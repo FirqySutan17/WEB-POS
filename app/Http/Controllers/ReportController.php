@@ -792,7 +792,10 @@ class ReportController extends Controller
 
                     SELECT 
                         trans.created_at AS cash_date, 
-                        'IN' AS category, 
+                        CASE 
+                            WHEN trans.payment_method = 'TUNAI' THEN 'IN'
+                            ELSE 'BANK'
+                        END AS category, 
                         CONCAT(trans.emp_no, ' | ', emp_user.name) AS created_by,
                         CONCAT(trans.emp_no, ' | ', emp_user.name) AS approved_by,
                         CONCAT('TRANS ', trans.invoice_no, ' ', trans.payment_method) AS description,
@@ -862,7 +865,7 @@ class ReportController extends Controller
                 $search = trim($request->search);
             }
 
-            $data_raw = $this->get_labarugi($search);
+            $data_raw = $this->get_labarugi($sdate, $search);
             // dd($data_raw);
             $data = $this->convert_labarugi($data_raw);
             return view('admin.report.labarugi', compact('data', 'sdate', 'search'));
@@ -890,8 +893,7 @@ class ReportController extends Controller
                     $product = (array) $products;
                     $product['selisih'] = $selisih;
                     $product['type'] = $type;
-                    
-    
+                    // dd($product);
                     $data[] = $product;
                 }
             }
@@ -900,8 +902,12 @@ class ReportController extends Controller
             return $data;
         }
 
-        private function get_labarugi($search) {
+        private function get_labarugi($sdate, $search) {
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
+            
+            $sdate_exp = explode("-", $sdate);
+            $year   = $sdate_exp[0];
+            $month  = $sdate_exp[1];
             $query = "
                 SELECT 
                     products.code, products.name, products.categories, 
@@ -916,7 +922,17 @@ class ReportController extends Controller
                             LIMIT 1
                         )
                         , 0
-                    ) AS harga_beli
+                    ) AS harga_beli,
+                    (
+                        SELECT SUM(trans_detail.quantity)
+                        FROM tr_transaction_detail trans_detail
+                        INNER JOIN tr_transaction trans ON trans_detail.invoice_no = trans_detail.invoice_no
+                        WHERE 
+                            trans.status = 'FINISH' AND 
+                            trans_detail.product_code = products.code AND
+                            (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')
+                        GROUP BY trans_detail.product_code
+                    ) AS total_qty
                 FROM products
                 WHERE products.is_active = 1 ".$where."
                 ORDER BY products.code ASC, products.name ASC

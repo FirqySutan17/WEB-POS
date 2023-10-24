@@ -66,24 +66,36 @@ CMS | Report Cash Flow
                                 class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Deskripsi<span class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Credit<span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">Credit Bank<span class="dividerHr"></span></th>
+                        <th class="center-text" class="heightHr">Debit Bank<span class="dividerHr"></span></th>
                         <th class="center-text" class="heightHr">Debit<span class="dividerHr"></span></th>
                     </tr>
                 </thead>
-                <?php $total_credit = 0; $total_debit = 0; ?>
+                <?php $total_credit = 0; $total_debit = 0; $total_credit_bank = 0; $total_debit_bank = 0; ?>
                 <tbody>
                     @if (!empty($data))
                     @foreach ($data as $item)
-                    <?php if ($item->category == 'OUT') { $total_credit += $item->amount; } else { $total_debit += $item->amount; } ?>
+                    <?php 
+                        if ($item->category == 'OUT') { $total_credit += $item->amount; } 
+                        elseif ($item->category == 'IN') { $total_debit += $item->amount; }
+                        elseif ($item->category == 'BANK') { $total_credit_bank += $item->amount; $total_debit_bank += $item->amount; }
+                    ?>
                     <tr>
                         <td class="center-text">{{ $loop->iteration }}</td>
                         <td class="center-text" style="vertical-align: middle">{{ $item->cash_date }}</td>
                         <td style="vertical-align: middle">{{ $item->created_by }}</td>
                         <td style="vertical-align: middle">{{ $item->approved_by }}</td>
                         <td style="vertical-align: middle">{{ $item->description }}</td>
-                        <td style="width: 15%; text-align:right" class="boxAction fontField">
+                        <td style="width: 10%; text-align:right" class="boxAction fontField">
                             <span class="text-danger">{{ $item->category == 'OUT' ? number_format($item->amount) : 0 }}</span>
                         </td>
-                        <td style="width: 15%; text-align:right" class="boxAction fontField">
+                        <td style="width: 10%; text-align:right" class="boxAction fontField">
+                            <span class="text-danger">{{ $item->category == 'BANK' ? number_format($item->amount) : 0 }}</span>
+                        </td>
+                        <td style="width: 10%; text-align:right" class="boxAction fontField">
+                            <span class="text-success">{{ $item->category == 'BANK' ? number_format($item->amount) : 0 }}</span>
+                        </td>
+                        <td style="width: 10%; text-align:right" class="boxAction fontField">
                             <span class="text-success">{{ $item->category == 'IN' ? number_format($item->amount) : 0 }}</span>
                         </td>
                     </tr>
@@ -94,11 +106,13 @@ CMS | Report Cash Flow
                     <tr>
                         <th style="text-align:right" colspan="5">Total</th>
                         <th style="text-align:right">{{ number_format($total_credit) }}</th>
+                        <th style="text-align:right">{{ number_format($total_credit_bank) }}</th>
+                        <th style="text-align:right">{{ number_format($total_debit_bank) }}</th>
                         <th style="text-align:right">{{ number_format($total_debit) }}</th>
                     </tr>
                     <tr>
-                        <th style="text-align:right" colspan="5">Saldo</th>
-                        <th style="text-align:right" colspan="2">{{ number_format($total_debit - $total_credit) }}</th>
+                        <th style="text-align:right" colspan="5">Saldo Akhir</th>
+                        <th style="text-align:right" colspan="4">{{ number_format(($total_debit + $total_debit_bank) - ($total_credit + $total_credit_bank)) }}</th>
                     </tr>
                 </tfoot>
             </table>

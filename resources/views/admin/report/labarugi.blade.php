@@ -41,6 +41,11 @@ CMS | Best Seller
                             value="{{ empty($sdate) ? date('Y-m') : $sdate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
+                    {{-- <div class="col-2">
+                        <input type="month" class="form-control" name="edate"
+                            value="{{ empty($sdate) ? date('Y-m') : $sdate }}"
+                            style="height: 100%; text-align: center; font-size: 14px">
+                    </div> --}}
                     <div class="col-1">
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
@@ -55,6 +60,7 @@ CMS | Best Seller
                     <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th>Item <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">QTY</th>
                         <th class="heightHr center-text">HARGA BELI <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">HARGA JUAL <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">SELISIH <span class="dividerHr"></span></th>
@@ -65,14 +71,19 @@ CMS | Best Seller
                     $sum_beli = 0;
                     $sum_jual = 0;
                     $sum_selisih = 0;
+                    $sum_qty = 0;
                     ?>
                     @if (!empty($data))
                     
                     @foreach ($data as $item)
                     <?php 
-                    $sum_beli += $item['harga_beli'];
-                    $sum_jual += $item['price_store'];
-                    $sum_selisih += $item['selisih'];
+                        $harga_beli     = $item['harga_beli'] * $item['total_qty'];
+                        $harga_jual     = $item['price_store'] * $item['total_qty'];
+                        $item['selisih'] = $item['selisih'] * $item['total_qty'];
+                        $sum_beli       += $harga_beli;
+                        $sum_jual       += $harga_jual;
+                        $sum_selisih    += $item['selisih'];
+                        $sum_qty        += $item['total_qty'];
                     ?>
                     <tr>
                         <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
@@ -80,9 +91,14 @@ CMS | Best Seller
                             {{ $item['code']." - ".$item['name'] }}
                         </td>
                         <td class="center-text" style="width: 15%; vertical-align: middle">{{
-                            number_format($item['harga_beli']) }}</td>
+                            number_format($item['total_qty']) }}</td>
                         <td class="center-text" style="width: 15%; vertical-align: middle">
-                            {{ number_format($item['price_store']) }}
+                            {{ number_format($harga_beli) }}
+                            ( {{ number_format($item['harga_beli']) }} )
+                        </td>
+                        <td class="center-text" style="width: 15%; vertical-align: middle">
+                            {{ number_format($harga_beli) }}
+                            ( {{ number_format($item['price_store']) }} )
                         </td>
                         <td class="center-text" style="width: 15%; vertical-align: middle">
                             @if ($item['type'] == "+")
@@ -99,6 +115,7 @@ CMS | Best Seller
                 <tfoot>
                     <tr>
                         <th style="text-align: center" colspan="2">GRAND TOTAL</th>
+                        <th style="text-align: center">{{ number_format($sum_qty) }}</th>
                         <th style="text-align: center">@currency($sum_beli)</th>
                         <th style="text-align: center">@currency($sum_jual)</th>
                         <th style="text-align: center">@currency($sum_selisih)</th>

@@ -178,9 +178,10 @@ CMS | Report Transaction
                             <td class="center-text">{{ $product['quantity'] }}</td>
                             <td class="center-text">@currency($pro_price)</td>
                         </tr>
+                        <?php $total_qty += $product['quantity']; ?>
                         @endforeach
                     </div>
-                    <?php $total += $sub_total; $total_qty += $product['quantity']; ?>
+                    <?php $total += $sub_total; ?>
                     <script>
                         document.getElementById("row-{{ $i }}-subtotal").innerHTML="Rp {{ str_replace(',', '.', number_format($sub_total)) }}";
                     </script>
