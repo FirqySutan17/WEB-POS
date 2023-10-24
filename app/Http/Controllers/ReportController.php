@@ -906,12 +906,13 @@ class ReportController extends Controller
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
             $whereDate = "";
             if (!empty($sdate)) {
-                $sdate_exp = explode("-", $sdate);
-                $year   = $sdate_exp[0];
-                $month  = $sdate_exp[1];
-                $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')"; 
+                $sdate_exp = explode("-", $sdate);    
+            } else {
+                $sdate_exp = explode("-", date("Y-m"));
             }
-            
+            $year   = $sdate_exp[0];
+            $month  = $sdate_exp[1];
+            $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
             $query = "
                 SELECT 
                     products.code, products.name, products.categories, 
