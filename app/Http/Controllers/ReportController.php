@@ -904,10 +904,14 @@ class ReportController extends Controller
 
         private function get_labarugi($sdate, $search) {
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
+            $whereDate = "";
+            if (!empty($sdate)) {
+                $sdate_exp = explode("-", $sdate);
+                $year   = $sdate_exp[0];
+                $month  = $sdate_exp[1];
+                $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')"; 
+            }
             
-            $sdate_exp = explode("-", $sdate);
-            $year   = $sdate_exp[0];
-            $month  = $sdate_exp[1];
             $query = "
                 SELECT 
                     products.code, products.name, products.categories, 
@@ -929,8 +933,7 @@ class ReportController extends Controller
                         INNER JOIN tr_transaction trans ON trans_detail.invoice_no = trans_detail.invoice_no
                         WHERE 
                             trans.status = 'FINISH' AND 
-                            trans_detail.product_code = products.code AND
-                            (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')
+                            trans_detail.product_code = products.code ".$whereDate."
                         GROUP BY trans_detail.product_code
                     ) AS total_qty
                 FROM products
