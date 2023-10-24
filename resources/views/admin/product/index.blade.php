@@ -56,7 +56,7 @@ CMS | Product
 						<th class="center-text">No <span class="dividerHr"></span></th>
 						<th class="heightHr">Name <span class="dividerHr"></span></th>
 						<th class="heightHr">Price <span class="dividerHr"></span></th>
-						<th class="heightHr">Stock <span class="dividerHr"></span></th>
+						{{-- <th class="heightHr">Stock <span class="dividerHr"></span></th> --}}
 						<th class="center-text">Action</th>
 					</tr>
 				</thead>
@@ -67,16 +67,16 @@ CMS | Product
 					$low_stock = "";
 					if ($product->stock < 5) { $low_stock="bg-danger" ; } @endphp <tr>
 						<td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
-						<td style="width: 45%; vertical-align: middle" class="{{ $low_stock }}">{{ $product->name.' |
+						<td style="width: 55%; vertical-align: middle;" class="{{ $low_stock }}">{{ $product->name.' |
 							'.$product->code }}</td>
 						<td style="width: 30%; vertical-align: middle" class="{{ $low_stock }}">
 							Store : Rp {{ number_format($product->price_store) }} ( {{ $product->discount_store }} %)
 							<br>
 							OLShop : Rp {{ number_format($product->price_olshop) }} ( {{ $product->discount_olshop }} %)
 						</td>
-						<td style="width: 10%; vertical-align: middle" class="{{ $low_stock }}">
+						{{-- <td style="width: 10%; vertical-align: middle" class="{{ $low_stock }}">
 							{{ number_format($product->stock) }}
-						</td>
+						</td> --}}
 						<td style="width: 10%;" class="center-text boxAction fontField {{ $low_stock }}">
 							<div class="boxInside">
 								@can('P Update')

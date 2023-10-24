@@ -876,6 +876,7 @@ CMS | Transaction
                 theme: 'bootstrap4 select-product-custom',
                 language: "",
                 allowClear: true,
+                minimumInputLength: 3,
                 ajax: {
                     url: "{{ route('product.select2_product') }}",
                     dataType: 'json',

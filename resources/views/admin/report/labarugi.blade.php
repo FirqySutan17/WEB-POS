@@ -61,12 +61,13 @@ CMS | Best Seller
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!empty($data))
                     <?php 
                     $sum_beli = 0;
                     $sum_jual = 0;
                     $sum_selisih = 0;
                     ?>
+                    @if (!empty($data))
+                    
                     @foreach ($data as $item)
                     <?php 
                     $sum_beli += $item['harga_beli'];

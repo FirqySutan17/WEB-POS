@@ -31,9 +31,9 @@ class ProductController extends Controller
     {
         $products = [];
         if ($request->get('keyword')) {
-            $products = Product::search($request->keyword)->orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
+            $products = Product::where('is_active', 1)->search($request->keyword)->orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
         } else {
-            $products = Product::orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
+            $products = Product::where('is_active', 1)->orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
         }
         // dd($products);
         return view('admin.product.index', [

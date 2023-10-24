@@ -96,6 +96,10 @@ CMS | Report Cash Flow
                         <th style="text-align:right">{{ number_format($total_credit) }}</th>
                         <th style="text-align:right">{{ number_format($total_debit) }}</th>
                     </tr>
+                    <tr>
+                        <th style="text-align:right" colspan="5">Saldo</th>
+                        <th style="text-align:right" colspan="2">{{ number_format($total_debit - $total_credit) }}</th>
+                    </tr>
                 </tfoot>
             </table>
         </div>

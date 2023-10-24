@@ -57,7 +57,6 @@ CMS | Best Seller
                         <th>Item <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">TOTAL SALE <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">TOTAL AMOUNT <span class="dividerHr"></span></th>
-                        <th class="heightHr center-text">AVG SALE / TRANS <span class="dividerHr"></span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,13 +67,8 @@ CMS | Best Seller
                         <td style="width: 50%; vertical-align: middle">
                             {{ $item->product_code." - ".$item->product_name }}
                         </td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">{{
-                            number_format($item->total_sales) }}</td>
-                            <td class="center-text" style="width: 10%; vertical-align: middle">{{
-                                number_format($item->total_amount) }}</td>
-                        <td class="center-text" style="width: 10%; vertical-align: middle">
-                            {{ number_format($item->sales_per_invoice) }} / INVOICE
-                        </td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">{{ number_format($item->total_sales) }}</td>
+                        <td class="center-text" style="width: 10%; vertical-align: middle">{{ number_format($item->total_amount) }}</td>
                     </tr>
                     @endforeach
                     @endif

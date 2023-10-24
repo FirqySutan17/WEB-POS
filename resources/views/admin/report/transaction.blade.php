@@ -95,7 +95,7 @@ CMS | Report Transaction
                         <td class="center-text">{{ $loop->iteration }}</td>
 
                         <td class="center-text" style="vertical-align: middle">
-                            {{ date('d-m-Y',strtotime($item->trans_date)) }}
+                            {{ date('d-m-Y H:i:s',strtotime($item->trans_date)) }}
                         </td>
                         <td style="vertical-align: middle">
                             {{ $item->invoice_no }}
@@ -106,7 +106,7 @@ CMS | Report Transaction
                         <td class="center-text" style="vertical-align: middle">
                             {{ $item->payment_method }}
                         </td>
-                        <td class="center-text" style="vertical-align: middle;">
+                        <td style="vertical-align: middle; text-align:right">
                             @currency($item->total_price)
                         </td>
                     </tr>
@@ -116,7 +116,7 @@ CMS | Report Transaction
                 <tfoot>
                     <tr class="head-report">
                         <th colspan="5" class="heightHr right-text">Grand Total <span class="dividerHr"></span></th>
-                        <th class="center-text" class="heightHr">@currency($grand_total) <span class="dividerHr"></span>
+                        <th style="vertical-align: middle; text-align:right" class="heightHr">@currency($grand_total) <span class="dividerHr"></span>
                         </th>
                     </tr>
                 </tfoot>

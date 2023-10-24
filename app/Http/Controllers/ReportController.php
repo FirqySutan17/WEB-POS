@@ -235,7 +235,7 @@ class ReportController extends Controller
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
+                $order_by = "ORDER BY trans.created_at DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
                 $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
                 $data     = $this->convert_transaction_by_invoice($data_raw);
                 // dd($data_converted);
@@ -355,7 +355,7 @@ class ReportController extends Controller
         private function get_transaction($sdate, $edate, $search) {
             $where = empty($search) ? "" : " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%')";
             $query = "
-                SELECT trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.employee_id, users.name
+                SELECT trans.invoice_no, trans.created_at as trans_date, trans.payment_method, trans.total_price, users.employee_id, users.name
                 FROM tr_transaction trans
                 INNER JOIN users ON trans.emp_no = users.employee_id
                 WHERE trans.status = 'FINISH' AND trans.trans_date BETWEEN '$sdate' AND '$edate' ".$where."
@@ -380,7 +380,7 @@ class ReportController extends Controller
                 SELECT 
                     trans_detail.product_code, products.name as product_name, 
                     trans_detail.quantity, trans_detail.basic_price, trans_detail.discount, trans_detail.price,
-                    trans.invoice_no, trans.trans_date, trans.payment_method, trans.total_price, users.name, users.employee_id
+                    trans.invoice_no, trans.created_at as trans_date, trans.payment_method, trans.total_price, users.name, users.employee_id
                 FROM tr_transaction_detail AS trans_detail
                 INNER JOIN products ON trans_detail.product_code = products.code
                 INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
@@ -835,8 +835,7 @@ class ReportController extends Controller
                     products.name as product_name,
                     trans_detail.product_code, 
                     SUM(trans_detail.quantity) AS total_sales,
-                    SUM(trans_detail.quantity * trans_detail.price) AS total_amount,
-                    (SUM(trans_detail.quantity) / COUNT(trans.invoice_no)) AS sales_per_invoice
+                    SUM(trans_detail.quantity * trans_detail.price) AS total_amount
                 FROM tr_transaction_detail AS trans_detail
                 INNER JOIN tr_transaction AS trans ON trans_detail.invoice_no = trans.invoice_no
                 INNER JOIN products ON trans_detail.product_code = products.code
@@ -845,7 +844,7 @@ class ReportController extends Controller
                     ".$where."
                 GROUP BY products.name, trans_detail.product_code
                 ORDER BY total_sales DESC
-                LIMIT 5
+                LIMIT 10
             ";
             $db_query = DB::select(DB::raw($query));
             return $db_query;
@@ -863,7 +862,8 @@ class ReportController extends Controller
                 $search = trim($request->search);
             }
 
-            $data_raw = $this->get_labarugi($sdate, $search);
+            $data_raw = $this->get_labarugi($search);
+            // dd($data_raw);
             $data = $this->convert_labarugi($data_raw);
             return view('admin.report.labarugi', compact('data', 'sdate', 'search'));
         }
@@ -918,7 +918,7 @@ class ReportController extends Controller
                         , 0
                     ) AS harga_beli
                 FROM products
-                WHERE products.is_active = 1
+                WHERE products.is_active = 1 ".$where."
                 ORDER BY products.code ASC, products.name ASC
             ";
             $db_query = DB::select(DB::raw($query));

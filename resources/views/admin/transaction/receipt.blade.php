@@ -197,17 +197,17 @@
             ?>
             <tbody>
                 <tr>
-                    <td class="description">SUB TOTAL</td>
-                    <td class="price">@currency($sub_total)</td>
-                </tr>
-                <tr>
-                    <td class="description">DISC TOTAL</td>
-                    <td class="price">@currency($total_discount)</td>
-                </tr>
-                <tr>
-                    <td class="description">GRAND TOTAL</td>
+                    <td class="description">TOTAL</td>
                     <td class="price">@currency($total_price)</td>
                 </tr>
+                <tr>
+                    <td class="description">ANDA HEMAT</td>
+                    <td class="price">@currency($total_discount)</td>
+                </tr>
+                {{-- <tr>
+                    <td class="description">GRAND TOTAL</td>
+                    <td class="price">@currency($total_price)</td>
+                </tr> --}}
 
                 @if ($transaction->payment_method == 'Tunai')
                 <tr>
@@ -215,7 +215,7 @@
                     <td class="price">Rp {{ number_format($transaction->cash) }}</td>
                 </tr>
                 <tr>
-                    <td class="description">KEMBALIAN</td>
+                    <td class="description">KEMBALI</td>
                     <td class="price">Rp {{ number_format($transaction->kembalian) }}</td>
                 </tr>
                 @endif

@@ -35,7 +35,7 @@ class HomeController extends Controller
             return redirect()->route('transaction.create');
         }
 
-        $transactions = Transaction::whereDate('trans_date', date('Y-m-d'))->orderBy('trans_date', 'desc')->orderBy('id', 'desc')->with('user')->get();
+        $transactions = Transaction::where('status', 'FINISH')->whereDate('trans_date', date('Y-m-d'))->orderBy('trans_date', 'desc')->orderBy('id', 'desc')->with('user')->get();
 
         $monthly_sales[1] = round(Transaction::whereYear('trans_date', date('Y'))->whereMonth('trans_date', 1)->sum('total_price'));
         $monthly_sales[2] = round(Transaction::whereYear('trans_date', date('Y'))->whereMonth('trans_date', 2)->sum('total_price'));

@@ -108,7 +108,7 @@ CMS | Report Transaction
 
                         <th class="heightHr center-text" style="vertical-align: middle">(%)<span
                                 class="dividerHr"></span></th>
-                        <th class="heightHr center-text" style="vertical-align: middle">Harga/@<span
+                        <th class="heightHr center-text" style="vertical-align: middle">Harga<span
                                 class="dividerHr"></span>
 
                         </th>
@@ -126,7 +126,7 @@ CMS | Report Transaction
                     <?php $pro_price = 0; ?>
                     <?php $disc = 0; ?>
                     <?php $disc_price = 0; ?>
-                    <?php $total = 0; ?>
+                    <?php $total = 0; $total_qty = 0; ?>
                     @if (!empty($data))
                     @foreach ($data as $i => $item)
                     <?php $sub_total = 0; ?>
@@ -180,7 +180,7 @@ CMS | Report Transaction
                         </tr>
                         @endforeach
                     </div>
-                    <?php $total += $sub_total; ?>
+                    <?php $total += $sub_total; $total_qty += $product['quantity']; ?>
                     <script>
                         document.getElementById("row-{{ $i }}-subtotal").innerHTML="Rp {{ str_replace(',', '.', number_format($sub_total)) }}";
                     </script>
@@ -189,7 +189,9 @@ CMS | Report Transaction
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="10" style="text-align: right">Total</th>
+                        <th colspan="8" style="text-align: right">Total</th>>
+                        <th style="text-align: right">{{ number_format($total_qty) }}</th>>
+                        <th style="text-align: right"></th>
                         <th style="text-align: right">@currency($total)</th>
                     </tr>
                 </tfoot>
