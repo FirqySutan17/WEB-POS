@@ -473,12 +473,15 @@ class ReportController extends Controller
                             "details" => []
                         ];
                     }
-                    $data_cashier[$employee_id]["details"][] = [
-                        "invoice_no"    => $item->invoice_no,
-                        "trans_date"    => $item->trans_date,
-                        "total_price"   => $item->total_price,
-                        "payment_method"   => $item->payment_method
-                    ];
+
+                    if (!array_key_exists($item->invoice_no, $data_cashier[$employee_id]["details"])) {
+                        $data_cashier[$employee_id]["details"][$item->invoice_no] = [
+                            "invoice_no"    => $item->invoice_no,
+                            "trans_date"    => $item->trans_date,
+                            "total_price"   => $item->total_price,
+                            "payment_method"   => $item->payment_method
+                        ];
+                    }
                 }
             }
             return $data_cashier;
