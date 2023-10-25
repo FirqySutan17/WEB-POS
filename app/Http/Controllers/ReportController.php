@@ -436,14 +436,26 @@ class ReportController extends Controller
                             "details" => []
                         ];
                     }
-                    $data_product[$product_code]["details"][] = [
-                        "invoice_no"    => $item->invoice_no,
-                        "trans_date"    => $item->trans_date,
-                        "price"         => $item->price,
-                        "basic_price"   => $item->basic_price,
-                        "discount"      => $item->discount,
-                        "quantity"  => $item->quantity
-                    ];
+
+                    $trans_date = date("Y-m-d", strtotime($item->trans_date));
+                    $transdate = str_replace("-", "", $trans_date);
+                    if (!array_key_exists($transdate, $data_product[$product_code]["details"])) {
+                        $data_product[$product_code]["details"][$transdate] = [
+                            "price"         => $item->price,
+                            "quantity"      => 0,
+                            "trans_date"    => $trans_date,
+                        ];
+                    }
+                    $data_product[$product_code]["details"][$transdate]["quantity"] += $item->quantity;
+                    // dd($data_product);
+                    // $data_product[$product_code]["details"][] = [
+                    //     "invoice_no"    => $item->invoice_no,
+                    //     "trans_date"    => $item->trans_date,
+                    //     "price"         => $item->price,
+                    //     "basic_price"   => $item->basic_price,
+                    //     "discount"      => $item->discount,
+                    //     "quantity"  => $item->quantity
+                    // ];
                 }
             }
             return $data_product;
@@ -866,7 +878,6 @@ class ReportController extends Controller
             }
 
             $data_raw = $this->get_labarugi($sdate, $search);
-            // dd($data_raw);
             $data = $this->convert_labarugi($data_raw);
             return view('admin.report.labarugi', compact('data', 'sdate', 'search'));
         }
@@ -919,7 +930,7 @@ class ReportController extends Controller
                     products.price_store, products.discount_store, products.is_vat,
                     COALESCE(
                         (
-                            SELECT COALESCE(rc_detail.unit_price, 0) AS unit_price
+                            SELECT REPLACE(COALESCE(rc_detail.unit_price, 0), '.', '') AS unit_price
                             FROM tr_receive_detail rc_detail
                             INNER JOIN tr_receive rc ON rc_detail.receive_code = rc.receive_code
                             WHERE rc_detail.product_code = products.code
@@ -931,7 +942,7 @@ class ReportController extends Controller
                     (
                         SELECT SUM(trans_detail.quantity)
                         FROM tr_transaction_detail trans_detail
-                        INNER JOIN tr_transaction trans ON trans_detail.invoice_no = trans_detail.invoice_no
+                        INNER JOIN tr_transaction trans ON trans_detail.invoice_no = trans.invoice_no
                         WHERE 
                             trans.status = 'FINISH' AND 
                             trans_detail.product_code = products.code ".$whereDate."
@@ -941,6 +952,7 @@ class ReportController extends Controller
                 WHERE products.is_active = 1 ".$where."
                 ORDER BY products.code ASC, products.name ASC
             ";
+            // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));
             return $db_query;
         }

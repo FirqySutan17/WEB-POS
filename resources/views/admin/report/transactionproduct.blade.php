@@ -94,56 +94,65 @@ CMS | Report Transaction
                     <tr class="head-report">
                         <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
                         <th rowspan="2" class="heightHr center-text">Produk <span class="dividerHr"></span></th>
-                        <th colspan="6" class="heightHr center-text">Detail <span class="dividerHr"></span></th>
+                        <th colspan="3" class="heightHr center-text">Detail <span class="dividerHr"></span></th>
                     </tr>
                     <tr class="head-report">
-                        <th class="heightHr center-text">Harga</th>
+                        {{-- <th class="heightHr center-text">Harga</th> --}}
                         <th class="heightHr center-text">Qty</th>
-                        <th class="heightHr center-text">(%)</th>
+                        {{-- <th class="heightHr center-text">(%)</th> --}}
                         <th class="heightHr center-text">Tanggal</th>
-                        <th class="heightHr center-text">No Invoice</th>
-                        <th class="heightHr center-text">Total Per Invoice</th>
+                        {{-- <th class="heightHr center-text">No Invoice</th> --}}
+                        <th class="heightHr center-text">Total Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $total = 0; ?>
+                    <?php $total = 0; $total_qty = 0; ?>
                     @if (!empty($data))
                     @foreach ($data as $item)
-                    <?php $rowspan = 1 + count($item['details']); ?>
+                    <?php $rowspan = 1 + count($item['details']); $sub_total = 0; $sub_qty = 0; ?>
                     <div class="rt-invoice">
                         <tr>
                             <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
-                            <td rowspan="{{ $rowspan }}" style=" vertical-align: middle; text-align: left">{{
+                            <td rowspan="{{ $rowspan }}" style=" vertical-align: middle; text-align: left; width: 50%">{{
                                 $item['code']." | ".$item['name'] }}</td>
-                            <td colspan="6" style="vertical-align: middle; padding: 0px">
+                            <td colspan="3" style="vertical-align: middle; padding: 0px">
 
                             </td>
                         </tr>
                         @foreach ($item['details'] as $inv)
                         <tr>
-                            <td style=" vertical-align: middle; text-align: right">
+                            {{-- <td style=" vertical-align: middle; text-align: right">
                                 @if ($inv['discount'] > 0)
                                 <span style="text-decoration: line-through; font-size: 12px">
                                     @currency($inv['basic_price'])</span> <br>
                                 @endif
                                 @currency($inv['price'])
-                            </td>
-                            <td class="center-text">{{ $inv['quantity'] }}</td>
-                            <td class="center-text">{{ $inv['discount'] }}</td>
+                            </td> --}}
+                            <td class="center-text" style="vertical-align: middle; text-align: right">{{ $inv['quantity'] }}</td>
+                            {{-- <td class="center-text">{{ $inv['discount'] }}</td> --}}
                             <td class="center-text">{{ $inv['trans_date'] }}</td>
-                            <td class="center-text">{{ $inv['invoice_no'] }}</td>
-                            <td style=" vertical-align: middle; text-align: right">@currency($inv['price'] * $inv['quantity'])</td>
+                            {{-- <td class="center-text">{{ $inv['invoice_no'] }}</td> --}}
+                            <td style="vertical-align: middle; text-align: right">@currency($inv['price'] * $inv['quantity'])</td>
                         </tr>
-                        <?php $total += $inv['price'] * $inv['quantity']; ?>
+                        <?php $sub_total += $inv['price'] * $inv['quantity']; $sub_qty += $inv['quantity'] ?>
                         @endforeach
+                        <tr>
+                            <td colspan="2" style="vertical-align: middle; text-align: right"><strong>Sub Total</strong></td>
+                            <td style="text-align: right"><strong>{{ number_format($sub_qty) }}</strong></td>
+                            <td></td>
+                            <td style="text-align: right"><strong>@currency($sub_total)</strong></td>
+                        </tr>
+                        <?php $total += $sub_total; $total_qty += $sub_qty; ?>
                     </div>
                     @endforeach
                     @endif
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="7" style="text-align: right">Total</th>
-                        <th style="text-align: right">@currency($total)</th>
+                        <th colspan="2" style="text-align: right">Total</th>
+                        <td style="text-align: right"><strong>{{ number_format($total_qty) }}</strong></td>
+                        <td></td>
+                        <td style="text-align: right"><strong>@currency($total)</strong></td>
                     </tr>
                 </tfoot>
             </table>

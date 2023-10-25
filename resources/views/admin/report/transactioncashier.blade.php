@@ -94,6 +94,7 @@ CMS | Report Transaction
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $total = 0; ?>
                     @if (!empty($data))
                     @foreach ($data as $item)
                     <?php $rowspan = 1 + count($item['details']) ?>
@@ -120,11 +121,18 @@ CMS | Report Transaction
                             <td class="center-text">{{ $invoice['payment_method'] }}</td>
                             <td class="center-text">@currency($invoice['total_price'])</td>
                         </tr>
+                        <?php $total += $invoice['total_price'] ?>
                         @endforeach
                     </div>
                     @endforeach
                     @endif
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="6" style="text-align: right">Total</th>
+                        <td style="text-align: right"><strong>@currency($total)</strong></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">

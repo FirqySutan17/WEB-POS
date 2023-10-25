@@ -76,7 +76,7 @@ CMS | Report Cash Flow
                     @if (!empty($data))
                     @foreach ($data as $item)
                     <?php 
-                        if ($item->category == 'OUT') { $total_credit += $item->amount; } 
+                        if ($item->category == 'OUT' || $item->category == 'STR') { $total_credit += $item->amount; } 
                         elseif ($item->category == 'IN') { $total_debit += $item->amount; }
                         elseif ($item->category == 'BANK') { $total_credit_bank += $item->amount; $total_debit_bank += $item->amount; }
                     ?>
@@ -87,7 +87,7 @@ CMS | Report Cash Flow
                         <td style="vertical-align: middle">{{ $item->approved_by }}</td>
                         <td style="vertical-align: middle">{{ $item->description }}</td>
                         <td style="width: 10%; text-align:right" class="boxAction fontField">
-                            <span class="text-danger">{{ $item->category == 'OUT' ? number_format($item->amount) : 0 }}</span>
+                            <span class="text-danger">{{ ($item->category == 'OUT' || $item->category == 'STR') ? number_format($item->amount) : 0 }}</span>
                         </td>
                         <td style="width: 10%; text-align:right" class="boxAction fontField">
                             <span class="text-danger">{{ $item->category == 'BANK' ? number_format($item->amount) : 0 }}</span>
