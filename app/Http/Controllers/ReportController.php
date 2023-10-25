@@ -769,6 +769,8 @@ class ReportController extends Controller
             $sdate  = $column['sdate'];
             $edate  = $column['edate'];
             $search = $column['search'];
+
+            $prevdate = date('Y-m-d', strtotime($sdate." -1 days"));
             $where = empty($search) ? "" : " AND (emp_user.employee_id LIKE '%".$search."%' OR emp_user.name LIKE '%".$search."%')";
             // $query = "
             //     SELECT
@@ -789,6 +791,35 @@ class ReportController extends Controller
             $query = "
                 SELECT * 
                 FROM (
+                    SELECT 
+                        CONCAT('".$prevdate."', ' 23:59:59') as cash_date, 
+                        'IN' as category, 
+                        'SYSTEM' AS created_by, 
+                        'SYSTEM' AS approved_by, 
+                        'SALDO AWAL' AS description,
+                        SUM(cash_in + trans_in - cash_out) AS amount 
+                    FROM (
+                        SELECT SUM(cf.cash) AS cash_in, 0 AS trans_in, 0 AS cash_out
+                        FROM cash_flow AS cf
+                        WHERE 
+                        cf.categories = 'IN' AND cf.date < '".$sdate."'
+                        
+                        UNION ALL
+                        
+                        SELECT 0 AS cash_in, SUM(trans.total_price) AS trans_in, 0 AS cash_out
+                        FROM tr_transaction trans
+                        WHERE trans.payment_method = 'TUNAI' AND trans.status = 'FINISH' AND trans.trans_date < '".$sdate."'
+                        
+                        UNION ALL
+                        
+                        SELECT 0 AS cash_in, 0 AS trans_in, SUM(cf.cash) AS cash_out
+                        FROM cash_flow AS cf
+                        WHERE 
+                        cf.categories IN ('OUT', 'STR') AND cf.date < '".$sdate."'
+                    ) AS saldo_awal
+
+                    UNION ALL
+
                     SELECT
                         CONCAT(cf.date, ' ', cf.time) AS cash_date,
                         cf.categories AS category, 
@@ -820,7 +851,7 @@ class ReportController extends Controller
                     WHERE trans.status = 'FINISH' AND trans.trans_date BETWEEN '".$sdate."' AND '".$edate."'
                         ".$where."
                 ) as CASHFLOW
-                ORDER BY cash_date DESC
+                ORDER BY cash_date ASC
             ";
             // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));
