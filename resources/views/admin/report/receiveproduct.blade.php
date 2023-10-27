@@ -98,6 +98,7 @@ CMS | Report Receive
                         <th class="center-text">Receive Code<span class="dividerHr"></span></th>
                     </tr>
                 </thead>
+                <?php $total_qty = 0; ?>
                 <tbody>
                     @if (!empty($data))
                     @foreach ($data as $item)
@@ -107,7 +108,7 @@ CMS | Report Receive
                             <td rowspan="{{ $rowspan }}" class="center-text">
                                 {{ $loop->iteration }}
                             </td>
-                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                            <td rowspan="{{ $rowspan }}" style="vertical-align: middle; text-align:left">
                                 {{ $item['product'] }}
                             </td>
                             <td colspan="5" style="vertical-align: middle; padding: 0px">
@@ -115,6 +116,7 @@ CMS | Report Receive
                             </td>
                         </tr>
                         @foreach ($item['details'] as $rcv)
+                        <?php $total_qty += $rcv['quantity']; ?>
                         <tr>
                             <td class="center-text">{{ $rcv['quantity'] }}</td>
                             <td class="center-text">{{ $rcv['pic'] }}</td>
@@ -127,6 +129,11 @@ CMS | Report Receive
                     @endforeach
                     @endif
                 </tbody>
+                <tr>
+                    <th style="text-align:right" colspan="2">Total</th>
+                    <th style="text-align:right">{{ number_format($total_qty) }}</th>
+                    <th colspan="4"></th>
+                </tr>
             </table>
         </div>
         <div class="card-footer">
