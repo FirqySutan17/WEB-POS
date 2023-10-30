@@ -50,6 +50,10 @@ CMS | Report Cash Flow
                     <div class="col-1">
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>
+                    <div class="col-1">
+                        <button type="submit" class="btn btn-primary _btn" role="button"
+                            formaction="{{ route('report.cashflow.excel') }}">EXCEL</button>
+                    </div>
                 </form>
                 {{-- filter:end --}}
             </div>
@@ -74,28 +78,51 @@ CMS | Report Cash Flow
                 <?php $total_cash = 0; $total_bank = 0; ?>
                 <tbody>
                     @if (!empty($data))
-                    @foreach ($data as $item)
-                    <?php
-                        $category = $item->category;
-                        $bank = $item->bank_in - $item->bank_out;
-                        $cash = $item->cash_in - $item->cash_out;
-                        
-                        $total_cash += $cash;
-                        $total_bank += $bank;
-                    ?>
-                    <tr>
-                        <td class="center-text">{{ $loop->iteration }}</td>
-                        <td style="vertical-align: middle">{{ date('Y-m-d H:i', strtotime($item->cash_date)) }}</td>
-                        <td style="vertical-align: middle">{{ $item->approved_by }}</td>
-                        <td style="vertical-align: middle">{{ $item->description }}</td>
-                        <td style="width: 20%; text-align:right" class="boxAction fontField">
-                            <span class="{{ $bank >= 0 ? "text-success" : "text-danger" }}">{{ number_format($bank) }}</span>
-                        </td>
-                        <td style="width: 20%; text-align:right" class="boxAction fontField">
-                            <span class="{{ $cash >= 0 ? "text-success" : "text-danger" }}">{{ number_format($cash) }}</span>
-                        </td>
-                    </tr>
-                    @endforeach
+                        @foreach ($data as $item)
+                            <?php
+                                $category = $item->category;
+                                $bank = $item->bank_in - $item->bank_out;
+                                $cash = $item->cash_in - $item->cash_out;
+                                
+                                $total_cash += $cash;
+                                $total_bank += $bank;
+
+                                $cash_2 = 0;
+                                if ($category == 'MODAL_IN') {
+                                    $cash   = 0 - $item->cash_out;
+                                    $cash_2 = $item->cash_in - 0;
+                                } elseif ($category == 'MODAL_OUT') {
+                                    $cash_2   = 0 - $item->cash_out;
+                                    $cash = $item->cash_in - 0;
+                                }
+                            ?>
+                            <tr>
+                                <td class="center-text">{{ $loop->iteration }}</td>
+                                <td style="vertical-align: middle">{{ date('Y-m-d H:i', strtotime($item->cash_date)) }}</td>
+                                <td style="vertical-align: middle">{{ $item->approved_by }}</td>
+                                <td style="vertical-align: middle">{{ $item->description }}</td>
+                                <td style="width: 20%; text-align:right" class="boxAction fontField">
+                                    <span class="{{ $bank >= 0 ? "text-success" : "text-danger" }}">{{ number_format($bank) }}</span>
+                                </td>
+                                <td style="width: 20%; text-align:right" class="boxAction fontField">
+                                    <span class="{{ $cash >= 0 ? "text-success" : "text-danger" }}">{{ number_format($cash) }}</span>
+                                </td>
+                            </tr>
+                            @if (in_array($category, ['MODAL_IN', 'MODAL_OUT']))
+                                <tr>
+                                    <td class="center-text">{{ $loop->iteration }}</td>
+                                    <td style="vertical-align: middle">{{ date('Y-m-d H:i', strtotime($item->cash_date)) }}</td>
+                                    <td style="vertical-align: middle">{{ $item->approved_by }}</td>
+                                    <td style="vertical-align: middle">{{ $item->description }}</td>
+                                    <td style="width: 20%; text-align:right" class="boxAction fontField">
+                                        <span class="{{ $bank >= 0 ? "text-success" : "text-danger" }}">{{ number_format($bank) }}</span>
+                                    </td>
+                                    <td style="width: 20%; text-align:right" class="boxAction fontField">
+                                        <span class="{{ $cash_2 >= 0 ? "text-success" : "text-danger" }}">{{ number_format($cash_2) }}</span>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
                     @endif
                 </tbody>
                 <tfoot>

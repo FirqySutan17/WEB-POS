@@ -29,6 +29,7 @@ Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
 
 });
 
+
 //Roles Route
 Route::get('/roles/select', [App\Http\Controllers\RoleController::class, 'select'])->name('roles.select');
 Route::resource('/roles', \App\Http\Controllers\RoleController::class);
@@ -150,5 +151,10 @@ Route::match(['get', 'post'], '/report/transaction-by-cashier', [App\Http\Contro
 Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');
 
 Route::match(['get', 'post'], '/report/cash-flow', [App\Http\Controllers\ReportController::class, 'report_cash_flow'])->name('report.cashflow');
+Route::post('/report/cash-flow/excel', [App\Http\Controllers\ReportController::class, 'report_cash_flow_excel'])->name('report.cashflow.excel');
 Route::match(['get', 'post'], '/report/laba-rugi', [App\Http\Controllers\ReportController::class, 'report_laba_rugi'])->name('report.labarugi');
 Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');
+
+
+// Dashboard Route
+Route::get('/sync-data', [App\Http\Controllers\SyncDataController::class, 'index'])->name('sync-data');

@@ -201,10 +201,12 @@ CMS | Add Cashflow
                                                     <select id="select_user_categories" name="categories"
                                                         data-placeholder="Choose categories"
                                                         class="js-example-placeholder-multiple">
-                                                        <option value="IN">In - Cash</option>
-                                                        <option value="OUT">Out - Cash</option>
-                                                        <option value="STR">Setoran - Cash</option>
-                                                        <option value="OUT-BANK">Out - Bank</option>
+                                                        <option value="MDL-IN">Modal - In</option>
+                                                        <option value="MDL-OUT">Modal - Out</option>
+                                                        <option value="IN">Cash - In</option>
+                                                        <option value="OUT">Cash - Out</option>
+                                                        <option value="STR">Bank - Setoran</option>
+                                                        <option value="OUT-BANK">Bank - Out</option>
                                                     </select>
                                                     @error('role')
                                                     <span class="invalid-feedback">

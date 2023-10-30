@@ -765,6 +765,25 @@ class ReportController extends Controller
             return view('admin.report.cash-flow', compact('data', 'column'));
         }
 
+        public function report_cash_flow_excel(Request $request) {
+            $data   = [];
+            $column = [
+                "sdate" => "",
+                "edate" => "",
+                "search" => "",
+            ];
+            if ($request->_token) {
+                $column = [
+                    "sdate" => $request->sdate,
+                    "edate" => $request->edate,
+                    "search" => trim($request->search),
+                ];
+                $data = $this->get_cashflow($column);
+            }
+            $filename = 'cashflow-'.date('YmdHis').'.xlsx';
+            return Excel::download(new ReportExport($data, 'cashflow'), $filename);
+        }
+
         private function get_cashflow($column) {
             $sdate  = $column['sdate'];
             $edate  = $column['edate'];
@@ -772,98 +791,117 @@ class ReportController extends Controller
 
             $prevdate = date('Y-m-d', strtotime($sdate." -1 days"));
             $where = empty($search) ? "" : " AND (apprv_user.employee_id LIKE '%".$search."%' OR apprv_user.name LIKE '%".$search."%')";
-            $oldquery = "
-                SELECT * 
+            $oldquery      = "
+                SELECT *
                 FROM (
                     SELECT 
-                        CONCAT('".$prevdate."', ' 23:59:59') as cash_date, 
-                        'IN' as category, 
-                        'SYSTEM' AS created_by, 
-                        'SYSTEM' AS approved_by, 
+                        CONCAT('".$prevdate."', ' 23:59') AS cash_date,
+                        'SYSTEM' AS approved_by,
                         'SALDO AWAL' AS description,
-                        SUM(cash_in + trans_in - cash_out) AS amount 
+                        'SALDO_AWAL' AS category,
+                        COALESCE(SUM(bank_in - bank_out), 0) AS bank_in,
+                        0 AS bank_out,
+                        COALESCE(SUM(cash_in - cash_out), 0) AS cash_in,
+                        0 AS cash_out
                     FROM (
-                        SELECT SUM(cf.cash) AS cash_in, 0 AS trans_in, 0 AS cash_out
-                        FROM cash_flow AS cf
+                        SELECT
+                            CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                            CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                            cf.description,
+                            'CASH_IN' AS category,
+                            0 AS bank_in,
+                            0 AS bank_out,
+                            cf.cash AS cash_in,
+                            0 AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
                         WHERE
-                        cf.categories IN ('IN', 'STR')  AND cf.date < '".$sdate."'
-                        
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'IN' AND
+                            cf.date < '".$sdate."'
                         UNION ALL
-                        
-                        SELECT 0 AS cash_in, SUM(trans.total_price) AS trans_in, 0 AS cash_out
-                        FROM tr_transaction trans
-                        WHERE trans.payment_method = 'TUNAI' AND trans.status = 'FINISH' AND trans.trans_date < '".$sdate."'
-                        
-                        UNION ALL
-                        
-                        SELECT 0 AS cash_in, 0 AS trans_in, SUM(cf.cash) AS cash_out
-                        FROM cash_flow AS cf
-                        WHERE 
-                        cf.categories = 'OUT' AND cf.date < '".$sdate."'
-                    ) AS saldo_awal
-
-                    UNION ALL
-
-                    SELECT
-                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
-                        cf.categories AS category, 
-                        CONCAT(cf.employee_id, ' | ', emp_user.name) AS created_by,
-                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
-                        cf.description,
-                        cf.cash AS amount
-                    FROM cash_flow AS cf
-                    INNER JOIN users AS emp_user ON cf.employee_id = emp_user.employee_id
-                    INNER JOIN users AS apprv_user ON cf.approval = apprv_user.pin
-                    WHERE 
-                        cf.date BETWEEN '".$sdate."' AND '".$edate."'
-                        ".$where."
-
-                    UNION ALL
-
-                    SELECT 
-                        trans.created_at AS cash_date, 
-                        CASE 
-                            WHEN trans.payment_method = 'TUNAI' THEN 'IN'
-                            ELSE 'BANK'
-                        END AS category, 
-                        CONCAT(trans.emp_no, ' | ', emp_user.name) AS created_by,
-                        CONCAT(trans.emp_no, ' | ', emp_user.name) AS approved_by,
-                        CONCAT('TRANS ', trans.invoice_no, ' ', trans.payment_method) AS description,
-                        trans.total_price AS amount
-                    FROM tr_transaction trans
-                    INNER JOIN users as emp_user ON trans.emp_no = emp_user.employee_id
-                    WHERE trans.status = 'FINISH' AND trans.trans_date BETWEEN '".$sdate."' AND '".$edate."'
-                        ".$where."
-                ) as CASHFLOW
-                ORDER BY cash_date ASC
-            ";
-            $query      = "
-            SELECT *
-            FROM (
-                SELECT 
-                    CONCAT('".$prevdate."', ' 23:59') AS cash_date,
-                    'SYSTEM' AS approved_by,
-                    'SALDO AWAL' AS description,
-                    'SALDO_AWAL' AS category,
-                    COALESCE(SUM(bank_in - bank_out), 0) AS bank_in,
-                    0 AS bank_out,
-                    COALESCE(SUM(cash_in - cash_out), 0) AS cash_in,
-                    0 AS cash_out
-                FROM (
-                    SELECT
+                        SELECT
                         CONCAT(cf.date, ' ', cf.time) AS cash_date,
                         CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
                         cf.description,
-                        'CASH_IN' AS category,
+                        'CASH_OUT' AS category,
                         0 AS bank_in,
                         0 AS bank_out,
-                        cf.cash AS cash_in,
+                        0 AS cash_in,
+                        cf.cash AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
+                        WHERE
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'OUT' AND
+                        cf.date < '".$sdate."'
+                        UNION ALL
+                        SELECT 
+                        trans.created_at AS cash_date,
+                        CONCAT(trans.emp_no, ' | ', emp_user.name) AS approved_by,
+                        CONCAT('TRANS ', trans.invoice_no, ' ', trans.payment_method) AS description,
+                        CASE 
+                            WHEN trans.payment_method = 'TUNAI' THEN 'CASH_IN'
+                            ELSE 'BANK_IN'
+                        END AS category, 
+                        CASE 
+                            WHEN trans.payment_method = 'TUNAI' THEN 0
+                            ELSE trans.total_price
+                        END AS bank_in,
+                        0 AS bank_out,
+                        CASE 
+                            WHEN trans.payment_method = 'TUNAI' THEN trans.total_price
+                            ELSE 0
+                        END AS bank_in,
                         0 AS cash_out
+                        FROM tr_transaction trans, users as emp_user
+                        WHERE 
+                            trans.emp_no = emp_user.employee_id AND
+                            trans.status = 'FINISH' AND trans.trans_date < '".$sdate."'
+                        UNION ALL
+                        SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        cf.description,
+                        'BANK_IN' AS category,
+                        cf.cash AS bank_in,
+                        0 AS bank_out,
+                        0 AS cash_in,
+                        cf.cash AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
+                        WHERE
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'STR' AND
+                        cf.date < '".$sdate."'
+                        UNION ALL
+                        SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        cf.description,
+                        'BANK_OUT' AS category,
+                        0 AS bank_in,
+                        cf.cash AS bank_out,
+                        0 AS cash_in,
+                        0 AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
+                        WHERE
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'OUT-BANK' AND
+                        cf.date < '".$sdate."'
+                    ) tbl_saldo_awal
+                    UNION ALL
+                    SELECT
+                    CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                    CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                    cf.description,
+                    'CASH_IN' AS category,
+                    0 AS bank_in,
+                    0 AS bank_out,
+                    cf.cash AS cash_in,
+                    0 AS cash_out
                     FROM cash_flow AS cf, users AS apprv_user
                     WHERE
                         cf.approval = apprv_user.pin AND
                         cf.categories = 'IN' AND
-                        cf.date < '".$sdate."'
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
                     UNION ALL
                     SELECT
                     CONCAT(cf.date, ' ', cf.time) AS cash_date,
@@ -878,7 +916,7 @@ class ReportController extends Controller
                     WHERE
                         cf.approval = apprv_user.pin AND
                         cf.categories = 'OUT' AND
-                    cf.date < '".$sdate."'
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
                     UNION ALL
                     SELECT 
                     trans.created_at AS cash_date,
@@ -901,7 +939,7 @@ class ReportController extends Controller
                     FROM tr_transaction trans, users as emp_user
                     WHERE 
                         trans.emp_no = emp_user.employee_id AND
-                        trans.status = 'FINISH' AND trans.trans_date < '".$sdate."'
+                        trans.status = 'FINISH' AND trans.trans_date BETWEEN '".$sdate."' AND '".$edate."'
                     UNION ALL
                     SELECT
                     CONCAT(cf.date, ' ', cf.time) AS cash_date,
@@ -916,7 +954,7 @@ class ReportController extends Controller
                     WHERE
                         cf.approval = apprv_user.pin AND
                         cf.categories = 'STR' AND
-                    cf.date < '".$sdate."'
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
                     UNION ALL
                     SELECT
                     CONCAT(cf.date, ' ', cf.time) AS cash_date,
@@ -931,97 +969,342 @@ class ReportController extends Controller
                     WHERE
                         cf.approval = apprv_user.pin AND
                         cf.categories = 'OUT-BANK' AND
-                    cf.date < '".$sdate."'
-                ) tbl_saldo_awal
-                UNION ALL
-                SELECT
-                CONCAT(cf.date, ' ', cf.time) AS cash_date,
-                CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
-                cf.description,
-                'CASH_IN' AS category,
-                0 AS bank_in,
-                0 AS bank_out,
-                cf.cash AS cash_in,
-                0 AS cash_out
-                FROM cash_flow AS cf, users AS apprv_user
-                WHERE
-                    cf.approval = apprv_user.pin AND
-                    cf.categories = 'IN' AND
-                cf.date BETWEEN '".$sdate."' AND '".$edate."'
-                UNION ALL
-                SELECT
-                CONCAT(cf.date, ' ', cf.time) AS cash_date,
-                CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
-                cf.description,
-                'CASH_OUT' AS category,
-                0 AS bank_in,
-                0 AS bank_out,
-                0 AS cash_in,
-                cf.cash AS cash_out
-                FROM cash_flow AS cf, users AS apprv_user
-                WHERE
-                    cf.approval = apprv_user.pin AND
-                    cf.categories = 'OUT' AND
-                cf.date BETWEEN '".$sdate."' AND '".$edate."'
-                UNION ALL
-                SELECT 
-                trans.created_at AS cash_date,
-                CONCAT(trans.emp_no, ' | ', emp_user.name) AS approved_by,
-                CONCAT('TRANS ', trans.invoice_no, ' ', trans.payment_method) AS description,
-                CASE 
-                    WHEN trans.payment_method = 'TUNAI' THEN 'CASH_IN'
-                    ELSE 'BANK_IN'
-                END AS category, 
-                CASE 
-                    WHEN trans.payment_method = 'TUNAI' THEN 0
-                    ELSE trans.total_price
-                END AS bank_in,
-                0 AS bank_out,
-                CASE 
-                    WHEN trans.payment_method = 'TUNAI' THEN trans.total_price
-                    ELSE 0
-                END AS bank_in,
-                0 AS cash_out
-                FROM tr_transaction trans, users as emp_user
-                WHERE 
-                    trans.emp_no = emp_user.employee_id AND
-                    trans.status = 'FINISH' AND trans.trans_date BETWEEN '".$sdate."' AND '".$edate."'
-                UNION ALL
-                SELECT
-                CONCAT(cf.date, ' ', cf.time) AS cash_date,
-                CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
-                cf.description,
-                'BANK_IN' AS category,
-                cf.cash AS bank_in,
-                0 AS bank_out,
-                0 AS cash_in,
-                cf.cash AS cash_out
-                FROM cash_flow AS cf, users AS apprv_user
-                WHERE
-                    cf.approval = apprv_user.pin AND
-                    cf.categories = 'STR' AND
-                cf.date BETWEEN '".$sdate."' AND '".$edate."'
-                UNION ALL
-                SELECT
-                CONCAT(cf.date, ' ', cf.time) AS cash_date,
-                CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
-                cf.description,
-                'BANK_OUT' AS category,
-                0 AS bank_in,
-                cf.cash AS bank_out,
-                0 AS cash_in,
-                0 AS cash_out
-                FROM cash_flow AS cf, users AS apprv_user
-                WHERE
-                    cf.approval = apprv_user.pin AND
-                    cf.categories = 'OUT-BANK' AND
-                cf.date BETWEEN '".$sdate."' AND '".$edate."'
-            ) AS cash_flow
-            ORDER BY cash_date ASC
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
+                ) AS cash_flow
+                ORDER BY cash_date ASC
+            ";
+
+            $modal_in_awal = $this->query_modal_in($sdate, $edate, 1);
+            $modal_in = $this->query_modal_in($sdate, $edate);
+            $modal_out_awal = $this->query_modal_out($sdate, $edate, 1);
+            $modal_out = $this->query_modal_out($sdate, $edate);
+            $query      = "
+                SELECT *
+                FROM (
+                    SELECT 
+                        CONCAT('".$prevdate."', ' 23:59') AS cash_date,
+                        'SYSTEM' AS approved_by,
+                        'SALDO AWAL' AS description,
+                        'SALDO_AWAL' AS category,
+                        COALESCE(SUM(bank_in - bank_out), 0) AS bank_in,
+                        0 AS bank_out,
+                        COALESCE(SUM(cash_in - cash_out), 0) AS cash_in,
+                        0 AS cash_out
+                    FROM (
+                        ".$modal_in_awal."
+                        UNION ALL
+                        ".$modal_out_awal."
+                        UNION ALL
+                        SELECT
+                            CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                            CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                            cf.description,
+                            'CASH_IN' AS category,
+                            0 AS bank_in,
+                            0 AS bank_out,
+                            cf.cash AS cash_in,
+                            0 AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
+                        WHERE
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'IN' AND
+                            cf.date < '".$sdate."'
+                        UNION ALL
+                        SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        cf.description,
+                        'CASH_OUT' AS category,
+                        0 AS bank_in,
+                        0 AS bank_out,
+                        0 AS cash_in,
+                        cf.cash AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
+                        WHERE
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'OUT' AND
+                        cf.date < '".$sdate."'
+                        UNION ALL
+                        SELECT 
+                        trans.created_at AS cash_date,
+                        CONCAT(trans.emp_no, ' | ', emp_user.name) AS approved_by,
+                        CONCAT('TRANS ', trans.invoice_no, ' ', trans.payment_method) AS description,
+                        CASE 
+                            WHEN trans.payment_method = 'TUNAI' THEN 'CASH_IN'
+                            ELSE 'BANK_IN'
+                        END AS category, 
+                        CASE 
+                            WHEN trans.payment_method = 'TUNAI' THEN 0
+                            ELSE trans.total_price
+                        END AS bank_in,
+                        0 AS bank_out,
+                        CASE 
+                            WHEN trans.payment_method = 'TUNAI' THEN trans.total_price
+                            ELSE 0
+                        END AS bank_in,
+                        0 AS cash_out
+                        FROM tr_transaction trans, users as emp_user
+                        WHERE 
+                            trans.emp_no = emp_user.employee_id AND
+                            trans.status = 'FINISH' AND trans.trans_date < '".$sdate."'
+                        UNION ALL
+                        SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        cf.description,
+                        'BANK_IN' AS category,
+                        cf.cash AS bank_in,
+                        0 AS bank_out,
+                        0 AS cash_in,
+                        cf.cash AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
+                        WHERE
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'STR' AND
+                        cf.date < '".$sdate."'
+                        UNION ALL
+                        SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        cf.description,
+                        'BANK_OUT' AS category,
+                        0 AS bank_in,
+                        cf.cash AS bank_out,
+                        0 AS cash_in,
+                        0 AS cash_out
+                        FROM cash_flow AS cf, users AS apprv_user
+                        WHERE
+                            cf.approval = apprv_user.pin AND
+                            cf.categories = 'OUT-BANK' AND
+                        cf.date < '".$sdate."'
+                    ) tbl_saldo_awal
+                    UNION ALL
+                    ".$modal_in."
+                    UNION ALL
+                    ".$modal_out."
+                    UNION ALL
+                    SELECT
+                    CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                    CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                    cf.description,
+                    'CASH_IN' AS category,
+                    0 AS bank_in,
+                    0 AS bank_out,
+                    cf.cash AS cash_in,
+                    0 AS cash_out
+                    FROM cash_flow AS cf, users AS apprv_user
+                    WHERE
+                        cf.approval = apprv_user.pin AND
+                        cf.categories = 'IN' AND
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
+                    UNION ALL
+                    SELECT
+                    CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                    CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                    cf.description,
+                    'CASH_OUT' AS category,
+                    0 AS bank_in,
+                    0 AS bank_out,
+                    0 AS cash_in,
+                    cf.cash AS cash_out
+                    FROM cash_flow AS cf, users AS apprv_user
+                    WHERE
+                        cf.approval = apprv_user.pin AND
+                        cf.categories = 'OUT' AND
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
+                    UNION ALL
+                    SELECT 
+                    trans.created_at AS cash_date,
+                    CONCAT(trans.emp_no, ' | ', emp_user.name) AS approved_by,
+                    CONCAT('TRANS ', trans.invoice_no, ' ', trans.payment_method) AS description,
+                    CASE 
+                        WHEN trans.payment_method = 'TUNAI' THEN 'CASH_IN'
+                        ELSE 'BANK_IN'
+                    END AS category, 
+                    CASE 
+                        WHEN trans.payment_method = 'TUNAI' THEN 0
+                        ELSE trans.total_price
+                    END AS bank_in,
+                    0 AS bank_out,
+                    CASE 
+                        WHEN trans.payment_method = 'TUNAI' THEN trans.total_price
+                        ELSE 0
+                    END AS bank_in,
+                    0 AS cash_out
+                    FROM tr_transaction trans, users as emp_user
+                    WHERE 
+                        trans.emp_no = emp_user.employee_id AND
+                        trans.status = 'FINISH' AND trans.trans_date BETWEEN '".$sdate."' AND '".$edate."'
+                    UNION ALL
+                    SELECT
+                    CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                    CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                    cf.description,
+                    'BANK_IN' AS category,
+                    cf.cash AS bank_in,
+                    0 AS bank_out,
+                    0 AS cash_in,
+                    cf.cash AS cash_out
+                    FROM cash_flow AS cf, users AS apprv_user
+                    WHERE
+                        cf.approval = apprv_user.pin AND
+                        cf.categories = 'STR' AND
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
+                    UNION ALL
+                    SELECT
+                    CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                    CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                    cf.description,
+                    'BANK_OUT' AS category,
+                    0 AS bank_in,
+                    cf.cash AS bank_out,
+                    0 AS cash_in,
+                    0 AS cash_out
+                    FROM cash_flow AS cf, users AS apprv_user
+                    WHERE
+                        cf.approval = apprv_user.pin AND
+                        cf.categories = 'OUT-BANK' AND
+                    cf.date BETWEEN '".$sdate."' AND '".$edate."'
+                ) AS cash_flow
+                ORDER BY cash_date ASC
             ";
             // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));
             return $db_query;
+        }
+
+        private function query_modal_in($sdate, $edate, $is_saldo_awal = 0) {
+            $filter_date = " AND (cf.date BETWEEN '".$sdate."' AND '".$edate."')";
+            if ($is_saldo_awal) {
+                $filter_date = " AND cf.date < '".$sdate."'";
+            }
+            // $query = "
+            //     SELECT * FROM (
+            //         SELECT cash_date, approved_by, description, category, bank_in, bank_out, cash_in, cash_out FROM (
+            //             SELECT
+            //                 CONCAT(cf.date, ' ', cf.time) AS cash_date,
+            //                 CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+            //                 CONCAT(cf.description, ' ', 'PC TO CD') AS description,
+            //                 'MODAL_IN' AS category,
+            //                 0 AS bank_in,
+            //                 0 AS bank_out,
+            //                 0 AS cash_in,
+            //                 cf.cash AS cash_out,
+            //                 1 AS sequence
+            //             FROM cash_flow AS cf, users AS apprv_user
+            //             WHERE
+            //                     cf.approval = apprv_user.pin AND
+            //                     cf.categories = 'MDL-IN'
+            //                     ".$filter_date."
+                                
+            //             UNION ALL
+                    
+            //             SELECT
+            //                 CONCAT(cf.date, ' ', cf.time) AS cash_date,
+            //                 CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+            //                 CONCAT(cf.description, ' ', 'PC TO CD')  AS description,
+            //                 'MODAL_IN' AS category,
+            //                 0 AS bank_in,
+            //                 0 AS bank_out,
+            //                 cf.cash AS cash_in,
+            //                 0 AS cash_out,
+            //                 2 AS sequence
+            //             FROM cash_flow AS cf, users AS apprv_user
+            //             WHERE
+            //                     cf.approval = apprv_user.pin AND
+            //                     cf.categories = 'MDL-IN'
+            //                     ".$filter_date."
+            //         ) AS data_in
+            //         ORDER BY data_in.cash_date ASC, data_in.sequence ASC
+            //     ) AS modal_in 
+            // ";
+            $query = "
+                SELECT * FROM (
+                    SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        CONCAT(cf.description, ' ', 'PC TO CD')  AS description,
+                        'MODAL_IN' AS category,
+                        0 AS bank_in,
+                        0 AS bank_out,
+                        cf.cash AS cash_in,
+                        cf.cash AS cash_out
+                    FROM cash_flow AS cf, users AS apprv_user
+                    WHERE
+                        cf.approval = apprv_user.pin AND
+                        cf.categories = 'MDL-IN'
+                        ".$filter_date."
+                ) AS modal_in 
+            ";
+
+            return $query;
+        }
+
+        private function query_modal_out($sdate, $edate, $is_saldo_awal = 0) {
+            $filter_date = " AND (cf.date BETWEEN '".$sdate."' AND '".$edate."')";
+            if ($is_saldo_awal) {
+                $filter_date = " AND cf.date < '".$sdate."'";
+            }
+            // $query = "
+            //     SELECT * FROM (
+            //         SELECT cash_date, approved_by, description, category, bank_in, bank_out, cash_in, cash_out FROM (
+            //             SELECT
+            //                 CONCAT(cf.date, ' ', cf.time) AS cash_date,
+            //                 CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+            //                 CONCAT(cf.description, ' ', 'CD TO PC') AS description,
+            //                 'MODAL_OUT' AS category,
+            //                 0 AS bank_in,
+            //                 0 AS bank_out,
+            //                 0 AS cash_in,
+            //                 cf.cash AS cash_out,
+            //                 2 AS sequence
+            //             FROM cash_flow AS cf, users AS apprv_user
+            //             WHERE
+            //                 cf.approval = apprv_user.pin AND
+            //                 cf.categories = 'MDL-OUT'
+            //                 ".$filter_date."
+                                
+            //             UNION ALL
+                        
+            //             SELECT
+            //                 CONCAT(cf.date, ' ', cf.time) AS cash_date,
+            //                 CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+            //                 CONCAT(cf.description, ' ', 'CD TO PC')  AS description,
+            //                 'MODAL_OUT' AS category,
+            //                 0 AS bank_in,
+            //                 0 AS bank_out,
+            //                 cf.cash AS cash_in,
+            //                 0 AS cash_out,
+            //                 1 AS sequence
+            //             FROM cash_flow AS cf, users AS apprv_user
+            //             WHERE
+            //                 cf.approval = apprv_user.pin AND
+            //                 cf.categories = 'MDL-OUT'
+            //                 ".$filter_date."
+            //         ) as data_out
+            //         ORDER BY data_out.cash_date ASC, data_out.sequence ASC
+            //     ) AS modal_out
+            // ";
+            $query = "
+                SELECT * FROM (
+                    SELECT
+                        CONCAT(cf.date, ' ', cf.time) AS cash_date,
+                        CONCAT(apprv_user.employee_id, ' | ', apprv_user.name) AS approved_by,
+                        CONCAT(cf.description, ' ', 'CD TO PC') AS description,
+                        'MODAL_OUT' AS category,
+                        0 AS bank_in,
+                        0 AS bank_out,
+                        cf.cash AS cash_in,
+                        cf.cash AS cash_out
+                    FROM cash_flow AS cf, users AS apprv_user
+                    WHERE
+                        cf.approval = apprv_user.pin AND
+                        cf.categories = 'MDL-OUT'
+                        ".$filter_date."
+                ) AS modal_out
+            ";
+
+            return $query;
         }
 
         
