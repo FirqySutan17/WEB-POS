@@ -161,7 +161,7 @@
                         </a>
                     </li>
                     @endcan
-                    @can('Adjust Stock')
+                    @can('Receive')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['adjust_stock.index', 'adjust_stock.show', 'adjust_stock.edit', 'adjust_stock.create'])}}"
                             href="{{ route('adjust_stock.index') }}">
