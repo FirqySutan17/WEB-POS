@@ -82,7 +82,7 @@ CMS | Report Receive
                         <th rowspan="2" class="center-text">Receive Date<span class="dividerHr"></span></th>
                         <th rowspan="2" class="center-text">Delivery No<span class="dividerHr"></span></th>
                         <th rowspan="2" class="center-text">PIC<span class="dividerHr"></span></th>
-                        <th colspan="2" class="heightHr center-text" style="vertical-align: middle">Product <span
+                        <th colspan="4" class="heightHr center-text" style="vertical-align: middle">Product <span
                                 class="dividerHr"></span>
                         </th>
                     </tr>
@@ -91,6 +91,12 @@ CMS | Report Receive
                                 class="dividerHr"></span>
                         </th>
                         <th class="heightHr center-text" style="vertical-align: middle">Qty<span
+                                class="dividerHr"></span>
+                        </th>
+                        <th class="heightHr center-text" style="vertical-align: middle">Unit Price<span
+                                class="dividerHr"></span>
+                        </th>
+                        <th class="heightHr center-text" style="vertical-align: middle">Amount<span
                                 class="dividerHr"></span>
                         </th>
                     </tr>
@@ -128,6 +134,8 @@ CMS | Report Receive
                         <tr>
                             <td class="center-text">{{ $rcv['product'] }}</td>
                             <td class="center-text">{{ $rcv['quantity'] }}</td>
+                            <td class="center-text">{{ number_format($rcv['unit_price']) }}</td>
+                            <td class="center-text">{{ $rcv['amount'] }}</td>
                         </tr>
                         <?php $total_qty += $rcv['quantity']; ?>
                         @endforeach
@@ -139,6 +147,7 @@ CMS | Report Receive
                     <tr>
                         <td colspan="6" style="text-align: right">Total</td>
                         <td class="center-text">{{ $total_qty }}</td>
+                        <td colspan="2"></td>
                     </tr>
                 </tfoot>
             </table>

@@ -658,7 +658,7 @@ class ReportController extends Controller
             $query = "
                 SELECT 
                     receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name AS pic, 
-                    receive_detail.product_code, products.name AS product_name, receive_detail.quantity, COALESCE(receive_detail.unit_price, 0) as unit_price
+                    receive_detail.product_code, products.name AS product_name, receive_detail.quantity, COALESCE(receive_detail.unit_price, 0) as unit_price, COALESCE(receive_detail.amount, 0) as amount
                 FROM tr_receive_detail receive_detail
                 INNER JOIN tr_receive receive ON receive_detail.receive_code = receive.receive_code
                 INNER JOIN users ON receive.created_by = users.id
@@ -713,7 +713,9 @@ class ReportController extends Controller
                     
                     $data_receive[$receive_code]["details"][] = [
                         "product"       => $item->product_code." | ".$item->product_name,
-                        "quantity"      => $item->quantity
+                        "quantity"      => $item->quantity,
+                        "unit_price"      => $item->unit_price,
+                        "amount"      => $item->amount
                     ];
                 }
             }
