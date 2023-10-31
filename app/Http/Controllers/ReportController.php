@@ -545,7 +545,7 @@ class ReportController extends Controller
                 $search = trim($request->search);
                 $data_raw = $this->get_receive_raw($sdate, $edate, $order_by);
                 $data     = $this->convert_receive_by_no($data_raw);
-                // dd($data);
+                
             }
             return view('admin.report.receiveno', compact('data', 'sdate', 'edate'));
         }
@@ -638,14 +638,13 @@ class ReportController extends Controller
         private function get_receive_by_date($sdate, $edate) {
             $query = "
                 SELECT 
-                    receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name AS pic, 
-                    COUNT(receive_detail.product_code) AS total_product,
-                    SUM(receive_detail.quantity) AS total_qty
+                    receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name AS pic,
+                    receive_detail.product_code, products.name AS product_name, receive_detail.quantity, COALESCE(receive_detail.unit_price, 0) as unit_price, COALESCE(receive_detail.amount, 0) as amount
                 FROM tr_receive_detail receive_detail
                 INNER JOIN tr_receive receive ON receive_detail.receive_code = receive.receive_code
                 INNER JOIN users ON receive.created_by = users.id
+                INNER JOIN products ON receive_detail.product_code = products.code
                 WHERE receive.receive_date BETWEEN '$sdate' AND '$edate'
-                GROUP BY receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name
                 ORDER BY receive.receive_date DESC, receive_detail.receive_code ASC
             ";
 
@@ -684,13 +683,18 @@ class ReportController extends Controller
                         ];
                     }
                     
-                    $data_receive[$rd_stringfy]["details"][] = [
-                        "code"          => $item->receive_code,
-                        "delivery_no"   => $item->delivery_no,
-                        "pic"           => $item->pic,
-                        "total_product"       => $item->total_product,
-                        "total_qty"      => $item->total_qty
-                    ];
+                    if (!array_key_exists($item->product_code, $data_receive[$rd_stringfy]["details"])) {
+                        $data_receive[$rd_stringfy]["details"][$item->product_code] = [
+                            "product_code"  => $item->product_code,
+                            "product_name"  => $item->product_name,
+                            "qty"           => 0,
+                            "unit_price"    => 0,
+                            "amount"        => 0,
+                        ];
+                    }
+                    $data_receive[$rd_stringfy]["details"][$item->product_code]["qty"] += $item->quantity;
+                    $data_receive[$rd_stringfy]["details"][$item->product_code]["unit_price"] = $item->unit_price;
+                    $data_receive[$rd_stringfy]["details"][$item->product_code]["amount"] = $data_receive[$rd_stringfy]["details"][$item->product_code]["qty"] * $data_receive[$rd_stringfy]["details"][$item->product_code]["unit_price"];
                 }
             }
             return $data_receive;
@@ -739,7 +743,9 @@ class ReportController extends Controller
                         "receive_code"  => $item->receive_code,
                         "receive_date"  => $item->receive_date,
                         "delivery_no"   => $item->delivery_no,
-                        "pic"           => $item->pic
+                        "pic"           => $item->pic,
+                        "unit_price"    => $item->unit_price,
+                        "amount"        => $item->amount
                     ];
                 }
             }

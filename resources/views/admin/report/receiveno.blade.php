@@ -39,7 +39,7 @@ CMS | Report Receive
         <a class="{{routeActive('report.receiveno')}}" href="{{ route('report.receiveno') }}">By
             Receive No</a>
         <a class="{{routeActive('report.receiveproduct')}}" href="{{ route('report.receiveproduct') }}">By
-            Product</a>
+            Item</a>
     </div>
     <div class="card border-add">
         <div class="tr-shadow" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px">
@@ -78,9 +78,8 @@ CMS | Report Receive
                 <thead>
                     <tr class="head-report">
                         <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
-                        <th rowspan="2" class="center-text">Receive Code<span class="dividerHr"></span></th>
+                        <th rowspan="2" class="center-text">Receive No<span class="dividerHr"></span></th>
                         <th rowspan="2" class="center-text">Receive Date<span class="dividerHr"></span></th>
-                        <th rowspan="2" class="center-text">Delivery No<span class="dividerHr"></span></th>
                         <th rowspan="2" class="center-text">PIC<span class="dividerHr"></span></th>
                         <th colspan="4" class="heightHr center-text" style="vertical-align: middle">Product <span
                                 class="dividerHr"></span>
@@ -118,9 +117,6 @@ CMS | Report Receive
                                 {{ $item['receive_date'] }}
                             </td>
                             <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
-                                {{ $item['delivery_no'] }}
-                            </td>
-                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
                                 {{ $item['pic'] }}
                             </td>
                             <td colspan="2" style="vertical-align: middle; padding: 0px">
@@ -132,10 +128,10 @@ CMS | Report Receive
                         </tr>
                         @foreach ($item['details'] as $rcv)
                         <tr>
-                            <td class="center-text">{{ $rcv['product'] }}</td>
-                            <td class="center-text">{{ $rcv['quantity'] }}</td>
-                            <td class="center-text">{{ number_format($rcv['unit_price']) }}</td>
-                            <td class="center-text">{{ $rcv['amount'] }}</td>
+                            <td style="vertical-align:middle">{{ $rcv['product'] }}</td>
+                            <td style="text-align:right; vertical-align:middle">{{ number_format($rcv['quantity']) }}</td>
+                            <td style="text-align:right; vertical-align:middle">{{ number_format($rcv['unit_price']) }}</td>
+                            <td style="text-align:right; vertical-align:middle">{{ $rcv['amount'] }}</td>
                         </tr>
                         <?php $total_qty += $rcv['quantity']; ?>
                         @endforeach
@@ -145,8 +141,8 @@ CMS | Report Receive
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="6" style="text-align: right">Total</td>
-                        <td class="center-text">{{ $total_qty }}</td>
+                        <td colspan="5" style="text-align: right">Total</td>
+                        <td class="center-text"><strong>{{ $total_qty }}</strong></td>
                         <td colspan="2"></td>
                     </tr>
                 </tfoot>

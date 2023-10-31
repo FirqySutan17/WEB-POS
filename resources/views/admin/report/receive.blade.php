@@ -39,7 +39,7 @@ CMS | Report Receive
         <a class="{{routeActive('report.receiveno')}}" href="{{ route('report.receiveno') }}">By
             Receive No</a>
         <a class="{{routeActive('report.receiveproduct')}}" href="{{ route('report.receiveproduct') }}">By
-            Product</a>
+            Item</a>
     </div>
     <div class="card border-add">
         <div class="tr-shadow" style="border-bottom-left-radius: 0px; border-bottom-right-radius: 0px">
@@ -78,45 +78,36 @@ CMS | Report Receive
                 <thead>
                     <tr class="head-report">
                         <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
-                        <th rowspan="2" class="center-text">Tanggal<span class="dividerHr"></span></th>
-                        <th colspan="5" class="heightHr center-text" style="vertical-align: middle">Receive <span
-                                class="dividerHr"></span>
-
+                        <th rowspan="2"class="center-text">Tanggal<span class="dividerHr"></span></th>
+                        <th colspan="5" class="heightHr center-text" style="vertical-align: middle">Item <span class="dividerHr"></span>
                         </th>
                     </tr>
                     <tr class="head-report">
-                        <th class="heightHr center-text" style="vertical-align: middle">Receive No <span
-                                class="dividerHr"></span>
+                        <th class="heightHr center-text" style="vertical-align: middle">Item Name<span class="dividerHr"></span>
                         </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">Delivery No<span
-                                class="dividerHr"></span>
+                        <th class="heightHr center-text" style="vertical-align: middle">Qty<span class="dividerHr"></span>
                         </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">PIC<span
-                                class="dividerHr"></span>
+                        <th class="heightHr center-text" style="vertical-align: middle">Unit Price<span class="dividerHr"></span>
                         </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">Total Product<span
-                                class="dividerHr"></span>
-                        </th>
-                        <th class="heightHr center-text" style="vertical-align: middle">Total Qty<span
-                                class="dividerHr"></span>
+                        <th class="heightHr center-text" style="vertical-align: middle">Amount<span class="dividerHr"></span>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $total_product = 0; $total_qty = 0; ?>
+                    <?php $total_amount = 0; $total_qty = 0;?>
                     @if (!empty($data))
                     @foreach ($data as $item)
                     <?php $rowspan = 1 + count($item['details']) ?>
                     <div class="rt-invoice">
                         <tr>
-                            <td rowspan="{{ $rowspan }}" class="center-text">
+                            <td rowspan="{{ $rowspan }}" style="vertical-align: middle">
                                 {{ $loop->iteration }}
                             </td>
-                            <td rowspan="{{ $rowspan }}" class="center-text" style="vertical-align: middle">
+                            <td rowspan="{{ $rowspan }}" style="vertical-align: middle">
                                 {{ $item['receive_date'] }}
                             </td>
 
-                            <td colspan="5" style="vertical-align: middle; padding: 0px">
+                            <td colspan="4" style="vertical-align: middle; padding: 0px">
 
                             </td>
                             {{-- <td rowspan="3" class="center-text" style="vertical-align: middle;">
@@ -125,13 +116,12 @@ CMS | Report Receive
                         </tr>
                         @foreach ($item['details'] as $rcv)
                         <tr>
-                            <td style="vertical-align: middle">{{ $rcv['code'] }}</td>
-                            <td style="vertical-align: middle">{{ $rcv['delivery_no'] }}</td>
-                            <td class="center-text">{{ $rcv['pic'] }}</td>
-                            <td class="center-text">{{ $rcv['total_product'] }}</td>
-                            <td class="center-text">{{ $rcv['total_qty'] }}</td>
+                            <td style="vertical-align: middle; text-align: left">{{ $rcv['product_code']." | ".$rcv['product_name'] }}</td>
+                            <td style="vertical-align: middle; text-align: right">{{ number_format($rcv['qty']) }}</td>
+                            <td style="vertical-align: middle; text-align: right">@currency($rcv['unit_price'])</td>
+                            <td style="vertical-align: middle; text-align: right">@currency($rcv['amount'])</td>
                         </tr>
-                        <?php $total_product += $rcv['total_product']; $total_qty += $rcv['total_qty']; ?>
+                        <?php $total_qty += $rcv['qty']; $total_amount += $rcv['amount'];?>
                         @endforeach
                     </div>
                     @endforeach
@@ -139,9 +129,13 @@ CMS | Report Receive
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" style="text-align: right">Total</td>
-                        <td class="center-text">{{ $total_product }}</td>
-                        <td class="center-text">{{ $total_qty }}</td>
+                        <?php $total_up = round($total_amount / $total_qty);?>
+                        <td colspan="3" style="text-align: right">Total</td>
+                        <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_qty) }}</strong></td>
+                        {{-- <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_up) }}</strong></td>
+                        <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td> --}}
+                        <td style="vertical-align: middle; text-align: right"></td>
+                        <td style="vertical-align: middle; text-align: right"></td>
                     </tr>
                 </tfoot>
             </table>
