@@ -149,6 +149,8 @@
                             <th class="center-text">No.</th>
                             <th>Produk</th>
                             <th class="center-text">Qty</th>
+                            <th class="center-text">Unit Price</th>
+                            <th class="center-text">Amount</th>
                         </tr>
                     </tbody>
 
@@ -188,6 +190,8 @@
                 html += `<td class="center-text" style="width: 5%">${i + 1}</td>`;
                 html += `<td>${item.code} - ${item.name}</td>`;
                 html += `<td class="center-text" style="width: 5%">${item.quantity}</td>`;
+                html += `<td class="center-text" style="width: 5%">${item.unit_price}</td>`;
+                html += `<td class="center-text" style="width: 5%">${item.amount}</td>`;
             html += `</tr>`;
         });
         $('#receive_detail').append(html);

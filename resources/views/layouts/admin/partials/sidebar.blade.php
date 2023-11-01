@@ -99,6 +99,12 @@
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['report.transaction','report.transactioninvoice', 'report.transactionproduct','report.stock', 'report.receive', 'report.receiveno', 'report.receiveproduct']) }}"
                             href="javascript:void(0)"><i data-feather="file-text"></i><span>Report</span></a>
                         <ul class="nav-submenu menu-content">
+                            <li>
+                                <a href="{{ route('report.receive') }}"
+                                    class="{{routeActive(['report.receive', 'report.receiveno', 'report.receiveproduct'])}}">
+                                    Receive
+                                </a>
+                            </li>
                             @can('RS Show')
                             <li>
                                 <a href="{{ route('report.stock') }}" class="{{routeActive('report.stock')}}">
@@ -115,12 +121,7 @@
                             </li>
                             @endcan
 
-                            <li>
-                                <a href="{{ route('report.receive') }}"
-                                    class="{{routeActive(['report.receive', 'report.receiveno', 'report.receiveproduct'])}}">
-                                    Receive
-                                </a>
-                            </li>
+                            
 
                             <li>
                                 <a href="{{ route('report.cashflow') }}" class="{{routeActive(['report.cashflow'])}}">
