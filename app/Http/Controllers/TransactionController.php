@@ -502,6 +502,12 @@ class TransactionController extends Controller
         $latest_transaction = Transaction::whereDate('trans_date', $today)->orderBy('id', 'DESC')->first();
         if (!empty($latest_transaction)) {
             $no = substr($latest_transaction->invoice_no, -4);
+
+            $date = date('Y-m-d', strtotime($latest_transaction->created_at));
+            $hour = date('H', strtotime($latest_transaction->created_at));
+            if ($date == '2023-11-01' && $hour < 11) {
+                $no = 0;
+            }
             $no += 1;
         }
 
