@@ -183,6 +183,9 @@ class ProductController extends Controller
         return response()->json($data);
     }
 
+    public function print() {
+        return view('admin.product.print');
+    }
     /**
      * Show the form for editing the specified resource.
      *

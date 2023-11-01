@@ -97,6 +97,15 @@ CMS | Product
 									</a>
 								</div>
 								@endcan
+
+								<div class="boxEdit">
+									<a href="{{ route('product.print') }}" target="_blank" class="btn-sm btn-info"
+										role="button">
+										<i class='bx bxs-printer'></i>
+									</a>
+								</div>
+
+
 							</div>
 
 						</td>

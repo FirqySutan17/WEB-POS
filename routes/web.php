@@ -78,6 +78,7 @@ Route::post('/product/select', [App\Http\Controllers\ProductController::class, '
 Route::get('/product/select2_product', [App\Http\Controllers\ProductController::class, 'select2_product'])->name('product.select2_product');
 Route::post('/product/select_trans', [App\Http\Controllers\ProductController::class, 'select_trans'])->name('product.select_trans');
 Route::resource('/product', App\Http\Controllers\ProductController::class);
+Route::get('/barcode-print', [App\Http\Controllers\ProductController::class, 'print'])->name('product.print');
 
 // Closing Date Route
 Route::resource('/closing-date', App\Http\Controllers\ClosingdateController::class);
