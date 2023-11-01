@@ -132,10 +132,10 @@ CMS | Report Receive
                         <?php $total_up = 0; if($total_amount > 0 && $total_qty > 0) { $total_up = round($total_amount / $total_qty); } ?>
                         <td colspan="3" style="text-align: right">Total</td>
                         <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_qty) }}</strong></td>
-                        {{-- <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_up) }}</strong></td>
-                        <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td> --}}
+                        {{-- <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_up) }}</strong></td> --}}
                         <td style="vertical-align: middle; text-align: right"></td>
-                        <td style="vertical-align: middle; text-align: right"></td>
+                        <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td>
+                        {{-- <td style="vertical-align: middle; text-align: right"></td> --}}
                     </tr>
                 </tfoot>
             </table>

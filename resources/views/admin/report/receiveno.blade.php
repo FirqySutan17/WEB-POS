@@ -101,7 +101,7 @@ CMS | Report Receive
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $total_qty = 0; ?>
+                    <?php $total_qty = 0; $total_amount = 0; ?>
                     @if (!empty($data))
                     @foreach ($data as $item)
                     <?php $rowspan = 1 + count($item['details']) ?>
@@ -127,13 +127,14 @@ CMS | Report Receive
                             </td> --}}
                         </tr>
                         @foreach ($item['details'] as $rcv)
+                        <?php $amount = str_replace(".", "", $rcv['amount']); ?>
                         <tr>
                             <td style="vertical-align:middle">{{ $rcv['product'] }}</td>
                             <td style="text-align:right; vertical-align:middle">{{ number_format($rcv['quantity']) }}</td>
                             <td style="text-align:right; vertical-align:middle">{{ number_format($rcv['unit_price']) }}</td>
-                            <td style="text-align:right; vertical-align:middle">{{ $rcv['amount'] }}</td>
+                            <td style="text-align:right; vertical-align:middle">{{ number_format($amount) }}</td>
                         </tr>
-                        <?php $total_qty += $rcv['quantity']; ?>
+                        <?php $total_qty += $rcv['quantity']; $total_amount += $amount; ?>
                         @endforeach
                     </div>
                     @endforeach
@@ -143,7 +144,8 @@ CMS | Report Receive
                     <tr>
                         <td colspan="5" style="text-align: right">Total</td>
                         <td class="center-text"><strong>{{ $total_qty }}</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
+                        <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td>
                     </tr>
                 </tfoot>
             </table>

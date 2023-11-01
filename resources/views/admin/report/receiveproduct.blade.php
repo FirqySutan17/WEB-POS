@@ -89,7 +89,7 @@ CMS | Report Receive
                         <th class="center-text">Amount <span class="dividerHr"></span></th>
                     </tr>
                 </thead>
-                <?php $total_qty = 0; ?>
+                <?php $total_qty = 0; $total_amount = 0; ?>
                 <tbody>
                     @if (!empty($data))
                     @foreach ($data as $item)
@@ -111,6 +111,7 @@ CMS | Report Receive
                                 } 
                                 $unit_price = round($amount / $qty);
                                 $total_qty += $qty;
+                                $total_amount += $amount;
                             ?>
                             <td style="vertical-align: middle; text-align:right">{{ number_format($qty) }}</td>
                             <td style="vertical-align: middle; text-align:right">{{ number_format($unit_price) }}</td>
@@ -124,7 +125,8 @@ CMS | Report Receive
                 <tr>
                     <th colspan="2" style="text-align:right" colspan="2">Total</th>
                     <th style="text-align:right">{{ number_format($total_qty) }}</th>
-                    <th colspan="2"></th>
+                    <td></td>
+                        <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td>
                 </tr>
             </table>
         </div>

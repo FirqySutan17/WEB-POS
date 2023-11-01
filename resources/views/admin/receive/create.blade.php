@@ -1,4 +1,4 @@
-@extends('layouts.admin.master')
+ @extends('layouts.admin.master')
 
 @section('title')
 CMS | Add Receive
@@ -277,7 +277,7 @@ CMS | Add Receive
 
         let amount = qty * unitprice;
         let str_amount = amount.toString();
-        $(`#amount_${item_id}`).val(formatRupiah(str_amount));
+        $(`#amount_${item_id}`).val(str_amount);
 
         console.log(str_qty, qty, str_unitprice, unitprice, str_amount, amount);
     }
@@ -291,8 +291,9 @@ CMS | Add Receive
 
         let unitprice = Math.round(amount / qty);
         let str_unitprice = unitprice.toString();
-        $(`#unit_price_${item_id}`).val(formatRupiah(str_unitprice));
+        $(`#unit_price_${item_id}`).val(str_unitprice);
     }
+    
 
     function formatRupiah(angka, prefix)
     {
@@ -359,7 +360,7 @@ CMS | Add Receive
                                     <label for="input_post_description" class="font-weight-bold">
                                         Unit Price 
                                     </label>
-                                    <input data-itemid="${item_id}" id="unit_price_${item_id}" name="unit_price[]" type="number" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_qty('${item_id}')" />
+                                    <input data-itemid="${item_id}" id="unit_price_${item_id}" name="unit_price[]" type="text" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_qty('${item_id}')" />
                                 </div>
                             </div>
                             <div class="col-3">
@@ -367,7 +368,7 @@ CMS | Add Receive
                                     <label for="input_post_description" class="font-weight-bold">
                                         Amount 
                                     </label>
-                                    <input data-itemid="${item_id}" id="amount_${item_id}" name="amount[]" type="number" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_amount('${item_id}')" />
+                                    <input data-itemid="${item_id}" id="amount_${item_id}" name="amount[]" type="text" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_amount('${item_id}')" />
                                 </div>
                             </div>
                         </div>
