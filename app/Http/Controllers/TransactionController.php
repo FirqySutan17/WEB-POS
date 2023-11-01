@@ -81,12 +81,9 @@ class TransactionController extends Controller
         $userdata = Auth::user();
         // $session_user = $request->session()->get('role');
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
-        $no_invoice = "INV".$userdata->id.strtotime(date('YmdHis'));
+        $no_invoice = $this->generatInvoiceNo();
         $memberships = Membership::all();
-        // if (Session::get('receipt')) {
-        //     dd(Session::get('receipt'));
-        // }
-        // dd($session_user);
+
         return view('admin.transaction.create-copy', compact('no_invoice', 'product_discount', 'memberships'));
     }
 
@@ -496,6 +493,28 @@ class TransactionController extends Controller
     public function item_display() {
         $item_display = Cache::has('item_display') ? Cache::get('item_display') : [];
         return response()->json($item_display);
+    }
+
+    private function generatInvoiceNo() {
+        $invoice_no = "INV".date('Ymd');
+        $no = 1;
+        $today = date('Y-m-d');
+        $latest_transaction = Transaction::whereDate('trans_date', $today)->orderBy('id', 'DESC')->first();
+        if (!empty($latest_transaction)) {
+            $no = substr($latest_transaction->invoice_no, -4);
+            $no += 1;
+        }
+
+        if ($no < 10) {
+            $no = "000".$no;
+        } elseif ($no >= 10 && $no < 100) {
+            $no = "00".$no;
+        } elseif ($no >= 100 && $no < 1000) {
+            $no = "0".$no;
+        }
+
+        $invoice_no = $invoice_no.$no;
+        return $invoice_no;
     }
 
     private function generateRandomString($length = 15) {
