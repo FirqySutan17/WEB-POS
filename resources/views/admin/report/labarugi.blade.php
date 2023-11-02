@@ -94,24 +94,34 @@ CMS | Best Seller
                                 {{ $item['product_name'] }}
                             </td>
                             @if ($total_detail > 0)
+                            <?php
+                                $sub_total_harga_beli   = $detail[0]['harga_beli'] * $detail[0]['quantity'];
+                                $sub_total_harga_jual   = $detail[0]['harga_jual'] * $detail[0]['quantity'];
+                                $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
+                            ?>
                             <td class="center-text" style="width: 10%; vertical-align: middle">{{ $detail[0]['tanggal'] }}</td>
-                            <td style="width: 10%; vertical-align: middle; text-align:right">{{ number_format($detail[0]['quantity']) }}</td>
-                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($detail[0]['harga_beli'])</td>
-                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($detail[0]['harga_jual'])</td>
-                            <td style="width: 15%; vertical-align: middle; text-align:right">
-                                selisih
+                            <td style="width: 5%; vertical-align: middle; text-align:right">{{ number_format($detail[0]['quantity']) }}</td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_beli) (@currency($detail[0]['harga_beli']))</td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_jual) (@currency($detail[0]['harga_jual']))</td>
+                            <td style="width: 10%; vertical-align: middle; text-align:right">
+                                <span class="{{ $sub_selisih >= 0 ? "text-success" : "text-danger" }}">@currency($sub_selisih)</span>
                             </td>
                             <?php unset($detail[0]); ?>
                             @endif
                         </tr>
                         @foreach ($detail as $dtl)
+                        <?php
+                            $sub_total_harga_beli   = $dtl['harga_beli'] * $dtl['quantity'];
+                            $sub_total_harga_jual   = $dtl['harga_jual'] * $dtl['quantity'];
+                            $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
+                        ?>
                         <tr>
                             <td class="center-text" style="width: 10%; vertical-align: middle">{{ $dtl['tanggal'] }}</td>
-                            <td style="width: 10%; vertical-align: middle; text-align:right">{{ number_format($dtl['quantity']) }}</td>
-                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($dtl['harga_beli'])</td>
-                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($dtl['harga_jual'])</td>
-                            <td style="width: 15%; vertical-align: middle; text-align:right">
-                                selisih
+                            <td style="width: 5%; vertical-align: middle; text-align:right">{{ number_format($dtl['quantity']) }}</td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_beli) (@currency($dtl['harga_beli']))</td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_jual) (@currency($dtl['harga_jual']))</td>
+                            <td style="width: 10%; vertical-align: middle; text-align:right">
+                                <span class="{{ $sub_selisih >= 0 ? "text-success" : "text-danger" }}">@currency($sub_selisih)</span>
                             </td>
                         </tr>
                         @endforeach
