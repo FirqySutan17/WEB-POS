@@ -333,52 +333,61 @@
         <table class="table" border="1">
             <thead>
                 <tr class="head-report">
-                    <th rowspan="2" class="center-text">No</th>
-                    <th rowspan="2" class="heightHr center-text">Produk</th>
-                    <th colspan="5" class="heightHr center-text">Detail</th>
+                    <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
+                    <th rowspan="2" class="heightHr center-text">Produk <span class="dividerHr"></span></th>
+                    <th colspan="3" class="heightHr center-text">Detail <span class="dividerHr"></span></th>
                 </tr>
                 <tr class="head-report">
-                    <th class="heightHr center-text">(%)</th>
-                    <th class="heightHr center-text">Harga/@</th>
                     <th class="heightHr center-text">Qty</th>
                     <th class="heightHr center-text">Tanggal</th>
-                    <th class="heightHr center-text">No Invoice</th>
+                    <th class="heightHr center-text">Total Amount</th>
                 </tr>
             </thead>
             <tbody>
-                <?php $disc = 0; ?>
-                <?php $disc_price = 0; ?>
+                <?php $total = 0; $total_qty = 0; ?>
                 @if (!empty($data))
                 @foreach ($data as $item)
-                <?php $rowspan = 1 + count($item['details']); ?>
-                <tr>
-                    <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
-                    <td rowspan="{{ $rowspan }}" class="center-text">{{ $item['code']." | ".$item['name'] }}</td>
-                    <td colspan="5">
-
-                    </td>
-                </tr>
-                @foreach ($item['details'] as $inv)
-                <?php
-                    $disc = ($inv['discount'] / 100) * $inv['price'];
-                    $disc_price = $inv['price'] - $disc;
-                ?>
-                <tr>
-                    <td class="center-text">{{ $inv['discount'] }}</td>
-                    <td class="center-text">
-                        @if ($inv['discount'] > 0)
-                        <s style="font-size: 12px"> @currency($inv['price'])</s> <br>
-                        @endif
-                        @currency($disc_price)
-                    </td>
-                    <td class="center-text">{{ $inv['quantity'] }}</td>
-                    <td class="center-text">{{ $inv['trans_date'] }}</td>
-                    <td class="center-text">{{ $inv['invoice_no'] }}</td>
-                </tr>
-                @endforeach
+                <?php $rowspan = 1 + count($item['details']); $sub_total = 0; $sub_qty = 0; ?>
+                    <tr>
+                        <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
+                        <td rowspan="{{ $rowspan }}" style=" vertical-align: middle; text-align: left; width: 50%">{{
+                            $item['code']." | ".$item['name'] }}</td>
+                    </tr>
+                    @foreach ($item['details'] as $inv)
+                    <tr>
+                        {{-- <td style=" vertical-align: middle; text-align: right">
+                            @if ($inv['discount'] > 0)
+                            <span style="text-decoration: line-through; font-size: 12px">
+                                @currency($inv['basic_price'])</span> <br>
+                            @endif
+                            @currency($inv['price'])
+                        </td> --}}
+                        <td class="center-text" style="vertical-align: middle; text-align: right">{{ $inv['quantity'] }}</td>
+                        {{-- <td class="center-text">{{ $inv['discount'] }}</td> --}}
+                        <td class="center-text">{{ $inv['trans_date'] }}</td>
+                        {{-- <td class="center-text">{{ $inv['invoice_no'] }}</td> --}}
+                        <td style="vertical-align: middle; text-align: right">@currency($inv['total'])</td>
+                    </tr>
+                    <?php $sub_total += $inv['total']; $sub_qty += $inv['quantity'] ?>
+                    @endforeach
+                    <tr>
+                        <td colspan="2" style="vertical-align: middle; text-align: right"><strong>Sub Total</strong></td>
+                        <td style="text-align: right"><strong>{{ number_format($sub_qty) }}</strong></td>
+                        <td></td>
+                        <td style="text-align: right"><strong>@currency($sub_total)</strong></td>
+                    </tr>
+                    <?php $total += $sub_total; $total_qty += $sub_qty; ?>
                 @endforeach
                 @endif
             </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2" style="text-align: right">Total</th>
+                    <td style="text-align: right"><strong>{{ number_format($total_qty) }}</strong></td>
+                    <td></td>
+                    <td style="text-align: right"><strong>@currency($total)</strong></td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     <div id="page-footer">
