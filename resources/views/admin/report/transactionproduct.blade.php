@@ -39,7 +39,7 @@ CMS | Report Transaction
         <a class="{{routeActive('report.transactioninvoice')}}" href="{{ route('report.transactioninvoice') }}">By
             Invoice</a>
         <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
-            Product</a>
+            Item</a>
         <a class="{{routeActive('report.transactioncashier')}}" href="{{ route('report.transactioncashier') }}">By
             Cashier</a>
     </div>
@@ -132,9 +132,9 @@ CMS | Report Transaction
                             {{-- <td class="center-text">{{ $inv['discount'] }}</td> --}}
                             <td class="center-text">{{ $inv['trans_date'] }}</td>
                             {{-- <td class="center-text">{{ $inv['invoice_no'] }}</td> --}}
-                            <td style="vertical-align: middle; text-align: right">@currency($inv['price'] * $inv['quantity'])</td>
+                            <td style="vertical-align: middle; text-align: right">@currency($inv['total'])</td>
                         </tr>
-                        <?php $sub_total += $inv['price'] * $inv['quantity']; $sub_qty += $inv['quantity'] ?>
+                        <?php $sub_total += $inv['total']; $sub_qty += $inv['quantity'] ?>
                         @endforeach
                         <tr>
                             <td colspan="2" style="vertical-align: middle; text-align: right"><strong>Sub Total</strong></td>

@@ -110,8 +110,8 @@ class ReceiveController extends Controller
             if (!empty($receive) && !empty($product_code)) {
                 foreach ($product_code as $key => $v) {
                     $qty = $quantity[$key];
-                    $up     = $unit_price[$key];
-                    $amt    = $amount[$key];
+                    $up     = str_replace(".", "", $unit_price[$key]);
+                    $amt    = str_replace(".", "", $amount[$key]);
                     $product_arr[] = [
                         'receive_code'  => $receive_code,
                         'product_code'  => $v,

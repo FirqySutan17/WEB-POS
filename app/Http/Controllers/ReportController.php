@@ -231,31 +231,35 @@ class ReportController extends Controller
             $sdate  = "";
             $edate  = "";
             $search = "";
+            $payment_method = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $payment_method = trim($request->payment_method);
                 $search = trim($request->search);
                 $order_by = "ORDER BY trans.created_at DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", "", $payment_method);
                 $data     = $this->convert_transaction_by_invoice($data_raw);
                 // dd($data_converted);
             }
 
 
-            return view('admin.report.transactioninvoice', compact('data', 'sdate', 'edate', 'search'));
+            return view('admin.report.transactioninvoice', compact('data', 'sdate', 'edate', 'search', 'payment_method'));
         }
 
         public function report_transaction_by_invoice_excel(Request $request) {
             $data   = [];
             $sdate  = "";
             $edate  = "";
-            $search  = ""; 
+            $search = "";
+            $payment_method = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $payment_method = trim($request->payment_method);
                 $search = trim($request->search);
                 $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", "", $payment_method);
                 $data     = $this->convert_transaction_by_invoice($data_raw);
             }
             return Excel::download(new ReportExport($data, 'transactioninvoice'), 'transactioninvoice.xlsx');
@@ -265,13 +269,15 @@ class ReportController extends Controller
             $data   = [];
             $sdate  = "";
             $edate  = "";
-            $search  = ""; 
+            $search = "";
+            $payment_method = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $payment_method = trim($request->payment_method);
                 $search = trim($request->search);
                 $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", "", $payment_method);
                 $data     = $this->convert_transaction_by_invoice($data_raw);
             }
             $pdf = PDF::loadview('exports/transactioninvoice',['data'=>$data])->setPaper('a4', 'landscape');
@@ -365,7 +371,7 @@ class ReportController extends Controller
             return $db_query;
         }
 
-        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search, $by = "", $categories = "") {
+        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search, $by = "", $categories = "", $payment_method = "ALL") {
             $where = "";
             if (!empty($search)) {
                 $where = " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%' OR products.name LIKE '%".$search."%' OR products.code LIKE '%".$search."%')";
@@ -375,6 +381,10 @@ class ReportController extends Controller
             }
             if (!empty($categories) && $categories != "ALL") {
                 $where = " AND products.categories = '".$categories."'";
+            }
+
+            if ($payment_method != "ALL") {
+                $where = $payment_method == 'Tunai' ? " AND trans.payment_method = 'Tunai'" : " AND trans.payment_method <> 'Tunai'";
             }
             $query = "
                 SELECT 
@@ -444,9 +454,12 @@ class ReportController extends Controller
                             "price"         => $item->price,
                             "quantity"      => 0,
                             "trans_date"    => $trans_date,
+                            "total"         => 0,
                         ];
                     }
+                    $total = $item->price * $item->quantity;
                     $data_product[$product_code]["details"][$transdate]["quantity"] += $item->quantity;
+                    $data_product[$product_code]["details"][$transdate]["total"] += $total;
                     // dd($data_product);
                     // $data_product[$product_code]["details"][] = [
                     //     "invoice_no"    => $item->invoice_no,

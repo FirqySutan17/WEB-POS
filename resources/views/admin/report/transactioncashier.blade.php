@@ -39,7 +39,7 @@ CMS | Report Transaction
         <a class="{{routeActive('report.transactioninvoice')}}" href="{{ route('report.transactioninvoice') }}">By
             Invoice</a>
         <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
-            Product</a>
+            Item</a>
         <a class="{{routeActive('report.transactioncashier')}}" href="{{ route('report.transactioncashier') }}">By
             Cashier</a>
     </div>
@@ -97,7 +97,7 @@ CMS | Report Transaction
                     <?php $total = 0; ?>
                     @if (!empty($data))
                     @foreach ($data as $item)
-                    <?php $rowspan = 1 + count($item['details']) ?>
+                    <?php $sub_total = 0; $rowspan = 1 + count($item['details']) ?>
                     <div class="rt-invoice">
                         <tr>
                             <td rowspan="{{ $rowspan }}" class="center-text">
@@ -121,16 +121,20 @@ CMS | Report Transaction
                             <td class="center-text">{{ $invoice['payment_method'] }}</td>
                             <td class="center-text">@currency($invoice['total_price'])</td>
                         </tr>
-                        <?php $total += $invoice['total_price'] ?>
+                        <?php $total += $invoice['total_price']; $sub_total += $invoice['total_price']; ?>
                         @endforeach
+                        <tr>
+                            <td colspan="6" style="vertical-align: middle; text-align:right;"><strong>Sub Total</strong></td>
+                            <td style="text-align: right"><strong>@currency($sub_total)</strong></td>
+                        </tr>
                     </div>
                     @endforeach
                     @endif
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="6" style="text-align: right">Total</th>
-                        <td style="text-align: right"><strong>@currency($total)</strong></td>
+                        <th colspan="6" style="text-align: right"><strong>Total</strong></th>
+                        <th style="text-align: right"><strong>@currency($total)</strong></th>
                     </tr>
                 </tfoot>
             </table>
