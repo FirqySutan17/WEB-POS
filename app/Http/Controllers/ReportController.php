@@ -1409,20 +1409,28 @@ class ReportController extends Controller
                             "harga_beli"    => $item->harga_beli
                         ];
                     } else {
-                        for ($i=count($data[$product_code]["detail"]); $i > 0; $i--) {
-                            $index = $i - 1;
+                        $total_data = count($data[$product_code]["detail"]);
+                        for ($i=0; $i < $total_data; $i++) {
+                            $index = $total_data - 1;
                             
                             $previous_data = $data[$product_code]["detail"][$index];
+                            
                             if ($previous_data["harga_jual"] != $item->harga_jual || $previous_data["harga_beli"] != $item->harga_beli) {
+                                
                                 $data[$product_code]["detail"][] = [
                                     "tanggal"       => $item->trans_date,
                                     "quantity"      => $item->quantity,
                                     "harga_jual"    => $item->harga_jual,
                                     "harga_beli"    => $item->harga_beli
                                 ];
+                                // if ($product_code == '8991818040062' && count($data[$product_code]["detail"]) > 1 && $item->trans_date == '2023-10-24') {
+                                //     dd($previous_data["harga_jual"], $item->harga_jual,$previous_data["harga_beli"], $item->harga_beli, $i,$previous_data, $item, $data[$product_code]["detail"]);
+                                // }
                             } else {
+                                
                                 $data[$product_code]["detail"][$index]["quantity"] += $item->quantity;
                             }
+                            
                         }
                     }
 
