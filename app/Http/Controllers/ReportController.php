@@ -1375,17 +1375,19 @@ class ReportController extends Controller
         public function report_laba_rugi(Request $request) {
             $data   = [];
             $sdate  = "";
+            $edate  = "";
             $search  = "";
             $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
+                $edate = $request->edate;
                 $search = trim($request->search);
                 $categories = $request->categories;
             }
 
-            $data_raw = $this->get_labarugi($sdate, $search, $categories);
+            $data_raw = $this->get_labarugi($sdate, $edate, $search, $categories);
             $data = $this->convert_labarugi($data_raw);
-            return view('admin.report.labarugi', compact('data', 'sdate', 'search', 'categories'));
+            return view('admin.report.labarugi', compact('data', 'sdate', 'edate', 'search', 'categories'));
         }
 
         private function convert_labarugi($data_raw) {
@@ -1400,39 +1402,48 @@ class ReportController extends Controller
                             "detail"        => []
                         ];
                     }
-
-                    if (count($data[$product_code]["detail"]) < 1) {
-                        $data[$product_code]["detail"][] = [
+                    $item->trans_date = date('Y-m-d', strtotime($item->trans_date));
+                    $tanggal = strtotime($item->trans_date);
+                    if (!array_key_exists($tanggal, $data[$product_code]["detail"])) {
+                        $data[$product_code]["detail"][$tanggal] = [
                             "tanggal"       => $item->trans_date,
                             "quantity"      => $item->quantity,
                             "harga_jual"    => $item->harga_jual,
                             "harga_beli"    => $item->harga_beli
                         ];
                     } else {
-                        $total_data = count($data[$product_code]["detail"]);
-                        for ($i=0; $i < $total_data; $i++) {
-                            $index = $total_data - 1;
-                            
-                            $previous_data = $data[$product_code]["detail"][$index];
-                            
-                            if ($previous_data["harga_jual"] != $item->harga_jual || $previous_data["harga_beli"] != $item->harga_beli) {
-                                
-                                $data[$product_code]["detail"][] = [
-                                    "tanggal"       => $item->trans_date,
-                                    "quantity"      => $item->quantity,
-                                    "harga_jual"    => $item->harga_jual,
-                                    "harga_beli"    => $item->harga_beli
-                                ];
-                                // if ($product_code == '8991818040062' && count($data[$product_code]["detail"]) > 1 && $item->trans_date == '2023-10-24') {
-                                //     dd($previous_data["harga_jual"], $item->harga_jual,$previous_data["harga_beli"], $item->harga_beli, $i,$previous_data, $item, $data[$product_code]["detail"]);
-                                // }
-                            } else {
-                                
-                                $data[$product_code]["detail"][$index]["quantity"] += $item->quantity;
-                            }
-                            
-                        }
+                        $data[$product_code]["detail"][$tanggal]["quantity"] += $item->quantity;
                     }
+                    
+                    // if (count($data[$product_code]["detail"]) < 1) {
+                    //     $data[$product_code]["detail"][] = [
+                    //         "tanggal"       => $item->trans_date,
+                    //         "quantity"      => $item->quantity,
+                    //         "harga_jual"    => $item->harga_jual,
+                    //         "harga_beli"    => $item->harga_beli
+                    //     ];
+                    // } else {
+                    //     $total_data = count($data[$product_code]["detail"]);
+                    //     for ($i=0; $i < $total_data; $i++) {
+                    //         $index = $total_data - 1;
+                            
+                    //         $previous_data = $data[$product_code]["detail"][$index];
+                            
+                    //         if ($previous_data["harga_jual"] != $item->harga_jual || $previous_data["harga_beli"] != $item->harga_beli) {
+                                
+                    //             $data[$product_code]["detail"][] = [
+                    //                 "tanggal"       => $item->trans_date,
+                    //                 "quantity"      => $item->quantity,
+                    //                 "harga_jual"    => $item->harga_jual,
+                    //                 "harga_beli"    => $item->harga_beli
+                    //             ];
+                    //         } else {
+                                
+                    //             $data[$product_code]["detail"][$index]["quantity"] += $item->quantity;
+                    //         }
+                            
+                    //     }
+                    // }
 
                     // if ($products->is_vat == 1) {
                     //     $vat_percent    = config('app.vat_amount');
@@ -1459,7 +1470,7 @@ class ReportController extends Controller
             return $data;
         }
 
-        private function get_labarugi($sdate, $search, $categories) {
+        private function get_labarugi($sdate, $edate, $search, $categories) {
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
             $whereDate = "";
             if (!empty($sdate)) {
@@ -1469,7 +1480,8 @@ class ReportController extends Controller
             }
             $year   = $sdate_exp[0];
             $month  = $sdate_exp[1];
-            $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
+            // $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
+            $whereDate = " AND (trans.trans_date BETWEEN '".$sdate."' AND '".$edate."')";
             if (!empty($categories) && $categories != "ALL") {
                 $where .= " AND products.categories = '".$categories."'";
             }
@@ -1505,7 +1517,7 @@ class ReportController extends Controller
                 SELECT 
                     products.code as product_code,
                     CONCAT(products.code, ' | ', products.name) AS product_name,
-                    trans.trans_date,
+                    trans.created_at as trans_date,
                     trans_detail.quantity,
                     trans_detail.price AS harga_jual,
                     (

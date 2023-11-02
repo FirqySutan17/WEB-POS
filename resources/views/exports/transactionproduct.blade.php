@@ -366,15 +366,15 @@
                         {{-- <td class="center-text">{{ $inv['discount'] }}</td> --}}
                         <td class="center-text">{{ $inv['trans_date'] }}</td>
                         {{-- <td class="center-text">{{ $inv['invoice_no'] }}</td> --}}
-                        <td style="vertical-align: middle; text-align: right">@currency($inv['total'])</td>
+                        <td style="vertical-align: middle; text-align: right">{{ $inv['total'] }}</td>
                     </tr>
                     <?php $sub_total += $inv['total']; $sub_qty += $inv['quantity'] ?>
                     @endforeach
                     <tr>
                         <td colspan="2" style="vertical-align: middle; text-align: right"><strong>Sub Total</strong></td>
-                        <td style="text-align: right"><strong>{{ number_format($sub_qty) }}</strong></td>
+                        <td style="text-align: right"><strong>{{ $sub_qty }}</strong></td>
                         <td></td>
-                        <td style="text-align: right"><strong>@currency($sub_total)</strong></td>
+                        <td style="text-align: right"><strong>{{ $sub_total }}</strong></td>
                     </tr>
                     <?php $total += $sub_total; $total_qty += $sub_qty; ?>
                 @endforeach
@@ -383,9 +383,9 @@
             <tfoot>
                 <tr>
                     <th colspan="2" style="text-align: right">Total</th>
-                    <td style="text-align: right"><strong>{{ number_format($total_qty) }}</strong></td>
+                    <td style="text-align: right"><strong>{{ $total_qty }}</strong></td>
                     <td></td>
-                    <td style="text-align: right"><strong>@currency($total)</strong></td>
+                    <td style="text-align: right"><strong>{{ $total }}</strong></td>
                 </tr>
             </tfoot>
         </table>

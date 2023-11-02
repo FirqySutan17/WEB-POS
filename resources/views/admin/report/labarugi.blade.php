@@ -36,16 +36,26 @@ CMS | Best Seller
                             class="form-control" placeholder="Search item by name or code"
                             style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
-                    <div class="col-2">
+                    {{-- <div class="col-2">
                         <input type="month" class="form-control" name="sdate"
                             value="{{ empty($sdate) ? date('Y-m') : $sdate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
-                    </div>
+                    </div> --}}
                     {{-- <div class="col-2">
                         <input type="month" class="form-control" name="edate"
                             value="{{ empty($sdate) ? date('Y-m') : $sdate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div> --}}
+                    <div class="col-2">
+                        <input type="date" class="form-control" name="sdate"
+                            value="{{ empty($sdate) ? date('Y-m-d') : $sdate }}"
+                            style="height: 100%; text-align: center; font-size: 14px">
+                    </div>
+                    <div class="col-2">
+                        <input type="date" class="form-control" name="edate"
+                            value="{{ empty($edate) ? date('Y-m-d') : $edate }}"
+                            style="height: 100%; text-align: center; font-size: 14px">
+                    </div>
                     <div class="col-2">
                         <select name="categories" class="form-control" style="height: 100%; font-size: 14px">
                             <option {{ $categories=='ALL' ? "selected" : "" }} value="ALL">All Categories</option>
@@ -75,18 +85,18 @@ CMS | Best Seller
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
-                    $sum_beli = 0;
-                    $sum_jual = 0;
-                    $sum_selisih = 0;
-                    $sum_qty = 0;
-                    ?>
+                    <?php $grand_total_qty = 0; $grand_total_selisih = 0; ?>
                     @if (!empty($data))
                     
                     @foreach ($data as $item)
                         <?php 
-                            $detail     = $item['detail'];
+                            $detail     = array_values($item['detail']);
                             $total_detail    = count($detail);
+
+                            $sum_beli = 0;
+                            $sum_jual = 0;
+                            $sum_selisih = 0;
+                            $sum_qty = 0;
                         ?>
                         <tr>
                             <td rowspan="{{ $total_detail }}" style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
@@ -98,6 +108,9 @@ CMS | Best Seller
                                 $sub_total_harga_beli   = $detail[0]['harga_beli'] * $detail[0]['quantity'];
                                 $sub_total_harga_jual   = $detail[0]['harga_jual'] * $detail[0]['quantity'];
                                 $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
+                                $sum_qty += $detail[0]['quantity'];
+                                $sum_selisih += $sub_selisih;
+                                
                             ?>
                             <td class="center-text" style="width: 10%; vertical-align: middle">{{ $detail[0]['tanggal'] }}</td>
                             <td style="width: 5%; vertical-align: middle; text-align:right">{{ number_format($detail[0]['quantity']) }}</td>
@@ -114,6 +127,8 @@ CMS | Best Seller
                             $sub_total_harga_beli   = $dtl['harga_beli'] * $dtl['quantity'];
                             $sub_total_harga_jual   = $dtl['harga_jual'] * $dtl['quantity'];
                             $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
+                            $sum_qty += $dtl['quantity'];
+                            $sum_selisih += $sub_selisih;
                         ?>
                         <tr>
                             <td class="center-text" style="width: 10%; vertical-align: middle">{{ $dtl['tanggal'] }}</td>
@@ -125,21 +140,26 @@ CMS | Best Seller
                             </td>
                         </tr>
                         @endforeach
-                    
+                        <tr>
+                            <td colspan="3" style="text-align: right"><strong>Sub Total</strong></td>
+                            <td style="text-align: right"><strong>{{ number_format($sum_qty) }}</strong></td>
+                            <td colspan="2" style="text-align: right"></td>
+                            <td style="text-align: right"><strong>@currency($sum_selisih)</strong></td>
+                        </tr>
+                        <?php $grand_total_qty += $sum_qty; $grand_total_selisih += $sum_selisih; ?>
                     @endforeach
                     @endif
 
                 </tbody>
-                {{-- <tfoot>
+                <tfoot>
                     <tr>
-                        <th style="text-align: center" colspan="2">GRAND TOTAL</th>
-                        <th style="text-align: center">{{ number_format($sum_qty) }}</th>
-                        <th style="text-align: center">@currency($sum_beli)</th>
-                        <th style="text-align: center">@currency($sum_jual)</th>
-                        <th style="text-align: center">@currency($sum_selisih)</th>
+                        <th style="text-align: center" colspan="3">GRAND TOTAL</th>
+                        <th style="text-align: center">{{ number_format($grand_total_qty) }}</th>
+                        <th style="text-align: center" colspan="2"></th>
+                        <th style="text-align: center">@currency($grand_total_selisih)</th>
                     </tr>
 
-                </tfoot> --}}
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">
