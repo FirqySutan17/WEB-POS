@@ -1375,15 +1375,17 @@ class ReportController extends Controller
         public function report_laba_rugi(Request $request) {
             $data   = [];
             $sdate  = "";
-            $search  = ""; 
+            $search  = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $search = trim($request->search);
+                $categories = $request->categories;
             }
 
-            $data_raw = $this->get_labarugi($sdate, $search);
+            $data_raw = $this->get_labarugi($sdate, $search, $categories);
             $data = $this->convert_labarugi($data_raw);
-            return view('admin.report.labarugi', compact('data', 'sdate', 'search'));
+            return view('admin.report.labarugi', compact('data', 'sdate', 'search', 'categories'));
         }
 
         private function convert_labarugi($data_raw) {
@@ -1417,7 +1419,7 @@ class ReportController extends Controller
             return $data;
         }
 
-        private function get_labarugi($sdate, $search) {
+        private function get_labarugi($sdate, $search, $categories) {
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
             $whereDate = "";
             if (!empty($sdate)) {
@@ -1428,6 +1430,9 @@ class ReportController extends Controller
             $year   = $sdate_exp[0];
             $month  = $sdate_exp[1];
             $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
+            if (!empty($categories) && $categories != "ALL") {
+                $where .= " AND products.categories = '".$categories."'";
+            }
             $query = "
                 SELECT 
                     products.code, products.name, products.categories, 
