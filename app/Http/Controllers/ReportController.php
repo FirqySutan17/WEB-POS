@@ -1391,31 +1391,63 @@ class ReportController extends Controller
         private function convert_labarugi($data_raw) {
             $data = [];
             if (!empty($data_raw)) {
-                foreach ($data_raw as $products) {
-                    if ($products->is_vat == 1) {
-                        $vat_percent    = config('app.vat_amount');
-                        $vat_amount     = ($products->price_store / 100) * $vat_percent;
-                        $products->price_store = $products->price_store + $vat_amount;
+                foreach ($data_raw as $item) {
+                    // dd($item);
+                    $product_code = $item->product_code;
+                    if (!array_key_exists($product_code, $data)) {
+                        $data[$product_code] = [
+                            "product_name"  => $item->product_name,
+                            "detail"        => []
+                        ];
                     }
+
+                    if (count($data[$product_code]["detail"]) < 1) {
+                        $data[$product_code]["detail"][] = [
+                            "tanggal"       => $item->trans_date,
+                            "quantity"      => $item->quantity,
+                            "harga_jual"    => $item->harga_jual,
+                            "harga_beli"    => $item->harga_beli
+                        ];
+                    } else {
+                        for ($i=count($data[$product_code]["detail"]); $i > 0; $i--) {
+                            $index = $i - 1;
+                            
+                            $previous_data = $data[$product_code]["detail"][$index];
+                            if ($previous_data["harga_jual"] != $item->harga_jual || $previous_data["harga_beli"] != $item->harga_beli) {
+                                $data[$product_code]["detail"][] = [
+                                    "tanggal"       => $item->trans_date,
+                                    "quantity"      => $item->quantity,
+                                    "harga_jual"    => $item->harga_jual,
+                                    "harga_beli"    => $item->harga_beli
+                                ];
+                            } else {
+                                $data[$product_code]["detail"][$index]["quantity"] += $item->quantity;
+                            }
+                        }
+                    }
+
+                    // if ($products->is_vat == 1) {
+                    //     $vat_percent    = config('app.vat_amount');
+                    //     $vat_amount     = ($products->price_store / 100) * $vat_percent;
+                    //     $products->price_store = $products->price_store + $vat_amount;
+                    // }
     
-                    if ($products->discount_store > 0) {
-                        $discount_price = $products->price_store * ($products->discount_store / 100);
-                        $final_price = $products->price_store - $discount_price;
-                        $products->price_store = $final_price;
-                    }
-                    $products->harga_beli = $products->harga_beli == 0 ? $products->price_store : $products->harga_beli;
-                    $selisih = $products->price_store - $products->harga_beli;
-                    $type = $selisih < 0 ? "-" : "+";
+                    // if ($products->discount_store > 0) {
+                    //     $discount_price = $products->price_store * ($products->discount_store / 100);
+                    //     $final_price = $products->price_store - $discount_price;
+                    //     $products->price_store = $final_price;
+                    // }
+                    // $products->harga_beli = $products->harga_beli == 0 ? $products->price_store : $products->harga_beli;
+                    // $selisih = $products->price_store - $products->harga_beli;
+                    // $type = $selisih < 0 ? "-" : "+";
                     
-                    $product = (array) $products;
-                    $product['selisih'] = $selisih;
-                    $product['type'] = $type;
-                    // dd($product);
-                    $data[] = $product;
+                    // $product = (array) $products;
+                    // $product['selisih'] = $selisih;
+                    // $product['type'] = $type;
+                    // // dd($product);
+                    // $data[] = $product;
                 }
             }
-            
-
             return $data;
         }
 
@@ -1433,7 +1465,7 @@ class ReportController extends Controller
             if (!empty($categories) && $categories != "ALL") {
                 $where .= " AND products.categories = '".$categories."'";
             }
-            $query = "
+            $old_query = "
                 SELECT 
                     products.code, products.name, products.categories, 
                     products.price_store, products.discount_store, products.is_vat,
@@ -1460,6 +1492,36 @@ class ReportController extends Controller
                 FROM products
                 WHERE products.is_active = 1 ".$where."
                 ORDER BY products.code ASC, products.name ASC
+            ";
+            $query = "
+                SELECT 
+                    products.code as product_code,
+                    CONCAT(products.code, ' | ', products.name) AS product_name,
+                    trans.trans_date,
+                    trans_detail.quantity,
+                    trans_detail.price AS harga_jual,
+                    (
+                        SELECT rcv_detail.unit_price
+                        FROM 
+                            tr_receive_detail rcv_detail,
+                            tr_receive rcv
+                        WHERE
+                            rcv.receive_code = rcv_detail.receive_code
+                            AND rcv_detail.product_code = trans_detail.product_code
+                            AND DATE(rcv.created_at) <= DATE(trans.created_at)
+                        ORDER BY rcv.id DESC
+                        LIMIT 1
+                    ) AS harga_beli
+                FROM 
+                    tr_transaction_detail trans_detail,
+                    tr_transaction trans,
+                    products
+                WHERE
+                    trans.invoice_no = trans_detail.invoice_no
+                    AND products.code = trans_detail.product_code
+                    ".$whereDate."
+                    ".$where."
+                ORDER BY products.name ASC, trans.trans_date ASC        
             ";
             // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));

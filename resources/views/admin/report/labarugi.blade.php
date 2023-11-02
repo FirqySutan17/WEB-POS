@@ -65,8 +65,9 @@ CMS | Best Seller
             <table class="table table-striped table-hover">
                 <thead>
                     <tr class="head-report">
-                        <th class="center-text">No <span class="dividerHr"></span></th>
-                        <th>Item <span class="dividerHr"></span></th>
+                        <th class="center-text">NO <span class="dividerHr"></span></th>
+                        <th class="center-text">ITEM <span class="dividerHr"></span></th>
+                        <th class="heightHr center-text">TANGGAL</th>
                         <th class="heightHr center-text">QTY</th>
                         <th class="heightHr center-text">HARGA BELI <span class="dividerHr"></span></th>
                         <th class="heightHr center-text">HARGA JUAL <span class="dividerHr"></span></th>
@@ -83,43 +84,43 @@ CMS | Best Seller
                     @if (!empty($data))
                     
                     @foreach ($data as $item)
-                    <?php 
-                        $harga_beli     = $item['harga_beli'] * $item['total_qty'];
-                        $harga_jual     = $item['price_store'] * $item['total_qty'];
-                        $item['selisih'] = $item['selisih'] * $item['total_qty'];
-                        $sum_beli       += $harga_beli;
-                        $sum_jual       += $harga_jual;
-                        $sum_selisih    += $item['selisih'];
-                        $sum_qty        += $item['total_qty'];
-                    ?>
-                    <tr>
-                        <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 35%; vertical-align: middle">
-                            {{ $item['code']." - ".$item['name'] }}
-                        </td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">{{
-                            number_format($item['total_qty']) }}</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            {{ number_format($harga_beli) }}
-                            ( {{ number_format($item['harga_beli']) }} )
-                        </td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            {{ number_format($harga_beli) }}
-                            ( {{ number_format($item['price_store']) }} )
-                        </td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
-                            @if ($item['type'] == "+")
-                            <span class="text-success">+ @currency($item['selisih'])</span>
-                            @else
-                            <span class="text-danger">- @currency($item['selisih'])</span>
+                        <?php 
+                            $detail     = $item['detail'];
+                            $total_detail    = count($detail);
+                        ?>
+                        <tr>
+                            <td rowspan="{{ $total_detail }}" style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
+                            <td rowspan="{{ $total_detail }}" style="width: 30%; vertical-align: middle">
+                                {{ $item['product_name'] }}
+                            </td>
+                            @if ($total_detail > 0)
+                            <td class="center-text" style="width: 10%; vertical-align: middle">{{ $detail[0]['tanggal'] }}</td>
+                            <td style="width: 10%; vertical-align: middle; text-align:right">{{ number_format($detail[0]['quantity']) }}</td>
+                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($detail[0]['harga_beli'])</td>
+                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($detail[0]['harga_jual'])</td>
+                            <td style="width: 15%; vertical-align: middle; text-align:right">
+                                selisih
+                            </td>
+                            <?php unset($detail[0]); ?>
                             @endif
-                        </td>
-                    </tr>
+                        </tr>
+                        @foreach ($detail as $dtl)
+                        <tr>
+                            <td class="center-text" style="width: 10%; vertical-align: middle">{{ $dtl['tanggal'] }}</td>
+                            <td style="width: 10%; vertical-align: middle; text-align:right">{{ number_format($dtl['quantity']) }}</td>
+                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($dtl['harga_beli'])</td>
+                            <td style="width: 15%; vertical-align: middle; text-align:right">@currency($dtl['harga_jual'])</td>
+                            <td style="width: 15%; vertical-align: middle; text-align:right">
+                                selisih
+                            </td>
+                        </tr>
+                        @endforeach
+                    
                     @endforeach
                     @endif
 
                 </tbody>
-                <tfoot>
+                {{-- <tfoot>
                     <tr>
                         <th style="text-align: center" colspan="2">GRAND TOTAL</th>
                         <th style="text-align: center">{{ number_format($sum_qty) }}</th>
@@ -128,7 +129,7 @@ CMS | Best Seller
                         <th style="text-align: center">@currency($sum_selisih)</th>
                     </tr>
 
-                </tfoot>
+                </tfoot> --}}
             </table>
         </div>
         <div class="card-footer">
