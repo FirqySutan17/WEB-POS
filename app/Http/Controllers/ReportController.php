@@ -26,14 +26,16 @@ class ReportController extends Controller
             $edate  = "";
             $search  = ""; 
             $order = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
                 $order = $request->order;
-                $data = $this->get_stock($sdate, $edate, $search, $order);
+                $data = $this->get_stock($sdate, $edate, $search, $order, $categories);
             }
-            return view('admin.report.stock', compact('data', 'sdate', 'edate', 'search', 'order'));
+            return view('admin.report.stock', compact('data', 'sdate', 'edate', 'search', 'order', 'categories'));
         }
 
         public function report_stock_excel(Request $request) {
@@ -42,12 +44,14 @@ class ReportController extends Controller
             $edate  = "";
             $search  = ""; 
             $order = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
                 $order = $request->order;
-                $data = $this->get_stock($sdate, $edate, $search, $order);
+                $data = $this->get_stock($sdate, $edate, $search, $order, $categories);
             }
             return Excel::download(new StockExport($data), 'stock.xlsx');
         }
@@ -58,21 +62,25 @@ class ReportController extends Controller
             $edate  = "";
             $search  = ""; 
             $order = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
                 $order = $request->order;
-                $data = $this->get_stock($sdate, $edate, $search, $order);
+                $data = $this->get_stock($sdate, $edate, $search, $order, $categories);
             }
             $pdf = PDF::loadview('exports/stock',['data'=>$data]);
             return $pdf->stream();
             // return $pdf->download('stock-opname-pdf');
         }
 
-        private function get_stock($sdate, $edate, $search, $order) {
+        private function get_stock($sdate, $edate, $search, $order, $categories) {
             $where = empty($search) ? "" : " AND (cd.code LIKE '%".$search."%' OR cd.name LIKE '%".$search."%')";
-
+            if (!empty($categories) && $categories != "ALL") {
+                $where .= " AND cd.categories = '".$categories."'";
+            }
             $query = "
                 SELECT product_code as code,
                 name,
