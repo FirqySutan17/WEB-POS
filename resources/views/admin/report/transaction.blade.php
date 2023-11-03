@@ -30,7 +30,7 @@ CMS | Report Transaction
         <a class="{{routeActive('report.transactioninvoice')}}" href="{{ route('report.transactioninvoice') }}">By
             Invoice</a>
         <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
-            Product</a>
+            Item</a>
         <a class="{{routeActive('report.transactioncashier')}}" href="{{ route('report.transactioncashier') }}">By
             Cashier</a>
     </div>

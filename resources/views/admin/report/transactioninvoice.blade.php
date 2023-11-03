@@ -39,7 +39,7 @@ CMS | Report Transaction
         <a class="{{routeActive('report.transactioninvoice')}}" href="{{ route('report.transactioninvoice') }}">By
             Invoice</a>
         <a class="{{routeActive('report.transactionproduct')}}" href="{{ route('report.transactionproduct') }}">By
-            Product</a>
+            Item</a>
         <a class="{{routeActive('report.transactioncashier')}}" href="{{ route('report.transactioncashier') }}">By
             Cashier</a>
     </div>
@@ -50,10 +50,17 @@ CMS | Report Transaction
                 {{-- filter:start --}}
                 <form action="{{ route('report.transactioninvoice') }}" class="row" method="POST">
                     @csrf
-                    <div class="col-5">
+                    <div class="col-3">
                         <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
                             class="form-control" placeholder="Search employee name or id"
                             style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
+                    </div>
+                    <div class="col-2">
+                        <select name="payment_method" class="form-control" style="height: 100%; font-size: 14px">
+                            <option {{ $payment_method=='ALL' ? "selected" : "" }} value="ALL">All Payment Method</option>
+                            <option {{ $payment_method=='Tunai' ? "selected" : "" }} value="Tunai">Tunai</option>
+                            <option {{ $payment_method=='Non-Tunai' ? "selected" : "" }} value="Non-Tunai">Non Tunai</option>
+                        </select>
                     </div>
                     <div class="col-2">
                         <input type="date" class="form-control" name="sdate"

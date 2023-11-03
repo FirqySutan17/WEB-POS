@@ -26,14 +26,16 @@ class ReportController extends Controller
             $edate  = "";
             $search  = ""; 
             $order = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
                 $order = $request->order;
-                $data = $this->get_stock($sdate, $edate, $search, $order);
+                $data = $this->get_stock($sdate, $edate, $search, $order, $categories);
             }
-            return view('admin.report.stock', compact('data', 'sdate', 'edate', 'search', 'order'));
+            return view('admin.report.stock', compact('data', 'sdate', 'edate', 'search', 'order', 'categories'));
         }
 
         public function report_stock_excel(Request $request) {
@@ -42,12 +44,14 @@ class ReportController extends Controller
             $edate  = "";
             $search  = ""; 
             $order = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
                 $order = $request->order;
-                $data = $this->get_stock($sdate, $edate, $search, $order);
+                $data = $this->get_stock($sdate, $edate, $search, $order, $categories);
             }
             return Excel::download(new StockExport($data), 'stock.xlsx');
         }
@@ -58,21 +62,25 @@ class ReportController extends Controller
             $edate  = "";
             $search  = ""; 
             $order = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
                 $order = $request->order;
-                $data = $this->get_stock($sdate, $edate, $search, $order);
+                $data = $this->get_stock($sdate, $edate, $search, $order, $categories);
             }
             $pdf = PDF::loadview('exports/stock',['data'=>$data]);
             return $pdf->stream();
             // return $pdf->download('stock-opname-pdf');
         }
 
-        private function get_stock($sdate, $edate, $search, $order) {
+        private function get_stock($sdate, $edate, $search, $order, $categories) {
             $where = empty($search) ? "" : " AND (cd.code LIKE '%".$search."%' OR cd.name LIKE '%".$search."%')";
-
+            if (!empty($categories) && $categories != "ALL") {
+                $where .= " AND cd.categories = '".$categories."'";
+            }
             $query = "
                 SELECT product_code as code,
                 name,
@@ -231,31 +239,35 @@ class ReportController extends Controller
             $sdate  = "";
             $edate  = "";
             $search = "";
+            $payment_method = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $payment_method = trim($request->payment_method);
                 $search = trim($request->search);
                 $order_by = "ORDER BY trans.created_at DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", "", $payment_method);
                 $data     = $this->convert_transaction_by_invoice($data_raw);
                 // dd($data_converted);
             }
 
 
-            return view('admin.report.transactioninvoice', compact('data', 'sdate', 'edate', 'search'));
+            return view('admin.report.transactioninvoice', compact('data', 'sdate', 'edate', 'search', 'payment_method'));
         }
 
         public function report_transaction_by_invoice_excel(Request $request) {
             $data   = [];
             $sdate  = "";
             $edate  = "";
-            $search  = ""; 
+            $search = "";
+            $payment_method = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $payment_method = trim($request->payment_method);
                 $search = trim($request->search);
                 $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", "", $payment_method);
                 $data     = $this->convert_transaction_by_invoice($data_raw);
             }
             return Excel::download(new ReportExport($data, 'transactioninvoice'), 'transactioninvoice.xlsx');
@@ -265,13 +277,15 @@ class ReportController extends Controller
             $data   = [];
             $sdate  = "";
             $edate  = "";
-            $search  = ""; 
+            $search = "";
+            $payment_method = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $payment_method = trim($request->payment_method);
                 $search = trim($request->search);
                 $order_by = "ORDER BY trans.trans_date DESC, trans.invoice_no ASC, trans_detail.product_code ASC";
-                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search);
+                $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", "", $payment_method);
                 $data     = $this->convert_transaction_by_invoice($data_raw);
             }
             $pdf = PDF::loadview('exports/transactioninvoice',['data'=>$data])->setPaper('a4', 'landscape');
@@ -291,7 +305,7 @@ class ReportController extends Controller
                 $edate = $request->edate;
                 $search = trim($request->search);
                 $categories = $request->categories;
-                $order_by = "ORDER BY trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
+                $order_by = "ORDER BY products.name ASC, trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
                 $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", $categories);
                 $data     = $this->convert_transaction_by_product($data_raw);
             }
@@ -365,7 +379,7 @@ class ReportController extends Controller
             return $db_query;
         }
 
-        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search, $by = "", $categories = "") {
+        private function get_transaction_by_invoice($sdate, $edate, $order_by, $search, $by = "", $categories = "", $payment_method = "ALL") {
             $where = "";
             if (!empty($search)) {
                 $where = " AND (users.name LIKE '%".$search."%' OR users.employee_id LIKE '%".$search."%' OR products.name LIKE '%".$search."%' OR products.code LIKE '%".$search."%')";
@@ -375,6 +389,10 @@ class ReportController extends Controller
             }
             if (!empty($categories) && $categories != "ALL") {
                 $where = " AND products.categories = '".$categories."'";
+            }
+
+            if ($payment_method != "ALL") {
+                $where = $payment_method == 'Tunai' ? " AND trans.payment_method = 'Tunai'" : " AND trans.payment_method <> 'Tunai'";
             }
             $query = "
                 SELECT 
@@ -444,9 +462,12 @@ class ReportController extends Controller
                             "price"         => $item->price,
                             "quantity"      => 0,
                             "trans_date"    => $trans_date,
+                            "total"         => 0,
                         ];
                     }
+                    $total = $item->price * $item->quantity;
                     $data_product[$product_code]["details"][$transdate]["quantity"] += $item->quantity;
+                    $data_product[$product_code]["details"][$transdate]["total"] += $total;
                     // dd($data_product);
                     // $data_product[$product_code]["details"][] = [
                     //     "invoice_no"    => $item->invoice_no,
@@ -1362,49 +1383,68 @@ class ReportController extends Controller
         public function report_laba_rugi(Request $request) {
             $data   = [];
             $sdate  = "";
-            $search  = ""; 
+            $edate  = "";
+            $search  = "";
+            $categories = "";
             if ($request->_token) {
                 $sdate = $request->sdate;
+                $edate = $request->edate;
                 $search = trim($request->search);
+                $categories = $request->categories;
             }
 
-            $data_raw = $this->get_labarugi($sdate, $search);
+            $data_raw = $this->get_labarugi($sdate, $edate, $search, $categories);
             $data = $this->convert_labarugi($data_raw);
-            return view('admin.report.labarugi', compact('data', 'sdate', 'search'));
+            return view('admin.report.labarugi', compact('data', 'sdate', 'edate', 'search', 'categories'));
         }
 
         private function convert_labarugi($data_raw) {
             $data = [];
             if (!empty($data_raw)) {
-                foreach ($data_raw as $products) {
-                    if ($products->is_vat == 1) {
-                        $vat_percent    = config('app.vat_amount');
-                        $vat_amount     = ($products->price_store / 100) * $vat_percent;
-                        $products->price_store = $products->price_store + $vat_amount;
+                foreach ($data_raw as $item) {
+                    // dd($item);
+                    $product_code = $item->product_code;
+                    if (!array_key_exists($product_code, $data)) {
+                        $data[$product_code] = [
+                            "product_name"  => $item->product_name,
+                            "detail"        => []
+                        ];
                     }
-    
-                    if ($products->discount_store > 0) {
-                        $discount_price = $products->price_store * ($products->discount_store / 100);
-                        $final_price = $products->price_store - $discount_price;
-                        $products->price_store = $final_price;
-                    }
-                    $products->harga_beli = $products->harga_beli == 0 ? $products->price_store : $products->harga_beli;
-                    $selisih = $products->price_store - $products->harga_beli;
-                    $type = $selisih < 0 ? "-" : "+";
-                    
-                    $product = (array) $products;
-                    $product['selisih'] = $selisih;
-                    $product['type'] = $type;
-                    // dd($product);
-                    $data[] = $product;
-                }
-            }
-            
+                    $item->trans_date = date('Y-m-d', strtotime($item->trans_date));
+                    $tanggal = strtotime($item->trans_date);
 
+                    $item->receive_date = date('Y-m-d', strtotime($item->receive_date));
+                    $tanggal_rcv = strtotime($item->receive_date);
+                    if ($tanggal_rcv < $tanggal) {
+                        if (!array_key_exists($tanggal_rcv, $data[$product_code]["detail"])) {
+                            $data[$product_code]["detail"][$tanggal_rcv] = [
+                                "tanggal"       => $item->receive_date,
+                                "quantity"      => 0,
+                                "harga_jual"    => 0,
+                                "harga_beli"    => $item->harga_beli,
+                                "is_receive"    => 1
+                            ];
+                            
+                        }
+                    }
+                    if (!array_key_exists($tanggal, $data[$product_code]["detail"])) {
+                        $data[$product_code]["detail"][$tanggal] = [
+                            "tanggal"       => $item->trans_date,
+                            "quantity"      => $item->quantity,
+                            "harga_jual"    => $item->harga_jual,
+                            "harga_beli"    => $item->harga_beli,
+                            "is_receive"    => ($tanggal_rcv == $tanggal) ? 2 : 0
+                        ];
+                    } else {
+                        $data[$product_code]["detail"][$tanggal]["quantity"] += $item->quantity;
+                    }
+                }
+                // dd($data);
+            }
             return $data;
         }
 
-        private function get_labarugi($sdate, $search) {
+        private function get_labarugi($sdate, $edate, $search, $categories) {
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
             $whereDate = "";
             if (!empty($sdate)) {
@@ -1414,8 +1454,12 @@ class ReportController extends Controller
             }
             $year   = $sdate_exp[0];
             $month  = $sdate_exp[1];
-            $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
-            $query = "
+            // $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
+            $whereDate = " AND (trans.trans_date BETWEEN '".$sdate."' AND '".$edate."')";
+            if (!empty($categories) && $categories != "ALL") {
+                $where .= " AND products.categories = '".$categories."'";
+            }
+            $old_query = "
                 SELECT 
                     products.code, products.name, products.categories, 
                     products.price_store, products.discount_store, products.is_vat,
@@ -1442,6 +1486,76 @@ class ReportController extends Controller
                 FROM products
                 WHERE products.is_active = 1 ".$where."
                 ORDER BY products.code ASC, products.name ASC
+            ";
+            $query = "
+                SELECT 
+                    products.code as product_code,
+                    CONCAT(products.code, ' | ', products.name) AS product_name,
+                    trans.created_at as trans_date,
+                    trans_detail.quantity,
+                    trans_detail.price AS harga_jual,
+                    COALESCE (
+                        (
+                           SELECT rcv.created_at
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND rcv.created_at <= trans.created_at
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        ),
+                        (
+                           SELECT rcv.created_at
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        )
+                    ) AS receive_date,
+                    COALESCE (
+                        (
+                           SELECT rcv_detail.unit_price
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND rcv.created_at <= trans.created_at
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        ),
+                        (
+                           SELECT rcv_detail.unit_price
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        )
+                    ) AS harga_beli
+                FROM 
+                    tr_transaction_detail trans_detail,
+                    tr_transaction trans,
+                    products
+                WHERE
+                    trans.invoice_no = trans_detail.invoice_no
+                    AND products.code = trans_detail.product_code
+                    ".$whereDate."
+                    ".$where."
+                ORDER BY products.name ASC, trans.trans_date ASC        
             ";
             // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));

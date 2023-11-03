@@ -137,12 +137,12 @@
             <tbody>
                 <tr>
                     <td class="barcode-line">
-                        !8991860101006!
+                        !{{ $product->code }}!
                     </td>
                 </tr>
                 <tr>
                     <td class="item-name">
-                        KARKAS BROILER 1100 - 1199 (FR)
+                        {{ $product->name }}
                     </td>
                 </tr>
             </tbody>

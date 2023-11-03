@@ -31,9 +31,9 @@ CMS | Report Stock
                 {{-- filter:start --}}
                 <form action="{{ route('report.stock') }}" class="row" method="POST">
                     @csrf
-                    <div class="col-3">
+                    <div class="col-2">
                         <input name="search" value="{{ empty($search) ? "" : $search }}" type="text"
-                            class="form-control" placeholder="Search item by name or code"
+                            class="form-control" placeholder="Search item"
                             style="border-top-left-radius: 5px; border-bottom-left-radius: 5px; height: 100%">
                     </div>
                     <div class="col-2">
@@ -47,9 +47,16 @@ CMS | Report Stock
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
                     <div class="col-2">
-                        <select name="order" class="form-control">
+                        <select name="categories" class="form-control" style="height: 100%; font-size: 14px">
+                            <option {{ $categories=='ALL' ? "selected" : "" }} value="ALL">All Categories</option>
+                            <option {{ $categories=='Internal' ? "selected" : "" }} value="Internal">Internal</option>
+                            <option {{ $categories=='External' ? "selected" : "" }} value="External">External</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <select name="order" class="form-control" style="height: 100%; font-size: 14px">
                             <option {{ $order == "DESC" ? "selected" : "" }} value="DESC">Terbesar ke Terkecil</option>
-                            <option {{ $order == "DESC" ? "selected" : "" }} value="ASC">Terkecil ke Terbesar</option>
+                            <option {{ $order == "ASC" ? "selected" : "" }} value="ASC">Terkecil ke Terbesar</option>
                         </select>
                     </div>
                     <div class="col-1">

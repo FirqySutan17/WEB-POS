@@ -183,8 +183,8 @@ class ProductController extends Controller
         return response()->json($data);
     }
 
-    public function print() {
-        return view('admin.product.print');
+    public function print(Product $product) {
+        return view('admin.product.print', compact('product'));
     }
     /**
      * Show the form for editing the specified resource.
