@@ -297,7 +297,7 @@ class ReportController extends Controller
                 $edate = $request->edate;
                 $search = trim($request->search);
                 $categories = $request->categories;
-                $order_by = "ORDER BY trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
+                $order_by = "ORDER BY products.name ASC, trans.trans_date DESC, trans_detail.product_code ASC, trans.invoice_no ASC";
                 $data_raw = $this->get_transaction_by_invoice($sdate, $edate, $order_by, $search, "", $categories);
                 $data     = $this->convert_transaction_by_product($data_raw);
             }
