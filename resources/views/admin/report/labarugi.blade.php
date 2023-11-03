@@ -115,14 +115,14 @@ CMS | Best Seller
                             ?>
                         <td class="center-text" style="width: 10%; vertical-align: middle">{{ $detail[0]['tanggal'] }}
                         </td>
-                        <td style="width: 5%; vertical-align: middle; text-align:right">{{
+                        <td style="width: 5%; vertical-align: middle; text-align:center">{{
                             number_format($detail[0]['quantity']) }}</td>
-                        <td style="width: 20%; vertical-align: middle; text-align:right">
+                        <td style="width: 20%; vertical-align: middle; text-align:center">
                             @if (in_array($detail[0]['is_receive'], [1, 2]))
                             @currency($sub_total_harga_beli) (@currency($detail[0]['harga_beli']))
                             @endif
                         </td>
-                        <td style="width: 20%; vertical-align: middle; text-align:right">
+                        <td style="width: 20%; vertical-align: middle; text-align:center">
                             @if (in_array($detail[0]['is_receive'], [0, 2]))
                             @currency($sub_total_harga_jual) (@currency($detail[0]['harga_jual']))
                             @endif
@@ -144,14 +144,14 @@ CMS | Best Seller
                         ?>
                     <tr>
                         <td class="center-text" style="width: 10%; vertical-align: middle">{{ $dtl['tanggal'] }}</td>
-                        <td style="width: 5%; vertical-align: middle; text-align:right">{{
+                        <td style="width: 5%; vertical-align: middle; text-align:center">{{
                             number_format($dtl['quantity']) }}</td>
-                        <td style="width: 20%; vertical-align: middle; text-align:right">
+                        <td style="width: 20%; vertical-align: middle; text-align:center">
                             @if (in_array($dtl['is_receive'], [1, 2]))
                             @currency($sub_total_harga_beli) (@currency($dtl['harga_beli']))
                             @endif
                         </td>
-                        <td style="width: 20%; vertical-align: middle; text-align:right">
+                        <td style="width: 20%; vertical-align: middle; text-align:center">
                             @if (in_array($dtl['is_receive'], [0, 2]))
                             @currency($sub_total_harga_jual) (@currency($dtl['harga_jual']))
                             @endif
@@ -163,9 +163,9 @@ CMS | Best Seller
                     </tr>
                     @endforeach
                     <tr>
-                        <td colspan="3" style="text-align: right"><strong>Sub Total</strong></td>
-                        <td style="text-align: right"><strong>{{ number_format($sum_qty) }}</strong></td>
-                        <td colspan="2" style="text-align: right"></td>
+                        <td colspan="3" style="text-align: center   "><strong>Sub Total</strong></td>
+                        <td style="text-align: center   "><strong>{{ number_format($sum_qty) }}</strong></td>
+                        <td colspan="2" style="text-align: center   "></td>
                         <td style="text-align: right"><strong>@currency($sum_selisih)</strong></td>
                     </tr>
                     <?php $grand_total_qty += $sum_qty; $grand_total_selisih += $sum_selisih; ?>
