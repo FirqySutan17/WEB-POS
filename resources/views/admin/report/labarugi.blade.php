@@ -74,7 +74,7 @@ CMS | Best Seller
                     $sum_qty = 0;
                     ?>
                     @if (!empty($data))
-                    
+
                     @foreach ($data as $item)
                     <?php 
                         $harga_beli     = $item['harga_beli'] * $item['total_qty'];
@@ -90,13 +90,13 @@ CMS | Best Seller
                         <td style="width: 35%; vertical-align: middle">
                             {{ $item['code']." - ".$item['name'] }}
                         </td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">{{
+                        <td class="center-text" style="width: 15%; vertical-align: middle; text-align: middle">{{
                             number_format($item['total_qty']) }}</td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
+                        <td class="center-text" style="width: 15%; vertical-align: middle; text-align: middle">
                             {{ number_format($harga_beli) }}
                             ( {{ number_format($item['harga_beli']) }} )
                         </td>
-                        <td class="center-text" style="width: 15%; vertical-align: middle">
+                        <td class="center-text" style="width: 15%; vertical-align: middle; text-align: middle">
                             {{ number_format($harga_beli) }}
                             ( {{ number_format($item['price_store']) }} )
                         </td>

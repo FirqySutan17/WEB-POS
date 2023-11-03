@@ -303,8 +303,10 @@ CMS | Transaction
                                                     tabindex="2">
                                                     <option value="Tunai" {{ $transaction->payment_method == 'Tunai' ?
                                                         'selected' : '' }}>Tunai</option>
-                                                    <option value="EDC - BCA" {{ $transaction->payment_method == 'EDC - BCA' ? 'selected' : '' }}>EDC - BCA</option>
-                                                    <option value="EDC - QRIS" {{ $transaction->payment_method == 'EDC - QRIS' ? 'selected' : '' }}>EDC - QRIS</option>
+                                                    <option value="EDC - BCA" {{ $transaction->payment_method == 'EDC -
+                                                        BCA' ? 'selected' : '' }}>EDC - BCA</option>
+                                                    <option value="EDC - QRIS" {{ $transaction->payment_method == 'EDC -
+                                                        QRIS' ? 'selected' : '' }}>EDC - QRIS</option>
                                                 </select>
                                             </div>
                                             <div id="elm_receipt" class="form-group _form-group"
