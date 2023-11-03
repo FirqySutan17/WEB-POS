@@ -19,9 +19,9 @@ CMS | Best Seller
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Report Laba Rugi</h3>
+<h3>Report Margin Item</h3>
 @endslot
-{{ Breadcrumbs::render('report_stock') }}
+{{-- {{ Breadcrumbs::render('margin_item') }} --}}
 @endcomponent
 
 <div class="container-fluid">

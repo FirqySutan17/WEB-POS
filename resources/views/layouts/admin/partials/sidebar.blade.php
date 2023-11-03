@@ -138,7 +138,7 @@
 
                             <li>
                                 <a href="{{ route('report.labarugi') }}" class="{{routeActive(['report.labarugi'])}}">
-                                    Laba Rugi
+                                    Margin Item
                                 </a>
                             </li>
                         </ul>
