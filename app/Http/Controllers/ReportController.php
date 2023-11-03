@@ -1412,68 +1412,34 @@ class ReportController extends Controller
                     }
                     $item->trans_date = date('Y-m-d', strtotime($item->trans_date));
                     $tanggal = strtotime($item->trans_date);
+
+                    $item->receive_date = date('Y-m-d', strtotime($item->receive_date));
+                    $tanggal_rcv = strtotime($item->receive_date);
+                    if ($tanggal_rcv < $tanggal) {
+                        if (!array_key_exists($tanggal_rcv, $data[$product_code]["detail"])) {
+                            $data[$product_code]["detail"][$tanggal_rcv] = [
+                                "tanggal"       => $item->receive_date,
+                                "quantity"      => 0,
+                                "harga_jual"    => 0,
+                                "harga_beli"    => $item->harga_beli,
+                                "is_receive"    => 1
+                            ];
+                            
+                        }
+                    }
                     if (!array_key_exists($tanggal, $data[$product_code]["detail"])) {
                         $data[$product_code]["detail"][$tanggal] = [
                             "tanggal"       => $item->trans_date,
                             "quantity"      => $item->quantity,
                             "harga_jual"    => $item->harga_jual,
-                            "harga_beli"    => $item->harga_beli
+                            "harga_beli"    => $item->harga_beli,
+                            "is_receive"    => ($tanggal_rcv == $tanggal) ? 2 : 0
                         ];
                     } else {
                         $data[$product_code]["detail"][$tanggal]["quantity"] += $item->quantity;
                     }
-                    
-                    // if (count($data[$product_code]["detail"]) < 1) {
-                    //     $data[$product_code]["detail"][] = [
-                    //         "tanggal"       => $item->trans_date,
-                    //         "quantity"      => $item->quantity,
-                    //         "harga_jual"    => $item->harga_jual,
-                    //         "harga_beli"    => $item->harga_beli
-                    //     ];
-                    // } else {
-                    //     $total_data = count($data[$product_code]["detail"]);
-                    //     for ($i=0; $i < $total_data; $i++) {
-                    //         $index = $total_data - 1;
-                            
-                    //         $previous_data = $data[$product_code]["detail"][$index];
-                            
-                    //         if ($previous_data["harga_jual"] != $item->harga_jual || $previous_data["harga_beli"] != $item->harga_beli) {
-                                
-                    //             $data[$product_code]["detail"][] = [
-                    //                 "tanggal"       => $item->trans_date,
-                    //                 "quantity"      => $item->quantity,
-                    //                 "harga_jual"    => $item->harga_jual,
-                    //                 "harga_beli"    => $item->harga_beli
-                    //             ];
-                    //         } else {
-                                
-                    //             $data[$product_code]["detail"][$index]["quantity"] += $item->quantity;
-                    //         }
-                            
-                    //     }
-                    // }
-
-                    // if ($products->is_vat == 1) {
-                    //     $vat_percent    = config('app.vat_amount');
-                    //     $vat_amount     = ($products->price_store / 100) * $vat_percent;
-                    //     $products->price_store = $products->price_store + $vat_amount;
-                    // }
-    
-                    // if ($products->discount_store > 0) {
-                    //     $discount_price = $products->price_store * ($products->discount_store / 100);
-                    //     $final_price = $products->price_store - $discount_price;
-                    //     $products->price_store = $final_price;
-                    // }
-                    // $products->harga_beli = $products->harga_beli == 0 ? $products->price_store : $products->harga_beli;
-                    // $selisih = $products->price_store - $products->harga_beli;
-                    // $type = $selisih < 0 ? "-" : "+";
-                    
-                    // $product = (array) $products;
-                    // $product['selisih'] = $selisih;
-                    // $product['type'] = $type;
-                    // // dd($product);
-                    // $data[] = $product;
                 }
+                // dd($data);
             }
             return $data;
         }
@@ -1528,17 +1494,57 @@ class ReportController extends Controller
                     trans.created_at as trans_date,
                     trans_detail.quantity,
                     trans_detail.price AS harga_jual,
-                    (
-                        SELECT rcv_detail.unit_price
-                        FROM 
-                            tr_receive_detail rcv_detail,
-                            tr_receive rcv
-                        WHERE
-                            rcv.receive_code = rcv_detail.receive_code
-                            AND rcv_detail.product_code = trans_detail.product_code
-                            AND DATE(rcv.created_at) <= DATE(trans.created_at)
-                        ORDER BY rcv.id DESC
-                        LIMIT 1
+                    COALESCE (
+                        (
+                           SELECT rcv.created_at
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND rcv.created_at <= trans.created_at
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        ),
+                        (
+                           SELECT rcv.created_at
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        )
+                    ) AS receive_date,
+                    COALESCE (
+                        (
+                           SELECT rcv_detail.unit_price
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND rcv.created_at <= trans.created_at
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        ),
+                        (
+                           SELECT rcv_detail.unit_price
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        )
                     ) AS harga_beli
                 FROM 
                     tr_transaction_detail trans_detail,

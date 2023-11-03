@@ -114,8 +114,16 @@ CMS | Best Seller
                             ?>
                             <td class="center-text" style="width: 10%; vertical-align: middle">{{ $detail[0]['tanggal'] }}</td>
                             <td style="width: 5%; vertical-align: middle; text-align:right">{{ number_format($detail[0]['quantity']) }}</td>
-                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_beli) (@currency($detail[0]['harga_beli']))</td>
-                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_jual) (@currency($detail[0]['harga_jual']))</td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right">
+                                @if (in_array($detail[0]['is_receive'], [1, 2])) 
+                                    @currency($sub_total_harga_beli) (@currency($detail[0]['harga_beli']))
+                                @endif
+                            </td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right"> 
+                                @if (in_array($detail[0]['is_receive'], [0, 2])) 
+                                    @currency($sub_total_harga_jual) (@currency($detail[0]['harga_jual']))
+                                @endif
+                            </td>
                             <td style="width: 10%; vertical-align: middle; text-align:right">
                                 <span class="{{ $sub_selisih >= 0 ? "text-success" : "text-danger" }}">@currency($sub_selisih)</span>
                             </td>
@@ -133,8 +141,16 @@ CMS | Best Seller
                         <tr>
                             <td class="center-text" style="width: 10%; vertical-align: middle">{{ $dtl['tanggal'] }}</td>
                             <td style="width: 5%; vertical-align: middle; text-align:right">{{ number_format($dtl['quantity']) }}</td>
-                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_beli) (@currency($dtl['harga_beli']))</td>
-                            <td style="width: 20%; vertical-align: middle; text-align:right"> @currency($sub_total_harga_jual) (@currency($dtl['harga_jual']))</td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right">
+                                @if (in_array($dtl['is_receive'], [1, 2]))
+                                    @currency($sub_total_harga_beli) (@currency($dtl['harga_beli']))
+                                @endif
+                            </td>
+                            <td style="width: 20%; vertical-align: middle; text-align:right"> 
+                                @if (in_array($dtl['is_receive'], [0, 2]))
+                                    @currency($sub_total_harga_jual) (@currency($dtl['harga_jual']))
+                                @endif
+                            </td>
                             <td style="width: 10%; vertical-align: middle; text-align:right">
                                 <span class="{{ $sub_selisih >= 0 ? "text-success" : "text-danger" }}">@currency($sub_selisih)</span>
                             </td>
