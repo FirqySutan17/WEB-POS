@@ -157,7 +157,7 @@ CMS | Report Transaction
                     <tr>
                         <th colspan="2" style="text-align: right">Total</th>
                         <td></td>
-                        <td style="text-align: right"><strong>{{ number_format($total_qty) }}</strong></td>
+                        <td style="text-align: center"><strong>{{ number_format($total_qty) }}</strong></td>
                         <td></td>
                         <td style="text-align: right"><strong>@currency($total)</strong></td>
                     </tr>
