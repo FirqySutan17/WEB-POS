@@ -98,9 +98,9 @@ CMS | Report Transaction
                     </tr>
                     <tr class="head-report">
                         {{-- <th class="heightHr center-text">Harga</th> --}}
+                        <th class="heightHr center-text">Tanggal</th>
                         <th class="heightHr center-text">Qty</th>
                         <th class="heightHr center-text">Unit Price</th>
-                        <th class="heightHr center-text">Tanggal</th>
                         {{-- <th class="heightHr center-text">No Invoice</th> --}}
                         <th class="heightHr center-text">Total Amount</th>
                     </tr>
@@ -130,7 +130,7 @@ CMS | Report Transaction
                                 @currency($inv['price'])
                             </td> --}}
                             <td class="center-text">{{ $inv['trans_date'] }}</td>
-                            <td style="vertical-align: middle; text-align: right">{{ $inv['quantity'] }}</td>
+                            <td style="vertical-align: middle; text-align: center">{{ $inv['quantity'] }}</td>
                             <td style="vertical-align: middle; text-align: right">
                                 @currency($inv['total']/$inv['quantity'])</td>
 
