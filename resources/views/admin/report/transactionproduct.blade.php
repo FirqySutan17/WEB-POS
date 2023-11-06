@@ -143,7 +143,7 @@ CMS | Report Transaction
                             <td colspan="2" style="vertical-align: middle; text-align: right"><strong>Sub Total</strong>
                             </td>
                             <td></td>
-                            <td style="text-align: right"><strong>{{ number_format($sub_qty) }}</strong></td>
+                            <td style="text-align: center"><strong>{{ number_format($sub_qty) }}</strong></td>
                             <td style="text-align: right"><strong>@currency($sub_total/$sub_qty)</strong></td>
 
                             <td style="text-align: right"><strong>@currency($sub_total)</strong></td>
