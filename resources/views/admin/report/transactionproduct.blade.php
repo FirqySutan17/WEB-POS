@@ -113,7 +113,8 @@ CMS | Report Transaction
                     <div class="rt-invoice">
                         <tr>
                             <td rowspan="{{ $rowspan }}" class="center-text">{{ $loop->iteration }}</td>
-                            <td rowspan="{{ $rowspan }}" style=" vertical-align: middle; text-align: left; width: 50%">{{
+                            <td rowspan="{{ $rowspan }}" style=" vertical-align: middle; text-align: left; width: 50%">
+                                {{
                                 $item['code']." | ".$item['name'] }}</td>
                             <td colspan="4" style="vertical-align: middle; padding: 0px">
 
@@ -128,16 +129,19 @@ CMS | Report Transaction
                                 @endif
                                 @currency($inv['price'])
                             </td> --}}
-                            <td style="vertical-align: middle; text-align: right">{{ $inv['quantity'] }}</td>
-                            <td style="vertical-align: middle; text-align: right">@currency($inv['total']/$inv['quantity'])</td>
                             <td class="center-text">{{ $inv['trans_date'] }}</td>
+                            <td style="vertical-align: middle; text-align: right">{{ $inv['quantity'] }}</td>
+                            <td style="vertical-align: middle; text-align: right">
+                                @currency($inv['total']/$inv['quantity'])</td>
+
                             {{-- <td class="center-text">{{ $inv['invoice_no'] }}</td> --}}
                             <td style="vertical-align: middle; text-align: right">@currency($inv['total'])</td>
                         </tr>
                         <?php $sub_total += $inv['total']; $sub_qty += $inv['quantity'] ?>
                         @endforeach
                         <tr>
-                            <td colspan="2" style="vertical-align: middle; text-align: right"><strong>Sub Total</strong></td>
+                            <td colspan="2" style="vertical-align: middle; text-align: right"><strong>Sub Total</strong>
+                            </td>
                             <td style="text-align: right"><strong>{{ number_format($sub_qty) }}</strong></td>
                             <td style="text-align: right"><strong>@currency($sub_total/$sub_qty)</strong></td>
                             <td></td>
