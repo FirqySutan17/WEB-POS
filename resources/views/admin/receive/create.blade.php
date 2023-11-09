@@ -360,7 +360,7 @@ CMS | Add Receive
                                     <label for="input_post_description" class="font-weight-bold">
                                         Unit Price 
                                     </label>
-                                    <input data-itemid="${item_id}" id="unit_price_${item_id}" name="unit_price[]" type="text" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_qty('${item_id}')" />
+                                    <input data-itemid="${item_id}" id="unit_price_${item_id}" name="unit_price[]" type="text" class="form-control" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_qty('${item_id}')" />
                                 </div>
                             </div>
                             <div class="col-3">
@@ -368,7 +368,7 @@ CMS | Add Receive
                                     <label for="input_post_description" class="font-weight-bold">
                                         Amount 
                                     </label>
-                                    <input data-itemid="${item_id}" id="amount_${item_id}" name="amount[]" type="text" class="form-control" value="" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_amount('${item_id}')" />
+                                    <input data-itemid="${item_id}" id="amount_${item_id}" name="amount[]" type="text" class="form-control" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_amount('${item_id}')" />
                                 </div>
                             </div>
                         </div>
