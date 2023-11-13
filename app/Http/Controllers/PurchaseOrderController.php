@@ -71,7 +71,7 @@ class PurchaseOrderController extends Controller
      */
     public function edit(PurchaseOrder $purchaseOrder)
     {
-        //
+        return view('admin.purchase-order.edit');
     }
 
     /**
