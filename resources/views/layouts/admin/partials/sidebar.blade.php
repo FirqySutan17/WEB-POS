@@ -121,8 +121,6 @@
                             </li>
                             @endcan
 
-                            
-
                             <li>
                                 <a href="{{ route('report.cashflow') }}" class="{{routeActive(['report.cashflow'])}}">
                                     Cash flow
@@ -145,10 +143,55 @@
                     </li>
                     @endcanany
 
+                    <li class="sidebar-main-title">
+                        <div>
+                            <h6>Accounting</h6>
+                        </div>
+                    </li>
+
+                    <li class="dropdown">
+                        <a class="nav-link navSubMenu menu-title" href="javascript:void(0)"><i
+                                data-feather="codepen"></i><span>Code</span></a>
+                        <ul class="nav-submenu menu-content">
+
+                            <li>
+                                <a href="{{ route('common-code.index') }}" class="{{routeActive('common-code.index')}}">
+                                    Common
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="">
+                                    Account
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a class="nav-link navSubMenu menu-title" href="javascript:void(0)"><i
+                                data-feather="aperture"></i><span>Material</span></a>
+                        <ul class="nav-submenu menu-content">
+
+                            <li>
+                                <a href="{{ route('purchase-order.index') }}"
+                                    class="{{routeActive('purchase-order.index')}}">
+                                    Purchase Order
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="">
+                                    Receive
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
                     @canany(['Transaction', 'Receive'])
                     <li class="sidebar-main-title">
                         <div>
-                            <h6>Transaksi</h6>
+                            <h6>Transaction</h6>
                         </div>
                     </li>
                     @endcanany
@@ -182,8 +225,6 @@
                             <span>Transaction</span>
                         </a>
                     </li>
-
-
                     @endcan
 
 
@@ -195,11 +236,17 @@
                             <h6>Settings</h6>
                         </div>
                     </li>
+
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title{{routeActive(['closing-date.edit','product-category.edit', 'product-category.index', 'product-category.create'])}}"
                             href="javascript:void(0)"><i data-feather="settings"></i><span>System</span></a>
                         <ul class="nav-submenu menu-content">
 
+                            <li>
+                                <a href="{{ route('code.index') }}" class="{{routeActive('code.index')}}">
+                                    Code
+                                </a>
+                            </li>
                             <li>
                                 <a href="{{ route('closing-date.edit', 1) }}"
                                     class="{{routeActive('closing-date.edit')}}">Closing
