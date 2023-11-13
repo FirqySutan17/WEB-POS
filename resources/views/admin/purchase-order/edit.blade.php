@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Purchase Order
+CMS | Edit - Purchase Order
 @endsection
 
 @push('css')
@@ -37,7 +37,7 @@ CMS | Edit Purchase Order
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Add Purchase Order</h3>
+<h3>Edit - Purchase Order</h3>
 @endslot
 {{-- {{ Breadcrumbs::render('add_code') }} --}}
 @endcomponent
