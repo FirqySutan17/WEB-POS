@@ -45,7 +45,9 @@ CMS | Edit Purchase Order
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <form action="{{ route('purchase-order.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('purchase-order.update', ['purchase_order' => $purchaseOrder]) }}" method="POST"
+                enctype="multipart/form-data">
+                @method('PUT')
                 @csrf
                 <div class="card _card">
                     <div class="card-body _card-body">
@@ -435,7 +437,7 @@ CMS | Edit Purchase Order
                                         href="{{ route('code.index') }}">Back</a>
                                     <button style="width: 50%; margin-left: 5px; padding: 10px 0px" type="submit"
                                         class="btn btn-primary _btn-primary px-4">
-                                        Save
+                                        Update
                                     </button>
                                 </div>
                             </div>
