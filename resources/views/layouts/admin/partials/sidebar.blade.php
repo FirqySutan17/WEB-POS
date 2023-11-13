@@ -169,18 +169,19 @@
                     </li>
 
                     <li class="dropdown">
-                        <a class="nav-link navSubMenu menu-title" href="javascript:void(0)"><i
-                                data-feather="aperture"></i><span>Material</span></a>
+                        <a class="nav-link navSubMenu menu-title {{routeActive(['purchase-order.index', 'purchase-order.create', 'purchase-order.edit', 'receive-material.index', 'receive-material.create', 'receive-material.edit'])}}"
+                            href="javascript:void(0)"><i data-feather="aperture"></i><span>Material</span></a>
                         <ul class="nav-submenu menu-content">
 
                             <li>
                                 <a href="{{ route('purchase-order.index') }}"
-                                    class="{{routeActive('purchase-order.index')}}">
-                                    Purchase Order
+                                    class="{{routeActive(['purchase-order.index', 'purchase-order.create', 'purchase-order.edit'])}}">
+                                    P/O
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="">
+                                <a href="{{ route('receive-material.index') }}"
+                                    class="{{routeActive(['receive-material.index', 'receive-material.create', 'receive-material.edit'])}}">
                                     Receive
                                 </a>
                             </li>
@@ -238,13 +239,20 @@
                     </li>
 
                     <li class="dropdown">
-                        <a class="nav-link navSubMenu menu-title{{routeActive(['closing-date.edit','product-category.edit', 'product-category.index', 'product-category.create'])}}"
+                        <a class="nav-link navSubMenu menu-title {{routeActive(['closing-date.edit','product-category.edit', 'product-category.index', 'product-category.create', 'code.edit', 'code.index', 'code.create', 'supplier.edit', 'supplier.index', 'supplier.create'])}}"
                             href="javascript:void(0)"><i data-feather="settings"></i><span>System</span></a>
                         <ul class="nav-submenu menu-content">
 
                             <li>
-                                <a href="{{ route('code.index') }}" class="{{routeActive('code.index')}}">
+                                <a href="{{ route('code.index') }}"
+                                    class="{{routeActive(['code.index', 'code.create', 'code.edit'])}}">
                                     Code
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('supplier.index') }}"
+                                    class="{{routeActive(['supplier.index', 'supplier.create', 'supplier.edit'])}}">
+                                    Supplier
                                 </a>
                             </li>
                             <li>

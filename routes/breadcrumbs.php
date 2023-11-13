@@ -280,3 +280,33 @@ Breadcrumbs::for('edit_purchase_order', function ($trail, $purchaseOrder) {
     $trail->push($purchaseOrder->name, route('purchase-order.edit', ['purchase_order' => $purchaseOrder]));
 });
 
+// Receive Material
+Breadcrumbs::for('receive_material', function ($trail) {
+    $trail->push("Receive Material", route('receive-material.index'));
+});
+
+Breadcrumbs::for('add_receive_material', function ($trail) {
+    $trail->parent('receive_material');
+    $trail->push('Add Receive Material', route('receive-material.create'));
+});
+
+Breadcrumbs::for('edit_receive_material', function ($trail, $receiveMaterial) {
+    $trail->parent('receive_material');
+    $trail->push($receiveMaterial->name, route('receive-material.edit', ['receive_material' => $receiveMaterial]));
+});
+
+// Supplier
+Breadcrumbs::for('supplier', function ($trail) {
+    $trail->push("Supplier", route('supplier.index'));
+});
+
+Breadcrumbs::for('add_supplier', function ($trail) {
+    $trail->parent('supplier');
+    $trail->push('Add Supplier', route('supplier.create'));
+});
+
+Breadcrumbs::for('edit_supplier', function ($trail, $supplier) {
+    $trail->parent('supplier');
+    $trail->push($supplier->name, route('supplier.edit', ['supplier' => $supplier]));
+});
+

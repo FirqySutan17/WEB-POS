@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Create - Purchase Order
+CMS | Create - Receive Material
 @endsection
 
 @push('css')
@@ -37,7 +37,7 @@ CMS | Create - Purchase Order
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Create - Purchase Order</h3>
+<h3>Create - Receive Material</h3>
 @endslot
 {{-- {{ Breadcrumbs::render('add_code') }} --}}
 @endcomponent
@@ -45,7 +45,7 @@ CMS | Create - Purchase Order
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <form action="{{ route('purchase-order.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('receive-material.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card _card">
                     <div class="card-body _card-body">
@@ -55,13 +55,40 @@ CMS | Create - Purchase Order
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="form-group _form-group">
-                                            <label for="input_po_no" class="font-weight-bold">
-                                                P/O No <span class="wajib">* </span>
+                                            <label for="input_no_receive" class="font-weight-bold">
+                                                No. Receive <span class="wajib">* </span>
                                             </label>
-                                            <input id="input_po_no" value="{{ old('po_no') }}" name="po_no" type="text"
-                                                class="form-control @error('po_no') is-invalid @enderror"
+                                            <input id="input_no_receive" value="{{ old('no_receive') }}"
+                                                name="no_receive" type="text"
+                                                class="form-control @error('no_receive') is-invalid @enderror"
                                                 placeholder="Auto Generate" readonly />
-                                            @error('po_no')
+                                            @error('no_receive')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group _form-group">
+                                            <label for="input_no_po" class="font-weight-bold">
+                                                No. P/O <span class="wajib">* </span>
+                                            </label>
+                                            <select id="no_po" name="no_po" data-placeholder="Choose.."
+                                                class="js-example-placeholder-multiple" required>
+                                                <option>Choose P/O
+                                                </option>
+                                                <option value="20231113PO00001">
+                                                    20231113PO00001
+                                                </option>
+                                                <option value="20231113PO00002">
+                                                    20231113PO00002
+                                                </option>
+                                                <option value="20231113PO00003">
+                                                    20231113PO00003
+                                                </option>
+                                            </select>
+                                            @error('no_receive')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -188,9 +215,8 @@ CMS | Create - Purchase Order
                                     </div>
                                     <div class="col-2">
                                         <div class="form-group _form-group">
-                                            <label for="input_top_date" class="font-weight-bold"
-                                                style="margin-bottom: 20px">
-                                                {{-- Time <span class="wajib">* </span> --}}
+                                            <label for="input_top_date" class="font-weight-bold">
+                                                Due Date
                                             </label>
                                             <input id="input_top_date" value="{{ old('top_date') }}" name="top_date"
                                                 type="date" class="form-control @error('top_date') is-invalid @enderror"
@@ -202,48 +228,21 @@ CMS | Create - Purchase Order
                                             @enderror
                                         </div>
                                     </div>
-                                    <div class="col-3">
-                                        <label for="input_delivery_time" class="font-weight-bold">
-                                            Delivery time
-                                        </label>
-                                        <input id="input_delivery_time" value="{{ old('delivery_time') }}"
-                                            name="delivery_time" type="text"
-                                            class="form-control @error('delivery_time') is-invalid @enderror"
-                                            placeholder="Type here.." />
-                                        @error('delivery_time')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-3">
-                                        <label for="input_delivery_place" class="font-weight-bold">
-                                            Delivery place
-                                        </label>
-                                        <input id="input_delivery_place" value="{{ old('delivery_place') }}"
-                                            name="delivery_place" type="text"
-                                            class="form-control @error('delivery_place') is-invalid @enderror"
-                                            placeholder="Type here.." />
-                                        @error('delivery_place')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
                                     <div class="col-6">
-                                        <label for="input_remark" class="font-weight-bold">
-                                            Remark
+                                        <label for="input_supplier_invoice" class="font-weight-bold">
+                                            Supplier Invoice
                                         </label>
-                                        <textarea id="input_remark" value="{{ old('remarks') }}" name="remarks"
-                                            type="text" class="form-control @error('remarks') is-invalid @enderror"
-                                            placeholder="Type here.." rows="5"></textarea>
-                                        @error('remarks')
+                                        <input id="input_supplier_invoice" value="{{ old('supplier_invoice') }}"
+                                            name="supplier_invoice" type="text"
+                                            class="form-control @error('supplier_invoice') is-invalid @enderror"
+                                            placeholder="Type here.." />
+                                        @error('supplier_invoice')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                         @enderror
                                     </div>
-                                    <div class="col-3" style="margin-top: -45px">
+                                    <div class="col-3">
                                         <label for="input_tax" class="font-weight-bold">
                                             Tax
                                         </label>
@@ -261,7 +260,7 @@ CMS | Create - Purchase Order
 
                                     </div>
 
-                                    <div class="col-3" style="margin-top: -45px">
+                                    <div class="col-3">
                                         <label for="input_close" class="font-weight-bold">
                                             Close
                                         </label>
@@ -433,7 +432,7 @@ CMS | Create - Purchase Order
                                 <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
                                     <a style="width: 50%; margin-right: 5px; padding: 10px 0px"
                                         class="btn btn-outline-primary _btn-primary px-4"
-                                        href="{{ route('purchase-order.index') }}">Back</a>
+                                        href="{{ route('receive-material.index') }}">Back</a>
                                     <button style="width: 50%; margin-left: 5px; padding: 10px 0px" type="submit"
                                         class="btn btn-primary _btn-primary px-4">
                                         Save
@@ -514,6 +513,26 @@ CMS | Create - Purchase Order
             // }
         });
         $('#select_top_category').select2({
+            theme: 'bootstrap4',
+            language: "{{ app()->getLocale() }}",
+            allowClear: true,
+            // ajax: {
+            //     url: "{{ route('roles.select') }}",
+            //     dataType: 'json',
+            //     delay: 250,
+            //     processResults: function(data) {
+            //         return {
+            //             results: $.map(data, function(item) {
+            //                 return {
+            //                     text: item.name,
+            //                     id: item.id
+            //                 }
+            //             })
+            //         };
+            //     }
+            // }
+        });
+        $('#no_po').select2({
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}",
             allowClear: true,

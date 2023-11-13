@@ -139,14 +139,7 @@ CMS | Edit - Purchase Order
                                             </label>
                                             <select id="supplier_id" name="supplier_id" data-placeholder="Choose.."
                                                 class="js-example-placeholder-multiple" required>
-                                                <option>Choose supplier
-                                                </option>
-                                                <option value="PT. Kanzler Indonesia">PT. Kanzler Indonesia
-                                                </option>
-                                                <option value="PT. Bibigo CJ Indonesia">PT. Bibigo CJ Indonesia
-                                                </option>
-                                                <option value="PT. Super Unggas Jaya">PT. Super Unggas Jaya
-                                                </option>
+
                                             </select>
                                             @error('supplier_id')
                                             <span class="invalid-feedback">
@@ -442,7 +435,7 @@ CMS | Edit - Purchase Order
                                 <div style="width: 100%; display: flex; align-items: center; justify-content: center;">
                                     <a style="width: 50%; margin-right: 5px; padding: 10px 0px"
                                         class="btn btn-outline-primary _btn-primary px-4"
-                                        href="{{ route('code.index') }}">Back</a>
+                                        href="{{ route('purchase-order.index') }}">Back</a>
                                     <button style="width: 50%; margin-left: 5px; padding: 10px 0px" type="submit"
                                         class="btn btn-primary _btn-primary px-4">
                                         Update
@@ -485,21 +478,22 @@ CMS | Edit - Purchase Order
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}",
             allowClear: true,
-            // ajax: {
-            //     url: "{{ route('roles.select') }}",
-            //     dataType: 'json',
-            //     delay: 250,
-            //     processResults: function(data) {
-            //         return {
-            //             results: $.map(data, function(item) {
-            //                 return {
-            //                     text: item.name,
-            //                     id: item.id
-            //                 }
-            //             })
-            //         };
-            //     }
-            // }
+            ajax: {
+                url: "{{ route('supplier.select') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.name,
+                                code: item.supplier_code,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+            }
         });
         $('#plant').select2({
             theme: 'bootstrap4',
