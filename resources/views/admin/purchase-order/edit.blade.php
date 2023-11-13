@@ -160,7 +160,7 @@ CMS | Edit Purchase Order
                                             </label>
                                             <input id="input_payment_term" value="{{ old('top_days') }}" name="top_days"
                                                 type="text" class="form-control @error('top_days') is-invalid @enderror"
-                                                placeholder="Ex: 1" required />
+                                                placeholder="0" required style="text-align: center" />
                                             @error('top_days')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
