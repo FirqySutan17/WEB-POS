@@ -314,13 +314,14 @@ CMS | Edit Purchase Order
                                                             class="heightHr center-text">Name <span
                                                                 class="dividerHr"></span>
                                                         </th>
-                                                        <th style="width: 6%; vertical-align: middle; border-top: 0px solid #000; border-bottom: 2px solid #000"
-                                                            class="heightHr center-text">Qty <span
-                                                                class="dividerHr"></span>
-                                                        </th>
+
                                                         <th style="width: 13%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
                                                             class="heightHr center-text">Unit Price
                                                             <span class="dividerHr"></span>
+                                                        </th>
+                                                        <th style="width: 6%; vertical-align: middle; border-top: 0px solid #000; border-bottom: 2px solid #000"
+                                                            class="heightHr center-text">Qty <span
+                                                                class="dividerHr"></span>
                                                         </th>
                                                         <th style="width: 15%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
                                                             class="heightHr center-text">Total <span
@@ -342,13 +343,14 @@ CMS | Edit Purchase Order
                                                             8991860205010</td>
                                                         <td style="vertical-align: middle; text-align: left">PAHA BAWAH
                                                             500 GR</td>
-                                                        <td style="vertical-align: middle; text-align: center">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
+
                                                         <td style="vertical-align: middle; text-align: right">
                                                             <input type="number" name="qty_detail" placeholder="0"
                                                                 style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
+                                                        </td>
+                                                        <td style="vertical-align: middle; text-align: center">
+                                                            <input type="number" name="qty_detail" placeholder="0"
+                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
                                                         </td>
                                                         <td style="vertical-align: middle; text-align: right">Rp 167.540
                                                         </td>
@@ -363,13 +365,14 @@ CMS | Edit Purchase Order
                                                             8991860205006</td>
                                                         <td style="vertical-align: middle; text-align: left">BONELESS
                                                             SKINLESS DADA 500 GR</td>
-                                                        <td style="vertical-align: middle; text-align: center">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
+
                                                         <td style="vertical-align: middle; text-align: right">
                                                             <input type="number" name="qty_detail" placeholder="0"
                                                                 style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
+                                                        </td>
+                                                        <td style="vertical-align: middle; text-align: center">
+                                                            <input type="number" name="qty_detail" placeholder="0"
+                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
                                                         </td>
                                                         <td style="vertical-align: middle; text-align: right">Rp 240.080
                                                         </td>
@@ -384,13 +387,14 @@ CMS | Edit Purchase Order
                                                             8993200664399</td>
                                                         <td style="vertical-align: middle; text-align: left">KANZLER
                                                             CRISPY CHICKEN NUGGET 450 GR</td>
-                                                        <td style="vertical-align: middle; text-align: center">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
+
                                                         <td style="vertical-align: middle; text-align: right">
                                                             <input type="number" name="qty_detail" placeholder="0"
                                                                 style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
+                                                        </td>
+                                                        <td style="vertical-align: middle; text-align: center">
+                                                            <input type="number" name="qty_detail" placeholder="0"
+                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
                                                         </td>
                                                         <td style="vertical-align: middle; text-align: right">Rp 440.908
                                                         </td>
@@ -403,9 +407,13 @@ CMS | Edit Purchase Order
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="4"
-                                                            style="font-weight: 700; text-align: right; border-top: 2px solid #000; border-bottom: 2px solid #000">
+                                                        <td colspan="3"
+                                                            style="font-weight: 700; text-align: left; border-top: 2px solid #000; border-bottom: 2px solid #000">
                                                             Grand total</td>
+                                                        <td
+                                                            style="font-weight: 700; text-align: center; border-top: 2px solid #000; border-bottom: 2px solid #000">
+                                                            40
+                                                        </td>
                                                         <td
                                                             style="vertical-align: middle; text-align: right;font-weight: 700; border-top: 2px solid #000; border-bottom: 2px solid #000">
                                                             Rp
