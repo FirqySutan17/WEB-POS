@@ -14,7 +14,7 @@ CMS | Dashboard
 <style>
   ul.calendar-dashboard {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(14, 1fr);
     flex-wrap: wrap;
     list-style: none;
   }
