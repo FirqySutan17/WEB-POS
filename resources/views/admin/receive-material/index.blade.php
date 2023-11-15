@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Purchase Order
+CMS | Receive Material
 @endsection
 
 @push('css')
@@ -17,9 +17,9 @@ CMS | Purchase Order
 @section('content')
 @component('components.breadcrumb')
 @slot('breadcrumb_title')
-<h3>Purchase Order</h3>
+<h3>Receive Material</h3>
 @endslot
-{{ Breadcrumbs::render('purchase_order') }}
+{{ Breadcrumbs::render('receive_material') }}
 @endcomponent
 
 <div class="container-fluid">
@@ -30,7 +30,7 @@ CMS | Purchase Order
                 <form class="row" method="GET">
                     <div class="col-8">
                         @can('P Create')
-                        <a href="{{ route('purchase-order.create') }}" class="btn btn-primary _btn" role="button">
+                        <a href="{{ route('receive-material.create') }}" class="btn btn-primary _btn" role="button">
                             <i class='bx bx-plus'></i> Add New
                         </a>
                         @endcan
@@ -55,22 +55,24 @@ CMS | Purchase Order
                     <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="heightHr">Date <span class="dividerHr"></span></th>
-                        <th class="heightHr">Purchase Order <span class="dividerHr"></span></th>
+                        <th class="heightHr">No P/O <span class="dividerHr"></span></th>
+                        <th class="heightHr">Receive <span class="dividerHr"></span></th>
                         <th class="heightHr">Supplier <span class="dividerHr"></span></th>
                         <th class="heightHr">Status <span class="dividerHr"></span></th>
                         <th class="center-text">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (count($purchaseOrders))
-                    @forelse ($purchaseOrders as $p)
+                    @if (count($receiveMaterials))
+                    @forelse ($receiveMaterials as $rm)
                     <tr>
                         <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 15%; vertical-align: middle">{{ $p->date_po }}</td>
-                        <td style="width: 20%; vertical-align: middle">{{ $p->no_po }}</td>
+                        <td style="width: 15%; vertical-align: middle">{{ $rm->date_receive }}</td>
+                        <td style="width: 20%; vertical-align: middle">{{ $rm->po_no }}</td>
+                        <td style="width: 20%; vertical-align: middle">{{ $rm->no_receive }}</td>
                         <td style="width: 30%; vertical-align: middle">Supplier name</td>
                         <td style="width: 20%; vertical-align: middle">
-                            @if($p->is_po == '1')
+                            @if($rm->is_po == '1')
                             <span class="on-going">On Going</span>
                             @else
                             <span class="finish">Finish</span>
@@ -80,14 +82,14 @@ CMS | Purchase Order
                             <div class="boxInside">
 
                                 <div class="boxEdit" style="padding-top: 4px">
-                                    <a href="{{ route('purchase-order.edit', ['purchase_order' => $p]) }}"
+                                    <a href="{{ route('receive-material.edit', ['receive_material' => $rm]) }}"
                                         class="btn-sm btn-info" role="button">
                                         <i class="bx bx-edit"></i>
                                     </a>
                                 </div>
 
                                 <div class="boxDelete">
-                                    <form action="{{ route('purchase-order.destroy', ['purchase_order' => $p]) }}"
+                                    <form action="{{ route('receive-material.destroy', ['receive_material' => $rm]) }}"
                                         method="POST" role="alert">
                                         @csrf
                                         @method('DELETE')
@@ -116,9 +118,9 @@ CMS | Purchase Order
         </div>
         <div class="card-footer">
             <div class="boxFooter">
-                @if ($purchaseOrders->hasPages())
+                @if ($receiveMaterials->hasPages())
                 <div class="boxPagination">
-                    {{ $purchaseOrders->links('vendor.pagination.bootstrap-4') }}
+                    {{ $receiveMaterials->links('vendor.pagination.bootstrap-4') }}
                 </div>
                 @endif
             </div>

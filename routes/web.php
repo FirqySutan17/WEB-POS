@@ -111,6 +111,13 @@ Route::resource('/common-code', App\Http\Controllers\CommonCodeController::class
 // Purchase Order Route
 Route::resource('/purchase-order', App\Http\Controllers\PurchaseOrderController::class);
 
+// Receive Material Route
+Route::resource('/receive-material', App\Http\Controllers\ReceiveMaterialController::class);
+
+// Supplier Route
+Route::get('/supplier/select', [App\Http\Controllers\SupplierController::class, 'select'])->name('supplier.select');
+Route::resource('/supplier', App\Http\Controllers\SupplierController::class);
+
 // Shift Management Route
 Route::resource('/shift', App\Http\Controllers\ShiftManagementController::class);
 Route::get('/shift_summary', [App\Http\Controllers\ShiftManagementController::class, 'summary_shift'])->name('shift_summary');
