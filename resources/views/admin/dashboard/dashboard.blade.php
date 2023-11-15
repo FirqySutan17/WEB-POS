@@ -14,7 +14,7 @@ CMS | Dashboard
 <style>
   ul.calendar-dashboard {
     display: grid;
-    grid-template-columns: repeat(14, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     flex-wrap: wrap;
     list-style: none;
   }
@@ -84,40 +84,17 @@ CMS | Dashboard
     <div class="db-table">
       <div class="db-box">
         <h4>Daily Sales</h4>
-        <p>November 2023</p>
+        <p>{{ date('M Y') }}</p>
         <div class="table-responsive">
           <ul class="calendar-dashboard">
-            <li class="calendar-item"><time datetime="2022-02-01">1</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-02">2</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-03">3</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-04">4</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-05">5</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-06">6</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-07">7</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-08">8</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-09">9</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-10">10</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-11">11</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-12">12</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-13">13</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-14">14</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-15">15</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-16">16</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-17">17</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-18">18</time>Rp 230.000</li>
-            <li class="today calendar-item"><time datetime="2022-02-19">19</time>Rp 230.000</li>
-            <li class="calendar-item"><time datetime="2022-02-20">20</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-21">21</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-22">22</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-23">23</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-24">24</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-25">25</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-26">26</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-27">27</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-28">28</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-29">29</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-30">30</time>-</li>
-            <li class="calendar-item"><time datetime="2022-02-31">31</time>-</li>
+            @foreach ($daily_sales as $i => $item)
+              <li class="{{ $item['date'] == date('Y-m-d') ? 'today' : '' }} calendar-item">
+                <a href="{{ $item['date'] == date('Y-m-d') ? route('report.transaction') : 'javascript::void(0)'  }}">
+                  <time datetime="{{ $item['date'] }}">
+                  {{ $i }}</time>@currency($item["amount"])
+                </a>
+              </li>
+            @endforeach
           </ul>
         </div>
       </div>
