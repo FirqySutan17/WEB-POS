@@ -235,3 +235,48 @@ Breadcrumbs::for('closing_date', function ($trail) {
     $trail->push('Closing Date');
 });
 
+// Code
+Breadcrumbs::for('code', function ($trail) {
+    $trail->push("Code", route('code.index'));
+});
+
+Breadcrumbs::for('add_code', function ($trail) {
+    $trail->parent('code');
+    $trail->push('Add code', route('code.create'));
+});
+
+Breadcrumbs::for('edit_code', function ($trail, $code) {
+    $trail->parent('code');
+    $trail->push($code->code, route('code.edit', ['code' => $code]));
+});
+
+// Common Code
+Breadcrumbs::for('common_code', function ($trail) {
+    $trail->push("Common code", route('common-code.index'));
+});
+
+Breadcrumbs::for('add_common_code', function ($trail) {
+    $trail->parent('common_code');
+    $trail->push('Add common code', route('common-code.create'));
+});
+
+Breadcrumbs::for('edit_common_code', function ($trail, $commonCode) {
+    $trail->parent('common_code');
+    $trail->push($commonCode->name, route('common-code.edit', ['common_code' => $commonCode]));
+});
+
+// Purchase Order
+Breadcrumbs::for('purchase_order', function ($trail) {
+    $trail->push("Purchase Order", route('purchase-order.index'));
+});
+
+Breadcrumbs::for('add_purchase_order', function ($trail) {
+    $trail->parent('purchase_order');
+    $trail->push('Add Purchase Order', route('purchase-order.create'));
+});
+
+Breadcrumbs::for('edit_purchase_order', function ($trail, $purchaseOrder) {
+    $trail->parent('purchase_order');
+    $trail->push($purchaseOrder->name, route('purchase-order.edit', ['purchase_order' => $purchaseOrder]));
+});
+

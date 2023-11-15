@@ -101,6 +101,16 @@ Route::resource('/cashflow', App\Http\Controllers\CashflowController::class);
 // Adjust Stock Route
 Route::resource('/adjust_stock', App\Http\Controllers\AdjustStockController::class);
 
+// Code Route
+Route::get('/code/select', [App\Http\Controllers\CodeController::class, 'select'])->name('code.select');
+Route::resource('/code', App\Http\Controllers\CodeController::class);
+
+// Common Code Route
+Route::resource('/common-code', App\Http\Controllers\CommonCodeController::class);
+
+// Purchase Order Route
+Route::resource('/purchase-order', App\Http\Controllers\PurchaseOrderController::class);
+
 // Shift Management Route
 Route::resource('/shift', App\Http\Controllers\ShiftManagementController::class);
 Route::get('/shift_summary', [App\Http\Controllers\ShiftManagementController::class, 'summary_shift'])->name('shift_summary');
