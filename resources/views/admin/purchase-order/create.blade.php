@@ -171,12 +171,12 @@ CMS | Create - Purchase Order
                                                 data-placeholder="Choose.." class="js-example-placeholder-multiple"
                                                 required>
 
-                                                <option value="DAI - DAYS AFTER INVOICE">DAI - DAYS AFTER INVOICE
+                                                @foreach($commons as $c)
+                                                <option value="{{$c->id}}">
+                                                    {{$c->code}} - {{$c->name}}
                                                 </option>
-                                                <option value="DAA - DAYS AFTER ARRIVAL">DAA - DAYS AFTER ARRIVAL
-                                                </option>
-                                                <option value="CAD - CASH AFTER DELIVERY">CAD - CASH AFTER DELIVERY
-                                                </option>
+
+                                                @endforeach
                                             </select>
                                             @error('top_category')
                                             <span class="invalid-feedback">
@@ -514,24 +514,35 @@ CMS | Create - Purchase Order
             // }
         });
         $('#select_top_category').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}",
-            allowClear: true,
-            // ajax: {
-            //     url: "{{ route('roles.select') }}",
-            //     dataType: 'json',
-            //     delay: 250,
-            //     processResults: function(data) {
-            //         return {
-            //             results: $.map(data, function(item) {
-            //                 return {
-            //                     text: item.name,
-            //                     id: item.id
-            //                 }
-            //             })
-            //         };
-            //     }
-            // }
+            placeholder: "Choose..",
+                theme: 'bootstrap4',
+                language: "{{ app()->getLocale() }}",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route('common-code.select') }}",
+                    dataType: 'json',
+                    delay: 100,
+                    data: function (params) {
+                        var query = {
+                            q: params.term,
+                            type: '1'
+                        }
+
+                        // Query parameters will be ?search=[term]&type=public
+                        return query;
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    text: item.name,
+                                    code: item.code,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    }
+                }
         });
     });
 </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PurchaseOrder;
+use App\Models\CommonCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -38,7 +39,8 @@ class PurchaseOrderController extends Controller
      */
     public function create()
     {
-        return view('admin.purchase-order.create');
+        $commons = CommonCode::all();
+        return view('admin.purchase-order.create', compact('commons'));
     }
 
     /**
