@@ -76,7 +76,7 @@ CMS | Create - Purchase Order
                                             <input id="input_date_po"
                                                 value="{{ empty(old('date_po')) ? date('Y-m-d') : old('date_po') }}"
                                                 name="date_po" type="date"
-                                                class="form-control @error('date_po') is-invalid @enderror"
+                                                class="trigger_term form-control @error('date_po') is-invalid @enderror"
                                                 placeholder="Type here.." required />
                                             @error('date_po')
                                             <span class="invalid-feedback" role="alert">
@@ -152,7 +152,7 @@ CMS | Create - Purchase Order
                                                 Term <span class="wajib">* </span>
                                             </label>
                                             <input id="input_payment_term" value="{{ old('top_days') }}" name="top_days"
-                                                type="text" class="form-control @error('top_days') is-invalid @enderror"
+                                                type="text" class="trigger_term form-control @error('top_days') is-invalid @enderror"
                                                 placeholder="0" required style="text-align: center" />
                                             @error('top_days')
                                             <span class="invalid-feedback" role="alert">
@@ -193,8 +193,8 @@ CMS | Create - Purchase Order
                                                 {{-- Time <span class="wajib">* </span> --}}
                                             </label>
                                             <input id="input_top_date" value="{{ old('top_date') }}" name="top_date"
-                                                type="date" class="form-control @error('top_date') is-invalid @enderror"
-                                                placeholder="Type here.." readonly style="text-align: center" />
+                                                type="date" class="trigger_term form-control @error('top_date') is-invalid @enderror"
+                                                placeholder="Type here.." style="text-align: center" />
                                             @error('top_date')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -576,29 +576,6 @@ CMS | Create - Purchase Order
             return $(elem).val();
         }).get();
 
-        // <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
-        // <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
-        // <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
-        // <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
-        // <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
-        // <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
-        $.ajax({
-            url: "{{ route('transaction.itemdisplay_store') }}",
-            type: "POST",
-            data: {
-                "_token": `{{ csrf_token() }}`,
-                "product_code": product_code,
-                "product_name": product_name,
-                "basic_price": basic_price,
-                "discount_store": discount_store,
-                "final_price": final_price,
-                // "total_price": total_price,
-                "quantity": quantity,
-            },
-            success: function(response) {
-               console.log(response)
-            }
-        });
     }
 
     function calculate_vat() {
@@ -669,6 +646,7 @@ CMS | Create - Purchase Order
     }
 
     function add_product_item(product_code) {
+        console.log(product_code);
         $.ajax({
             url: "{{ route('product.select_one') }}",
             type: "POST",
