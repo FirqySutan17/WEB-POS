@@ -31,6 +31,24 @@ class CommonCodeController extends Controller
         ]);
     }
 
+    public function select(Request $request)
+    {
+        $commons = [];
+
+        $type = $request->has('head_id') ? $request->head_id : "";
+        if ($request->has('q')) {
+            $query = CommonCode::select('*')->where('head_id', $request->q);
+        } else {
+            $query = CommonCode::select('*');
+        }
+
+        if (!empty($type)) {
+            $query->where('head_id', $type);
+        }
+        $commons = $query->get();
+        return response()->json($commons);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

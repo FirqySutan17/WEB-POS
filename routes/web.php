@@ -106,6 +106,7 @@ Route::get('/code/select', [App\Http\Controllers\CodeController::class, 'select'
 Route::resource('/code', App\Http\Controllers\CodeController::class);
 
 // Common Code Route
+Route::get('/common-code/select', [App\Http\Controllers\CommonCodeController::class, 'select'])->name('common-code.select');
 Route::resource('/common-code', App\Http\Controllers\CommonCodeController::class);
 
 // Purchase Order Route
