@@ -692,47 +692,33 @@ class ReportController extends Controller
         }
 
         private function convert_receive_by_date($data_raw) {
-            try {
-                $data_receive = [];
-                if (!empty($data_raw)) {
-                    foreach ($data_raw as $item) {
-                        $receive_date = $item->receive_date;
-                        $rd_stringfy = strtotime($receive_date);
-                        if (!array_key_exists($rd_stringfy, $data_receive)) {
-                            $data_receive[$rd_stringfy] = [
-                                "receive_date"  => $receive_date,
-                                "details"       => []
-                            ];
-                        }
-                        
-                        if (!array_key_exists($item->product_code, $data_receive[$rd_stringfy]["details"])) {
-                            $data_receive[$rd_stringfy]["details"][$item->product_code] = [
-                                "product_code"  => $item->product_code,
-                                "product_name"  => $item->product_name,
-                                "qty"           => 0,
-                                "unit_price"    => 0,
-                                "amount"        => 0,
-                            ];
-                        }
-                        $data_receive[$rd_stringfy]["details"][$item->product_code]["qty"] += $item->quantity;
-                        $data_receive[$rd_stringfy]["details"][$item->product_code]["unit_price"] = $item->unit_price;
-                        $data_receive[$rd_stringfy]["details"][$item->product_code]["amount"] = $this->clean($data_receive[$rd_stringfy]["details"][$item->product_code]["qty"]) * $this->clean($data_receive[$rd_stringfy]["details"][$item->product_code]["unit_price"]);
+            $data_receive = [];
+            if (!empty($data_raw)) {
+                foreach ($data_raw as $item) {
+                    $receive_date = $item->receive_date;
+                    $rd_stringfy = strtotime($receive_date);
+                    if (!array_key_exists($rd_stringfy, $data_receive)) {
+                        $data_receive[$rd_stringfy] = [
+                            "receive_date"  => $receive_date,
+                            "details"       => []
+                        ];
                     }
+                    
+                    if (!array_key_exists($item->product_code, $data_receive[$rd_stringfy]["details"])) {
+                        $data_receive[$rd_stringfy]["details"][$item->product_code] = [
+                            "product_code"  => $item->product_code,
+                            "product_name"  => $item->product_name,
+                            "qty"           => 0,
+                            "unit_price"    => 0,
+                            "amount"        => 0,
+                        ];
+                    }
+                    $data_receive[$rd_stringfy]["details"][$item->product_code]["qty"] += $item->quantity;
+                    $data_receive[$rd_stringfy]["details"][$item->product_code]["unit_price"] = $item->unit_price;
+                    $data_receive[$rd_stringfy]["details"][$item->product_code]["amount"] = $data_receive[$rd_stringfy]["details"][$item->product_code]["qty"] * $data_receive[$rd_stringfy]["details"][$item->product_code]["unit_price"];
                 }
-            } catch (Exception $e) {
-                dd($item);
             }
-            
             return $data_receive;
-        }
-
-        private function clean($string) {
-           if (empty($string)) {
-            return "0";
-           }
-           $string = str_replace(' ', '', $string); // Replaces all spaces with hyphens.
-
-           return preg_replace('/[^0-9\-]/', '', $string); // Removes special chars.
         }
 
         private function convert_receive_by_no($data_raw) {
