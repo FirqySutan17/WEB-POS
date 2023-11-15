@@ -46,11 +46,19 @@ CMS | Dashboard
 
   ul.calendar-dashboard li.calendar-item.today {
     background: #a12a2f;
-    color: #fff
+    color: #fff !important;
+  }
+
+  ul.calendar-dashboard li.calendar-item.today a{
+    color: #fff;
   }
 
   ul.calendar-dashboard .today time {
     font-weight: 800;
+  }
+  .date-flow{
+    display: flex;
+    flex-direction: column
   }
 </style>
 @endpush
@@ -89,7 +97,7 @@ CMS | Dashboard
           <ul class="calendar-dashboard">
             @foreach ($daily_sales as $i => $item)
               <li class="{{ $item['date'] == date('Y-m-d') ? 'today' : '' }} calendar-item">
-                <a href="{{ $item['date'] == date('Y-m-d') ? route('report.transaction') : 'javascript::void(0)'  }}">
+                <a class="date-flow" href="{{ $item['date'] == date('Y-m-d') ? route('report.transaction') : 'javascript::void(0)'  }}">
                   <time datetime="{{ $item['date'] }}">
                   {{ $i }}</time>@currency($item["amount"])
                 </a>
