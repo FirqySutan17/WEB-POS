@@ -134,6 +134,7 @@ class TransactionController extends Controller
                 $sub_price += $total_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
+            $cash = !empty($cash) ? str_replace(",", "", $cash->cash) : 0;
             $total_price = $sub_price;
             $vat_amount = 0;
             $kembalian = $request->payment_method == 'Tunai' && $status == 'FINISH' ? $cash - $total_price : 0;
@@ -303,6 +304,7 @@ class TransactionController extends Controller
                 $sub_price += $total_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
+            $cash = !empty($cash) ? str_replace(",", "", $cash->cash) : 0;
             $total_price = $sub_price;
             $vat_amount = 0;
             // $vat_amount = config('app.vat_amount');
@@ -324,7 +326,7 @@ class TransactionController extends Controller
                 'kembalian'        => $kembalian
             ];
             $transaction_update = Transaction::find($transaction->id)->update($trans);
-            
+            dd($trans);
             
             if ($transaction_update) {
                 //  CLEAR DETAIL
@@ -346,7 +348,7 @@ class TransactionController extends Controller
             Alert::success('Add Transaction', 'Success');
             // dd($request->all());
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            dd($th->getMessage(), $request->all());
             DB::rollBack();
         } finally {
             DB::commit();
