@@ -753,7 +753,7 @@ CMS | Transaction
                                 <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="${qty}" placeholder="1" tabindex="1" />
                             </td>
                             <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
-                            <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
+                            <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(total_price_item.toString())}</span></td>
                             <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
                                 <div class="boxInside" style="align-items: center; justify-content: center;">
                                     <div class="boxDelete">
