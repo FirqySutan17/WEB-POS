@@ -134,7 +134,7 @@ class TransactionController extends Controller
                 $sub_price += $total_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
-            $cash = !empty($cash) ? str_replace(",", "", $cash->cash) : 0;
+            $cash = !empty($cash) ? str_replace(",", "", $cash) : 0;
             $total_price = $sub_price;
             $vat_amount = 0;
             $kembalian = $request->payment_method == 'Tunai' && $status == 'FINISH' ? $cash - $total_price : 0;
@@ -304,7 +304,7 @@ class TransactionController extends Controller
                 $sub_price += $total_price[$i];
             }
             $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
-            $cash = !empty($cash) ? str_replace(",", "", $cash->cash) : 0;
+            $cash = !empty($cash) ? str_replace(",", "", $cash) : 0;
             $total_price = $sub_price;
             $vat_amount = 0;
             // $vat_amount = config('app.vat_amount');
