@@ -152,7 +152,7 @@ CMS | Create - Purchase Order
                                                 Term <span class="wajib">* </span>
                                             </label>
                                             <input id="input_payment_term" value="{{ old('top_days') }}" name="top_days"
-                                                type="text" class="trigger_term form-control @error('top_days') is-invalid @enderror"
+                                                type="text" class="number_only form-control @error('top_days') is-invalid @enderror"
                                                 placeholder="0" required style="text-align: center" />
                                             @error('top_days')
                                             <span class="invalid-feedback" role="alert">
@@ -188,11 +188,11 @@ CMS | Create - Purchase Order
                                     </div>
                                     <div class="col-2">
                                         <div class="form-group _form-group">
-                                            <label for="input_top_date" class="font-weight-bold"
+                                            <label for="input_date_top" class="font-weight-bold"
                                                 style="margin-bottom: 20px">
                                                 {{-- Time <span class="wajib">* </span> --}}
                                             </label>
-                                            <input id="input_top_date" value="{{ old('top_date') }}" name="top_date"
+                                            <input id="input_date_top" value="{{ old('top_date') }}" name="top_date"
                                                 type="date" class="trigger_term form-control @error('top_date') is-invalid @enderror"
                                                 placeholder="Type here.." style="text-align: center" />
                                             @error('top_date')
@@ -314,16 +314,20 @@ CMS | Create - Purchase Order
                                                             class="heightHr center-text">Qty <span
                                                                 class="dividerHr"></span>
                                                         </th>
-                                                        <th style="width: 15%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
+                                                        <th style="width: 10%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
                                                             class="heightHr center-text">Sub Amount <span
                                                                 class="dividerHr"></span>
                                                         </th>
-                                                        <th style="width: 15%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
+                                                        <th style="width: 10%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
                                                             class="heightHr center-text">Tax <span
                                                                 class="dividerHr"></span>
                                                         </th>
                                                         <th style="width: 15%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
                                                             class="heightHr center-text">Total Amount <span
+                                                                class="dividerHr"></span>
+                                                        </th>
+                                                        <th style="width: 10%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
+                                                            class="heightHr center-text"><span
                                                                 class="dividerHr"></span>
                                                         </th>
                                                     </tr>
@@ -352,6 +356,7 @@ CMS | Create - Purchase Order
                                                             style="vertical-align: middle; text-align: right;font-weight: 700; border-top: 2px solid #000; border-bottom: 2px solid #000">
                                                             Rp
                                                             2.755.467</td>
+                                                        <td style="vertical-align: middle; text-align: right;font-weight: 700; border-top: 2px solid #000; border-bottom: 2px solid #000"></td>
                                                     </tr>
                                                 </tfoot>
 
@@ -598,39 +603,25 @@ CMS | Create - Purchase Order
                 var id = product_code;
                 var item_id = "item_product_" + id;
 
-                var basic_price = product.price_store;
-                var final_price = basic_price;
-                var html_price = formatRupiah(final_price.toString());
-                // Calculate Discount
-                var discount_store = (product.discount_store) ? product.discount_store : 0;
-                var discount_price = 0;
-                if (discount_store > 0) {
-                    discount_price = basic_price * (discount_store / 100);
-                    final_price = basic_price - discount_price;
-                    html_price = `
-                        <span style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</span>
-                        ${formatRupiah(final_price.toString())}
-                    `;
-                }
-
                 var html_inputs = `
                     <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
-                    
+                    <input id="amount_hidden_${item_id}" name="amount[]" type="hidden" class="form-control" tabindex="0"/>
+                    <input id="tax_amount_hidden_${item_id}" name="tax_amount[]" type="hidden" class="form-control" tabindex="0"/>
+                    <input id="total_amount_hidden_${item_id}" name="total_amount[]" type="hidden" class="form-control" tabindex="0"/>
                 `;
                 var html_item = `
                     <tr id="${item_id}">
                         <td style="vertical-align: middle; text-align: left">
-                            
-                            8991860205010</td>
-                        <td style="vertical-align: middle; text-align: left">PAHA BAWAH
-                            500 GR</td>
-
+                            ${html_inputs}
+                            ${product.code}
+                        </td>
+                        <td style="vertical-align: middle; text-align: left">${product.name}</td>
                         <td style="vertical-align: middle; text-align: right">
-                            <input type="number" name="qty_detail" placeholder="0"
+                            <input id="quantity_${item_id}" type="text" name="quantity[]" placeholder="0" class="trigger_row"
                                 style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
                         </td>
                         <td style="vertical-align: middle; text-align: center">
-                            <input type="number" name="qty_detail" placeholder="0"
+                            <input id="unit_price_${item_id}" type="text" name="unit_price[]" placeholder="0" class="trigger_row"
                                 style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
                         </td>
                         <td style="vertical-align: middle; text-align: right">Rp 167.540
@@ -640,21 +631,10 @@ CMS | Create - Purchase Order
                         <td style="vertical-align: middle; text-align: right">
                             Rp 185.969
                         </td>
-                        <td style="width: 35%; vertical-align: middle">
-                            ${product.code + ' | ' + product.name}
-                        </td>
-                        <td style="width: 19%; vertical-align: middle; text-align: center">
-                            ${html_price}
-                        </td>
-                        <td style="width: 6%; vertical-align: middle">
-                            <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
-                        </td>
-                        <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
-                        <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
                         <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
                             <div class="boxInside" style="align-items: center; justify-content: center;">
                                 <div class="boxDelete">
-                                    <button id="btn_delete_${item_id}" onblur="onblur_color('${item_id}')" onfocus="onfocus_color('${item_id}')" onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
+                                    <button id="btn_delete_${item_id}" onclick="delete_row_product('${item_id}')" type="button" class="btn btn-sm btn-danger">
                                         <i class="bx bx-trash"></i>
                                     </button>
                                 </div>
@@ -663,7 +643,7 @@ CMS | Create - Purchase Order
                     </tr>
                 `;
 
-                $("#product_lists").append(html_item);
+                $("#tbl-material").append(html_item);
                 calculate_vat();
                 $(`#quantity_${item_id}`).on('keyup', function (e) {
                     var code = e.keyCode || e.which;
@@ -741,27 +721,21 @@ CMS | Create - Purchase Order
                 proceed_enter();
             }
         });
-    });
-</script>
 
-<script>
-    $('#click').on('click', function () {
-    if ($('#click').html() === `<i class='bx bx-info-circle'
-                    style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`) {
+        $(`.number_only`).on('keyup', function (e) {
+            var code = e.keyCode || e.which;
+            // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
+            var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
+            if (!allowed_keycode.includes(code)) {
+                e.preventDefault();
+            }
+        });
 
-        // This block is executed when
-        // you click the show button
-        $('#click').html(`<i class='bx bx-x'
-                    style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
-    }
-    else {
-
-        // This block is executed when
-        // you click the hide button
-        $('#click').html(`<i class='bx bx-info-circle'
-                    style="font-size: 18px; display: inline-block; vertical-align: middle"></i>`);
-    }
-    $('#element').toggle();
+        $(`.trigger_term`).change(function() {
+            var start_date  = $("#input_date_po").val();
+            var end_date    = $("#input_date_top").val();
+            console.log(start_date, end_date);
+        });
     });
 </script>
 @endpush

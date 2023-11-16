@@ -500,7 +500,7 @@ CMS | Transaction
             var transaction_detail_draft = JSON.parse(`{!! json_encode($transaction_details) !!}`);
             if (transaction_detail_draft.length > 0) {
                 $.each(transaction_detail_draft, function(i, item) {
-                    add_product_item(item.product_code, item.quantity);
+                    add_product_item(item.product_code, item.quantity, item);
                 });
             }
         });
@@ -695,7 +695,7 @@ CMS | Transaction
             $('#select_product').val(null).trigger('change');
         }
 
-        function add_product_item(product_code, qty = 1) {
+        function add_product_item(product_code, qty = 1, item_detail = null) {
             $.ajax({
                 url: "{{ route('product.select_one') }}",
                 type: "POST",
@@ -717,10 +717,15 @@ CMS | Transaction
                     var item_id = "item_product_" + id;
 
                     var basic_price = product.price_store;
+                    var discount_store = (product.discount_store) ? product.discount_store : 0;
+                    if (item_detail != null) {
+                        console.log(item_detail);
+                        basic_price = item_detail.basic_price;
+                        discount_store = item_detail.discount;
+                    }
                     var final_price = basic_price;
                     var html_price = formatRupiah(final_price.toString());
                     // Calculate Discount
-                    var discount_store = (product.discount_store) ? product.discount_store : 0;
                     var discount_price = 0;
                     if (discount_store > 0) {
                         discount_price = basic_price * (discount_store / 100);

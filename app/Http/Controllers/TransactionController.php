@@ -249,7 +249,7 @@ class TransactionController extends Controller
             // return redirect()->back()->withErrors("You dont have permission to draft this transaction!");
         }
         // dd($transaction, $user);
-        $transaction_details = TransactionDetail::select('product_code', 'invoice_no', 'quantity')->where('invoice_no', $transaction->invoice_no)->get();
+        $transaction_details = TransactionDetail::select('*')->where('invoice_no', $transaction->invoice_no)->get();
         $product_discount = Product::select('code', 'name', 'price_store', 'discount_store')->where('discount_store', '>', 0)->get();
         
         return view('admin.transaction.edit-copy', compact('transaction', 'transaction_details', 'product_discount', 'membership', 'membershipSelected'));
