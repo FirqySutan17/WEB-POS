@@ -315,7 +315,7 @@ CMS | Create - Purchase Order
                                                                 class="dividerHr"></span>
                                                         </th>
                                                         <th style="width: 15%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
-                                                            class="heightHr center-text">Total <span
+                                                            class="heightHr center-text">Sub Amount <span
                                                                 class="dividerHr"></span>
                                                         </th>
                                                         <th style="width: 15%; vertical-align: middle; text-align: right; border-top: 0px solid #000; border-bottom: 2px solid #000"
@@ -328,73 +328,8 @@ CMS | Create - Purchase Order
                                                         </th>
                                                     </tr>
                                                 </thead>
-                                                <tbody class="custom-scrollbar">
-                                                    <tr>
-                                                        <td style="vertical-align: middle; text-align: left">
-                                                            8991860205010</td>
-                                                        <td style="vertical-align: middle; text-align: left">PAHA BAWAH
-                                                            500 GR</td>
-
-                                                        <td style="vertical-align: middle; text-align: right">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: center">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">Rp 167.540
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">Rp 18.430
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">
-                                                            Rp 185.969
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="vertical-align: middle; text-align: left">
-                                                            8991860205006</td>
-                                                        <td style="vertical-align: middle; text-align: left">BONELESS
-                                                            SKINLESS DADA 500 GR</td>
-
-                                                        <td style="vertical-align: middle; text-align: right">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: center">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">Rp 240.080
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">Rp 18.430
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">
-                                                            Rp 301.000
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="vertical-align: middle; text-align: left;">
-                                                            8993200664399</td>
-                                                        <td style="vertical-align: middle; text-align: left">KANZLER
-                                                            CRISPY CHICKEN NUGGET 450 GR</td>
-
-                                                        <td style="vertical-align: middle; text-align: right">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: center">
-                                                            <input type="number" name="qty_detail" placeholder="0"
-                                                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">Rp 440.908
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">Rp 18.430
-                                                        </td>
-                                                        <td style="vertical-align: middle; text-align: right">
-                                                            Rp 550.000
-                                                        </td>
-                                                    </tr>
+                                                <tbody id="tbl-material" class="custom-scrollbar">
+                                                    
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
@@ -497,21 +432,6 @@ CMS | Create - Purchase Order
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}",
             allowClear: true,
-            // ajax: {
-            //     url: "{{ route('roles.select') }}",
-            //     dataType: 'json',
-            //     delay: 250,
-            //     processResults: function(data) {
-            //         return {
-            //             results: $.map(data, function(item) {
-            //                 return {
-            //                     text: item.name,
-            //                     id: item.id
-            //                 }
-            //             })
-            //         };
-            //     }
-            // }
         });
         $('#select_top_category').select2({
             placeholder: "Choose..",
@@ -692,15 +612,35 @@ CMS | Create - Purchase Order
                         ${formatRupiah(final_price.toString())}
                     `;
                 }
+
+                var html_inputs = `
+                    <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
+                    
+                `;
                 var html_item = `
                     <tr id="${item_id}">
+                        <td style="vertical-align: middle; text-align: left">
+                            
+                            8991860205010</td>
+                        <td style="vertical-align: middle; text-align: left">PAHA BAWAH
+                            500 GR</td>
+
+                        <td style="vertical-align: middle; text-align: right">
+                            <input type="number" name="qty_detail" placeholder="0"
+                                style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
+                        </td>
+                        <td style="vertical-align: middle; text-align: center">
+                            <input type="number" name="qty_detail" placeholder="0"
+                                style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
+                        </td>
+                        <td style="vertical-align: middle; text-align: right">Rp 167.540
+                        </td>
+                        <td style="vertical-align: middle; text-align: right">Rp 18.430
+                        </td>
+                        <td style="vertical-align: middle; text-align: right">
+                            Rp 185.969
+                        </td>
                         <td style="width: 35%; vertical-align: middle">
-                            <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
-                            <input id="product_name_${item_id}" name="product_name[]" type="hidden" class="form-control" value="${product.name}" tabindex="0"/>
-                            <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
-                            <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
-                            <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
-                            <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
                             ${product.code + ' | ' + product.name}
                         </td>
                         <td style="width: 19%; vertical-align: middle; text-align: center">
@@ -756,55 +696,23 @@ CMS | Create - Purchase Order
 
 <script>
     $(function() {
-        $('#payment_method').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}"
-        });
-
-        $("#payment_method").on('change', function() {
-            var val = $("#payment_method option:selected").val();
-            console.log('val', val);
-            if (val == "Tunai") {
-                // $("#elm_receipt").hide();
-                $(".elm_receipt_input").prop('readonly', true);
-                $(".elm_receipt_input").prop('required', false);
-                // $(".elm_cash").show();
-                $(".elm_cash_input").prop('readonly', false);
-            } else {
-                // $(".elm_cash").hide();
-                $(".elm_cash_input").prop('readonly', true);
-                // $("#elm_receipt").show();
-                $(".elm_receipt_input").prop('readonly', false);
-                $(".elm_receipt_input").prop('required', true);
+        function formatRupiah(angka, prefix)
+        {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split   		= number_string.split(','),
+            sisa     		= split[0].length % 3,
+            rupiah     		= split[0].substr(0, sisa),
+            ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+        
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if(ribuan){
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
             }
-        });
-    });
-</script>
-
-<script>
-    $(function() {
-        //parent category
-        $('#select_membership').select2({
-            theme: 'bootstrap4',
-            language: "{{ app()->getLocale() }}",
-            allowClear: true,
-            ajax: {
-                url: "{{ route('membership.select') }}",
-                dataType: 'json',
-                delay: 250,
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(item) {
-                            return {
-                                text: item.code + " | " + item.name + " | " + item.phone,
-                                phone: item.phone,
-                                id: item.id
-                            }
-                        })
-                    };
-                }
-            }
-        });
+        
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+        }
 
         $('#select_product').select2({
             theme: 'bootstrap4 select-product-custom',
