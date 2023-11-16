@@ -326,7 +326,6 @@ class TransactionController extends Controller
                 'kembalian'        => $kembalian
             ];
             $transaction_update = Transaction::find($transaction->id)->update($trans);
-            dd($trans);
             
             if ($transaction_update) {
                 //  CLEAR DETAIL
