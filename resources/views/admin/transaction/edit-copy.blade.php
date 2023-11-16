@@ -315,7 +315,7 @@ CMS | Transaction
                                                 <input placeholder="Ex: RCT123456789" name="receipt_no" type="text"
                                                     class="form-control elm_receipt_input"
                                                     style="text-transform:uppercase" {{ $transaction->payment_method ==
-                                                'Tunai' ? 'readonly' : '' }} tabindex="3" />
+                                                'Tunai' ? 'readonly' : '' }} value="{{ $transaction->receipt_no }}" tabindex="3" />
                                             </div>
 
                                             <!-- role -->
