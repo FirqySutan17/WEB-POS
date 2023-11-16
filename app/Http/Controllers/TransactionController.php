@@ -316,6 +316,7 @@ class TransactionController extends Controller
             }
 
             $trans = [
+                "membership_id"   => $request->membership_id,
                 'receipt_no'    => $receipt_no,
                 'payment_method'    => $request->payment_method,
                 'cash'          => $cash,
