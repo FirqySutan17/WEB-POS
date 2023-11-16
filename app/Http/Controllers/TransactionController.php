@@ -150,7 +150,7 @@ class TransactionController extends Controller
                 'receipt_no'    => $receipt_no,
                 'trans_date'    => date('Y-m-d'),
                 'payment_method'    => $request->payment_method,
-                'cash'          => (int) str_replace(".", "", $request->cash),
+                'cash'          => (int) str_replace(".", "", $cash),
                 'sub_price'     => $sub_price,
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
