@@ -69,11 +69,11 @@ CMS | Product
 					if ($product->stock < 5) { $low_stock="bg-danger" ; } @endphp <tr>
 						{{-- {{dd($product) }} --}}
 						<td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
-						<td style="width: 20%; vertical-align: middle;" class="{{ $low_stock }}">{{
+						<td style="width: 25%; vertical-align: middle;" class="{{ $low_stock }}">{{
 							$product->supplier?->name }} </td>
-						<td style="width: 35%; vertical-align: middle;" class="{{ $low_stock }}">{{ $product->name.' |
+						<td style="width: 40%; vertical-align: middle;" class="{{ $low_stock }}">{{ $product->name.' |
 							'.$product->code }}</td>
-						<td style="width: 30%; vertical-align: middle" class="{{ $low_stock }}">
+						<td style="width: 20%; vertical-align: middle" class="{{ $low_stock }}">
 							Store : Rp {{ number_format($product->price_store) }} ( {{ $product->discount_store }} %)
 							<br>
 							OLShop : Rp {{ number_format($product->price_olshop) }} ( {{ $product->discount_olshop }} %)
