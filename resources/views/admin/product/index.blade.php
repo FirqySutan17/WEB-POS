@@ -54,6 +54,7 @@ CMS | Product
 				<thead>
 					<tr class="head-report">
 						<th class="center-text">No <span class="dividerHr"></span></th>
+						<th class="heightHr">Supplier <span class="dividerHr"></span></th>
 						<th class="heightHr">Name <span class="dividerHr"></span></th>
 						<th class="heightHr">Price <span class="dividerHr"></span></th>
 						{{-- <th class="heightHr">Stock <span class="dividerHr"></span></th> --}}
@@ -66,8 +67,11 @@ CMS | Product
 					@php
 					$low_stock = "";
 					if ($product->stock < 5) { $low_stock="bg-danger" ; } @endphp <tr>
+						{{-- {{dd($product) }} --}}
 						<td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
-						<td style="width: 55%; vertical-align: middle;" class="{{ $low_stock }}">{{ $product->name.' |
+						<td style="width: 20%; vertical-align: middle;" class="{{ $low_stock }}">{{
+							$product->supplier?->name }} </td>
+						<td style="width: 35%; vertical-align: middle;" class="{{ $low_stock }}">{{ $product->name.' |
 							'.$product->code }}</td>
 						<td style="width: 30%; vertical-align: middle" class="{{ $low_stock }}">
 							Store : Rp {{ number_format($product->price_store) }} ( {{ $product->discount_store }} %)
@@ -99,8 +103,8 @@ CMS | Product
 								@endcan
 
 								<div class="boxEdit">
-									<a href="{{ route('product.print', ['product' => $product]) }}" target="_blank" class="btn-sm btn-info"
-										role="button">
+									<a href="{{ route('product.print', ['product' => $product]) }}" target="_blank"
+										class="btn-sm btn-info" role="button">
 										<i class='bx bxs-printer'></i>
 									</a>
 								</div>
