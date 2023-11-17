@@ -29,15 +29,74 @@ CMS | Add Product
 
                             <div class="col-12">
                                 <div class="row">
+
+                                    <div class="col-3">
+                                        <div class="form-group _form-group">
+                                            <label for="select_user_kategori" class="font-weight-bold">
+                                                Category <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_user_kategori" name="kategori"
+                                                data-placeholder="Choose categories"
+                                                class="js-example-placeholder-multiple" required>
+                                                <option value="Internal">Internal</option>
+                                                <option value="External">External</option>
+                                            </select>
+                                            @error('role')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                            <!-- error message -->
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3">
+                                        <!-- code -->
+                                        <div class="form-group _form-group">
+                                            <label for="input_post_code" class="font-weight-bold">
+                                                Supplier <span class="wajib">* </span>
+                                            </label>
+                                            <select id="supplier_id" name="supplier_id"
+                                                data-placeholder="Choose supplier"
+                                                class="js-example-placeholder-multiple" required>
+                                                @foreach($suppliers as $supplier)
+                                                <option value="{{$supplier->id}}">
+                                                    {{$supplier->supplier_code}} - {{$supplier->name}}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @error('supplier_id')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        {{-- Skill --}}
+                                        <div class="form-group  _form-group">
+                                            <label for="select_product_category" class="font-weight-bold">
+                                                Type <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_product_category" name="categories[]"
+                                                data-placeholder="Choose product type.." class="custom-select" required
+                                                multiple>
+
+                                            </select>
+                                        </div>
+                                        {{-- End Skill --}}
+                                    </div>
                                     <div class="col-6">
                                         <!-- code -->
                                         <div class="form-group _form-group">
                                             <label for="input_post_code" class="font-weight-bold">
                                                 Barcode <span class="wajib">* </span>
                                             </label>
-                                            <input id="input_post_code" value="{{ old('code', '8891') }}" max="13" name="code"
+                                            <input id="input_post_code" value="{{ old('code') }}" max="13" name="code"
                                                 type="text" class="form-control @error('code') is-invalid @enderror"
-                                                placeholder="Scan barcode here.." required tabindex="1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  autofocus />
+                                                placeholder="Scan barcode here.." required tabindex="1"
+                                                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                                                autofocus />
                                             @error('code')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -85,14 +144,13 @@ CMS | Add Product
                                     <div class="col-3">
                                         <div class="form-group _form-group">
                                             <label for="price_olshop" class="font-weight-bold">
-                                                E-Commerce Price <span class="wajib">* </span>
+                                                E-Commerce Price
                                             </label>
-                                            <input id="price_olshop" value="{{ old('price_olshop') }}"
+                                            <input id="price_olshop" value="{{ old('price_olshop', '0') }}"
                                                 name="price_olshop" type="text"
                                                 class="form-control @error('price_olshop') is-invalid @enderror"
                                                 placeholder="Ex: 5.000"
-                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-                                                required />
+                                                onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
                                             @error('price_olshop')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -106,7 +164,7 @@ CMS | Add Product
                                             <label for="stock_olshop" class="font-weight-bold">
                                                 Store Discount (%)
                                             </label>
-                                            <input id="discount_store" value="{{ old('discount_store') }}"
+                                            <input id="discount_store" value="{{ old('discount_store', '0') }}"
                                                 name="discount_store" type="number"
                                                 class="form-control @error('discount_store') is-invalid @enderror"
                                                 placeholder="Ex: 5" />
@@ -123,7 +181,7 @@ CMS | Add Product
                                             <label for="stock_olshop" class="font-weight-bold">
                                                 E-Commerce Discount (%)
                                             </label>
-                                            <input id="discount_olshop" value="{{ old('discount_olshop') }}"
+                                            <input id="discount_olshop" value="{{ old('discount_olshop', '0') }}"
                                                 name="discount_olshop" type="number"
                                                 class="form-control @error('discount_olshop') is-invalid @enderror"
                                                 placeholder="Ex: 5" />
@@ -133,44 +191,6 @@ CMS | Add Product
                                             </span>
                                             @enderror
                                         </div>
-                                    </div>
-                                </div>
-
-                                <!-- Kategori -->
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="form-group _form-group">
-                                            <label for="select_user_kategori" class="font-weight-bold">
-                                                Category <span class="wajib">*</span>
-                                            </label>
-                                            <select id="select_user_kategori" name="kategori"
-                                                data-placeholder="Choose categories"
-                                                class="js-example-placeholder-multiple">
-                                                <option value="Internal">Internal</option>
-                                                <option value="External">External</option>
-                                            </select>
-                                            @error('role')
-                                            <span class="invalid-feedback">
-                                                {{ $message }}
-                                            </span>
-                                            @enderror
-                                            <!-- error message -->
-                                        </div>
-
-                                    </div>
-                                    <div class="col-6">
-                                        {{-- Skill --}}
-                                        <div class="form-group  _form-group">
-                                            <label for="select_product_category" class="font-weight-bold">
-                                                Type <span class="wajib">*</span>
-                                            </label>
-                                            <select id="select_product_category" name="categories[]"
-                                                data-placeholder="Choose product type.." class="custom-select" required
-                                                multiple>
-
-                                            </select>
-                                        </div>
-                                        {{-- End Skill --}}
                                     </div>
                                 </div>
 
@@ -273,6 +293,7 @@ CMS | Add Product
 @push('javascript-internal')
 <script>
     $(function() {
+        $("#supplier_id").empty();
         $('#select_user_kategori').select2({
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}",
@@ -294,16 +315,27 @@ CMS | Add Product
             // }
         });
 
-        $("#select_user_kategori").change(function() {
-            let isian = $(this).val();
-            if (isian == 'Internal') {
-                $("#input_post_code").val('8891');
-            } else {
-                $("#input_post_code").val('889010121');
+        //select2 tag
+        $('#supplier_id').select2({
+            theme: 'bootstrap4',
+            language: "{{ app()->getLocale() }}",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('supplier.select') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.supplier_code + " - " + item.name,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
             }
         });
-
-        //select2 tag
     $('#select_product_category').select2({
             theme: 'bootstrap4',
             language: "",

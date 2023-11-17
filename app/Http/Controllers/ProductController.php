@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Portfolio;
-use App\Models\ProjectType;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -114,7 +113,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admin.product.create');
+        $suppliers = Supplier::all();
+        return view('admin.product.create', compact('suppliers'));
     }
 
     /**
@@ -128,6 +128,7 @@ class ProductController extends Controller
         $request->validate([
             'code' => 'required|string|unique:products,code',
             'name' => 'required',
+            'supplier_id' => 'required',
             'price_store' => 'required|string',
             'price_olshop' => 'required',
             'categories' => 'required',
@@ -138,6 +139,7 @@ class ProductController extends Controller
             $product = Product::create([
                 'name' => $request->name,
                 'code' => $request->code,
+                'supplier_id' => $request->supplier_id,
                 'price_store' => str_replace(".", "", $request->price_store),
                 'price_olshop' => str_replace(".", "", $request->price_olshop),
                 'discount_store' => $request->discount_store,
@@ -195,8 +197,10 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $statuses = $this->statuses();
-
-        return view('admin.product.edit', compact('product'));
+        $supplier = Supplier::all();
+        $supplierSelected = $product->supplier;
+// dd($supplierSelected);
+        return view('admin.product.edit', compact('product', 'supplier', 'supplierSelected'));
 
     }
 
@@ -213,6 +217,7 @@ class ProductController extends Controller
             $request->all(),
             [
                 'name' => 'required',
+                'supplier_id' => 'required',
                 'code' => 'required|string|unique:products,code,' .  $product->id,
                 'price_store' => 'required|string',
                 'price_olshop' => 'required',
@@ -232,6 +237,7 @@ class ProductController extends Controller
         try {
             $update_data = [
                 'name' => $request->name,
+                'supplier_id' => $request->supplier_id,
                 'price_store' => str_replace(".", "", $request->price_store),
                 'price_olshop' => str_replace(".", "", $request->price_olshop),
                 'discount_store' => $request->discount_store,

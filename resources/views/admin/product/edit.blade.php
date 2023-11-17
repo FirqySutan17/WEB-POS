@@ -25,6 +25,73 @@ CMS | Edit Product
 
                             <div class="col-12">
                                 <div class="row">
+                                    <div class="col-3">
+                                        <!-- Kategori -->
+                                        <div class="form-group _form-group">
+                                            <label for="select_user_categories" class="font-weight-bold">
+                                                Categories <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_user_categories" name="kategori"
+                                                data-placeholder="Choose categories"
+                                                class="js-example-placeholder-multiple">
+                                                <option value="Internal" {{ $product->categories == 'Internal' ?
+                                                    'selected':''
+                                                    }}>Internal</option>
+                                                <option value="External" {{ $product->categories == 'External' ?
+                                                    'selected':''
+                                                    }}>External</option>
+                                            </select>
+                                            @error('role')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                            <!-- error message -->
+                                        </div>
+                                        <!-- end role -->
+                                    </div>
+                                    <div class="col-3">
+                                        <!-- code -->
+                                        <div class="form-group _form-group">
+                                            <label for="input_post_code" class="font-weight-bold">
+                                                Supplier <span class="wajib">* </span>
+                                            </label>
+                                            <select id="supplier_id" name="supplier_id"
+                                                data-placeholder="Choose supplier"
+                                                class="js-example-placeholder-multiple" required>
+                                                @if (old('supplier_id', $supplierSelected))
+                                                <option value="{{ old('supplier_id', $supplierSelected['id']) }}"
+                                                    selected>
+                                                    {{ old('supplier_id', $supplierSelected['name'])}}
+                                                </option>
+                                                @endif
+                                            </select>
+                                            @error('supplier_id')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        {{-- Skill --}}
+                                        <div class="form-group  _form-group">
+                                            <label for="select_product_category" class="font-weight-bold">
+                                                Type <span class="wajib">*</span>
+                                            </label>
+                                            <select id="select_product_category" name="categories[]"
+                                                data-placeholder="Choose product type.." class="custom-select" required
+                                                multiple>
+                                                @if(old('categories', $product->types))
+                                                @foreach (old('categories', $product->types) as $category)
+                                                <option value="{{ $category->id }}" selected>{{ $category->categories }}
+                                                </option>
+                                                @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                        {{-- End Skill --}}
+                                    </div>
                                     <div class="col-6">
                                         <!-- slug -->
                                         <div class="form-group _form-group">
@@ -138,55 +205,6 @@ CMS | Edit Product
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-6">
-                                        <!-- Kategori -->
-                                        <div class="form-group _form-group">
-                                            <label for="select_user_categories" class="font-weight-bold">
-                                                Categories <span class="wajib">*</span>
-                                            </label>
-                                            <select id="select_user_categories" name="kategori"
-                                                data-placeholder="Choose categories"
-                                                class="js-example-placeholder-multiple">
-                                                <option value="Internal" {{ $product->categories == 'Internal' ?
-                                                    'selected':''
-                                                    }}>Internal</option>
-                                                <option value="External" {{ $product->categories == 'External' ?
-                                                    'selected':''
-                                                    }}>External</option>
-                                            </select>
-                                            @error('role')
-                                            <span class="invalid-feedback">
-                                                {{ $message }}
-                                            </span>
-                                            @enderror
-                                            <!-- error message -->
-                                        </div>
-                                        <!-- end role -->
-                                    </div>
-                                    <div class="col-6">
-                                        {{-- Skill --}}
-                                        <div class="form-group  _form-group">
-                                            <label for="select_product_category" class="font-weight-bold">
-                                                Type <span class="wajib">*</span>
-                                            </label>
-                                            <select id="select_product_category" name="categories[]"
-                                                data-placeholder="Choose product type.." class="custom-select" required
-                                                multiple>
-                                                @if(old('categories', $product->types))
-                                                @foreach (old('categories', $product->types) as $category)
-                                                <option value="{{ $category->id }}" selected>{{ $category->categories }}
-                                                </option>
-                                                @endforeach
-                                                @endif
-                                            </select>
-                                        </div>
-                                        {{-- End Skill --}}
-                                    </div>
-                                </div>
-
-
-
                                 <!-- description -->
                                 <div class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
@@ -285,6 +303,27 @@ CMS | Edit Product
 @push('javascript-internal')
 <script>
     $(function() {
+        $('#supplier_id').select2({
+            theme: 'bootstrap4',
+            language: "{{ app()->getLocale() }}",
+            allowClear: true,
+            ajax: {
+                url: "{{ route('supplier.select') }}",
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: $.map(data, function(item) {
+                            return {
+                                text: item.supplier_code + " | " + item.name,
+                                supplier_code: item.supplier_code,
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+            }
+        });
         $('#select_user_categories').select2({
             theme: 'bootstrap4',
             language: "{{ app()->getLocale() }}",

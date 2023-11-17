@@ -23,6 +23,11 @@ class Supplier extends Model
         return $this->hasMany(PurchaseOrder::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     public function scopeSearch($query, $title)
     {
         return $query->where('name', 'LIKE', "%{$title}%");
