@@ -152,7 +152,7 @@ CMS | Create - Purchase Order
                                                 Term <span class="wajib">* </span>
                                             </label>
                                             <input id="input_payment_term" value="{{ old('top_days') }}" name="top_days"
-                                                type="text" class="number_only form-control @error('top_days') is-invalid @enderror"
+                                                type="text" class="number_only trigger_term form-control @error('top_days') is-invalid @enderror"
                                                 placeholder="0" required style="text-align: center" />
                                             @error('top_days')
                                             <span class="invalid-feedback" role="alert">
@@ -473,55 +473,8 @@ CMS | Create - Purchase Order
 </script>
 
 <script>
-    function onfocus_color(item_id) {
-        $(`#btn_delete_${item_id}`).removeClass('btn-danger');
-        $(`#btn_delete_${item_id}`).addClass('btn-warning');
-    }
-
-    function onblur_color(item_id) {
-        $(`#btn_delete_${item_id}`).removeClass('btn-warning');
-        $(`#btn_delete_${item_id}`).addClass('btn-danger');
-    }
-
-    function store_to_display() {
-        let product_code = $("input[name^=product_code]").map(function(idx, elem) {
-            return $(elem).val();
-        }).get();
-
-        let product_name = $("input[name^=product_name]").map(function(idx, elem) {
-            return $(elem).val();
-        }).get();
-
-        let basic_price = $("input[name^=basic_price]").map(function(idx, elem) {
-            return $(elem).val();
-        }).get();
-
-        let discount_store = $("input[name^=discount_store]").map(function(idx, elem) {
-            return $(elem).val();
-        }).get();
-
-        let final_price = $("input[name^=final_price]").map(function(idx, elem) {
-            return $(elem).val();
-        }).get();
-
-        // let total_price = $("input[name^=total_price]").map(function(idx, elem) {
-        //     return $(elem).val();
-        // }).get();
-
-        let quantity = $("input[name^=quantity]").map(function(idx, elem) {
-            return $(elem).val();
-        }).get();
-
-    }
-
+    var vat_amount = parseInt({{ config('app.vat_amount') }});
     function calculate_vat() {
-        clearInputItem();
-        (function(next) {
-            calculate_total();
-            next()
-        }(function() {
-            store_to_display();
-        }))
     }
 
     function calculate_total() {
@@ -555,10 +508,6 @@ CMS | Create - Purchase Order
         $("#total_transaction").text(formatRupiah(total_price_item.toString()));
     }
 
-    function displayNames(value, text) {
-        $("#input-typing").val(value);
-        proceed_enter();
-    }
 
     function proceed_enter() {
         var product_code = $('#select_product').val().trim();
@@ -582,7 +531,6 @@ CMS | Create - Purchase Order
     }
 
     function add_product_item(product_code) {
-        console.log(product_code);
         $.ajax({
             url: "{{ route('product.select_one') }}",
             type: "POST",
@@ -603,11 +551,13 @@ CMS | Create - Purchase Order
                 var id = product_code;
                 var item_id = "item_product_" + id;
 
+                var default_data = 0;
+
                 var html_inputs = `
                     <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
-                    <input id="amount_hidden_${item_id}" name="amount[]" type="hidden" class="form-control" tabindex="0"/>
-                    <input id="tax_amount_hidden_${item_id}" name="tax_amount[]" type="hidden" class="form-control" tabindex="0"/>
-                    <input id="total_amount_hidden_${item_id}" name="total_amount[]" type="hidden" class="form-control" tabindex="0"/>
+                    <input id="amount_hidden_${item_id}" name="amount[]" type="hidden" class="form-control" value="${default_data}" tabindex="0"/>
+                    <input id="tax_amount_hidden_${item_id}" name="tax_amount[]" type="hidden" class="form-control" value="${default_data}" tabindex="0"/>
+                    <input id="total_amount_hidden_${item_id}" name="total_amount[]" type="hidden" class="form-control" value="${default_data}" tabindex="0"/>
                 `;
                 var html_item = `
                     <tr id="${item_id}">
@@ -617,20 +567,16 @@ CMS | Create - Purchase Order
                         </td>
                         <td style="vertical-align: middle; text-align: left">${product.name}</td>
                         <td style="vertical-align: middle; text-align: right">
-                            <input id="quantity_${item_id}" type="text" name="quantity[]" placeholder="0" class="trigger_row"
+                            <input id="quantity_${item_id}" type="text" name="unit_price[]" placeholder="0" class="trigger_row number_only"
                                 style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
                         </td>
                         <td style="vertical-align: middle; text-align: center">
-                            <input id="unit_price_${item_id}" type="text" name="unit_price[]" placeholder="0" class="trigger_row"
+                            <input id="unit_price_${item_id}" type="text" name="quantity[]" placeholder="0" value="1" class="trigger_row number_only"
                                 style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
                         </td>
-                        <td style="vertical-align: middle; text-align: right">Rp 167.540
-                        </td>
-                        <td style="vertical-align: middle; text-align: right">Rp 18.430
-                        </td>
-                        <td style="vertical-align: middle; text-align: right">
-                            Rp 185.969
-                        </td>
+                        <td style="vertical-align: middle; text-align: right" id="amount_text_${item_id}">${default_data}</td>
+                        <td style="vertical-align: middle; text-align: right" id="tax_amount_text_${item_id}">${default_data}</td>
+                        <td style="vertical-align: middle; text-align: right" id="total_amount_text_${item_id}">${default_data}</td>
                         <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
                             <div class="boxInside" style="align-items: center; justify-content: center;">
                                 <div class="boxDelete">
@@ -644,20 +590,14 @@ CMS | Create - Purchase Order
                 `;
 
                 $("#tbl-material").append(html_item);
-                calculate_vat();
-                $(`#quantity_${item_id}`).on('keyup', function (e) {
+                clearInputItem();
+                $(`#quantity_${item_id}, #unit_price_${item_id}`).on('keyup',  function (e) {
                     var code = e.keyCode || e.which;
                     // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
                     var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
                     if (allowed_keycode.includes(code)) {
-                        // var str_quantity_product = $(this).val();
-                        // var quantity_product = code == 38 ? parseInt(str_quantity_product) + 1 : parseInt(str_quantity_product) - 1;
-                        var qty = Number($(`#quantity_${item_id}`).val());
-                        var final_price = Number($(`#final_price_${item_id}`).val());
-                        var total_price = final_price * qty;
-                        $(`#total_price_${item_id}`).val(total_price);
-                        $(`#text_final_price_${item_id}`).text(formatRupiah(total_price.toString()));
-                        calculate_vat();
+                        console.log(item_id);
+                        calculate_row(item_id);
                     } else {
                         e.preventDefault();
                     }
@@ -666,6 +606,20 @@ CMS | Create - Purchase Order
         });
 
     }
+
+    function calculate_row(item_id) {
+        var is_tax          = is_tax_active();
+        var unit_price      = $(`#unit_price_${item_id}`).val();
+        var quantity        = $(`#quantity_${item_id}`).val();
+
+        var amount          = Number(unit_price) * Number(quantity);
+        var tax_amount      = is_tax ? amount * (vat_amount / 100) : 0;
+        var total_amount    = amount + tax_amount;
+
+        
+    }
+
+    const is_tax_active = () => $(`input[name="is_tax"]:checked`).val() == 'yes' ?  true : false;
 
     function delete_row_product(eid_item) {
         $("#" + eid_item).remove();
@@ -732,10 +686,52 @@ CMS | Create - Purchase Order
         });
 
         $(`.trigger_term`).change(function() {
+            var id_element  = $(this).attr('id');
+            trigger_date_top(id_element);
+        });
+
+        $(`#input_payment_term`).keyup(function() {
+            var id_element  = $(this).attr('id');
+            trigger_date_top(id_element);
+        });
+
+        function trigger_date_top(id_element) {
             var start_date  = $("#input_date_po").val();
             var end_date    = $("#input_date_top").val();
-            console.log(start_date, end_date);
-        });
+            var term_days   = $("#input_payment_term").val();
+
+            var start_date_conv = new Date(start_date);
+            if (id_element == 'input_date_top') {
+                term_days = parseInt(term_days);
+                var end_date_new = new Date(start_date_conv.setDate(start_date_conv.getDate() + term_days));
+
+                $("#input_date_top").val(formatDate(end_date_new));
+            } else if ((id_element == 'input_date_po' || id_element == 'input_payment_term')) {
+                var new_top_days = datediff(parseDate(start_date), parseDate(end_date));
+                $("#input_payment_term").val(new_top_days);
+                console.log(new_top_days);
+            }
+        }
+
+        const getTwoDigits = (value) => value < 10 ? `0${value}` : value;
+
+        const formatDate = (date) => {
+            const day = getTwoDigits(date.getDate());
+            const month = getTwoDigits(date.getMonth() + 1); // add 1 since getMonth returns 0-11 for the months
+            const year = date.getFullYear();
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function datediff(first, second) {        
+            return Math.round((second - first) / (1000 * 60 * 60 * 24));
+        }
+
+        function parseDate(str) {
+            var mdy = str.split('-');
+            return new Date(str);
+        }
+
     });
 </script>
 @endpush
