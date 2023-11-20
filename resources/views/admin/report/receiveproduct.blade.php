@@ -127,7 +127,7 @@ CMS | Report Receive
                     @endif
                 </tbody>
                 <tr>
-                    <th colspan="2" style="text-align:right" colspan="2">Total</th>
+                    <th colspan="3" style="text-align:right" colspan="2">Total</th>
                     <th style="text-align:right">{{ number_format($total_qty) }}</th>
                     <td></td>
                         <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td>
