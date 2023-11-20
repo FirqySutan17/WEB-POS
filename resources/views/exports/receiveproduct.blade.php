@@ -323,60 +323,60 @@
             <tr>
                 <th style="font-size: 24px">REPORT RECEIVE <br> by Product</th>
             </tr>
-            <tr>
-                <td style="text-align: center">04/09/2023 - 30/09/2023</td>
-            </tr>
         </table>
     </div>
     <div id="page-content">
         <table class="table" border="1">
             <thead>
                 <tr class="head-report">
-                    <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
-                    <th rowspan="2" class="center-text">Product <span class="dividerHr"></span></th>
-                    <th colspan="5" class="heightHr center-text">Receive <span class="dividerHr"></span>
-                    </th>
-                </tr>
-                <tr class="head-report">
-                    <th class="heightHr center-text">Qty<span class="dividerHr"></span>
-                    </th>
-                    <th class="center-text">PIC<span class="dividerHr"></span></th>
-                    <th class="center-text">Delivery No<span class="dividerHr"></span></th>
-                    <th class="center-text">Receive Date<span class="dividerHr"></span></th>
-                    <th class="center-text">Receive Code<span class="dividerHr"></span></th>
+                    <th class="center-text">No <span class="dividerHr"></span></th>
+                    <th class="center-text">Item <span class="dividerHr"></span></th>
+                    <th class="center-text">Supplier <span class="dividerHr"></span></th>
+                    <th class="center-text">Qty <span class="dividerHr"></span></th>
+                    <th class="center-text">Unit Price <span class="dividerHr"></span></th>
+                    <th class="center-text">Amount <span class="dividerHr"></span></th>
                 </tr>
             </thead>
+            <?php $total_qty = 0; $total_amount = 0; ?>
             <tbody>
                 @if (!empty($data))
                 @foreach ($data as $item)
                 <?php $rowspan = 1 + count($item['details']) ?>
-                <tr>
-                    <td rowspan="{{ $rowspan }}" class="center-text">
-                        {{ $loop->iteration }}
-                    </td>
-                    <td rowspan="{{ $rowspan }}" class="center-text">
-                        {{ $item['product'] }}
-                    </td>
-                    <td colspan="5">
-
-                    </td>
-                </tr>
-                @foreach ($item['details'] as $rcv)
-                <tr>
-                    <td class="center-text">{{ $rcv['quantity'] }}</td>
-                    <td class="center-text">{{ $rcv['pic'] }}</td>
-                    <td class="center-text">{{ $rcv['delivery_no'] }}</td>
-                    <td class="center-text">{{ $rcv['receive_date'] }}</td>
-                    <td class="center-text">{{ $rcv['receive_code'] }}</td>
-                </tr>
-                @endforeach
+                <div class="rt-invoice">
+                    <tr>
+                        <td class="center-text">
+                            {{ $loop->iteration }}
+                        </td>
+                        <td style="vertical-align: middle; text-align:left">
+                            {{ $item['product'] }}
+                        </td>
+                        <td style="vertical-align: middle; text-align:left">
+                            {{ $item['supplier'] }}
+                        </td>
+                        <?php 
+                            $qty        = 0;
+                            $amount     = 0;
+                            foreach ($item['details'] as $v) {
+                                $qty    += $v['quantity'];
+                                $amount += str_replace(".", "", $v['amount']);
+                            } 
+                            $unit_price = round($amount / $qty);
+                            $total_qty += $qty;
+                            $total_amount += $amount;
+                        ?>
+                        <td style="vertical-align: middle; text-align:right">{{ number_format($qty) }}</td>
+                        <td style="vertical-align: middle; text-align:right">{{ number_format($unit_price) }}</td>
+                        <td style="vertical-align: middle; text-align:right">{{ number_format($amount) }}</td>
+                        
+                    </tr>
+                </div>
                 @endforeach
                 @endif
             </tbody>
         </table>
     </div>
     <div id="page-footer">
-        <p style="text-transform: uppercase">04-09-2023 12:00:00/{{ Auth::user()->name }}/{{
+        <p style="text-transform: uppercase">{{ date('Y-m-d H:i:s') }}/{{ Auth::user()->name }}/{{
             Auth::user()->employee_id }}</p>
     </div>
 

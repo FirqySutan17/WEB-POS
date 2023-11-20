@@ -678,11 +678,13 @@ class ReportController extends Controller
             $query = "
                 SELECT 
                     receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name AS pic, 
-                    receive_detail.product_code, products.name AS product_name, receive_detail.quantity, COALESCE(receive_detail.unit_price, 0) as unit_price, COALESCE(receive_detail.amount, 0) as amount
+                    receive_detail.product_code, products.name AS product_name, receive_detail.quantity, COALESCE(receive_detail.unit_price, 0) as unit_price, COALESCE(receive_detail.amount, 0) as amount,
+                    suppliers.supplier_code, suppliers.name as supplier_name
                 FROM tr_receive_detail receive_detail
                 INNER JOIN tr_receive receive ON receive_detail.receive_code = receive.receive_code
                 INNER JOIN users ON receive.created_by = users.id
                 INNER JOIN products ON receive_detail.product_code = products.code
+                LEFT JOIN suppliers ON products.supplier_id = suppliers.id
                 WHERE receive.receive_date BETWEEN '$sdate' AND '$edate' ".$where."
                 $order_by
             ";
@@ -754,6 +756,7 @@ class ReportController extends Controller
                     $product_code = $item->product_code;
                     if (!array_key_exists($product_code, $data_receive)) {
                         $data_receive[$product_code] = [
+                            "supplier"  => $item->supplier_code." | ".$item->supplier_name,
                             "product"  => $item->product_code." | ".$item->product_name,
                             "details"  => []
                         ];

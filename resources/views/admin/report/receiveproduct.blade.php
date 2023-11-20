@@ -84,6 +84,7 @@ CMS | Report Receive
                     <tr class="head-report">
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="center-text">Item <span class="dividerHr"></span></th>
+                        <th class="center-text">Supplier <span class="dividerHr"></span></th>
                         <th class="center-text">Qty <span class="dividerHr"></span></th>
                         <th class="center-text">Unit Price <span class="dividerHr"></span></th>
                         <th class="center-text">Amount <span class="dividerHr"></span></th>
@@ -101,6 +102,9 @@ CMS | Report Receive
                             </td>
                             <td style="vertical-align: middle; text-align:left">
                                 {{ $item['product'] }}
+                            </td>
+                            <td style="vertical-align: middle; text-align:left">
+                                {{ $item['supplier'] }}
                             </td>
                             <?php 
                                 $qty        = 0;
