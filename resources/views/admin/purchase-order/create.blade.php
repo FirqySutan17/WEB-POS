@@ -616,7 +616,9 @@ CMS | Create - Purchase Order
         var tax_amount      = is_tax ? amount * (vat_amount / 100) : 0;
         var total_amount    = amount + tax_amount;
 
-        
+        // convert variables into number
+        var num_unit_price  = Number(unit_price.replace(",", ""));
+        $(`#amount_hidden_`).val(amount);
     }
 
     const is_tax_active = () => $(`input[name="is_tax"]:checked`).val() == 'yes' ?  true : false;
