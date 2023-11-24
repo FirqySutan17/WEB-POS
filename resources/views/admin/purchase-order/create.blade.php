@@ -656,6 +656,15 @@ CMS | Create - Purchase Order
                 url: "{{ route('product.select2_product') }}",
                 dataType: 'json',
                 delay: 250,
+                data: function (params) {
+                    var query = {
+                        q: params.term,
+                        supplier_id: $('#supplier_id :selected').val()
+                    }
+
+                    // Query parameters will be ?search=[term]&type=public
+                    return query;
+                },
                 processResults: function(data) {
                     return {
                         results: $.map(data, function(item) {

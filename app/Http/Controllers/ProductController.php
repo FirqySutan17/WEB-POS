@@ -65,6 +65,7 @@ class ProductController extends Controller
     {
         $product_code = $request->product_code;
         $source = !empty($request->source) ? $request->source : "";
+        $supplier_id = !empty($request->supplier_id) ? $request->supplier_id : "";
         $result = [
             "status"    => "failed",
             "message"   => "Product not found",
@@ -72,7 +73,11 @@ class ProductController extends Controller
         ];
 
         if (!empty($product_code)) {
-            $products = Product::select('id', 'code', 'name', 'price_store', 'discount_store', 'stock', 'is_vat')->where('code', $product_code)->first();
+            $query = Product::select('id', 'code', 'name', 'price_store', 'discount_store', 'stock', 'is_vat')->where('code', $product_code);
+            if (!empty($supplier_id)) {
+                $query->where('supplier_id', $supplier_id);
+            }
+            $products = $query->first();
             if (!empty($products)) {
                 $result["message"]  = "";
                 $result["status"]   = "success";
