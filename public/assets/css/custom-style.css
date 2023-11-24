@@ -6,13 +6,18 @@
 }
 
 ._card {
-  max-width: 1200px;
+  max-width: 100%;
 }
 
 .btn {
   font-size: 13px;
 }
-
+.table-responsive {
+  width: 100%;
+}
+.table-width {
+  width: 2700px;
+}
 .form-control,
 .form-select {
   font-size: 13px;

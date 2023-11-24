@@ -150,21 +150,20 @@
                     </li>
 
                     <li class="dropdown">
-                        <a class="nav-link navSubMenu menu-title" href="javascript:void(0)"><i
-                                data-feather="codepen"></i><span>Code</span></a>
+                        <a class="nav-link navSubMenu menu-title {{routeActive(['common-code.index', 'common-code.create', 'common-code.edit', 'account-code.index', 'account-code.create', 'account-code.edit'])}}"
+                            href="javascript:void(0)"><i data-feather="codepen"></i><span>Code</span></a>
                         <ul class="nav-submenu menu-content">
-
+                            <li>
+                                <a href="{{ route('account-code.index') }}"
+                                    class="{{routeActive(['account-code.edit', 'account-code-index', 'account-code.create'])}}">
+                                    Account
+                                </a>
+                            </li>
                             <li>
                                 <a href="{{ route('common-code.index') }}" class="{{routeActive('common-code.index')}}">
                                     Common
                                 </a>
                             </li>
-                            <li>
-                                <a href="#" class="">
-                                    Account
-                                </a>
-                            </li>
-
                         </ul>
                     </li>
 
@@ -186,6 +185,32 @@
                                 </a>
                             </li>
 
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a class="nav-link navSubMenu menu-title {{routeActive(['account-slip.index', 'account-slip.create', 'account-slip.edit'])}}"
+                            href="javascript:void(0)"><i data-feather="file-text"></i><span>Account</span></a>
+                        <ul class="nav-submenu menu-content">
+
+                            <li>
+                                <a href="{{ route('account-slip.index') }}"
+                                    class="{{routeActive(['account-slip.index', 'account-slip.create', 'account-slip.edit'])}}">
+                                    Account Slip
+                                </a>
+                            </li>
+                            {{-- <li>
+                                <a href="{{ route('receive-material.index') }}"
+                                    class="{{routeActive(['receive-material.index', 'receive-material.create', 'receive-material.edit'])}}">
+                                    Trial Balance
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('receive-material.index') }}"
+                                    class="{{routeActive(['receive-material.index', 'receive-material.create', 'receive-material.edit'])}}">
+                                    Daily Remainder
+                                </a>
+                            </li> --}}
                         </ul>
                     </li>
 

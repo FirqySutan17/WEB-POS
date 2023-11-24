@@ -109,11 +109,17 @@ Route::resource('/code', App\Http\Controllers\CodeController::class);
 Route::get('/common-code/select', [App\Http\Controllers\CommonCodeController::class, 'select'])->name('common-code.select');
 Route::resource('/common-code', App\Http\Controllers\CommonCodeController::class);
 
+// Account Code Route
+Route::resource('/account-code', App\Http\Controllers\AccountCodeController::class);
+
 // Purchase Order Route
 Route::resource('/purchase-order', App\Http\Controllers\PurchaseOrderController::class);
 
 // Receive Material Route
 Route::resource('/receive-material', App\Http\Controllers\ReceiveMaterialController::class);
+
+// Account Slip Route
+Route::resource('/account-slip', App\Http\Controllers\AccountSlipController::class);
 
 // Supplier Route
 Route::get('/supplier/select', [App\Http\Controllers\SupplierController::class, 'select'])->name('supplier.select');
