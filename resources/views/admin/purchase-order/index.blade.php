@@ -66,25 +66,25 @@ CMS | Purchase Order
                     @forelse ($purchaseOrders as $p)
                     <tr>
                         <td style="width: 5%;" class="center-text">{{ $loop->iteration }}</td>
-                        <td style="width: 15%; vertical-align: middle">{{ $p->date_po }}</td>
+                        <td style="width: 15%; vertical-align: middle">{{ $p->date_po." ".$p->time_po }}</td>
                         <td style="width: 20%; vertical-align: middle">{{ $p->no_po }}</td>
                         <td style="width: 30%; vertical-align: middle">Supplier name</td>
                         <td style="width: 20%; vertical-align: middle">
-                            @if($p->is_po == '1')
-                            <span class="on-going">On Going</span>
-                            @else
-                            <span class="finish">Finish</span>
+                            @if($p->is_po == 0)
+                            <span class="on-going">Open</span>
+                            @elseif($p->is_po == 1)
+                            <span class="finish">Close</span>
                             @endif
                         </td>
                         <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
 
-                                <div class="boxEdit" style="padding-top: 4px">
+                                {{-- <div class="boxEdit" style="padding-top: 4px">
                                     <a href="{{ route('purchase-order.edit', ['purchase_order' => $p]) }}"
                                         class="btn-sm btn-info" role="button">
                                         <i class="bx bx-edit"></i>
                                     </a>
-                                </div>
+                                </div> --}}
 
                                 <div class="boxDelete">
                                     <form action="{{ route('purchase-order.destroy', ['purchase_order' => $p]) }}"

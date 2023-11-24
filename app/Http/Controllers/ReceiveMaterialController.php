@@ -96,4 +96,29 @@ class ReceiveMaterialController extends Controller
     {
         //
     }
+
+    private function generatRCVNo() {
+        $no_po = date('Ymd')."RCV";
+        $no = 1;
+        $today = date('Y-m-d');
+        $latest_po = ReceiveMaterial::whereDate('date_receive', $today)->orderBy('id', 'DESC')->first();
+        if (!empty($latest_po)) {
+            $no = substr($latest_po->no_po, -4);
+
+            $date = date('Y-m-d', strtotime($latest_po->created_at));
+            $hour = date('H', strtotime($latest_po->created_at));
+            $no += 1;
+        }
+
+        if ($no < 10) {
+            $no = "000".$no;
+        } elseif ($no >= 10 && $no < 100) {
+            $no = "00".$no;
+        } elseif ($no >= 100 && $no < 1000) {
+            $no = "0".$no;
+        }
+
+        $no_po = $no_po.$no;
+        return $no_po;
+    }
 }

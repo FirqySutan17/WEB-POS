@@ -342,20 +342,18 @@ CMS | Create - Purchase Order
                                                             Grand total</td>
                                                         <td
                                                             style="font-weight: 700; text-align: center; border-top: 2px solid #000; border-bottom: 2px solid #000">
-                                                            40
+                                                            0
                                                         </td>
                                                         <td
                                                             style="vertical-align: middle; text-align: right;font-weight: 700; border-top: 2px solid #000; border-bottom: 2px solid #000">
-                                                            Rp
-                                                            1.500.000</td>
+                                                            Rp 0</td>
                                                         <td
                                                             style="vertical-align: middle; text-align: right;font-weight: 700; border-top: 2px solid #000; border-bottom: 2px solid #000">
-                                                            Rp 500.000
+                                                            Rp 0
                                                         </td>
                                                         <td
                                                             style="vertical-align: middle; text-align: right;font-weight: 700; border-top: 2px solid #000; border-bottom: 2px solid #000">
-                                                            Rp
-                                                            2.755.467</td>
+                                                            Rp 0</td>
                                                         <td style="vertical-align: middle; text-align: right;font-weight: 700; border-top: 2px solid #000; border-bottom: 2px solid #000"></td>
                                                     </tr>
                                                 </tfoot>
@@ -596,7 +594,6 @@ CMS | Create - Purchase Order
                     // Arrow Up, Arrow Down, Backspace, Tab, Delete, 1 - 9
                     var allowed_keycode = [38, 40, 8, 9, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105];
                     if (allowed_keycode.includes(code)) {
-                        console.log(item_id);
                         calculate_row(item_id);
                     } else {
                         e.preventDefault();
@@ -703,16 +700,16 @@ CMS | Create - Purchase Order
             var term_days   = $("#input_payment_term").val();
 
             var start_date_conv = new Date(start_date);
-            if (id_element == 'input_date_top') {
-                term_days = parseInt(term_days);
-                var end_date_new = new Date(start_date_conv.setDate(start_date_conv.getDate() + term_days));
+            // if (id_element == 'input_date_top') {
+            //     term_days = parseInt(term_days);
+            //     var end_date_new = new Date(start_date_conv.setDate(start_date_conv.getDate() + term_days));
 
-                $("#input_date_top").val(formatDate(end_date_new));
-            } else if ((id_element == 'input_date_po' || id_element == 'input_payment_term')) {
-                var new_top_days = datediff(parseDate(start_date), parseDate(end_date));
-                $("#input_payment_term").val(new_top_days);
-                console.log(new_top_days);
-            }
+            //     $("#input_date_top").val(formatDate(end_date_new));
+            // } else if ((id_element == 'input_date_po' || id_element == 'input_payment_term')) {
+            //     var new_top_days = datediff(parseDate(start_date), parseDate(end_date));
+            //     $("#input_payment_term").val(new_top_days);
+            //     console.log(new_top_days);
+            // }
         }
 
         const getTwoDigits = (value) => value < 10 ? `0${value}` : value;
