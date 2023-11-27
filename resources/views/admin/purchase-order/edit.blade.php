@@ -52,7 +52,6 @@ CMS | Edit - Purchase Order
                 <div class="card _card">
                     <div class="card-body _card-body">
                         <div class="row d-flex align-items-stretch">
-
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col-6">
@@ -60,7 +59,7 @@ CMS | Edit - Purchase Order
                                             <label for="input_po_no" class="font-weight-bold">
                                                 P/O No <span class="wajib">* </span>
                                             </label>
-                                            <input id="input_po_no" value="{{ old('po_no') }}" name="po_no" type="text"
+                                            <input id="input_po_no" value="{{ $purchaseOrder->no_po }}" name="po_no" type="text"
                                                 class="form-control @error('po_no') is-invalid @enderror"
                                                 placeholder="Auto Generate" readonly />
                                             @error('po_no')
@@ -76,7 +75,7 @@ CMS | Edit - Purchase Order
                                                 Date <span class="wajib">* </span>
                                             </label>
                                             <input id="input_date_po"
-                                                value="{{ empty(old('date_po')) ? date('Y-m-d') : old('date_po') }}"
+                                                value="{{ empty(old('date_po')) ? $purchaseOrder->date_po : old('date_po') }}"
                                                 name="date_po" type="date"
                                                 class="form-control @error('date_po') is-invalid @enderror"
                                                 placeholder="Type here.." required />
@@ -93,8 +92,8 @@ CMS | Edit - Purchase Order
                                                 Time <span class="wajib">* </span>
                                             </label>
                                             <input id="input_time_po"
-                                                value="{{ empty(old('time_po')) ? date('H:i') : old('time_po') }}"
-                                                name="time_po" type="time" value="{{ date('H:i:s') }}"
+                                                value="{{ empty(old('time_po')) ? $purchaseOrder->time_po : old('time_po') }}"
+                                                name="time_po" type="time"
                                                 placeholder="Type here.."
                                                 class="form-control @error('receive_time') is-invalid @enderror"
                                                 required />

@@ -79,12 +79,12 @@ CMS | Purchase Order
                         <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
 
-                                {{-- <div class="boxEdit" style="padding-top: 4px">
+                                <div class="boxEdit" style="padding-top: 4px">
                                     <a href="{{ route('purchase-order.edit', ['purchase_order' => $p]) }}"
                                         class="btn-sm btn-info" role="button">
                                         <i class="bx bx-edit"></i>
                                     </a>
-                                </div> --}}
+                                </div>
 
                                 <div class="boxDelete">
                                     <form action="{{ route('purchase-order.destroy', ['purchase_order' => $p]) }}"

@@ -39,8 +39,9 @@ class PurchaseOrderController extends Controller
      */
     public function create()
     {
+        $dataPlant = $this->dataPlant();
         $commons = CommonCode::all();
-        return view('admin.purchase-order.create', compact('commons'));
+        return view('admin.purchase-order.create', compact('commons', 'dataPlant'));
     }
 
     /**
@@ -155,7 +156,9 @@ class PurchaseOrderController extends Controller
      */
     public function edit(PurchaseOrder $purchaseOrder)
     {
-        return view('admin.purchase-order.edit');
+        $dataPlant = $this->dataPlant();
+        $commons = CommonCode::all();
+        return view('admin.purchase-order.edit', compact('commons', 'dataPlant', 'purchaseOrder'));
     }
 
     /**
@@ -179,6 +182,10 @@ class PurchaseOrderController extends Controller
     public function destroy(PurchaseOrder $purchaseOrder)
     {
         //
+    }
+
+    private function dataPlant() {
+        return ["Jakarta - PT. Feed & Care Indonesia", "Semarang - PT. Feed & Care Indonesia", "Lampung - PT. Feed & Care Indonesia"];
     }
 
     private function generatePONo() {

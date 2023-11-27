@@ -113,15 +113,9 @@ CMS | Create - Purchase Order
                                                 class="js-example-placeholder-multiple" required>
                                                 <option>Choose plant
                                                 </option>
-                                                <option value="Jakarta - PT. Feed & Care Indonesia">
-                                                    Jakarta - PT. Feed & Care Indonesia
-                                                </option>
-                                                <option value="Semarang - PT. Feed & Care Indonesia">Semarang - PT. Feed
-                                                    & Care Indonesia
-                                                </option>
-                                                <option value="Lampung - PT. Feed & Care Indonesia">Lampung - PT. Feed &
-                                                    Care Indonesia
-                                                </option>
+                                                @foreach ($dataPlant as $item)
+                                                    <option value="{{ $item }}">{{ $item }}</option>
+                                                @endforeach
                                             </select>
                                             @error('plant')
                                             <span class="invalid-feedback">
@@ -565,11 +559,11 @@ CMS | Create - Purchase Order
                         </td>
                         <td style="vertical-align: middle; text-align: left">${product.name}</td>
                         <td style="vertical-align: middle; text-align: right">
-                            <input id="quantity_${item_id}" type="text" name="unit_price[]" placeholder="0" class="trigger_row number_only"
+                            <input id="quantity_${item_id}" type="text" name="unit_price[]" onkeypress="return isNumberKey(event)" placeholder="0" class="trigger_row"
                                 style="padding: 5px 5px; width: 100%; text-align: right; border-radius: 5px; border: 1px solid #a7a7a7" />
                         </td>
                         <td style="vertical-align: middle; text-align: center">
-                            <input id="unit_price_${item_id}" type="text" name="quantity[]" placeholder="0" value="1" class="trigger_row number_only"
+                            <input id="unit_price_${item_id}" type="text" onkeypress="return isNumberKey(event)" name="quantity[]" placeholder="0" value="1" class="trigger_row"
                                 style="padding: 5px 5px; width: 100%; text-align: center; border-radius: 5px; border: 1px solid #a7a7a7" />
                         </td>
                         <td style="vertical-align: middle; text-align: right" id="amount_text_${item_id}">${default_data}</td>
@@ -615,6 +609,7 @@ CMS | Create - Purchase Order
 
         // convert variables into number
         var num_unit_price  = Number(unit_price.replace(",", ""));
+        console.log(is_tax, unit_price, quantity, amount, tax_amount, total_amount);
         $(`#amount_hidden_`).val(amount);
     }
 
@@ -623,6 +618,13 @@ CMS | Create - Purchase Order
     function delete_row_product(eid_item) {
         $("#" + eid_item).remove();
         calculate_vat();
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
     }
 
 </script>

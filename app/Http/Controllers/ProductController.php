@@ -57,6 +57,9 @@ class ProductController extends Controller
         if ($request->has('q')) {
             $products->where('code', 'LIKE', $request->q.'%')->orWhere('name', 'LIKE', $request->q.'%');
         }
+        if($request->has('supplier_id')) {
+            $products->where('supplier_id', $request->supplier_id);
+        }
 
         return response()->json($products->get());
     }
