@@ -114,6 +114,7 @@ Route::resource('/account-code', App\Http\Controllers\AccountCodeController::cla
 
 // Purchase Order Route
 Route::resource('/purchase-order', App\Http\Controllers\PurchaseOrderController::class);
+Route::get('/purchase-order/get-all-po', [App\Http\Controllers\PurchaseOrderController::class, 'get_material'])->name('purchase_order.get_material');
 
 // Receive Material Route
 Route::resource('/receive-material', App\Http\Controllers\ReceiveMaterialController::class);

@@ -184,6 +184,15 @@ class PurchaseOrderController extends Controller
         //
     }
 
+    public function get_material(Request $request)
+    {
+        $material_PO = DB::table('mst_tbl_po_detail')->select('*');
+        if($request->has('supplier_id')) {
+            $products->where('supplier_id', $request->supplier_id);
+        }
+
+        return response()->json($material_PO->get());
+    }
     private function dataPlant() {
         return ["Jakarta - PT. Feed & Care Indonesia", "Semarang - PT. Feed & Care Indonesia", "Lampung - PT. Feed & Care Indonesia"];
     }
