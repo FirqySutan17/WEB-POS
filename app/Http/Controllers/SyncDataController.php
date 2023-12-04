@@ -27,13 +27,13 @@ class SyncDataController extends Controller
     {
         // $cashflow = $this->get_cashflow();
         // $users = $this->get_users();
-        // $products = $this->get_products();
+        $products = $this->get_products();
         // $products_price_log = $this->get_products_price_log();
         // $tr_receive = $this->get_tr_receive();
         // $tr_receive_detail = $this->get_tr_receive_detail();
         // $tr_transaction = $this->get_tr_transaction();
-        $tr_transaction_detail = $this->get_tr_transaction_detail();
-        dd($tr_transaction);
+        // $tr_transaction_detail = $this->get_tr_transaction_detail();
+        dd($products);
         // return view('sync-data.index', compact('cashflow'));
     }
 
@@ -61,10 +61,11 @@ class SyncDataController extends Controller
     private function get_cashflow()
     {
         $tbl_name = 'cash_flow';
-        $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
         if (!empty($last_sync)) {
+            // dd($last_sync);
             // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
             $query->where('id', '>', $last_sync->last_id_data);
         } else {
@@ -72,8 +73,11 @@ class SyncDataController extends Controller
             // $query->whereDate('created_at', '2023-10-21');
         }
         // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 25;
-        $get_data   = $query->limit($limit_perbatch)->get();
+        $limit_perbatch = 0;
+        if ($limit_perbatch > 0) {
+            $query->limit($limit_perbatch);
+        }
+        $get_data   = $query->get();
         $url = "";
         $batch = 0;
         $status = "";
@@ -82,6 +86,7 @@ class SyncDataController extends Controller
             $header     = $this->get_cashflow_header();
             $convert_data   = $this->convert_cashflow($get_data);
             $insert_data    = $this->insert_cashflow($header, $convert_data);
+            dd($insert_data);
             $last_id_data   = $get_data[$total_data - 1]->id;
             $arr_local_ip = [
                 "103.209",
@@ -129,12 +134,12 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_cashflow as $cf) {
-            $description = trim(preg_replace('/\s+/', ' ', $cf->description));
-            $curr_data  = [$cf->date, $cf->time, $cf->employee_id, $cf->categories, $description, $cf->approval, $cf->cash,$cf->created_by, $cf->created_at];
+            $description = $this->clean(trim(preg_replace('/\s+/', ' ', $cf->description)));
+            $curr_data  = [$this->convertDate('date', $cf->date), $this->convertDate('time', $cf->time), $this->stringfy($cf->employee_id), $this->cd_code('cashflow', $cf->categories), $this->stringfy($description), $this->stringfy($cf->approval), $cf->cash, $this->stringfy($cf->created_by), $this->convertDate('datetime', $cf->created_at)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_CASH_FLOW VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_CASH_FLOW VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
@@ -218,11 +223,11 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_users as $cf) {
-            $curr_data  = [$cf->employee_id, $cf->name, $cf->email, $cf->pin,$cf->status];
+            $curr_data  = [$this->stringfy($cf->employee_id), $this->stringfy($cf->name), $this->stringfy($cf->email), $this->stringfy($cf->pin), $this->stringfy($cf->status)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_USERS VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_USERS VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
@@ -241,16 +246,16 @@ class SyncDataController extends Controller
     private function get_products()
     {
         $tbl_name = 'products';
-        $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        // $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
-        if (!empty($last_sync)) {
-            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-            $query->where('id', '>', $last_sync->last_id_data);
-        } else {
-            // $query->where('created_at', '<=', $current_time);
-            // $query->whereDate('created_at', '2023-10-21');
-        }
+        // if (!empty($last_sync)) {
+        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
+        //     $query->where('id', '>', $last_sync->last_id_data);
+        // } else {
+        //     // $query->where('created_at', '<=', $current_time);
+        //     // $query->whereDate('created_at', '2023-10-21');
+        // }
         // $query->whereDate('created_at', '2023-10-21');
         $limit_perbatch = 0;
         if ($limit_perbatch > 0) {
@@ -307,11 +312,11 @@ class SyncDataController extends Controller
         $data = [];
         foreach ($arr_products as $cf) {
             $name = $this->clean($cf->name);
-            $curr_data  = [$cf->code, $cf->price_store, $cf->price_olshop, $cf->discount_store, $cf->discount_olshop, $cf->is_vat, $cf->is_active, $cf->deleted_at, $name, $cf->categories, $cf->supplier_id];
+            $curr_data  = [$this->stringfy($cf->code), !empty($cf->price_store) ? $cf->price_store : 0, !empty($cf->price_olshop) ? $cf->price_olshop : 0, !empty($cf->discount_store) ? $cf->discount_store : 0, !empty($cf->discount_olshop) ? $cf->discount_olshop : 0, $cf->is_vat, $cf->is_active, $this->convertDate('datetime', $cf->deleted_at), $this->stringfy($name), $this->cd_code('products', $cf->categories), $cf->supplier_id];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_PRODUCTS VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_PRODUCTS VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
@@ -395,11 +400,11 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_products_price_log as $cf) {
-            $curr_data  = [$cf->product_code, $cf->price_store, $cf->price_olshop, $cf->discount_store, $cf->discount_olshop, $cf->is_vat, $cf->created_at];
+            $curr_data  = [$this->stringfy($cf->product_code), $cf->price_store, $cf->price_olshop, $cf->discount_store, $cf->discount_olshop, $cf->is_vat, $this->convertDate('datetime',$cf->created_at)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_PRODUCTS_PRICE_LOG VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_PRODUCTS_PRICE_LOG VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
@@ -484,11 +489,11 @@ class SyncDataController extends Controller
         $data = [];
         foreach ($arr_tr_receive as $cf) {
             $delivery_no = $this->clean($cf->delivery_no);
-            $curr_data  = [$cf->receive_code, $cf->receive_date, $cf->receive_time, $delivery_no, $cf->supplier_code, $cf->plate_no, $cf->driver, $cf->driver_phone, $cf->is_warehouse, $cf->created_by, $cf->created_at];
+            $curr_data  = [$this->stringfy($cf->receive_code), $this->convertDate('date', $cf->receive_date), $this->convertDate('time', $cf->receive_time), $this->stringfy($delivery_no), $this->stringfy($cf->supplier_code), $this->stringfy($cf->plate_no), $this->stringfy($cf->driver), $this->stringfy($cf->driver_phone), $this->stringfy($cf->is_warehouse), $this->stringfy($cf->created_by), $this->convertDate('datetime', $cf->created_at)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_TR_RECEIVE VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_TR_RECEIVE VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
@@ -572,11 +577,11 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_tr_receive_detail as $cf) {
-            $curr_data  = [$cf->receive_code, $cf->product_code, $cf->quantity, $cf->unit_price, $cf->amount];
+            $curr_data  = [$this->stringfy($cf->receive_code), $this->stringfy($cf->product_code), $cf->quantity, $cf->unit_price, $cf->amount];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_TR_RECEIVE_DETAIL VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_TR_RECEIVE_DETAIL VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
@@ -661,11 +666,11 @@ class SyncDataController extends Controller
         $data = [];
         foreach ($arr_tr_transaction as $cf) {
             $receipt_no = $this->clean($cf->receipt_no);
-            $curr_data  = [$cf->invoice_no, $receipt_no, $cf->emp_no, $cf->trans_date, $cf->payment_method, $cf->cash, $cf->sub_price, $cf->vat_ppn, $cf->total_price, $cf->status, $cf->cancellation_reason, $cf->created_at, $cf->kembalian];
+            $curr_data  = [$this->stringfy($cf->invoice_no), $this->stringfy($receipt_no), $this->stringfy($cf->emp_no), $this->convertDate('date', $cf->trans_date), $this->stringfy($cf->payment_method), $cf->cash, $cf->sub_price, $cf->vat_ppn, $cf->total_price, $this->cd_code('transaction', $cf->status), $this->stringfy($cf->cancellation_reason), $this->convertDate('datetime', $cf->created_at), $cf->kembalian];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_TR_TRANSACTION VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_TR_TRANSACTION VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
@@ -749,17 +754,18 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_tr_transaction_detail as $cf) {
-            $curr_data  = [$cf->invoice_no, $cf->product_code, $cf->quantity, $cf->basic_price, $cf->discount, $cf->price];
+            $curr_data  = [$this->stringfy($cf->invoice_no), $this->stringfy($cf->product_code), $cf->quantity, $cf->basic_price, $cf->discount, $cf->price];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
-            $data_string = "INTO POS_TR_TRANSACTION_DETAIL VALUES (".$cf->id.",'".str_replace("|", "', '", $implode)."')";
+            $data_string = "INTO POS_TR_TRANSACTION_DETAIL VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
             // if ($cf->id == 46) { dd($data_string); }
             $data[]     = $data_string;
         }
 
         return $data;
     }
+    
 
     private function insert_tr_transaction_detail($data)
     {
@@ -774,5 +780,40 @@ class SyncDataController extends Controller
         $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
         $string = str_replace('-', ' ', $string);
         return $string; // Removes special chars.
+    }
+
+    public function stringfy($string) {
+        return "'".$string."'";
+    }
+
+    public function convertDate($type,$string) {
+        if (empty($string)) {
+            return "''";
+        }
+
+        if ($type == 'datetime') {
+            return "'".date('Ymd His', strtotime($string))."'";
+        } elseif ($type == 'date') {
+            return "'".date('Ymd', strtotime($string))."'";
+        } elseif ($type == 'time') {
+            return "'".date('His', strtotime($string))."'";
+        }
+    }
+
+    public function cd_code($table, $code) {
+        if ($table == 'cashflow') {
+            if ($code == 'MDL-IN') { return "'01'"; }
+            elseif ($code == 'MDL-OUT') { return "'02'"; }
+            elseif ($code == 'IN') { return "'03'"; }
+            elseif ($code == 'OUT') { return "'04'"; }
+            elseif ($code == 'STR') { return "'05'"; }
+            elseif ($code == 'OUT-BANK') { return "'06'"; }
+        } elseif ($table == 'products') {
+            if ($code == 'Internal') { return "'01'"; }
+            elseif ($code == 'External') { return "'02'"; }
+        } elseif ($table == 'transaction') {
+            if ($code == 'DRAFT') { return "'01'"; }
+            elseif ($code == 'FINISH') { return "'02'"; }
+        }
     }
 }
