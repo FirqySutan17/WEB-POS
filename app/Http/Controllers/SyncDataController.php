@@ -27,13 +27,13 @@ class SyncDataController extends Controller
     {
         // $cashflow = $this->get_cashflow();
         // $users = $this->get_users();
-        $products = $this->get_products();
+        // $products = $this->get_products();
         // $products_price_log = $this->get_products_price_log();
         // $tr_receive = $this->get_tr_receive();
         // $tr_receive_detail = $this->get_tr_receive_detail();
         // $tr_transaction = $this->get_tr_transaction();
-        // $tr_transaction_detail = $this->get_tr_transaction_detail();
-        dd($products);
+        $tr_transaction_detail = $this->get_tr_transaction_detail();
+        dd($tr_transaction_detail);
         // return view('sync-data.index', compact('cashflow'));
     }
 
@@ -312,7 +312,7 @@ class SyncDataController extends Controller
         $data = [];
         foreach ($arr_products as $cf) {
             $name = $this->clean($cf->name);
-            $curr_data  = [$this->stringfy($cf->code), !empty($cf->price_store) ? $cf->price_store : 0, !empty($cf->price_olshop) ? $cf->price_olshop : 0, !empty($cf->discount_store) ? $cf->discount_store : 0, !empty($cf->discount_olshop) ? $cf->discount_olshop : 0, $cf->is_vat, $cf->is_active, $this->convertDate('datetime', $cf->deleted_at), $this->stringfy($name), $this->cd_code('products', $cf->categories), $cf->supplier_id];
+            $curr_data  = [$this->stringfy($cf->code), !empty($cf->price_store) ? $cf->price_store : 0, !empty($cf->price_olshop) ? $cf->price_olshop : 0, !empty($cf->discount_store) ? $cf->discount_store : 0, !empty($cf->discount_olshop) ? $cf->discount_olshop : 0, $cf->is_vat, $cf->is_active, $this->convertDate('datetime', $cf->deleted_at), $this->stringfy($name), $this->cd_code('products', $cf->categories)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
@@ -335,16 +335,16 @@ class SyncDataController extends Controller
     private function get_products_price_log()
     {
         $tbl_name = 'products_price_log';
-        $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
-        if (!empty($last_sync)) {
-            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-            $query->where('id', '>', $last_sync->last_id_data);
-        } else {
-            // $query->where('created_at', '<=', $current_time);
-            // $query->whereDate('created_at', '2023-10-21');
-        }
+        // if (!empty($last_sync)) {
+        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
+        //     $query->where('id', '>', $last_sync->last_id_data);
+        // } else {
+        //     // $query->where('created_at', '<=', $current_time);
+        //     // $query->whereDate('created_at', '2023-10-21');
+        // }
         // $query->whereDate('created_at', '2023-10-21');
         $limit_perbatch = 0;
         if ($limit_perbatch > 0) {
@@ -400,7 +400,7 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_products_price_log as $cf) {
-            $curr_data  = [$this->stringfy($cf->product_code), $cf->price_store, $cf->price_olshop, $cf->discount_store, $cf->discount_olshop, $cf->is_vat, $this->convertDate('datetime',$cf->created_at)];
+            $curr_data  = [$this->stringfy($cf->product_code), !empty($cf->price_store) ? $cf->price_store : 0, !empty($cf->price_store) ? $cf->price_store : 0, !empty($cf->discount_store) ? $cf->discount_store : 0,  !empty($cf->discount_olshop) ? $cf->discount_olshop : 0, !empty($cf->is_vat) ? $cf->is_vat : 0, $this->convertDate('datetime',$cf->created_at)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
@@ -423,16 +423,16 @@ class SyncDataController extends Controller
     private function get_tr_receive()
     {
         $tbl_name = 'tr_receive';
-        $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
-        if (!empty($last_sync)) {
-            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-            $query->where('id', '>', $last_sync->last_id_data);
-        } else {
-            // $query->where('created_at', '<=', $current_time);
-            // $query->whereDate('created_at', '2023-10-21');
-        }
+        // if (!empty($last_sync)) {
+        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
+        //     $query->where('id', '>', $last_sync->last_id_data);
+        // } else {
+        //     // $query->where('created_at', '<=', $current_time);
+        //     // $query->whereDate('created_at', '2023-10-21');
+        // }
         // $query->whereDate('created_at', '2023-10-21');
         $limit_perbatch = 0;
         if ($limit_perbatch > 0) {
@@ -512,7 +512,7 @@ class SyncDataController extends Controller
     private function get_tr_receive_detail()
     {
         $tbl_name = 'tr_receive_detail';
-        $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
         if (!empty($last_sync)) {
@@ -600,7 +600,7 @@ class SyncDataController extends Controller
     private function get_tr_transaction()
     {
         $tbl_name = 'tr_transaction';
-        $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
         if (!empty($last_sync)) {
@@ -666,7 +666,8 @@ class SyncDataController extends Controller
         $data = [];
         foreach ($arr_tr_transaction as $cf) {
             $receipt_no = $this->clean($cf->receipt_no);
-            $curr_data  = [$this->stringfy($cf->invoice_no), $this->stringfy($receipt_no), $this->stringfy($cf->emp_no), $this->convertDate('date', $cf->trans_date), $this->stringfy($cf->payment_method), $cf->cash, $cf->sub_price, $cf->vat_ppn, $cf->total_price, $this->cd_code('transaction', $cf->status), $this->stringfy($cf->cancellation_reason), $this->convertDate('datetime', $cf->created_at), $cf->kembalian];
+            $cl_cash = $this->clean(trim(preg_replace('/\s+/', ' ', $cf->cash)));
+            $curr_data  = [$this->stringfy($cf->invoice_no), $this->stringfy($receipt_no), $this->stringfy($cf->emp_no), $this->convertDate('date', $cf->trans_date), $this->cd_code('transaction_pm', $cf->payment_method), !empty($cl_cash) ? $cl_cash : 0, !empty($cf->sub_price) ? $cf->sub_price : 0, !empty($cf->vat_ppn) ? $cf->vat_ppn : 0,  !empty($cf->total_price) ? $cf->total_price : 0, $this->cd_code('transaction', $cf->status), $this->stringfy($cf->cancellation_reason), $this->convertDate('datetime', $cf->created_at), $cf->kembalian];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
@@ -689,7 +690,7 @@ class SyncDataController extends Controller
     private function get_tr_transaction_detail()
     {
         $tbl_name = 'tr_transaction_detail';
-        $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
         if (!empty($last_sync)) {
@@ -814,6 +815,10 @@ class SyncDataController extends Controller
         } elseif ($table == 'transaction') {
             if ($code == 'DRAFT') { return "'01'"; }
             elseif ($code == 'FINISH') { return "'02'"; }
+        } elseif ($table == 'transaction_pm') {
+            if ($code == 'Tunai') { return "'01'"; }
+            elseif ($code == 'EDC - BCA') { return "'02'"; }
+            elseif ($code == 'EDC - QRIS') { return "'03'"; }
         }
     }
 }

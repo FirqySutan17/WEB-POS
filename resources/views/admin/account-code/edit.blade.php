@@ -100,7 +100,7 @@ CMS | Account Code
                                                 <th style="text-align: center">Account Name</th>
                                                 <th style="text-align: center">Structure</th>
                                                 <th style="text-align: center">Remark</th>
-                                                <th style="text-align: center">In</th>
+                                                <th style="text-align: center">IN</th>
                                                 <th style="text-align: center">D/C</th>
                                                 <th style="text-align: center">Dept</th>
                                                 <th style="text-align: center">Vendor</th>
