@@ -32,8 +32,9 @@ class SyncDataController extends Controller
         // $tr_receive = $this->get_tr_receive();
         // $tr_receive_detail = $this->get_tr_receive_detail();
         // $tr_transaction = $this->get_tr_transaction();
-        $tr_transaction_detail = $this->get_tr_transaction_detail();
-        dd($tr_transaction_detail);
+        // $tr_transaction_detail = $this->get_tr_transaction_detail();
+        $tr_adjust_stock = $this->get_tr_adjust_stock();
+        dd($tr_adjust_stock);
         // return view('sync-data.index', compact('cashflow'));
     }
 
@@ -134,6 +135,7 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_cashflow as $cf) {
+            $cf->description = substr($cf->description, 0, 50);
             $description = $this->clean(trim(preg_replace('/\s+/', ' ', $cf->description)));
             $curr_data  = [$this->convertDate('date', $cf->date), $this->convertDate('time', $cf->time), $this->stringfy($cf->employee_id), $this->cd_code('cashflow', $cf->categories), $this->stringfy($description), $this->stringfy($cf->approval), $cf->cash, $this->stringfy($cf->created_by), $this->convertDate('datetime', $cf->created_at)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
@@ -776,6 +778,97 @@ class SyncDataController extends Controller
         return $query;
     }
 
+    private function get_tr_adjust_stock()
+    {
+        $tbl_name = 'tr_adjust_stock';
+        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
+        $current_time   = date('Y-m-d H:i:s');
+        $query      = DB::table($tbl_name)->select('*');
+        if (!empty($last_sync)) {
+            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
+            $query->where('id', '>', $last_sync->last_id_data);
+        } else {
+            // $query->where('created_at', '<=', $current_time);
+            // $query->whereDate('created_at', '2023-10-21');
+        }
+        // $query->whereDate('created_at', '2023-10-21');
+        $limit_perbatch = 0;
+        if ($limit_perbatch > 0) {
+            $query->limit($limit_perbatch);
+        }
+        $get_data   = $query->get();
+        $url = "";
+        $batch = 0;
+        $status = "";
+        if (count($get_data) > 0) {
+            $total_data = count($get_data);
+            $convert_data   = $this->convert_tr_adjust_stock($get_data);
+            $insert_data    = $this->insert_tr_adjust_stock($convert_data);
+            dd($insert_data);
+            $last_id_data   = $get_data[$total_data - 1]->id;
+            $arr_local_ip = [
+                "103.209",
+            ];
+            $visitor = $this->get_client_ip();
+            // $explode_visitor = explode(".", $visitor);
+            // $ip = $explode_visitor[0].".".$explode_visitor[1];
+            $url = "http://10.137.26.67:8080/";
+            // if (!in_array($ip, $arr_local_ip)) {
+                // $url = "http://103.209.6.32:8080/";
+            // }
+            // echo "<pre/>";print_r($insert_data);exit;
+            $url .= 'meatmaster/api/pos';
+            // dd($url);
+            $options = [
+                'Accept' => 'application/json',
+            ];
+            $response = Http::post($url, [
+                'query' => $insert_data
+            ], $options);
+            $return_data = json_decode($response->getBody()->getContents());
+            $status = $return_data->status;
+            if ($return_data->status == 'success') {
+                $batch = !empty($last_sync->batch) ? $last_sync->batch + 1 : 1;
+                $insert_logs = DB::table('logs_sync_cms')->insert([
+                    "table_name"    => $tbl_name,
+                    "batch"         => $batch,
+                    "last_id_data"  => $last_id_data,
+                    "created_at"    => date('Y-m-d H:i:s'),
+                    "updated_at"    => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+        
+        return ["url" => $url, "data" => $get_data, "status" => $status, "batch" => $batch];
+    }
+
+    private function convert_tr_adjust_stock($arr_tr_adjust_stock)
+    {
+        $data = [];
+        foreach ($arr_tr_adjust_stock as $cf) {
+            $cf->remark = substr($cf->remark, 0, 255);
+            $remark = $this->stringfy($this->clean(trim(preg_replace('/\s+/', ' ', $cf->remark))));
+            $curr_data  = [$this->convertDate('date',$cf->date), $this->convertDate('time', $cf->time), $this->stringfy($cf->employee_id), $this->stringfy($cf->product_code), $cf->qty, $this->cd_code('adjust_stock', $cf->type), $remark, $this->stringfy($cf->approval), $this->convertDate('datetime', $cf->created_at)];
+            // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
+
+            $implode    = implode("|", $curr_data);
+            $data_string = "INTO POS_TR_ADJUST_STOCK VALUES (".$cf->id.",".str_replace("|", ", ", $implode).")";
+            // if ($cf->id == 46) { dd($data_string); }
+            $data[]     = $data_string;
+        }
+
+        return $data;
+    }
+    
+
+    private function insert_tr_adjust_stock($data)
+    {
+        $implode_data = implode(" ", $data);
+        // dd($implode_data, $data);
+        $query = "INSERT ALL ".$implode_data." SELECT 1 FROM dual";
+        return $query;
+    }
+
     public function clean($string) {
         $string = str_replace(' ', '-', $string);
         $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
@@ -819,6 +912,9 @@ class SyncDataController extends Controller
             if ($code == 'Tunai') { return "'01'"; }
             elseif ($code == 'EDC - BCA') { return "'02'"; }
             elseif ($code == 'EDC - QRIS') { return "'03'"; }
+        } elseif ($table == 'adjust_stock') {
+            if ($code == 'IN') { return "'01'"; }
+            elseif ($code == 'OUT') { return "'02'"; }
         }
     }
 }
