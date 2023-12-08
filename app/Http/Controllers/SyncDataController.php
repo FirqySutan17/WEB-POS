@@ -65,10 +65,11 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', 159);
         if (!empty($last_sync)) {
             // dd($last_sync);
             // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-            $query->where('id', '>', $last_sync->last_id_data);
+           
         } else {
             // $query->where('created_at', '<=', $current_time);
             // $query->whereDate('created_at', '2023-10-21');
@@ -163,13 +164,14 @@ class SyncDataController extends Controller
         $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
-        if (!empty($last_sync)) {
-            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-            $query->where('id', '>', $last_sync->last_id_data);
-        } else {
-            // $query->where('created_at', '<=', $current_time);
-            // $query->whereDate('created_at', '2023-10-21');
-        }
+        $query->where('id', '>', $last_sync->last_id_data);
+        // if (!empty($last_sync)) {
+        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
+        //     $query->where('id', '>', $last_sync->last_id_data);
+        // } else {
+        //     // $query->where('created_at', '<=', $current_time);
+        //     // $query->whereDate('created_at', '2023-10-21');
+        // }
         // $query->whereDate('created_at', '2023-10-21');
         $limit_perbatch = 0;
         if ($limit_perbatch > 0) {
@@ -251,6 +253,7 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         // $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', 77);
         // if (!empty($last_sync)) {
         //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
         //     $query->where('id', '>', $last_sync->last_id_data);
@@ -340,6 +343,7 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', 260);
         // if (!empty($last_sync)) {
         //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
         //     $query->where('id', '>', $last_sync->last_id_data);
@@ -428,6 +432,7 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', 43);
         // if (!empty($last_sync)) {
         //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
         //     $query->where('id', '>', $last_sync->last_id_data);
@@ -605,9 +610,10 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', 371);
         if (!empty($last_sync)) {
             // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-            $query->where('id', '>', $last_sync->last_id_data);
+           
         } else {
             // $query->where('created_at', '<=', $current_time);
             // $query->whereDate('created_at', '2023-10-21');
@@ -695,6 +701,7 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', 1022);
         if (!empty($last_sync)) {
             // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
             $query->where('id', '>', $last_sync->last_id_data);

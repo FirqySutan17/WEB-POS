@@ -55,8 +55,8 @@ CMS | Report Stock
                     </div>
                     <div class="col-2">
                         <select name="order" class="form-control" style="height: 100%; font-size: 14px">
-                            <option {{ $order == "DESC" ? "selected" : "" }} value="DESC">Terbesar ke Terkecil</option>
-                            <option {{ $order == "ASC" ? "selected" : "" }} value="ASC">Terkecil ke Terbesar</option>
+                            <option {{ $order=="DESC" ? "selected" : "" }} value="DESC">Terbesar ke Terkecil</option>
+                            <option {{ $order=="ASC" ? "selected" : "" }} value="ASC">Terkecil ke Terbesar</option>
                         </select>
                     </div>
                     <div class="col-1">
@@ -90,9 +90,28 @@ CMS | Report Stock
                     </tr>
                 </thead>
                 <tbody>
+                    <?php
+                         $sum_begin = 0;
+                    $sum_in = 0;
+                    $sum_in_adj = 0;
+                    $sum_out = 0;
+                    $sum_out_adj = 0;
+                    $sum_end = 0;
+                     ?>
                     @if (!empty($data))
+
                     @foreach ($data as $item)
                     <?php $low_stock = $item->qty_end < 5 ? "bg-danger" : ""; ?>
+                    <?php
+                   
+
+                    $sum_begin += $item->qty_begin;
+                    $sum_in += $item->qty_in;
+                    $sum_in_adj += $item->IN_adj;
+                    $sum_out += $item->qty_out;
+                    $sum_out_adj += $item->out_adj;
+                    $sum_end += $item->qty_end;
+                    ?>
                     <tr>
                         <td style="width: 5%;" class="center-text {{ $low_stock }}">{{ $loop->iteration }}</td>
                         <td class="{{ $low_stock }}" style="width: 35%; vertical-align: middle">
@@ -118,8 +137,18 @@ CMS | Report Stock
                     </tr>
                     @endforeach
                     @endif
-
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2" class="bg-grey">Total</th>
+                        <th class="center-text bg-grey">{{ $sum_begin }}</th>
+                        <th class="center-text bg-grey">{{ $sum_in }}</th>
+                        <th class="center-text bg-grey">{{ $sum_in_adj }}</th>
+                        <th class="center-text bg-grey">{{ $sum_out }}</th>
+                        <th class="center-text bg-grey">{{ $sum_out_adj }}</th>
+                        <th class="center-text bg-grey">{{ $sum_end }}</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="card-footer">

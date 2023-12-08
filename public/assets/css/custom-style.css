@@ -91,6 +91,11 @@
   width: 60%;
 }
 
+.bg-grey {
+  background: #e6edef !important;
+  color: #000 !important;
+}
+
 .boxContent .boxSearch input {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
