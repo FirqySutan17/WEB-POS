@@ -206,6 +206,7 @@ CMS | Add Cashflow
                                                         <option value="IN">Cash - In</option>
                                                         <option value="OUT">Cash - Out</option>
                                                         <option value="STR">Bank - Setoran</option>
+                                                        <option value="IN-BANK">Bank - In</option>
                                                         <option value="OUT-BANK">Bank - Out</option>
                                                     </select>
                                                     @error('role')
