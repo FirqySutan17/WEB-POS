@@ -910,6 +910,7 @@ class SyncDataController extends Controller
             elseif ($code == 'OUT') { return "'04'"; }
             elseif ($code == 'STR') { return "'05'"; }
             elseif ($code == 'OUT-BANK') { return "'06'"; }
+            elseif ($code == 'IN-BANK') { return "'07'"; }
         } elseif ($table == 'products') {
             if ($code == 'Internal') { return "'01'"; }
             elseif ($code == 'External') { return "'02'"; }
