@@ -90,15 +90,14 @@ CMS | Best Seller
 
                     @foreach ($data as $item)
                     <?php 
-                        dd($item);
-                        $detail     = array_values($item['detail']);
-                        $total_detail    = count($detail);
+                            $detail     = array_values($item['detail']);
+                            $total_detail    = count($detail);
 
-                        $sum_beli = 0;
-                        $sum_jual = 0;
-                        $sum_selisih = 0;
-                        $sum_qty = 0;
-                    ?>
+                            $sum_beli = 0;
+                            $sum_jual = 0;
+                            $sum_selisih = 0;
+                            $sum_qty = 0;
+                        ?>
                     <tr>
                         <td rowspan="{{ $total_detail }}" style="width: 5%;" class="center-text">{{ $loop->iteration }}
                         </td>
@@ -109,10 +108,7 @@ CMS | Best Seller
                         <?php
                                 $sub_total_harga_beli   = $detail[0]['harga_beli'] * $detail[0]['quantity'];
                                 $sub_total_harga_jual   = $detail[0]['harga_jual'] * $detail[0]['quantity'];
-                                $sub_selisih = 0;
-                                if ($detail[0]['is_receive'] != 1) {
-                                    $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
-                                }
+                                $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
                                 $sum_qty += $detail[0]['quantity'];
                                 $sum_selisih += $sub_selisih;
                                 
@@ -142,10 +138,7 @@ CMS | Best Seller
                     <?php
                             $sub_total_harga_beli   = $dtl['harga_beli'] * $dtl['quantity'];
                             $sub_total_harga_jual   = $dtl['harga_jual'] * $dtl['quantity'];
-                            $sub_selisih            = 0;
-                            if ($dtl['is_receive'] != 1) {
-                                $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
-                            }
+                            $sub_selisih            = $sub_total_harga_jual - $sub_total_harga_beli;
                             $sum_qty += $dtl['quantity'];
                             $sum_selisih += $sub_selisih;
                         ?>
