@@ -688,7 +688,6 @@ class ReportController extends Controller
                 WHERE receive.receive_date BETWEEN '$sdate' AND '$edate' ".$where."
                 $order_by
             ";
-
             $db_query = DB::select(DB::raw($query));
             return $db_query;
         }
@@ -1431,11 +1430,11 @@ class ReportController extends Controller
             return view('admin.report.labarugi', compact('data', 'sdate', 'edate', 'search', 'categories'));
         }
 
-        private function convert_labarugi($data_raw) {
+        private function bak_convert_labarugi($data_raw) {
             $data = [];
             if (!empty($data_raw)) {
                 foreach ($data_raw as $item) {
-                    // dd($item);
+                    dd($data_raw);
                     $product_code = $item->product_code;
                     if (!array_key_exists($product_code, $data)) {
                         $data[$product_code] = [
@@ -1452,7 +1451,7 @@ class ReportController extends Controller
                         if (!array_key_exists($tanggal_rcv, $data[$product_code]["detail"])) {
                             $data[$product_code]["detail"][$tanggal_rcv] = [
                                 "tanggal"       => $item->receive_date,
-                                "quantity"      => 0,
+                                "quantity"      => $item->quantity_rcv,
                                 "harga_jual"    => 0,
                                 "harga_beli"    => $item->harga_beli,
                                 "is_receive"    => 1
@@ -1477,6 +1476,101 @@ class ReportController extends Controller
             return $data;
         }
 
+        private function convert_labarugi($data_raw) {
+            $data = [];
+            if (!empty($data_raw)) {
+                $previous_product_code = "";
+                foreach ($data_raw as $item) {
+                    $product_code = $item->kode_produk;
+                    if (!array_key_exists($product_code, $data)) {
+                        $data[$product_code] = [
+                            "product_code"  => $product_code,
+                            "product_name"  => $item->name,
+                            "detail"        => []
+                        ];
+                    }
+
+                    if ($previous_product_code != $product_code && $item->status_data == 2) {
+                        // PROCEED TO GET FIRST TIME RECEIVE
+                        $previous = $this->get_previous_receive($product_code, $item->tanggal);
+                        $previous->tanggal = date('Y-m-d', strtotime($previous->tanggal));
+                        $tanggal = strtotime($previous->tanggal);
+                        
+                        if (!array_key_exists($tanggal, $data[$product_code]["detail"])) {
+                            $data[$product_code]["detail"][$tanggal] = [
+                                "tanggal"   => $previous->tanggal,
+                                "receive"   => [],
+                                "sales"     => []
+                            ];
+                        }
+                        
+                        // dd($previous, $tanggal, $data[$product_code]);
+                        if ($previous->status_data == 0) {
+                            $data[$product_code]["detail"][$tanggal]["receive"] = [
+                                "quantity"      => 0 + $previous->quantity,
+                                "unit_price"    => 0 + $previous->unit_price,
+                                "amount"        => 0 + $previous->amount,
+                            ];
+                        }
+                    }
+                    $previous_product_code = $product_code;
+                    $item->tanggal = date('Y-m-d', strtotime($item->tanggal));
+                    $tanggal = strtotime($item->tanggal);
+                    
+                    if (!array_key_exists($tanggal, $data[$product_code]["detail"])) {
+                        $data[$product_code]["detail"][$tanggal] = [
+                            "tanggal"   => $item->tanggal,
+                            "receive"   => [],
+                            "sales"     => []
+                        ];
+                    }
+                    
+                    // dd($item, $tanggal, $data[$product_code]);
+                    if ($item->status_data == 1) {
+                        $data[$product_code]["detail"][$tanggal]["receive"] = [
+                            "quantity"      => 0 + $item->quantity,
+                            "unit_price"    => 0 + $item->unit_price,
+                            "amount"        => 0 + $item->amount,
+                        ];
+                    } elseif ($item->status_data == 2) {
+                        if (empty($data[$product_code]["detail"][$tanggal]["sales"])) {
+                            $data[$product_code]["detail"][$tanggal]["sales"] = [
+                                "quantity"      => 0,
+                                "unit_price"    => 0 + $item->unit_price,
+                                "amount"        => 0,
+                            ];
+                        }
+                        $data[$product_code]["detail"][$tanggal]["sales"]["quantity"] += $item->quantity;
+                        $data[$product_code]["detail"][$tanggal]["sales"]["amount"] += $item->amount;
+                    }
+                }
+            }
+            return $data;
+        }
+
+        private function get_previous_receive($product_code, $date) {
+            $query = "
+                SELECT 
+                    rcv.receive_date AS tanggal, 
+                    rcv.created_at, 
+                    rcv_detail.product_code AS kode_produk, 
+                    rcv_detail.quantity, 
+                    rcv_detail.unit_price, 
+                    rcv_detail.amount, 0 AS status_data
+                FROM 
+                    tr_receive_detail rcv_detail,
+                    tr_receive rcv
+                WHERE
+                    rcv.receive_code = rcv_detail.receive_code
+                    AND DATE(rcv.receive_date) < '$date' 
+                    AND rcv_detail.product_code = '$product_code'
+                ORDER BY rcv.id DESC
+                LIMIT 1
+            ";
+            $db_query = DB::select(DB::raw($query));
+            return $db_query[0];
+        }
+
         private function get_labarugi($sdate, $edate, $search, $categories) {
             $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
             $whereDate = "";
@@ -1492,35 +1586,7 @@ class ReportController extends Controller
             if (!empty($categories) && $categories != "ALL") {
                 $where .= " AND products.categories = '".$categories."'";
             }
-            $old_query = "
-                SELECT 
-                    products.code, products.name, products.categories, 
-                    products.price_store, products.discount_store, products.is_vat,
-                    COALESCE(
-                        (
-                            SELECT REPLACE(COALESCE(rc_detail.unit_price, 0), '.', '') AS unit_price
-                            FROM tr_receive_detail rc_detail
-                            INNER JOIN tr_receive rc ON rc_detail.receive_code = rc.receive_code
-                            WHERE rc_detail.product_code = products.code
-                            ORDER BY rc.receive_date DESC, rc.receive_time DESC
-                            LIMIT 1
-                        )
-                        , 0
-                    ) AS harga_beli,
-                    (
-                        SELECT SUM(trans_detail.quantity)
-                        FROM tr_transaction_detail trans_detail
-                        INNER JOIN tr_transaction trans ON trans_detail.invoice_no = trans.invoice_no
-                        WHERE 
-                            trans.status = 'FINISH' AND 
-                            trans_detail.product_code = products.code ".$whereDate."
-                        GROUP BY trans_detail.product_code
-                    ) AS total_qty
-                FROM products
-                WHERE products.is_active = 1 ".$where."
-                ORDER BY products.code ASC, products.name ASC
-            ";
-            $query = "
+            $oldquery = "
                 SELECT 
                     products.code as product_code,
                     CONCAT(products.code, ' | ', products.name) AS product_name,
@@ -1578,7 +1644,33 @@ class ReportController extends Controller
                            ORDER BY rcv.id DESC
                            LIMIT 1
                         )
-                    ) AS harga_beli
+                    ) AS harga_beli,
+                    COALESCE (
+                        (
+                           SELECT rcv_detail.quantity
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND rcv.created_at <= trans.created_at
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        ),
+                        (
+                           SELECT rcv_detail.quantity
+                           FROM 
+                               tr_receive_detail rcv_detail,
+                               tr_receive rcv
+                           WHERE
+                               rcv.receive_code = rcv_detail.receive_code
+                               AND rcv_detail.product_code = trans_detail.product_code
+                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
+                           ORDER BY rcv.id DESC
+                           LIMIT 1
+                        )
+                    ) AS quantity_rcv
                 FROM 
                     tr_transaction_detail trans_detail,
                     tr_transaction trans,
@@ -1589,6 +1681,39 @@ class ReportController extends Controller
                     ".$whereDate."
                     ".$where."
                 ORDER BY products.name ASC, trans.trans_date ASC        
+            ";
+
+            $query = "
+                SELECT 
+                    table_data.kode_produk,
+                    products.name,
+                    table_data.tanggal, 
+                    table_data.quantity, 
+                    table_data.unit_price, 
+                    table_data.amount, 
+                    table_data.status_data
+                FROM (
+                    SELECT rcv.receive_date AS tanggal, rcv.created_at, rcv_detail.product_code AS kode_produk, rcv_detail.quantity, rcv_detail.unit_price, rcv_detail.amount, 1 AS status_data
+                    FROM 
+                        tr_receive_detail rcv_detail,
+                        tr_receive rcv
+                    WHERE
+                        rcv.receive_code = rcv_detail.receive_code
+                        AND (DATE(rcv.receive_date) BETWEEN '$sdate' AND '$edate')
+                    
+                    UNION ALL
+                    
+                    SELECT trans.trans_date AS tanggal, trans.created_at, trans_detail.product_code AS kode_produk, trans_detail.quantity, trans_detail.price as unit_price, (trans_detail.quantity * trans_detail.price) as amount, 2 AS status_data
+                    FROM 
+                        tr_transaction_detail trans_detail,
+                        tr_transaction trans
+                    WHERE
+                        trans.invoice_no = trans_detail.invoice_no
+                        AND (DATE(trans.trans_date) BETWEEN '$sdate' AND '$edate')
+                ) AS table_data, products
+                WHERE products.code = table_data.kode_produk
+                $where
+                ORDER BY products.name ASC, table_data.created_at ASC
             ";
             // echo "<pre/>";print_r($query);exit;
             $db_query = DB::select(DB::raw($query));
