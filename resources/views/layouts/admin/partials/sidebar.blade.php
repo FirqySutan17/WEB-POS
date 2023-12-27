@@ -139,11 +139,17 @@
                                     Margin Item
                                 </a>
                             </li>
+
+                            <li>
+                                <a href="{{ route('report.monthly') }}" class="{{routeActive(['report.monthly'])}}">
+                                    Monthly
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     @endcanany
 
-                    <li class="sidebar-main-title">
+                    {{-- <li class="sidebar-main-title">
                         <div>
                             <h6>Accounting</h6>
                         </div>
@@ -188,7 +194,7 @@
                         </ul>
                     </li>
 
-                    <li class="dropdown">
+                    <li class="dropdown"> --}}
                         <a class="nav-link navSubMenu menu-title {{routeActive(['account-slip.index', 'account-slip.create', 'account-slip.edit'])}}"
                             href="javascript:void(0)"><i data-feather="file-text"></i><span>Account</span></a>
                         <ul class="nav-submenu menu-content">

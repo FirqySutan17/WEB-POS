@@ -181,6 +181,8 @@ Route::post('/report/cash-flow/excel', [App\Http\Controllers\ReportController::c
 Route::match(['get', 'post'], '/report/laba-rugi', [App\Http\Controllers\ReportController::class, 'report_laba_rugi'])->name('report.labarugi');
 Route::match(['get', 'post'], '/report/best-seller', [App\Http\Controllers\ReportController::class, 'report_best_seller'])->name('report.bestseller');
 
+Route::match(['get', 'post'], '/report/monthly', [App\Http\Controllers\ReportController::class, 'report_monthly'])->name('report.monthly');
+
 
 // Dashboard Route
 Route::get('/sync-data', [App\Http\Controllers\SyncDataController::class, 'index'])->name('sync-data');
