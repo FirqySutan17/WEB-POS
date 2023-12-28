@@ -1725,8 +1725,8 @@ class ReportController extends Controller
     // START REPORT MONTLY
     public function report_monthly(Request $request) {
         $data   = [];
-        $sdate  = "'2023-11-01";
-        $edate  = "'2023-11-30";
+        $sdate  = "2023-11-01";
+        $edate  = "2023-11-30";
         $search  = "";
         $categories = "Internal";
         if ($request->_token) {
@@ -1734,10 +1734,10 @@ class ReportController extends Controller
             $edate = $request->edate;
             $search = trim($request->search);
             $categories = $request->categories;
+            $data = $this->get_monthly($sdate, $edate, $search, $categories);
+            // dd($data);
         }
 
-        // $data_raw = $this->get_monthly($sdate, $edate, $search, $categories);
-        // dd($data_raw);
         // $data = $this->convert_monthly($data_raw);
         return view('admin.report.monthly', compact('data', 'sdate', 'edate', 'search', 'categories'));
     }
@@ -1809,57 +1809,54 @@ class ReportController extends Controller
 
         $query = "
                 SELECT 
+                products.name,
                 product_code, SUM(receive) AS receive, SUM(adjust_in) AS adjust_in, SUM(adjust_out) AS adjust_out, SUM(sales) AS sales,  
                 SUM(total_harga_beli) AS total_harga_beli, SUM(total_harga_jual) AS total_harga_jual,
-                (SUM(total_harga_beli) / SUM(receive)) AS up_harga_beli, (SUM(total_harga_jual) / SUM(sales)) AS up_harga_jual
+                COALESCE(SUM(total_harga_beli) / SUM(receive), 0) AS up_harga_beli, COALESCE(SUM(total_harga_jual) / SUM(sales), 0) AS up_harga_jual
         FROM (
                 SELECT 
-                    a.product_code, SUM(a.quantity) AS receive, SUM(a.amount) AS total_harga_beli, (SUM(a.amount) / SUM(a.quantity)) AS up_harga_beli,
-                    0 AS adjust_in, 0 AS adjust_out, 0 AS sales, 0 AS total_harga_jual, 0 AS up_harga_jual
+                    a.product_code, a.quantity AS receive, a.amount AS total_harga_beli,
+                    0 AS adjust_in, 0 AS adjust_out, 0 AS sales, 0 AS total_harga_jual
                 FROM tr_receive_detail a, tr_receive b
                 WHERE 
                     b.receive_code = a.receive_code
                     AND b.receive_date BETWEEN '$sdate' AND '$edate'
-                GROUP BY a.product_code
                 
                 UNION ALL
                 
                 SELECT 
-                    c.product_code,0 AS receive, 0 AS total_harga_beli, 0 AS up_harga_beli,
-                    SUM(c.qty) AS adjust_in, 0 AS adjust_out, 0 AS sales, 0 AS total_harga_jual, 0 AS up_harga_jual
+                    c.product_code,0 AS receive, 0 AS total_harga_beli,
+                    c.qty AS adjust_in, 0 AS adjust_out, 0 AS sales, 0 AS total_harga_jual
                 FROM tr_adjust_stock c
                 WHERE 
                     c.date BETWEEN '$sdate' AND '$edate'
                     AND c.`type` = 'IN'
-                GROUP BY c.product_code
                 
                 UNION ALL
                 
                 SELECT 
-                    c.product_code,0 AS receive, 0 AS total_harga_beli, 0 AS up_harga_beli,
-                    0 AS adjust_in, SUM(c.qty) AS adjust_out, 0 AS sales, 0 AS total_harga_jual, 0 AS up_harga_jual
+                    c.product_code,0 AS receive, 0 AS total_harga_beli,
+                    0 AS adjust_in, c.qty AS adjust_out, 0 AS sales, 0 AS total_harga_jual
                 FROM tr_adjust_stock c
                 WHERE 
                     c.date BETWEEN '$sdate' AND '$edate'
                     AND c.`type` = 'OUT'
-                GROUP BY c.product_code
                 
                 UNION ALL
                 
                 SELECT 
-                    d.product_code, 0 AS receive, 0 AS total_harga_beli, 0 AS up_harga_beli,
+                    d.product_code, 0 AS receive, 0 AS total_harga_beli,
                     0 AS adjust_in, 0 AS adjust_out, 
-                    SUM(d.quantity) AS sales, 
-                    (SUM(d.quantity) * SUM(d.price)) AS total_harga_jual, 
-                    ((SUM(d.quantity) * SUM(d.price)) / SUM(d.quantity)) AS up_harga_jual
+                    d.quantity AS sales, 
+                    (d.quantity * d.price) AS total_harga_jual
                 FROM tr_transaction_detail d, tr_transaction e
                 WHERE 
                     e.invoice_no = d.invoice_no
                     AND e.trans_date BETWEEN '$sdate' AND '$edate'
-                GROUP BY d.product_code
-        ) AS tabledata
-        GROUP BY product_code
-        ORDER BY tabledata.product_code ASC  
+        ) AS tabledata, products
+        WHERE products.code = tabledata.product_code
+        GROUP BY product_code, products.name
+        ORDER BY products.name ASC  
         ";
         // echo "<pre/>";print_r($query);exit;
         $db_query = DB::select(DB::raw($query));
