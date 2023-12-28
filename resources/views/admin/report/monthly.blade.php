@@ -98,39 +98,62 @@ CMS | Monthly
                 <tbody>
                     <?php $total_receive = 0; $total_adjust_in = 0; $total_adjust_out = 0; $total_end = 0; $total_sales = 0; $total_harga_beli = 0; $total_harga_jual = 0 ; ?>
                     @if (!empty($data))
-                        @foreach ($data as $item)
-                        <tr>
-                            <?php 
+                    @foreach ($data as $item)
+                    <tr>
+                        <?php 
                                 $total_receive += $item->receive; $total_adjust_in += $item->adjust_in; $total_adjust_out += $item->adjust_out; $total_sales += $item->sales;  
                                 $end = $item->receive + $item->adjust_in - $item->adjust_out;
                                 $total_end += $end; $total_harga_beli += $item->total_harga_beli; $total_harga_jual += $item->total_harga_jual;
                             ?>
-                            <td style="border: 2px solid #e6edef;">{{ $item->name.' | '.$item->product_code }}</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->receive }}</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->adjust_in }}</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->adjust_out }}</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">{{ $end }}</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->sales }}</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">@currency(round($item->up_harga_beli))</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">@currency(round($item->total_harga_beli))</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">@currency(round($item->up_harga_jual))</td>
-                            <td style="border: 2px solid #e6edef;" class="center-text">@currency(round($item->total_harga_jual))</td>
-                        </tr>
-                        @endforeach
+                        <td style="border: 2px solid #e6edef;">{{ $item->name.' | '.$item->product_code }}</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->receive }}</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->adjust_in }}</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->adjust_out }}</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">{{ $end }}</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">{{ $item->sales }}</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">
+                            @currency(round($item->up_harga_beli))</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">
+                            @currency(round($item->total_harga_beli))</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">
+                            @currency(round($item->up_harga_jual))</td>
+                        <td style="border: 2px solid #e6edef;" class="center-text">
+                            @currency(round($item->total_harga_jual))</td>
+                    </tr>
+                    @endforeach
                     @endif
                 </tbody>
                 <tfoot>
                     <tr>
                         <th style="border: 2px solid #e6edef;text-align: left; background: #f3f2f7 ">GRAND TOTAL</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_receive }}</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_adjust_in }}</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_adjust_out }}</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_sales }}</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_end }}</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">@currency(round($total_harga_beli / $total_receive))</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">@currency(round($total_harga_beli))</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">@currency(round($total_harga_jual / $total_sales))</th>
-                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">@currency(round($total_harga_jual))</th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_receive
+                            }}</th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{
+                            $total_adjust_in }}</th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{
+                            $total_adjust_out }}</th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_sales }}
+                        </th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">{{ $total_end }}
+                        </th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">
+                            @if ($total_harga_beli > 0 && $total_receive > 0)
+                            @currency(round($total_harga_beli / $total_receive))
+                            @else
+                            0
+                            @endif
+                        </th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">
+                            @currency(round($total_harga_beli))</th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">
+                            @if ($total_harga_jual > 0 && $total_sales > 0)
+                            @currency(round($total_harga_jual / $total_sales))
+                            @else
+                            0
+                            @endif
+                        </th>
+                        <th style="border: 2px solid #e6edef;text-align: center; background: #f3f2f7">
+                            @currency(round($total_harga_jual))</th>
                     </tr>
                 </tfoot>
             </table>

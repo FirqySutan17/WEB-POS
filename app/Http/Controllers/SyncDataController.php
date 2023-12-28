@@ -29,12 +29,12 @@ class SyncDataController extends Controller
         // $users = $this->get_users();
         // $products = $this->get_products();
         // $products_price_log = $this->get_products_price_log();
-        // $tr_receive = $this->get_tr_receive();
+        $tr_receive = $this->get_tr_receive();
         // $tr_receive_detail = $this->get_tr_receive_detail();
         // $tr_transaction = $this->get_tr_transaction();
         // $tr_transaction_detail = $this->get_tr_transaction_detail();
-        $tr_adjust_stock = $this->get_tr_adjust_stock();
-        dd($tr_adjust_stock);
+        // $tr_adjust_stock = $this->get_tr_adjust_stock();
+        dd($tr_transaction_detail);
         // return view('sync-data.index', compact('cashflow'));
     }
 
@@ -611,7 +611,7 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 452);
+        $query->where('id', '>', 474);
         if (!empty($last_sync)) {
             // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
            
@@ -702,7 +702,7 @@ class SyncDataController extends Controller
         // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
         $current_time   = date('Y-m-d H:i:s');
         $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 1166);
+        $query->where('id', '>', 1202);
         // if (!empty($last_sync)) {
         //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
         //     $query->where('id', '>', $last_sync->last_id_data);

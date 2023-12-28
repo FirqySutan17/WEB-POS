@@ -1725,10 +1725,10 @@ class ReportController extends Controller
     // START REPORT MONTLY
     public function report_monthly(Request $request) {
         $data   = [];
-        $sdate  = "2023-11-01";
-        $edate  = "2023-11-30";
+        $sdate  = "";
+        $edate  = "";
         $search  = "";
-        $categories = "Internal";
+        $categories = "";
         if ($request->_token) {
             $sdate = $request->sdate;
             $edate = $request->edate;
