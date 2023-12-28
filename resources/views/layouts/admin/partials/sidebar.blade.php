@@ -192,9 +192,9 @@
                             </li>
 
                         </ul>
-                    </li>
+                    </li> --}}
 
-                    <li class="dropdown"> --}}
+                    {{-- <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{routeActive(['account-slip.index', 'account-slip.create', 'account-slip.edit'])}}"
                             href="javascript:void(0)"><i data-feather="file-text"></i><span>Account</span></a>
                         <ul class="nav-submenu menu-content">
@@ -205,7 +205,7 @@
                                     Account Slip
                                 </a>
                             </li>
-                            {{-- <li>
+                            <li>
                                 <a href="{{ route('receive-material.index') }}"
                                     class="{{routeActive(['receive-material.index', 'receive-material.create', 'receive-material.edit'])}}">
                                     Trial Balance
@@ -216,9 +216,9 @@
                                     class="{{routeActive(['receive-material.index', 'receive-material.create', 'receive-material.edit'])}}">
                                     Daily Remainder
                                 </a>
-                            </li> --}}
+                            </li>
                         </ul>
-                    </li>
+                    </li> --}}
 
                     @canany(['Transaction', 'Receive'])
                     <li class="sidebar-main-title">
