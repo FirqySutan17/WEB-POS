@@ -62,6 +62,13 @@ CMS | Report Receive
                             value="{{ empty($edate) ? date('Y-m-d') : $edate }}"
                             style="height: 100%; text-align: center; font-size: 14px">
                     </div>
+                    <div class="col-2">
+                        <select name="categories" class="form-control" style="height: 100%; font-size: 14px">
+                            <option {{ $categories=='ALL' ? "selected" : "" }} value="ALL">All Categories</option>
+                            <option {{ $categories=='Internal' ? "selected" : "" }} value="Internal">Internal</option>
+                            <option {{ $categories=='External' ? "selected" : "" }} value="External">External</option>
+                        </select>
+                    </div>
                     <div class="col-1">
                         <button type="submit" class="btn btn-primary _btn" role="button">FILTER</button>
                     </div>

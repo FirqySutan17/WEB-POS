@@ -29,12 +29,12 @@ class SyncDataController extends Controller
         // $users = $this->get_users();
         // $products = $this->get_products();
         // $products_price_log = $this->get_products_price_log();
-        $tr_receive = $this->get_tr_receive();
+        // $tr_receive = $this->get_tr_receive();
         // $tr_receive_detail = $this->get_tr_receive_detail();
-        // $tr_transaction = $this->get_tr_transaction();
+        $tr_transaction = $this->get_tr_transaction();
         // $tr_transaction_detail = $this->get_tr_transaction_detail();
         // $tr_adjust_stock = $this->get_tr_adjust_stock();
-        dd($tr_transaction_detail);
+        dd($tr_transaction);
         // return view('sync-data.index', compact('cashflow'));
     }
 
