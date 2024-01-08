@@ -623,13 +623,15 @@ class ReportController extends Controller
             $data   = [];
             $sdate  = "";
             $edate  = ""; 
-            $search  = ""; 
+            $search  = "";
+            $categories = "";
             if ($request->_token) {
                 $order_by = "ORDER BY receive_detail.product_code ASC, receive.receive_date DESC, receive_detail.receive_code ASC";
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search);
+                $categories = $request->categories;
+                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search, $categories);
                 $data     = $this->convert_receive_by_product($data_raw);
                 // dd($data);
             }
@@ -640,13 +642,15 @@ class ReportController extends Controller
             $data   = [];
             $sdate  = "";
             $edate  = ""; 
-            $search  = ""; 
+            $search  = "";
+            $categories = "";
             if ($request->_token) {
                 $order_by = "ORDER BY receive_detail.product_code ASC, receive.receive_date DESC, receive_detail.receive_code ASC";
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search);
+                $categories = $request->categories;
+                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search, $categories);
                 $data     = $this->convert_receive_by_product($data_raw);
                 // dd($data);
             }
@@ -657,13 +661,15 @@ class ReportController extends Controller
            $data   = [];
             $sdate  = "";
             $edate  = ""; 
-            $search  = ""; 
+            $search  = "";
+            $categories = "";
             if ($request->_token) {
                 $order_by = "ORDER BY receive_detail.product_code ASC, receive.receive_date DESC, receive_detail.receive_code ASC";
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $search = trim($request->search);
-                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search);
+                $categories = $request->categories;
+                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search, $categories);
                 $data     = $this->convert_receive_by_product($data_raw);
                 // dd($data);
             }
