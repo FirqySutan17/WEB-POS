@@ -522,7 +522,7 @@ class ReportController extends Controller
                 $sdate = $request->sdate;
                 $edate = $request->edate;
                 $categories = $request->categories;
-                $data_raw = $this->get_receive_by_date($sdate, $edate);
+                $data_raw = $this->get_receive_by_date($sdate, $edate, $categories);
                 $data     = $this->convert_receive_by_date($data_raw);
                 // dd($data);
             }
@@ -532,27 +532,35 @@ class ReportController extends Controller
         public function report_receive_by_date_excel(Request $request) {
             $data   = [];
             $sdate  = "";
-            $edate  = "";
+            $edate  = ""; 
+            $categories  = ""; 
             if ($request->_token) {
+                // $order_by = "ORDER BY ";
                 $sdate = $request->sdate;
                 $edate = $request->edate;
-                $data_raw = $this->get_receive_by_date($sdate, $edate);
+                $categories = $request->categories;
+                $data_raw = $this->get_receive_by_date($sdate, $edate, $categories);
                 $data     = $this->convert_receive_by_date($data_raw);
+                // dd($data);
             }
-            return Excel::download(new ReportExport($data, 'receive'), 'receive.xlsx');
+            return Excel::download(new ReportExport($data, 'receive', $sdate, $edate), 'receive.xlsx');
         }
     
         public function report_receive_by_date_pdf(Request $request) {
             $data   = [];
             $sdate  = "";
-            $edate  = "";
+            $edate  = ""; 
+            $categories  = ""; 
             if ($request->_token) {
+                // $order_by = "ORDER BY ";
                 $sdate = $request->sdate;
                 $edate = $request->edate;
-                $data_raw = $this->get_receive_by_date($sdate, $edate);
+                $categories = $request->categories;
+                $data_raw = $this->get_receive_by_date($sdate, $edate, $categories);
                 $data     = $this->convert_receive_by_date($data_raw);
+                // dd($data);
             }
-            $pdf = PDF::loadview('exports/receive',['data'=>$data])->setPaper('a4', 'landscape');
+            $pdf = PDF::loadview('exports/receive',['data'=>$data, 'sdate' => $sdate, 'edate' => $edate])->setPaper('a4', 'landscape');
             return $pdf->stream();
             // return $pdf->download('stock-opname-pdf');
         }
@@ -576,33 +584,37 @@ class ReportController extends Controller
         }
 
         public function report_receive_by_no_excel(Request $request) {
-            $data   = [];
             $sdate  = "";
             $edate  = "";
+            $categories = "";
             if ($request->_token) {
                 $order_by = "ORDER BY receive.receive_date DESC, receive_detail.receive_code ASC";
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $categories = $request->categories;
                 $search = trim($request->search);
-                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by);
+                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search, $categories);
                 $data     = $this->convert_receive_by_no($data_raw);
+                
             }
-            return Excel::download(new ReportExport($data, 'receiveno'), 'receiveno.xlsx');
+            return Excel::download(new ReportExport($data, 'receiveno', $sdate, $edate), 'receiveno.xlsx');
         }
     
         public function report_receive_by_no_pdf(Request $request) {
-            $data   = [];
             $sdate  = "";
             $edate  = "";
+            $categories = "";
             if ($request->_token) {
                 $order_by = "ORDER BY receive.receive_date DESC, receive_detail.receive_code ASC";
                 $sdate = $request->sdate;
                 $edate = $request->edate;
+                $categories = $request->categories;
                 $search = trim($request->search);
-                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by);
+                $data_raw = $this->get_receive_raw($sdate, $edate, $order_by, $search, $categories);
                 $data     = $this->convert_receive_by_no($data_raw);
+                
             }
-            $pdf = PDF::loadview('exports/receiveno',['data'=>$data])->setPaper('a4', 'landscape');
+            $pdf = PDF::loadview('exports/receiveno',['data'=>$data,  'sdate' => $sdate, 'edate' => $edate])->setPaper('a4', 'landscape');
             return $pdf->stream();
             // return $pdf->download('stock-opname-pdf');
         }
@@ -638,7 +650,7 @@ class ReportController extends Controller
                 $data     = $this->convert_receive_by_product($data_raw);
                 // dd($data);
             }
-            return Excel::download(new ReportExport($data, 'receiveproduct'), 'receiveproduct.xlsx');
+            return Excel::download(new ReportExport($data, 'receiveproduct', $sdate, $edate), 'receiveproduct.xlsx');
         }
     
         public function report_receive_by_product_pdf(Request $request) {
@@ -655,12 +667,16 @@ class ReportController extends Controller
                 $data     = $this->convert_receive_by_product($data_raw);
                 // dd($data);
             }
-            $pdf = PDF::loadview('exports/receiveproduct',['data'=>$data])->setPaper('a4', 'landscape');
+            $pdf = PDF::loadview('exports/receiveproduct',['data'=>$data,  'sdate' => $sdate, 'edate' => $edate])->setPaper('a4', 'landscape');
             return $pdf->stream();
             // return $pdf->download('stock-opname-pdf');
         }
         
-        private function get_receive_by_date($sdate, $edate) {
+        private function get_receive_by_date($sdate, $edate, $categories) {
+            $where = "";
+            if (!empty($categories) && $categories != "ALL") {
+                $where .= " AND products.categories = '".$categories."'";
+            }
             $query = "
                 SELECT 
                     receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name AS pic,
@@ -669,7 +685,7 @@ class ReportController extends Controller
                 INNER JOIN tr_receive receive ON receive_detail.receive_code = receive.receive_code
                 INNER JOIN users ON receive.created_by = users.id
                 INNER JOIN products ON receive_detail.product_code = products.code
-                WHERE receive.receive_date BETWEEN '$sdate' AND '$edate'
+                WHERE receive.receive_date BETWEEN '$sdate' AND '$edate' ".$where."
                 ORDER BY receive.receive_date DESC, receive_detail.receive_code ASC
             ";
 

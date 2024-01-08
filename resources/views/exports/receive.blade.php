@@ -317,10 +317,10 @@
     <div id="page-header">
         <table>
             <tr>
-                <th style="font-size: 24px">REPORT TRANSACTION</th>
+                <th colspan="9" style="font-size: 24px">REPORT RECEIVE</th>
             </tr>
             <tr>
-                <td style="text-align: center">04/09/2023 - 30/09/2023</td>
+                <td  colspan="9" style="text-align: center">{{ $sdate }} - {{ $edate }}</td>
             </tr>
         </table>
     </div>
@@ -330,57 +330,72 @@
                 <tr class="head-report">
                     <th rowspan="2" class="center-text">No <span class="dividerHr"></span></th>
                     <th rowspan="2" class="center-text">Tanggal<span class="dividerHr"></span></th>
-                    <th colspan="5" class="heightHr center-text">Receive <span class="dividerHr"></span>
+                    <th colspan="5" class="heightHr center-text">Item <span class="dividerHr"></span>
 
                     </th>
                 </tr>
                 <tr class="head-report">
-                    <th class="heightHr center-text">Receive No <span class="dividerHr"></span>
+                    <th class="heightHr center-text" style="vertical-align: middle">Item Name<span class="dividerHr"></span>
                     </th>
-                    <th class="heightHr center-text">Delivery No<span class="dividerHr"></span>
+                    <th class="heightHr center-text" style="vertical-align: middle">Qty<span class="dividerHr"></span>
                     </th>
-                    <th class="heightHr center-text">PIC<span class="dividerHr"></span>
+                    <th class="heightHr center-text" style="vertical-align: middle">Unit Price<span class="dividerHr"></span>
                     </th>
-                    <th class="heightHr center-text">Total Product<span class="dividerHr"></span>
-                    </th>
-                    <th class="heightHr center-text">Total Qty<span class="dividerHr"></span>
+                    <th class="heightHr center-text" style="vertical-align: middle">Amount<span class="dividerHr"></span>
                     </th>
                 </tr>
             </thead>
             <tbody>
+                <?php $total_amount = 0; $total_qty = 0;?>
                 @if (!empty($data))
                 @foreach ($data as $item)
                 <?php $rowspan = 1 + count($item['details']) ?>
-                <tr>
-                    <td rowspan="{{ $rowspan }}" class="center-text">
-                        {{ $loop->iteration }}
-                    </td>
-                    <td rowspan="{{ $rowspan }}" class="center-text">
-                        {{ $item['receive_date'] }}
-                    </td>
+                <div class="rt-invoice">
+                    <tr>
+                        <td rowspan="{{ $rowspan }}" style="vertical-align: middle">
+                            {{ $loop->iteration }}
+                        </td>
+                        <td rowspan="{{ $rowspan }}" style="vertical-align: middle">
+                            {{ $item['receive_date'] }}
+                        </td>
 
-                    <td colspan="5">
+                        <td colspan="4" style="vertical-align: middle; padding: 0px">
 
-                    </td>
-                </tr>
-                @foreach ($item['details'] as $rcv)
-                <tr>
-                    <td>{{ $rcv['code'] }}</td>
-                    <td>{{ $rcv['delivery_no'] }}</td>
-                    <td class="center-text">{{ $rcv['pic'] }}</td>
-                    <td class="center-text">{{ $rcv['total_product'] }}</td>
-                    <td class="center-text">{{ $rcv['total_qty'] }}</td>
-                </tr>
-                @endforeach
+                        </td>
+                        {{-- <td rowspan="3" class="center-text" style="vertical-align: middle;">
+                            Rp 270.000
+                        </td> --}}
+                    </tr>
+                    @foreach ($item['details'] as $rcv)
+                    <tr>
+                        <td style="vertical-align: middle; text-align: left">{{ $rcv['product_code']." | ".$rcv['product_name'] }}</td>
+                        <td style="vertical-align: middle; text-align: right">{{ number_format($rcv['qty']) }}</td>
+                        <td style="vertical-align: middle; text-align: right">{{ number_format($rcv['unit_price']) }}</td>
+                        <td style="vertical-align: middle; text-align: right">{{ number_format($rcv['amount']) }}</td>
+                    </tr>
+                    <?php $total_qty += $rcv['qty']; $total_amount += $rcv['amount'];?>
+                    @endforeach
+                </div>
                 @endforeach
                 @endif
             </tbody>
+            <tfoot>
+                <tr>
+                    <?php $total_up = 0; if($total_amount > 0 && $total_qty > 0) { $total_up = round($total_amount / $total_qty); } ?>
+                    <td colspan="3" style="text-align: right">Total</td>
+                    <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_qty) }}</strong></td>
+                    {{-- <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_up) }}</strong></td> --}}
+                    <td style="vertical-align: middle; text-align: right"></td>
+                    <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td>
+                    {{-- <td style="vertical-align: middle; text-align: right"></td> --}}
+                </tr>
+            </tfoot>
         </table>
     </div>
-    <div id="page-footer">
+    {{-- <div id="page-footer">
         <p style="text-transform: uppercase">04-09-2023 12:00:00/{{ Auth::user()->name }}/{{
             Auth::user()->employee_id }}</p>
-    </div>
+    </div> --}}
 
     <script>
         const d = new Date();
