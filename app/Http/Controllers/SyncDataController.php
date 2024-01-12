@@ -25,14 +25,14 @@ class SyncDataController extends Controller
      */
     public function index(Request $request)
     {
-        // $cashflow = $this->get_cashflow();
-        // $users = $this->get_users();
-        // $products = $this->get_products();
-        // $products_price_log = $this->get_products_price_log();
-        // $tr_receive = $this->get_tr_receive();
-        // $tr_receive_detail = $this->get_tr_receive_detail();
-        // $tr_transaction = $this->get_tr_transaction();
-        // $tr_transaction_detail = $this->get_tr_transaction_detail();
+        $cashflow = $this->get_cashflow();
+        $users = $this->get_users();
+        $products = $this->get_products();
+        $products_price_log = $this->get_products_price_log();
+        $tr_receive = $this->get_tr_receive();
+        $tr_receive_detail = $this->get_tr_receive_detail();
+        $tr_transaction = $this->get_tr_transaction();
+        $tr_transaction_detail = $this->get_tr_transaction_detail();
         $tr_adjust_stock = $this->get_tr_adjust_stock();
         dd($tr_adjust_stock);
         // return view('sync-data.index', compact('cashflow'));
@@ -59,22 +59,31 @@ class SyncDataController extends Controller
         return $ipaddress;
     }
 
+    private function get_lastdata_brs($tablename)
+    {
+        $tablename = "POS_".strtoupper($tablename);
+        $url = "http://10.137.26.67:8080/meatmaster/api/pos";
+        // dd($url);
+        $options = [
+            'Accept' => 'application/json',
+        ];
+        $response = Http::get($url, ['tablename' => $tablename], $options);
+        $result = json_decode($response->getBody()->getContents());
+
+        return $result;
+    }
+
     private function get_cashflow()
     {
-        $tbl_name = 'cash_flow';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
-        $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 259);
-        if (!empty($last_sync)) {
-            // dd($last_sync);
-            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-           
-        } else {
-            // $query->where('created_at', '<=', $current_time);
-            // $query->whereDate('created_at', '2023-10-21');
+        $tbl_name           = 'cash_flow';
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
         }
-        // $query->whereDate('created_at', '2023-10-21');
+
+        $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', $last_id_data);
         $limit_perbatch = 0;
         if ($limit_perbatch > 0) {
             $query->limit($limit_perbatch);
@@ -84,23 +93,12 @@ class SyncDataController extends Controller
         $batch = 0;
         $status = "";
         if (count($get_data) > 0) {
-            $total_data = count($get_data);
-            $header     = $this->get_cashflow_header();
+            $total_data     = count($get_data);
+            $header         = $this->get_cashflow_header();
             $convert_data   = $this->convert_cashflow($get_data);
             $insert_data    = $this->insert_cashflow($header, $convert_data);
             dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
             // dd($url);
             $options = [
@@ -153,7 +151,6 @@ class SyncDataController extends Controller
     private function insert_cashflow($header, $data)
     {
         $implode_data = implode(" ", $data);
-        // dd($implode_data, $data);
         $query = "INSERT ALL ".$implode_data." SELECT 1 FROM dual";
         return $query;
     }
@@ -161,22 +158,14 @@ class SyncDataController extends Controller
     private function get_users()
     {
         $tbl_name = 'users';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
-        $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 1);
-        // if (!empty($last_sync)) {
-        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-        //     $query->where('id', '>', $last_sync->last_id_data);
-        // } else {
-        //     // $query->where('created_at', '<=', $current_time);
-        //     // $query->whereDate('created_at', '2023-10-21');
-        // }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
         }
+
+        $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -187,19 +176,8 @@ class SyncDataController extends Controller
             $insert_data    = $this->insert_users($convert_data);
             dd($insert_data);
             $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
@@ -250,22 +228,14 @@ class SyncDataController extends Controller
     private function get_products()
     {
         $tbl_name = 'products';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        // $current_time   = date('Y-m-d H:i:s');
-        $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 83);
-        // if (!empty($last_sync)) {
-        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-        //     $query->where('id', '>', $last_sync->last_id_data);
-        // } else {
-        //     // $query->where('created_at', '<=', $current_time);
-        //     // $query->whereDate('created_at', '2023-10-21');
-        // }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
         }
+
+        $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -275,20 +245,8 @@ class SyncDataController extends Controller
             $convert_data   = $this->convert_products($get_data);
             $insert_data    = $this->insert_products($convert_data);
             dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
@@ -340,22 +298,14 @@ class SyncDataController extends Controller
     private function get_products_price_log()
     {
         $tbl_name = 'products_price_log';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
-        $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 290);
-        // if (!empty($last_sync)) {
-        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-        //     $query->where('id', '>', $last_sync->last_id_data);
-        // } else {
-        //     // $query->where('created_at', '<=', $current_time);
-        //     // $query->whereDate('created_at', '2023-10-21');
-        // }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
         }
+
+        $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -365,20 +315,8 @@ class SyncDataController extends Controller
             $convert_data   = $this->convert_products_price_log($get_data);
             $insert_data    = $this->insert_products_price_log($convert_data);
             dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
@@ -429,22 +367,14 @@ class SyncDataController extends Controller
     private function get_tr_receive()
     {
         $tbl_name = 'tr_receive';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
-        $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 61);
-        // if (!empty($last_sync)) {
-        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-        //     $query->where('id', '>', $last_sync->last_id_data);
-        // } else {
-        //     // $query->where('created_at', '<=', $current_time);
-        //     // $query->whereDate('created_at', '2023-10-21');
-        // }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
         }
+
+        $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -519,22 +449,14 @@ class SyncDataController extends Controller
     private function get_tr_receive_detail()
     {
         $tbl_name = 'tr_receive_detail';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
-        $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 182);
-        // if (!empty($last_sync)) {
-        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-           
-        // } else {
-        //     // $query->where('created_at', '<=', $current_time);
-        //     // $query->whereDate('created_at', '2023-10-21');
-        // }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
         }
+
+        $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -544,20 +466,8 @@ class SyncDataController extends Controller
             $convert_data   = $this->convert_tr_receive_detail($get_data);
             $insert_data    = $this->insert_tr_receive_detail($convert_data);
             dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
@@ -608,22 +518,14 @@ class SyncDataController extends Controller
     private function get_tr_transaction()
     {
         $tbl_name = 'tr_transaction';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
+        }
+
         $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 561);
-        if (!empty($last_sync)) {
-            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-           
-        } else {
-            // $query->where('created_at', '<=', $current_time);
-            // $query->whereDate('created_at', '2023-10-21');
-        }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
-        }
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -633,20 +535,8 @@ class SyncDataController extends Controller
             $convert_data   = $this->convert_tr_transaction($get_data);
             $insert_data    = $this->insert_tr_transaction($convert_data);
             dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
@@ -699,22 +589,14 @@ class SyncDataController extends Controller
     private function get_tr_transaction_detail()
     {
         $tbl_name = 'tr_transaction_detail';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
-        $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', 1393);
-        // if (!empty($last_sync)) {
-        //     // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-        //     $query->where('id', '>', $last_sync->last_id_data);
-        // } else {
-        //     // $query->where('created_at', '<=', $current_time);
-        //     // $query->whereDate('created_at', '2023-10-21');
-        // }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
         }
+
+        $query      = DB::table($tbl_name)->select('*');
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -724,20 +606,8 @@ class SyncDataController extends Controller
             $convert_data   = $this->convert_tr_transaction_detail($get_data);
             $insert_data    = $this->insert_tr_transaction_detail($convert_data);
             dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
@@ -789,21 +659,14 @@ class SyncDataController extends Controller
     private function get_tr_adjust_stock()
     {
         $tbl_name = 'tr_adjust_stock';
-        // $last_sync  = DB::table('logs_sync_cms')->select('created_at', 'batch', 'last_id_data')->where('table_name', $tbl_name)->orderBy('id', 'DESC')->first();
-        $current_time   = date('Y-m-d H:i:s');
+        $lastdata_brs       = $this->get_lastdata_brs($tbl_name);
+        $last_id_data        = 0;
+        if (!empty($lastdata_brs->data)) {
+            $last_id_data    = $lastdata_brs->data->ID;
+        }
+
         $query      = DB::table($tbl_name)->select('*');
-        if (!empty($last_sync)) {
-            // $query->whereBetween('created_at', [$last_sync->created_at, $current_time]);
-            $query->where('id', '>', 27);
-        } else {
-            // $query->where('created_at', '<=', $current_time);
-            // $query->whereDate('created_at', '2023-10-21');
-        }
-        // $query->whereDate('created_at', '2023-10-21');
-        $limit_perbatch = 0;
-        if ($limit_perbatch > 0) {
-            $query->limit($limit_perbatch);
-        }
+        $query->where('id', '>', $last_id_data);
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
@@ -813,20 +676,8 @@ class SyncDataController extends Controller
             $convert_data   = $this->convert_tr_adjust_stock($get_data);
             $insert_data    = $this->insert_tr_adjust_stock($convert_data);
             dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
             $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
