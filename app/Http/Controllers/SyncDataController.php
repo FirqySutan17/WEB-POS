@@ -707,7 +707,7 @@ class SyncDataController extends Controller
         foreach ($arr_tr_adjust_stock as $cf) {
             $cf->remark = substr($cf->remark, 0, 255);
             $remark = $this->stringfy($this->clean(trim(preg_replace('/\s+/', ' ', $cf->remark))));
-            $curr_data  = [$this->stringfy($cf->plant), $this->convertDate('date',$cf->date), $this->convertDate('time', $cf->time), $this->stringfy($cf->employee_id), $this->stringfy($cf->product_code), $cf->qty, $this->cd_code('adjust_stock', $cf->type), $remark, $this->stringfy($cf->approval), $this->convertDate('datetime', $cf->created_at)];
+            $curr_data  = [$this->stringfy($cf->plant), $this->convertDate('date',$cf->date), $this->convertDate('time', $cf->time), $this->stringfy($cf->employee_id), $this->stringfy($cf->product_code), $this->cd_code('adjust_stock', $cf->type), $cf->qty, $remark, $this->stringfy($cf->approval), $this->convertDate('datetime', $cf->created_at)];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
