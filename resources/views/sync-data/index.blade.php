@@ -8,21 +8,15 @@
 </head>
 <body>
   SYNC DATA
+  {{ date('Y-m-d H:i:s') }}
+  <br>
+  {{ json_encode($data) }}
   <script src="{{asset('assets/js/jquery-3.5.1.min.js')}}"></script>
   <script>
-    let cashflow = <?php echo json_encode($cashflow) ?>;
     $(document).ready(function() {
-      console.log(cashflow);
-      $.ajax({
-            url: cashflow.url,
-            type: "GET",
-            data: {
-                "query": cashflow.query,
-            },
-            success: function(response) {
-              console.log(response);
-            }
-        });
+      window.setTimeout( function() {
+        window.location.reload();
+      }, 90000);
     });
   </script>
 </body>

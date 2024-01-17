@@ -25,17 +25,28 @@ class SyncDataController extends Controller
      */
     public function index(Request $request)
     {
-        $cashflow = $this->get_cashflow();
-        $users = $this->get_users();
-        $products = $this->get_products();
-        $products_price_log = $this->get_products_price_log();
+        // $cashflow = $this->get_cashflow();
+        // $users = $this->get_users();
+        // $products = $this->get_products();
+        // $products_price_log = $this->get_products_price_log();
         $tr_receive = $this->get_tr_receive();
         $tr_receive_detail = $this->get_tr_receive_detail();
         $tr_transaction = $this->get_tr_transaction();
         $tr_transaction_detail = $this->get_tr_transaction_detail();
         $tr_adjust_stock = $this->get_tr_adjust_stock();
-        dd($tr_adjust_stock);
-        // return view('sync-data.index', compact('cashflow'));
+
+        $data = [
+            "cashflow"  => $cashflow,
+            "users"     => $users,
+            "products"     => $products,
+            "products_price_log"     => $products_price_log,
+            "tr_receive"     => $tr_receive,
+            "tr_receive_detail"     => $tr_receive_detail,
+            "tr_transaction"     => $tr_transaction,
+            "tr_transaction_detail"     => $tr_transaction_detail,
+            "tr_adjust_stock"     => $tr_adjust_stock,
+        ];
+        return view('sync-data.index', compact('data'));
     }
 
     private function get_client_ip() {
@@ -62,7 +73,7 @@ class SyncDataController extends Controller
     private function get_lastdata_brs($tablename)
     {
         $tablename = "POS_".strtoupper($tablename);
-        $url = "http://10.137.26.67:8080/meatmaster/api/pos";
+        $url = "http://103.209.6.32:8080/meatmaster/api/pos";
         // dd($url);
         $options = [
             'Accept' => 'application/json',
@@ -97,8 +108,7 @@ class SyncDataController extends Controller
             $header         = $this->get_cashflow_header();
             $convert_data   = $this->convert_cashflow($get_data);
             $insert_data    = $this->insert_cashflow($header, $convert_data);
-            dd($insert_data);
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             // dd($url);
             $options = [
@@ -174,9 +184,7 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_users($get_data);
             $insert_data    = $this->insert_users($convert_data);
-            dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             $options = [
                 'Accept' => 'application/json',
@@ -244,8 +252,7 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_products($get_data);
             $insert_data    = $this->insert_products($convert_data);
-            dd($insert_data);
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             $options = [
                 'Accept' => 'application/json',
@@ -314,8 +321,7 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_products_price_log($get_data);
             $insert_data    = $this->insert_products_price_log($convert_data);
-            dd($insert_data);
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             $options = [
                 'Accept' => 'application/json',
@@ -383,21 +389,8 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_tr_receive($get_data);
             $insert_data    = $this->insert_tr_receive($convert_data);
-            dd($insert_data);
-            $last_id_data   = $get_data[$total_data - 1]->id;
-            $arr_local_ip = [
-                "103.209",
-            ];
-            $visitor = $this->get_client_ip();
-            // $explode_visitor = explode(".", $visitor);
-            // $ip = $explode_visitor[0].".".$explode_visitor[1];
-            $url = "http://10.137.26.67:8080/";
-            // if (!in_array($ip, $arr_local_ip)) {
-                // $url = "http://103.209.6.32:8080/";
-            // }
-            // echo "<pre/>";print_r($insert_data);exit;
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
-            // dd($url);
             $options = [
                 'Accept' => 'application/json',
             ];
@@ -465,8 +458,7 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_tr_receive_detail($get_data);
             $insert_data    = $this->insert_tr_receive_detail($convert_data);
-            dd($insert_data);
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             $options = [
                 'Accept' => 'application/json',
@@ -534,8 +526,7 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_tr_transaction($get_data);
             $insert_data    = $this->insert_tr_transaction($convert_data);
-            dd($insert_data);
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             $options = [
                 'Accept' => 'application/json',
@@ -605,8 +596,7 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_tr_transaction_detail($get_data);
             $insert_data    = $this->insert_tr_transaction_detail($convert_data);
-            dd($insert_data);
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             $options = [
                 'Accept' => 'application/json',
@@ -675,8 +665,7 @@ class SyncDataController extends Controller
             $total_data = count($get_data);
             $convert_data   = $this->convert_tr_adjust_stock($get_data);
             $insert_data    = $this->insert_tr_adjust_stock($convert_data);
-            dd($insert_data);
-            $url = "http://10.137.26.67:8080/";
+            $url = "http://103.209.6.32:8080/";
             $url .= 'meatmaster/api/pos';
             $options = [
                 'Accept' => 'application/json',

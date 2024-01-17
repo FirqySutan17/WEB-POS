@@ -1582,7 +1582,7 @@ class ReportController extends Controller
                 SELECT 
                     rcv.receive_date AS tanggal, 
                     rcv.created_at, 
-                    rcv_detail.product_code AS kode_produk, 
+                    rcv_detail.product_code AS kode_produk, s
                     rcv_detail.quantity, 
                     rcv_detail.unit_price, 
                     rcv_detail.amount, 0 AS status_data
