@@ -226,7 +226,7 @@ CMS | Transaction
                                                         class="heightHr center-text">Qty <span class="dividerHr"></span>
                                                     </th>
                                                     <th style="width: 10%; vertical-align: middle; text-align: center"
-                                                        class="heightHr center-text">%
+                                                        class="heightHr center-text">Disc
                                                         <span class="dividerHr"></span>
                                                     </th>
                                                     <th style="width: 15%; vertical-align: middle; text-align: right"
@@ -487,12 +487,11 @@ CMS | Transaction
 
     @push('javascript-internal')
     <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
-    <script type="text/javascript">
+    <script>
          $('#is_isales').on('change', function(){
             this.value = this.checked ? 1 : 0;
-         }).change();
-    </script>
-    <script>
+            show_discount(this.value);
+         });
         window.onload = function() {
         var input = document.getElementById("input-scanner").focus();
         }
@@ -561,6 +560,11 @@ CMS | Transaction
                 if (final_price_item != basic_price_item) {
                     discount = basic_price_item - final_price_item;
                 }
+
+                var checkBox = document.getElementById("is_isales");
+                if (checkBox.checked == false) {
+                    discount = 0;
+                }
                 total_discount += discount * quantity_item;
                 total_qty += quantity_item;
                 sub_total += sub_total_item;
@@ -591,6 +595,8 @@ CMS | Transaction
         }
 
         function store_to_display() {
+
+            var checkBox = document.getElementById("is_isales");
             let product_code = $("input[name^=product_code]").map(function(idx, elem) {
                 return $(elem).val();
             }).get();
@@ -604,6 +610,9 @@ CMS | Transaction
             }).get();
 
             let discount_store = $("input[name^=discount_store]").map(function(idx, elem) {
+                if (checkBox.checked == false) {
+                    return 0;
+                }
                 return $(elem).val();
             }).get();
 
@@ -669,6 +678,10 @@ CMS | Transaction
                 if (final_price_item != basic_price_item) {
                     discount = basic_price_item - final_price_item;
                 }
+                var checkBox = document.getElementById("is_isales");
+                if (checkBox.checked == false) {
+                    discount = 0;
+                }
                 total_discount += discount * quantity_item;
                 total_qty += quantity_item;
                 sub_total += sub_total_item;
@@ -695,6 +708,22 @@ CMS | Transaction
             }
             
         });
+
+        function show_discount(is_isales) {
+            $(".discount_store").each(function(i, obj) {
+                var id = $(this).attr('id').split("_");
+                var item_id = "item_product_" + id[4];
+                var discount_store = parseInt($(this).val());
+
+                if (is_isales == 0) {
+                    discount_store = 0;
+                }
+                $("#discount_" + item_id).text(discount_store);
+                // console.log(item_id, discount_store);
+                // var item_id = id[]
+            });
+            calculate_vat();
+        }
 
         function displayNames(value, text) {
             $("#input-typing").val(value);
@@ -747,22 +776,12 @@ CMS | Transaction
                     var basic_price = product.price_store;
                     var final_price = basic_price;
                     var html_price = formatRupiah(final_price.toString());
-                    var checkBox = document.getElementById("is_isales");
-                        if (checkBox.checked == false){
-                            var discount_store = 0;
-                        } else {
-                            var discount_store = (product.discount_store) ? product.discount_store : 0;
-                        }
-                    console.log(discount_store);
-                    // var discount_store = (product.discount_store) ? product.discount_store : 0;
+                    var discount_store = (product.discount_store) ? product.discount_store : 0;
                     var discount_price = 0;
-                    if (discount_store > 0) {
-                        // discount_price = basic_price * (discount_store / 100);
-                        // final_price = basic_price - discount_store;
-                        html_price = `
-                            <span style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</span>
-                            ${formatRupiah(final_price.toString())}
-                        `;
+
+                    var checkBox = document.getElementById("is_isales");
+                    if (discount_store > 0 && checkBox.checked !== false) {
+                        discount_price = discount_store;
                     }
 
                     var html_item = `
@@ -771,7 +790,7 @@ CMS | Transaction
                                 <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
                                 <input id="product_name_${item_id}" name="product_name[]" type="hidden" class="form-control" value="${product.name}" tabindex="0"/>
                                 <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
-                                <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control" value="${discount_store}" tabindex="0"/>
+                                <input id="discount_store_${item_id}" name="discount_store[]" type="hidden" class="form-control discount_store" value="${discount_store}" tabindex="0"/>
                                 <input id="final_price_${item_id}" name="final_price[]" type="hidden" class="form-control final_price_item" value="${final_price}" tabindex="0"/>
                                 <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
                                 ${product.code + ' | ' + product.name}
@@ -783,7 +802,7 @@ CMS | Transaction
                             <td style="width: 6%; vertical-align: middle">
                                 <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
                             </td>
-                            <td class="disc_class" style="width: 10%; vertical-align: middle; text-align: center" id="discount_${item_id}">${discount_store}</td>
+                            <td class="disc_class" style="width: 10%; vertical-align: middle; text-align: center" id="discount_${item_id}">${discount_price}</td>
                             <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
                             <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
                                 <div class="boxInside" style="align-items: center; justify-content: center;">
