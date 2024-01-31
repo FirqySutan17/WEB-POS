@@ -11,7 +11,7 @@ class Transaction extends Model
     use HasFactory;
     protected $table = 'tr_transaction';
     use SoftDeletes;
-    protected $fillable = ['membership_id', 'invoice_no', 'receipt_no', 'emp_no', 'trans_date', 'payment_method', 'cash', 'sub_price', 'vat_ppn', 'total_price', 'status', 'cancellation_reason', 'kembalian'];
+    protected $fillable = ['membership_id', 'invoice_no', 'receipt_no', 'emp_no', 'trans_date', 'payment_method', 'cash', 'sub_price', 'vat_ppn', 'total_price', 'status', 'cancellation_reason', 'kembalian', 'is_isales'];
         // public $timestamps = false;
 
 

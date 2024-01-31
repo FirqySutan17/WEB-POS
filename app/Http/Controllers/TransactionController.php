@@ -116,6 +116,7 @@ class TransactionController extends Controller
         $final_price  = $request->final_price;
         $total_price  = $request->total_price;
         $status  = $request->status;
+        $is_isales  = ($request->is_isales) ? '1' : '0';
         DB::beginTransaction();
         try {
             
@@ -155,11 +156,12 @@ class TransactionController extends Controller
                 'vat_ppn'       => $vat_amount,
                 'total_price'   => $total_price,
                 'status'        => $status,
+                'is_isales'     => $is_isales,
                 'kembalian'     => (int) str_replace(".", "", $request->kembalian)
             ];
             
             $transaction = Transaction::create($trans);
-            
+            // dd($transaction);
             if ($transaction) {
                 foreach ($transaction_details as $v) {
                     $code   = $v['product_code'];
@@ -175,7 +177,7 @@ class TransactionController extends Controller
             }
 
             Alert::success('Add Transaction', 'Success');
-            // dd($request->all());
+            // dd($request->is_isales);
         } catch (\Throwable $th) {
             dd($th->getMessage());
             DB::rollBack();

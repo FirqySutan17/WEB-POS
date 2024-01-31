@@ -135,7 +135,7 @@ CMS | Transaction
                     <i class='bx bx-x' style="font-size: 18px; display: inline-block; vertical-align: middle"></i>
                 </button>
             </div>
-            <div id="element">
+            {{-- <div id="element">
                 @if (!empty($product_discount))
                 <ul>
                     @foreach ($product_discount as $item)
@@ -143,7 +143,7 @@ CMS | Transaction
                     @endforeach
                 </ul>
                 @endif
-            </div>
+            </div> --}}
         </div>
         @endif
     </div>
@@ -164,12 +164,21 @@ CMS | Transaction
                         <div class="card-body _card-body">
                             <div class="row d-flex align-items-stretch">
                                 <div class="col-md-12">
-                                    <div class="row" style="padding: 10px 0px; font-weight: 600; margin-bottom: 10px">
-                                        <div class="col-6">
+                                    <div class="row" style="padding: 5px 0px 10px 0px; font-weight: 600;">
+                                        <div class="col-2" style="margin: auto">
                                             Kasir : {{ Auth::user()->name }}
                                         </div>
-                                        <div class="col-6" style="float: right; text-align: right">
+                                        <div class="col-2" style="margin: auto">
                                             Tanggal : {{ date('d-m-Y') }}
+                                        </div>
+                                        <div class="col-8" style="float: right; text-align: right">
+                                            I-Sales : &nbsp;
+                                            <label class="switch media-body text-end icon-state" style="vertical-align: middle">
+                                                    <input type="checkbox" id="is_isales" name="is_isales" {{ old("is_isales") == 1 ? "checked"  : null }}><span class="switch-state"></span>
+                                                </label>
+                                             <!-- <div class="media-body text-end icon-state">
+                                                
+                                             </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -203,7 +212,7 @@ CMS | Transaction
                                         <ul class="list stay-hidden"></ul>
                                     </div>
 
-                                    <div class="tr-shadow table-responsive">
+                                    <div class="tr-shadow table-responsive" style="padding: 10px 10px 20px 10px">
                                         <table class="table table-striped table-hover">
                                             <thead>
                                                 <tr>
@@ -217,7 +226,7 @@ CMS | Transaction
                                                         class="heightHr center-text">Qty <span class="dividerHr"></span>
                                                     </th>
                                                     <th style="width: 10%; vertical-align: middle; text-align: center"
-                                                        class="heightHr center-text">Disc (%)
+                                                        class="heightHr center-text">%
                                                         <span class="dividerHr"></span>
                                                     </th>
                                                     <th style="width: 15%; vertical-align: middle; text-align: right"
@@ -236,14 +245,6 @@ CMS | Transaction
 
                                 <div class="col-md-3 col-sm-12">
 
-                                    <div class="row tr-shadow" style="margin-bottom: 10px; height: 130px">
-                                        <div class="col-12" style="margin: auto">
-                                            <h5 style="text-align: right">Grand Total</h5>
-                                            <h2 id="total_transaction"
-                                                style="text-align: right; font-size: 46px; font-weight: 800; margin-bottom: 0px">
-                                                Rp 0</h2>
-                                        </div>
-                                    </div>
                                     <div class="row tr-shadow"
                                         style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 10px; padding: 20px 10px 10px 10px">
                                         <div class="col-12">
@@ -260,15 +261,41 @@ CMS | Transaction
                                             <div class="form-group _form-group"
                                                 style="display: flex; margin-bottom: 0px">
                                                 <label for="receive_date" class="font-weight-bold" style="width: 30%">
-                                                    Sub Disc (%)
+                                                    Sub Disc
                                                 </label>
                                                 <h6 id="total_discount" style="text-align: right; width: 70%">0</h6>
                                             </div>
                                         </div>
                                     </div>
 
+                                    <div class="row tr-shadow" style="margin-bottom: 10px; height: 130px">
+                                        <div class="col-12" style="margin: auto">
+                                            <h5 style="text-align: right">Grand Total</h5>
+                                            <h2 id="total_transaction"
+                                                style="text-align: right; font-size: 46px; font-weight: 800; margin-bottom: 0px">
+                                                Rp 0</h2>
+                                        </div>
+                                    </div>
+
+
                                     <div class="row tr-shadow"
                                         style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                        <div class="col-12">
+                                            <div class="form-group _form-group"
+                                                style="display: flex; margin-bottom: 10px; justify-content: center; align-items: center;">
+                                                <label for="receive_date" class="font-weight-bold" style="width: 45%">
+                                                    Metode
+                                                </label>
+                                                <select id="payment_method" name="payment_method" class="custom-select"
+                                                    tabindex="2">
+                                                    <option value="Tunai">Tunai</option>
+                                                    <option value="EDC - BCA">EDC - BCA</option>
+                                                    <option value="EDC - QRIS">EDC - QRIS</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
                                         <div class="col-12">
                                             <div class="form-group _form-group"
                                                 style="display: flex; margin-bottom: 10px; justify-content: center; align-items: center;">
@@ -293,17 +320,6 @@ CMS | Transaction
                                                     style="text-align: right" />
                                             </div>
 
-                                            <div class="form-group _form-group" style="margin-bottom: 5px">
-                                                <label for="receive_date" class="font-weight-bold">
-                                                    Metode Pembayaran <span class="wajib">* </span>
-                                                </label>
-                                                <select id="payment_method" name="payment_method" class="custom-select"
-                                                    tabindex="2">
-                                                    <option value="Tunai">Tunai</option>
-                                                    <option value="EDC - BCA">EDC - BCA</option>
-                                                    <option value="EDC - QRIS">EDC - QRIS</option>
-                                                </select>
-                                            </div>
                                             <div id="elm_receipt" class="form-group _form-group"
                                                 style="margin-bottom: 10px !important">
                                                 <label for="receive_date" class="font-weight-bold">
@@ -471,7 +487,11 @@ CMS | Transaction
 
     @push('javascript-internal')
     <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
-
+    <script type="text/javascript">
+         $('#is_isales').on('change', function(){
+            this.value = this.checked ? 1 : 0;
+         }).change();
+    </script>
     <script>
         window.onload = function() {
         var input = document.getElementById("input-scanner").focus();
@@ -522,13 +542,35 @@ CMS | Transaction
             cash_input = cash_input.replace(",", "");
             let cash_amount = Number(cash_input.replace(".", ""));
 
-            let total_price_item = 0;
-            $('.total_price_item').each(function(i, obj) {
-                var price_item = Number($(this).val());
-                total_price_item += price_item;
+            // let total_price_item = 0;
+            // $('.total_price_item').each(function(i, obj) {
+            //     var price_item = Number($(this).val());
+            //     total_price_item += price_item;
+            // });
+            var total_discount  = 0;
+            var total_qty       = 0;
+            var sub_total       = 0;
+            $('.final_price_item').each(function(i, obj) {
+                var id = $(this).attr('id').split("_");
+                var item_id = "item_product_" + id[4];
+                var final_price_item = Number($(this).val());
+                var basic_price_item = Number($(`#basic_price_${item_id}`).val());
+                var quantity_item = Number($(`#quantity_${item_id}`).val());
+                var discount = Number($(`#discount_store_${item_id}`).val());
+                var sub_total_item = final_price_item * quantity_item;
+                if (final_price_item != basic_price_item) {
+                    discount = basic_price_item - final_price_item;
+                }
+                total_discount += discount * quantity_item;
+                total_qty += quantity_item;
+                sub_total += sub_total_item;
+
+                
             });
+
+            var grand_total = sub_total - total_discount;
             // console.log(status, payment_method, cash_amount, total_price_item);
-            if ((status == 'FINISH' && payment_method.toUpperCase() == 'TUNAI') && total_price_item > cash_amount) {
+            if ((status == 'FINISH' && payment_method.toUpperCase() == 'TUNAI') && grand_total > cash_amount) {
                 return Swal.fire({
                     title: 'Oops...',
                     text: 'Uang tunai kurang dari total belanja',
@@ -622,7 +664,7 @@ CMS | Transaction
                 var final_price_item = Number($(this).val());
                 var basic_price_item = Number($(`#basic_price_${item_id}`).val());
                 var quantity_item = Number($(`#quantity_${item_id}`).val());
-                var discount = 0;
+                var discount = Number($(`#discount_store_${item_id}`).val());
                 var sub_total_item = final_price_item * quantity_item;
                 if (final_price_item != basic_price_item) {
                     discount = basic_price_item - final_price_item;
@@ -630,6 +672,7 @@ CMS | Transaction
                 total_discount += discount * quantity_item;
                 total_qty += quantity_item;
                 sub_total += sub_total_item;
+
             });
             $("#total_discount").text(formatRupiah(total_discount.toString()));
             $("#sub_total").text(formatRupiah(sub_total.toString()));
@@ -640,7 +683,8 @@ CMS | Transaction
                 var price_item = Number($(this).val());
                 total_price_item += price_item;
             });
-            $("#total_transaction").text(formatRupiah(total_price_item.toString()));
+            var grand_total = sub_total - total_discount;
+            $("#total_transaction").text(formatRupiah(grand_total.toString()));
         }
 
         $('#input-scanner').unbind('keyup');
@@ -703,17 +747,24 @@ CMS | Transaction
                     var basic_price = product.price_store;
                     var final_price = basic_price;
                     var html_price = formatRupiah(final_price.toString());
-                    // Calculate Discount
-                    var discount_store = (product.discount_store) ? product.discount_store : 0;
+                    var checkBox = document.getElementById("is_isales");
+                        if (checkBox.checked == false){
+                            var discount_store = 0;
+                        } else {
+                            var discount_store = (product.discount_store) ? product.discount_store : 0;
+                        }
+                    console.log(discount_store);
+                    // var discount_store = (product.discount_store) ? product.discount_store : 0;
                     var discount_price = 0;
                     if (discount_store > 0) {
-                        discount_price = basic_price * (discount_store / 100);
-                        final_price = basic_price - discount_price;
+                        // discount_price = basic_price * (discount_store / 100);
+                        // final_price = basic_price - discount_store;
                         html_price = `
                             <span style="text-decoration: line-through; font-size: 12px">${formatRupiah(basic_price.toString())}</span>
                             ${formatRupiah(final_price.toString())}
                         `;
                     }
+
                     var html_item = `
                         <tr id="${item_id}">
                             <td style="width: 35%; vertical-align: middle">
@@ -725,13 +776,14 @@ CMS | Transaction
                                 <input id="total_price_${item_id}" name="total_price[]" type="hidden" class="form-control total_price_item" value="${final_price}" tabindex="0"/>
                                 ${product.code + ' | ' + product.name}
                             </td>
+                            
                             <td style="width: 19%; vertical-align: middle; text-align: center">
-                                ${html_price}
+                                ${product.price_store}
                             </td>
                             <td style="width: 6%; vertical-align: middle">
                                 <input type="number" id="quantity_${item_id}" name="quantity[]" min="0" style="width: 100%; border-radius: 5px; text-align: center; border: 1px solid #000" value="1" placeholder="1" tabindex="1" />
                             </td>
-                            <td style="width: 10%; vertical-align: middle; text-align: center">${discount_store}%</td>
+                            <td class="disc_class" style="width: 10%; vertical-align: middle; text-align: center" id="discount_${item_id}">${discount_store}</td>
                             <td style="width: 15%; vertical-align: middle; text-align: right">Rp <span id="text_final_price_${item_id}">${formatRupiah(final_price.toString())}</span></td>
                             <td style="width: 10%;" class="center-text boxAction fontField trans-icon">
                                 <div class="boxInside" style="align-items: center; justify-content: center;">
@@ -781,15 +833,34 @@ CMS | Transaction
             var nominal = this.value;
             var nominal_number = Number(nominal.replace(".", ""));
             tanpa_rupiah.value = formatRupiah(nominal);
+            var total_discount  = 0;
+            var total_qty       = 0;
+            var sub_total       = 0;
+            $('.final_price_item').each(function(i, obj) {
+                var id = $(this).attr('id').split("_");
+                var item_id = "item_product_" + id[4];
+                var final_price_item = Number($(this).val());
+                var basic_price_item = Number($(`#basic_price_${item_id}`).val());
+                var quantity_item = Number($(`#quantity_${item_id}`).val());
+                var discount = Number($(`#discount_store_${item_id}`).val());
+                var sub_total_item = final_price_item * quantity_item;
+                if (final_price_item != basic_price_item) {
+                    discount = basic_price_item - final_price_item;
+                }
+                total_discount += discount * quantity_item;
+                total_qty += quantity_item;
+                sub_total += sub_total_item;
+
+            });
 
             var total_price_item = 0;
             $('.total_price_item').each(function(i, obj) {
                 var price_item = Number($(this).val());
                 total_price_item += price_item;
             });
-
-            var kembali = total_price_item - nominal_number;
-            if (nominal_number >= total_price_item) {
+            var grand_total = sub_total - total_discount;
+            var kembali = grand_total - nominal_number;
+            if (nominal_number >= grand_total) {
                 kembalian.value = formatRupiah(kembali.toString());
             }
         });
@@ -976,4 +1047,7 @@ CMS | Transaction
         $('#modal-detail-print').modal("hide");
         });
     </script>
+
+    
+
     @endpush

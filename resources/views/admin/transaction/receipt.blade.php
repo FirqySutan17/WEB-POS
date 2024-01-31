@@ -20,7 +20,7 @@
         }
 
         body {
-            margin: 0;
+            margin: auto;
             padding: 0;
             width: 58mm;
         }
@@ -122,7 +122,8 @@
             <h1>MEAT MASTER</h1>
         </center>
         <p class="centered">
-            Ruko Kemang Pratama Raya Blok MM, Jl. Kemang Pratama Raya No.10, Bojong Rawalaumbu, Kec. Rawalumbu, Kota Bks, Jawa Barat
+            Ruko Kemang Pratama Raya Blok MM, Jl. Kemang Pratama Raya No.10, Bojong Rawalaumbu, Kec. Rawalumbu, Kota
+            Bks, Jawa Barat
         </p>
         <p style="text-align: center"> NPWP 50.588.919.6-014.000 </p>
         <p style="text-align: center">{{ $transaction->created_at->format('d-m-Y h:m:s') }}</p>
@@ -146,13 +147,14 @@
         <hr class="dotted">
         <table class="item-order">
             <tbody>
-                <?php $sub_total = 0; $potongan = 0; $total_price = 0; $total_discount = 0; ?>
+                <?php $sub_total = 0; $potongan = 0; $total_price = 0; $total_discount = 0; $sub_disc = 0; ?>
                 @foreach($details as $d)
                 <?php
                     $total_item_price = $d->quantity * $d->price;
                     $sub_total += $total_item_price;
-                    $discount_amount = $d->discount > 0 ? $d->basic_price - $d->price : 0;
-                    $total_discount += $discount_amount * $d->quantity;
+                    // $discount_amount = $d->quantity * $d->discount;
+                    $total_discount = $d->quantity * $d->discount;
+                    $sub_disc += $total_discount;
                 ?>
                 <tr>
                     <td>
@@ -162,9 +164,9 @@
                             @currency($d->basic_price)&nbsp; &nbsp;
                             @endif --}}
                             @currency($d->basic_price) &nbsp;
-                            @if( $d->discount > 0)
-                            {{$d->discount}}%
-                            @endif
+                            {{-- @if( $d->discount > 0)
+                            {{$d->discount}}
+                            @endif --}}
                         </p>
                     </td>
                     <td>
@@ -183,11 +185,13 @@
                 @endforeach
             </tbody>
         </table>
-        <hr class="dotted" style="margin-top: 15px">
+        <hr class="dotted" style="margin-top: 10px">
         <table class="item-order">
             <?php 
                 $vat_amount = ($sub_total / 100) * $transaction->vat_ppn;
                 $total_price = $sub_total + $vat_amount;
+                $total_disc = $sub_disc;
+                $grand_total = $sub_total - $sub_disc;
 
                 $uang_cust = 0;
                 if ($transaction->payment_method == 'Tunai') {
@@ -200,27 +204,37 @@
                     <td class="description">TOTAL</td>
                     <td class="price">@currency($total_price)</td>
                 </tr>
+                @if ($sub_disc > 0)
                 <tr>
                     <td class="description">ANDA HEMAT</td>
-                    <td class="price">@currency($total_discount)</td>
+                    <td class="price">@currency($sub_disc)</td>
                 </tr>
-                {{-- <tr>
-                    <td class="description">GRAND TOTAL</td>
-                    <td class="price">@currency($total_price)</td>
-                </tr> --}}
+                <tr>
+                    <td class="description" style="font-weight: 700">GRAND TOTAL</td>
+                    <td class="price">@currency($grand_total)</td>
+                </tr>
+                @else
+                @endif
 
-                @if ($transaction->payment_method == 'Tunai')
+
+            </tbody>
+        </table>
+
+        @if ($transaction->payment_method == 'Tunai')
+        <hr class="dotted">
+        <table class="item-order">
+            <tbody>
                 <tr>
                     <td class="description">TUNAI</td>
-                    <td class="price">Rp {{ number_format($transaction->cash) }}</td>
+                    <td class="price">@currency($transaction->cash)</td>
                 </tr>
                 <tr>
                     <td class="description">KEMBALI</td>
-                    <td class="price">Rp {{ number_format($transaction->kembalian) }}</td>
+                    <td class="price">@currency($transaction->kembalian)</td>
                 </tr>
-                @endif
             </tbody>
         </table>
+        @endif
 
         {{--
         <hr class="dotted">
@@ -245,8 +259,19 @@
             <br>PREMIUM FRESH CHICKEN MEAT
         </p>
     </div>
-    <button id="btnPrint" class="hidden-print">Print</button>
-    <a href="{{ route('transaction.create') }}" class="hidden-print">Back to Transaction</button>
+    <button id="btnPrint" class="hidden-print" style="width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}">Print</button>
+    <a href="{{ route('transaction.create') }}" class="hidden-print" style="    padding: 10px 52px;
+    width: 100%;
+    text-align: center;
+    background: red;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 10px;">Back to Transaction</button>
         <script>
             let buttonPrint = document.getElementById("btnPrint");
         buttonPrint.addEventListener("click", function() {
