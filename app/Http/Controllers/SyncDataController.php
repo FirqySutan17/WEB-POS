@@ -557,7 +557,7 @@ class SyncDataController extends Controller
         foreach ($arr_tr_transaction as $cf) {
             $receipt_no = $this->clean($cf->receipt_no);
             $cl_cash = $this->clean(trim(preg_replace('/\s+/', ' ', $cf->cash)));
-            $curr_data  = [$this->stringfy($cf->plant), $this->stringfy($cf->invoice_no), $this->stringfy($receipt_no), $this->stringfy($cf->emp_no), $this->convertDate('date', $cf->trans_date), $this->cd_code('transaction_pm', $cf->payment_method), !empty($cl_cash) ? $cl_cash : 0, !empty($cf->sub_price) ? $cf->sub_price : 0, !empty($cf->vat_ppn) ? $cf->vat_ppn : 0,  !empty($cf->total_price) ? $cf->total_price : 0, $this->cd_code('transaction', $cf->status), $this->stringfy($cf->cancellation_reason), $this->convertDate('datetime', $cf->created_at), $cf->kembalian];
+            $curr_data  = [$this->stringfy($cf->plant), $this->stringfy($cf->invoice_no), $this->stringfy($receipt_no), $this->stringfy($cf->emp_no), $this->convertDate('date', $cf->trans_date), $this->cd_code('transaction_pm', $cf->payment_method), !empty($cl_cash) ? $cl_cash : 0, !empty($cf->sub_price) ? $cf->sub_price : 0, !empty($cf->vat_ppn) ? $cf->vat_ppn : 0,  !empty($cf->total_price) ? $cf->total_price : 0, $this->cd_code('transaction', $cf->status), $this->stringfy($cf->cancellation_reason), $this->convertDate('datetime', $cf->created_at), $cf->kembalian, $cf->is_isales];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);
@@ -764,6 +764,10 @@ class SyncDataController extends Controller
         } elseif ($table == 'adjust_stock') {
             if ($code == 'IN') { return "'01'"; }
             elseif ($code == 'OUT') { return "'02'"; }
+        }
+        elseif ($table == 'internal_sales') {
+            if ($code == 'Customer') { return "'0'"; }
+            elseif ($code == 'Internal Sales') { return "'1'"; }
         }
     }
 }
