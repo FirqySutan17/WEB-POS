@@ -171,7 +171,7 @@
                     </td>
                     <td>
 
-                        @if ($d->discount > 0)
+                        @if ($d->discount > 0 && $d->is_isales == 1)
                         <p style="padding-top: 15px">@currency($total_item_price)</p>
                         <p>
                             (- @currency($total_discount))
@@ -204,7 +204,7 @@
                     <td class="description">TOTAL</td>
                     <td class="price">@currency($total_price)</td>
                 </tr>
-                @if ($sub_disc > 0)
+                @if ($sub_disc > 0 && $transaction->is_isales == 1)
                 <tr>
                     <td class="description">ANDA HEMAT</td>
                     <td class="price">@currency($sub_disc)</td>

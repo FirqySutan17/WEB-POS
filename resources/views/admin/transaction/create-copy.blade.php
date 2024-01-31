@@ -866,18 +866,26 @@ CMS | Transaction
                 if (final_price_item != basic_price_item) {
                     discount = basic_price_item - final_price_item;
                 }
+
+                var checkBox = document.getElementById("is_isales");
+                if (checkBox.checked == false) {
+                    discount = 0;
+                }
                 total_discount += discount * quantity_item;
                 total_qty += quantity_item;
                 sub_total += sub_total_item;
 
+                
             });
+
+            var grand_total = sub_total - total_discount;
 
             var total_price_item = 0;
             $('.total_price_item').each(function(i, obj) {
                 var price_item = Number($(this).val());
                 total_price_item += price_item;
             });
-            var grand_total = sub_total - total_discount;
+
             var kembali = grand_total - nominal_number;
             if (nominal_number >= grand_total) {
                 kembalian.value = formatRupiah(kembali.toString());
