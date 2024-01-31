@@ -25,10 +25,10 @@ class SyncDataController extends Controller
      */
     public function index(Request $request)
     {
-        // $cashflow = $this->get_cashflow();
-        // $users = $this->get_users();
-        // $products = $this->get_products();
-        // $products_price_log = $this->get_products_price_log();
+        $cashflow = $this->get_cashflow();
+        $users = $this->get_users();
+        $products = $this->get_products();
+        $products_price_log = $this->get_products_price_log();
         $tr_receive = $this->get_tr_receive();
         $tr_receive_detail = $this->get_tr_receive_detail();
         $tr_transaction = $this->get_tr_transaction();
@@ -517,7 +517,7 @@ class SyncDataController extends Controller
         }
 
         $query      = DB::table($tbl_name)->select('*');
-        $query->where('id', '>', $last_id_data);
+        $query->where('id', '>', $last_id_data)->whereNull('deleted_at')->where('status', 'FINISH');
         $get_data   = $query->get();
         $url = "";
         $batch = 0;
