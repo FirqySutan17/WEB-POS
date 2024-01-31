@@ -22,14 +22,15 @@ class AdjustStockController extends Controller
         $user   = Auth::user();
         $role   = $user->roles->first()->name;
         $day    = date('Y-m-d');
-        $query = AdjustStock::whereDate('date', $day)->with('product', 'user', 'user_approval')->orderBy('created_at', 'desc');
+        // $query = AdjustStock::whereDate('date', $day)->with('product', 'user', 'user_approval')->orderBy('created_at', 'desc');
+        $query = AdjustStock::with('product', 'user', 'user_approval')->orderBy('created_at', 'desc');
         if ($request->get('keyword')) {
             $query->search($request->keyword);
         }
         if ($role == 'Cashier') {
             $query->where('employee_id', $user->employee_id);
         }
-        $adjust_stock = $query->paginate(5);
+        $adjust_stock = $query->paginate(10);
         // dd($adjust_stock);
         return view('admin.adjust_stock.index', [
             'adjust_stock' => $adjust_stock
