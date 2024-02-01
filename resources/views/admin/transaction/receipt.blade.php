@@ -172,7 +172,7 @@
                     </td>
                     <td>
 
-                        @if ($d->discount > 0)
+                        @if ($d->discount > 0 && $transaction->is_isales)
                         <p style="padding-top: 15px">@currency($raw_item_price)</p>
                         <p>
                             (- @currency($total_discount))

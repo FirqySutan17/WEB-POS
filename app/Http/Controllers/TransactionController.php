@@ -108,7 +108,6 @@ class TransactionController extends Controller
         $product_code       = $request->product_code;
         
         if (empty($product_code)) {
-            dd("MASUK SINI", $request->all());
             return redirect()->back()->withInput($request->all())->withErrors("No product chosen!");
         }
         $basic_price  = $request->basic_price;
@@ -124,6 +123,9 @@ class TransactionController extends Controller
             $transaction_details = [];
             $sub_price = 0;
             foreach ($product_code as $i => $v) {
+                if ($is_isales == 0) {
+                    $discount[$i] = 0;
+                }
                 $final_price[$i] = $basic_price[$i] - $discount[$i];
                 $total_price[$i] = $final_price[$i] * $quantity[$i];
                 $trans_detail = [
