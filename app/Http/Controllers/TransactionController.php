@@ -108,6 +108,7 @@ class TransactionController extends Controller
         $product_code       = $request->product_code;
         
         if (empty($product_code)) {
+            dd("MASUK SINI", $request->all());
             return redirect()->back()->withInput($request->all())->withErrors("No product chosen!");
         }
         $basic_price  = $request->basic_price;
@@ -123,6 +124,8 @@ class TransactionController extends Controller
             $transaction_details = [];
             $sub_price = 0;
             foreach ($product_code as $i => $v) {
+                $final_price[$i] = $basic_price[$i] - $discount[$i];
+                $total_price[$i] = $final_price[$i] * $quantity[$i];
                 $trans_detail = [
                     "invoice_no"    => $request->invoice_no,
                     "product_code"  => $v,
@@ -134,12 +137,14 @@ class TransactionController extends Controller
                 $transaction_details[] = $trans_detail;
                 $sub_price += $total_price[$i];
             }
-            $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
-            $cash = !empty($cash) ? str_replace(",", "", $cash) : 0;
+            $cash = 0;
+            if ($request->payment_method == 'Tunai') {
+                $cash = !empty($request->cash) ? str_replace(".", "", $request->cash) : 0;
+                $cash = (int) !empty($cash) ? str_replace(",", "", $cash) : 0;
+            }
             $total_price = $sub_price;
             $vat_amount = 0;
             $kembalian = $request->payment_method == 'Tunai' && $status == 'FINISH' ? $cash - $total_price : 0;
-
             if ($status == 'FINISH' && $request->payment_method == 'Tunai' && $cash < $total_price) {
                 return redirect()->back()->withInput($request->all())->withErrors("Cash less than total transaction!");
             }
@@ -159,6 +164,7 @@ class TransactionController extends Controller
                 'is_isales'     => $is_isales,
                 'kembalian'     => (int) str_replace(".", "", $request->kembalian)
             ];
+            // dd($trans, $transaction_details);
             
             $transaction = Transaction::create($trans);
             // dd($transaction);

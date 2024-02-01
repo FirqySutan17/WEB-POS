@@ -154,6 +154,7 @@
                     $sub_total += $total_item_price;
                     // $discount_amount = $d->quantity * $d->discount;
                     $total_discount = $d->quantity * $d->discount;
+                    $raw_item_price = $total_item_price + $total_discount;
                     $sub_disc += $total_discount;
                 ?>
                 <tr>
@@ -171,8 +172,8 @@
                     </td>
                     <td>
 
-                        @if ($d->discount > 0 && $d->is_isales == 1)
-                        <p style="padding-top: 15px">@currency($total_item_price)</p>
+                        @if ($d->discount > 0)
+                        <p style="padding-top: 15px">@currency($raw_item_price)</p>
                         <p>
                             (- @currency($total_discount))
                         </p>
@@ -191,7 +192,7 @@
                 $vat_amount = ($sub_total / 100) * $transaction->vat_ppn;
                 $total_price = $sub_total + $vat_amount;
                 $total_disc = $sub_disc;
-                $grand_total = $sub_total - $sub_disc;
+                $grand_total = $sub_total;
 
                 $uang_cust = 0;
                 if ($transaction->payment_method == 'Tunai') {
@@ -200,20 +201,24 @@
                 }
             ?>
             <tbody>
-                <tr>
-                    <td class="description">TOTAL</td>
-                    <td class="price">@currency($total_price)</td>
-                </tr>
                 @if ($sub_disc > 0 && $transaction->is_isales == 1)
-                <tr>
-                    <td class="description">ANDA HEMAT</td>
-                    <td class="price">@currency($sub_disc)</td>
-                </tr>
+                    <tr>
+                        <td class="description">TOTAL</td>
+                        <td class="price">@currency($total_price + $sub_disc)</td>
+                    </tr>
+                    <tr>
+                        <td class="description">ANDA HEMAT</td>
+                        <td class="price">@currency($sub_disc)</td>
+                    </tr>
+                    <tr>
+                        <td class="description" style="font-weight: 700">GRAND TOTAL</td>
+                        <td class="price">@currency($total_price)</td>
+                    </tr>
+                @else
                 <tr>
                     <td class="description" style="font-weight: 700">GRAND TOTAL</td>
                     <td class="price">@currency($grand_total)</td>
                 </tr>
-                @else
                 @endif
 
 
