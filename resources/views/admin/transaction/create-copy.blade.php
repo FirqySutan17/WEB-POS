@@ -541,9 +541,7 @@ CMS | Transaction
         $(document).ready(function(e) {
             // @if(Session::has('receipt'))
             //     let url = `{{ route('transaction.receipt', ['transaction' => Session::has('receipt')]) }}`;
-            //     console.log('Ada receipt', url);
             // @endif
-            // console.log('ready')
             // $("#input-scanner").focus();
         });
         var vat_amount = parseInt({{ config('app.vat_amount') }});
@@ -598,7 +596,6 @@ CMS | Transaction
             });
 
             var grand_total = sub_total - total_discount;
-            // console.log(status, payment_method, cash_amount, total_price_item);
             if ((status == 'FINISH' && payment_method.toUpperCase() == 'TUNAI') && grand_total > cash_amount) {
                 return Swal.fire({
                     title: 'Oops...',
@@ -673,7 +670,7 @@ CMS | Transaction
                     "quantity": quantity,
                 },
                 success: function(response) {
-                   console.log(response)
+                   console.log("STORE TO DISPLAY", response)
                 }
             });
         }
@@ -694,22 +691,26 @@ CMS | Transaction
             var sub_total       = 0;
             $('.final_price_item').each(function(i, obj) {
                 var id = $(this).attr('id').split("_");
-                var item_id = "item_product_" + id[4];
-                var final_price_item = Number($(this).val());
-                var basic_price_item = Number($(`#basic_price_${item_id}`).val());
-                var quantity_item = Number($(`#quantity_${item_id}`).val());
-                var discount = Number($(`#discount_store_${item_id}`).val());
-                var sub_total_item = final_price_item * quantity_item;
-                if (final_price_item != basic_price_item) {
-                    discount = basic_price_item - final_price_item;
+                if (id[3] != "free") {
+                    var item_id = "item_product_" + id[4];
+                    var final_price_item = Number($(this).val());
+                    var is_free_data = $("#is_free_" + item_id).val();
+                    console.log(id, item_id, is_free_data);
+                    var basic_price_item = Number($(`#basic_price_${item_id}`).val());
+                    var quantity_item = Number($(`#quantity_${item_id}`).val());
+                    var discount = Number($(`#discount_store_${item_id}`).val());
+                    var sub_total_item = final_price_item * quantity_item;
+                    if (final_price_item != basic_price_item) {
+                        discount = basic_price_item - final_price_item;
+                    }
+                    var checkBox = document.getElementById("is_isales");
+                    if (checkBox.checked == false) {
+                        discount = 0;
+                    }
+                    total_discount += discount * quantity_item;
+                    total_qty += quantity_item;
+                    sub_total += sub_total_item;
                 }
-                var checkBox = document.getElementById("is_isales");
-                if (checkBox.checked == false) {
-                    discount = 0;
-                }
-                total_discount += discount * quantity_item;
-                total_qty += quantity_item;
-                sub_total += sub_total_item;
 
             });
             $("#total_discount").text(formatRupiah(total_discount.toString()));
@@ -744,7 +745,6 @@ CMS | Transaction
                     discount_store = 0;
                 }
                 $("#discount_" + item_id).text(discount_store);
-                // console.log(item_id, discount_store);
                 // var item_id = id[]
             });
             calculate_vat();
@@ -755,9 +755,14 @@ CMS | Transaction
             proceed_enter();
         }
 
-        function proceed_enter() {
-            var product_code = $('#input-scanner').val().trim() == '' ? $('#select_product').val().trim() : $('#input-scanner').val().trim();
-            var item_product = "item_product_" + product_code;
+        function proceed_enter(is_free = 0) {
+            if (is_free == 1) {
+                var product_code = $('#select_free_product').val().trim();
+                var item_product = "item_free_product_" + product_code
+            } else {
+                var product_code = $('#input-scanner').val().trim() == '' ? $('#select_product').val().trim() : $('#input-scanner').val().trim();
+                var item_product = "item_product_" + product_code;
+            }
             if ($(`#${item_product}`).length > 0) {
                 var str_quantity_product = $(`#quantity_${item_product}`).val();
                 var quantity_product = parseInt(str_quantity_product) + 1;
@@ -766,9 +771,11 @@ CMS | Transaction
                 $(`#quantity_${item_product}`).val(quantity_product);
                 $(`#total_price_${item_product}`).val(final_price);
                 $(`#text_final_price_${item_product}`).text(formatRupiah(final_price.toString()));
-                calculate_vat();
+                if (is_free == 0) {
+                    calculate_vat();
+                }
             } else {
-                add_product_item(product_code);
+                add_product_item(product_code, is_free);
             }
         }
 
@@ -777,7 +784,7 @@ CMS | Transaction
             $('#select_product').val(null).trigger('change');
         }
 
-        function add_product_item(product_code) {
+        function add_product_item(product_code, is_free = 0) {
             $.ajax({
                 url: "{{ route('product.select_one') }}",
                 type: "POST",
@@ -797,21 +804,35 @@ CMS | Transaction
                     var product = response.data;
                     var id = product_code;
                     var item_id = "item_product_" + id;
+                    if (is_free == 1) {
+                        item_id = "item_free_product_" + id;
 
-                    var basic_price = product.price_store;
-                    var final_price = basic_price;
-                    var html_price = formatRupiah(final_price.toString());
-                    var discount_store = (product.discount_store) ? product.discount_store : 0;
-                    var discount_price = 0;
+                        var basic_price = 0;
+                        var final_price = 0;
+                        var html_price = formatRupiah("0");
+                        var discount_store = 0;
+                        var discount_price = 0;
+                        product.price_store = 0;
 
-                    var checkBox = document.getElementById("is_isales");
-                    if (discount_store > 0 && checkBox.checked !== false) {
-                        discount_price = discount_store;
+                    } else {
+                        var basic_price = product.price_store;
+                        var final_price = basic_price;
+                        var html_price = formatRupiah(final_price.toString());
+                        var discount_store = (product.discount_store) ? product.discount_store : 0;
+                        var discount_price = 0;
+
+                        var checkBox = document.getElementById("is_isales");
+                        if (discount_store > 0 && checkBox.checked !== false) {
+                            discount_price = discount_store;
+                        }
                     }
+
+                    
 
                     var html_item = `
                         <tr id="${item_id}">
                             <td style="width: 35%; vertical-align: middle">
+                                <input id="is_free_${item_id}" name="is_free[]" type="hidden" class="form-control" value="${is_free}" tabindex="0"/>
                                 <input id="product_code_${item_id}" name="product_code[]" type="hidden" class="form-control" value="${product.code}" tabindex="0"/>
                                 <input id="product_name_${item_id}" name="product_name[]" type="hidden" class="form-control" value="${product.name}" tabindex="0"/>
                                 <input id="basic_price_${item_id}" name="basic_price[]" type="hidden" class="form-control" value="${basic_price}" tabindex="0"/>
@@ -882,25 +903,25 @@ CMS | Transaction
             var sub_total       = 0;
             $('.final_price_item').each(function(i, obj) {
                 var id = $(this).attr('id').split("_");
-                var item_id = "item_product_" + id[4];
-                var final_price_item = Number($(this).val());
-                var basic_price_item = Number($(`#basic_price_${item_id}`).val());
-                var quantity_item = Number($(`#quantity_${item_id}`).val());
-                var discount = Number($(`#discount_store_${item_id}`).val());
-                var sub_total_item = final_price_item * quantity_item;
-                if (final_price_item != basic_price_item) {
-                    discount = basic_price_item - final_price_item;
-                }
+                if (id[3] != "free") {
+                    var item_id = "item_product_" + id[4];
+                    var final_price_item = Number($(this).val());
+                    var basic_price_item = Number($(`#basic_price_${item_id}`).val());
+                    var quantity_item = Number($(`#quantity_${item_id}`).val());
+                    var discount = Number($(`#discount_store_${item_id}`).val());
+                    var sub_total_item = final_price_item * quantity_item;
+                    if (final_price_item != basic_price_item) {
+                        discount = basic_price_item - final_price_item;
+                    }
 
-                var checkBox = document.getElementById("is_isales");
-                if (checkBox.checked == false) {
-                    discount = 0;
+                    var checkBox = document.getElementById("is_isales");
+                    if (checkBox.checked == false) {
+                        discount = 0;
+                    }
+                    total_discount += discount * quantity_item;
+                    total_qty += quantity_item;
+                    sub_total += sub_total_item;
                 }
-                total_discount += discount * quantity_item;
-                total_qty += quantity_item;
-                sub_total += sub_total_item;
-
-                
             });
 
             var grand_total = sub_total - total_discount;
@@ -952,7 +973,6 @@ CMS | Transaction
 
             $("#payment_method").on('change', function() {
                 var val = $("#payment_method option:selected").val();
-                console.log('val', val);
                 if (val == "Tunai") {
                     // $("#elm_receipt").hide();
                     $(".elm_receipt_input").prop('readonly', true);
@@ -1027,29 +1047,14 @@ CMS | Transaction
                 theme: 'bootstrap4 select-product-custom',
                 language: "",
                 placeholder: "Pilih item gratis disini..",
-                allowClear: true,
-                // ajax: {
-                //     url: "{{ route('product.select2_product') }}",
-                //     dataType: 'json',
-                //     delay: 250,
-                //     processResults: function(data) {
-                //         return {
-                //             results: $.map(data, function(item) {
-                //                 return {
-                //                     text: item.code + " | " + item.name,
-                //                     id: item.code
-                //                 }
-                //             })
-                //         };
-                //     }
-                // }
+                allowClear: true
             });
 
-            // $("#select_free_product").on('change', function() {
-            //     if ($("#select_product").val()) {
-            //         proceed_enter();
-            //     }
-            // });
+            $("#select_free_product").on('change', function() {
+                if ($("#select_free_product").val()) {
+                    proceed_enter(1);
+                }
+            });
         });
     </script>
 
@@ -1081,7 +1086,6 @@ CMS | Transaction
             let email   = $("#input_membership_email").val().trim();
 
             if (name == '' || phone == '' || email == '') {
-                console.log("KOSONG", code, name, phone, email);
             } else {
                 $.ajax({
                     url: "{{ route('transaction.addmember') }}",
@@ -1095,7 +1099,6 @@ CMS | Transaction
                     beforeSend: function () {
                     },
                     success: function(response) {
-                        console.log(response);
                         if (response.status == 'failed') {
                             return Swal.fire({
                                 title: 'Oops...',

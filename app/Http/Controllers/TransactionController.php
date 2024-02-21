@@ -115,6 +115,7 @@ class TransactionController extends Controller
         $quantity     = $request->quantity;
         $final_price  = $request->final_price;
         $total_price  = $request->total_price;
+        $is_free        = $request->is_free;
         $status  = $request->status;
         $is_isales  = ($request->is_isales) ? '1' : '0';
         DB::beginTransaction();
@@ -135,6 +136,7 @@ class TransactionController extends Controller
                     "basic_price"   => $basic_price[$i],
                     "discount"      => $discount[$i],
                     "price"         => $final_price[$i],
+                    "is_free"         => $is_free[$i],
                 ];
                 $transaction_details[] = $trans_detail;
                 $sub_price += $total_price[$i];
