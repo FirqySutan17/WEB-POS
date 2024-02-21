@@ -782,6 +782,7 @@ CMS | Transaction
         function clearInputItem() {
             $('#input-scanner').val('');
             $('#select_product').val(null).trigger('change');
+            $('#select_free_product').val(null).trigger('change');
         }
 
         function add_product_item(product_code, is_free = 0) {
