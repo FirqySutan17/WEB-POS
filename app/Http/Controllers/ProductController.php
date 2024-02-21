@@ -64,6 +64,19 @@ class ProductController extends Controller
         return response()->json($products->get());
     }
 
+    // public function select2_free_product(Request $request)
+    // {
+    //     $products = Product::select('code', 'name')->orderBy('code', 'ASC')->orderBy('name', 'ASC')->limit(7);
+    //     if ($request->has('q')) {
+    //         $products->where('code', 'LIKE', $request->q.'%')->orWhere('name', 'LIKE', $request->q.'%');
+    //     }
+    //     if($request->has('supplier_id')) {
+    //         $products->where('supplier_id', $request->supplier_id);
+    //     }
+
+    //     return response()->json($products->get());
+    // }
+
     public function select_one(Request $request)
     {
         $product_code = $request->product_code;

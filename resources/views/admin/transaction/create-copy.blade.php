@@ -173,10 +173,13 @@ CMS | Transaction
                                         </div>
                                         <div class="col-8" style="float: right; text-align: right">
                                             I-Sales : &nbsp;
-                                            <label class="switch media-body text-end icon-state" style="vertical-align: middle">
-                                                    <input type="checkbox" id="is_isales" name="is_isales" {{ old("is_isales") == 1 ? "checked"  : null }}><span class="switch-state"></span>
-                                                </label>
-                                             <!-- <div class="media-body text-end icon-state">
+                                            <label class="switch media-body text-end icon-state"
+                                                style="vertical-align: middle">
+                                                <input type="checkbox" id="is_isales" name="is_isales" {{
+                                                    old("is_isales")==1 ? "checked" : null }}><span
+                                                    class="switch-state"></span>
+                                            </label>
+                                            <!-- <div class="media-body text-end icon-state">
                                                 
                                              </div> -->
                                         </div>
@@ -185,13 +188,13 @@ CMS | Transaction
                                 <div class="col-md-9 col-sm-12" style="padding-left: 0px">
                                     <div class="tr-input">
                                         <div class="row">
-                                            <div class="col-6">
+                                            <div class="col-4">
                                                 <input id="input-scanner" type="text" class="form-control"
                                                     placeholder="Klik disini untuk Scan Barcode"
                                                     style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px "
                                                     tabindex="1" autofocus />
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-4">
                                                 {{-- <input type="text" id="input-typing"
                                                     placeholder="Cari barang manual disini" class="form-control"
                                                     tabindex="2"
@@ -205,6 +208,28 @@ CMS | Transaction
                                                         data-placeholder="Cari barang manual disini"
                                                         class="custom-select">
 
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                {{-- <input type="text" id="input-typing"
+                                                    placeholder="Cari barang manual disini" class="form-control"
+                                                    tabindex="2"
+                                                    style="height: 50px; box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); margin-bottom: 20px; padding-left: 20px " />
+                                                --}}
+                                                <div class="form-group  _form-group">
+                                                    {{-- <label for="select_product" class="font-weight-bold">
+                                                        Categories <span class="wajib">*</span>
+                                                    </label> --}}
+                                                    <select id="select_free_product" name="product"
+                                                        data-placeholder="Pilih item gratis disini.."
+                                                        class="custom-select">
+                                                        <option></option>
+                                                        <option value="8801007499482">8801007499482 | SEAWEED CRISPS
+                                                        </option>
+                                                        <option value="8801007499567">8801007499567 | SEAWEED CRISPS HOT
+                                                            SPICY FLAVOR
+                                                        </option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -488,7 +513,7 @@ CMS | Transaction
     @push('javascript-internal')
     <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
     <script>
-         $('#is_isales').on('change', function(){
+        $('#is_isales').on('change', function(){
             this.value = this.checked ? 1 : 0;
             show_discount(this.value);
          });
@@ -997,6 +1022,34 @@ CMS | Transaction
                     proceed_enter();
                 }
             });
+
+            $('#select_free_product').select2({
+                theme: 'bootstrap4 select-product-custom',
+                language: "",
+                placeholder: "Pilih item gratis disini..",
+                allowClear: true,
+                // ajax: {
+                //     url: "{{ route('product.select2_product') }}",
+                //     dataType: 'json',
+                //     delay: 250,
+                //     processResults: function(data) {
+                //         return {
+                //             results: $.map(data, function(item) {
+                //                 return {
+                //                     text: item.code + " | " + item.name,
+                //                     id: item.code
+                //                 }
+                //             })
+                //         };
+                //     }
+                // }
+            });
+
+            // $("#select_free_product").on('change', function() {
+            //     if ($("#select_product").val()) {
+            //         proceed_enter();
+            //     }
+            // });
         });
     </script>
 
@@ -1075,6 +1128,6 @@ CMS | Transaction
         });
     </script>
 
-    
+
 
     @endpush
