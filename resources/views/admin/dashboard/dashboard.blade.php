@@ -178,6 +178,10 @@ CMS | Dashboard
                 <td style="width: 25%; vertical-align: middle; text-align: left">Desember</td>
                 <td style="width: 60%; vertical-align: middle; text-align: right">@currency($monthly_sales[12])</td>
               </tr>
+              <tr>
+                <td colspan="2" style="width: 30%; vertical-align: middle; text-align: left">Total</td>
+                <td style="width: 60%; vertical-align: middle; text-align: right">@currency($yearly_sales)</td>
+              </tr>
             </tbody>
           </table>
         </div>

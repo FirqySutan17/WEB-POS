@@ -99,7 +99,8 @@ class ReportController extends Controller
                             0             out_adj
                     FROM   tr_transaction_detail a,
                             tr_transaction b
-                    WHERE  a.invoice_no = b.invoice_no
+                    WHERE   a.invoice_no = b.invoice_no
+                            AND b.status = 'FINISH'
                             AND b.trans_date < '".$sdate."'
                     UNION ALL
                     SELECT product_code,
@@ -162,7 +163,8 @@ class ReportController extends Controller
                             0        out_adj
                     FROM   tr_transaction_detail a,
                             tr_transaction b
-                    WHERE  a.invoice_no = b.invoice_no
+                    WHERE   a.invoice_no = b.invoice_no
+                            AND b.status = 'FINISH'
                             AND b.trans_date BETWEEN '".$sdate."' AND '".$edate."'
                     UNION ALL
                     SELECT product_code,

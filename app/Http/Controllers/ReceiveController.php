@@ -106,6 +106,7 @@ class ReceiveController extends Controller
             $quantity       = $request->quantity;
             $unit_price       = $request->unit_price;
             $amount         = $request->amount;
+            $expired_date         = $request->expired_date;
             $product_arr    = [];
             if (!empty($receive) && !empty($product_code)) {
                 foreach ($product_code as $key => $v) {
@@ -117,7 +118,8 @@ class ReceiveController extends Controller
                         'product_code'  => $v,
                         'quantity'        => $qty,
                         'unit_price'        => $up,
-                        'amount'        => $amt
+                        'amount'        => $amt,
+                        'expired_date'  => $expired_date[$key],
                     ];
 
                     // Update amount

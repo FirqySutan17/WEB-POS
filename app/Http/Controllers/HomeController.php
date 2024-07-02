@@ -61,6 +61,10 @@ class HomeController extends Controller
         $monthly_sales[10] = round(Transaction::where('status', 'FINISH')->whereYear('trans_date', date('Y'))->whereMonth('trans_date', 10)->sum('total_price'));
         $monthly_sales[11] = round(Transaction::where('status', 'FINISH')->whereYear('trans_date', date('Y'))->whereMonth('trans_date', 11)->sum('total_price'));
         $monthly_sales[12] = round(Transaction::where('status', 'FINISH')->whereYear('trans_date', date('Y'))->whereMonth('trans_date', 12)->sum('total_price'));
-        return view('admin.dashboard.dashboard', compact('daily_sales', 'monthly_sales'));
+        $yearly_sales = 0;
+        foreach ($monthly_sales as $v) {
+            $yearly_sales += $v;
+        }
+        return view('admin.dashboard.dashboard', compact('daily_sales', 'monthly_sales', 'yearly_sales'));
     }
 }

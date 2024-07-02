@@ -625,7 +625,7 @@ class SyncDataController extends Controller
     {
         $data = [];
         foreach ($arr_tr_transaction_detail as $cf) {
-            $curr_data  = [$this->stringfy($cf->plant), $this->stringfy($cf->invoice_no), $this->stringfy($cf->product_code), $cf->quantity, $cf->basic_price, $cf->discount, $cf->price];
+            $curr_data  = [$this->stringfy($cf->plant), $this->stringfy($cf->invoice_no), $this->stringfy($cf->product_code), $cf->quantity, $cf->basic_price, $cf->discount, $cf->price, $cf->is_free];
             // $curr_data  = [$cf->id, $cf->date, $cf->time, $cf->employee_id];
 
             $implode    = implode("|", $curr_data);

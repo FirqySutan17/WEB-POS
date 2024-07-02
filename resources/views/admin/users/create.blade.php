@@ -83,22 +83,7 @@ CMS | Add User
                                         <!-- end email -->
 
                                         <!-- role -->
-                                        <div class="form-group _form-group">
-                                            <label for="select_user_office" class="font-weight-bold">
-                                                Office <span class="wajib">*</span>
-                                            </label>
-                                            <select id="select_user_office" name="office" data-placeholder="Choose Office" class="js-example-placeholder-multiple">
-                                                <option value="0">Choose Office</option>
-                                                <option value="Rimba House, Cipondoh">Rimba House, Cipondoh</option>
-                                                <option value="Rimba House, Jakarta">Rimba House, Jakarta</option>
-                                            </select>
-                                            @error('role')
-                                            <span class="invalid-feedback">
-                                                {{ $message }}
-                                            </span>
-                                            @enderror
-                                            <!-- error message -->
-                                        </div>
+                                       
                                         <!-- end role -->
                                     </div>
                                     <div class="col-6">

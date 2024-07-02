@@ -335,7 +335,7 @@ CMS | Add Receive
                 var html_item = `
                     <div id="${item_id}">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-5">
                                 <div class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
                                         Product / Item <span class="wajib">* </span>
@@ -347,28 +347,36 @@ CMS | Add Receive
                                     <input id="product_code_text_${item_id}" type="text" class="form-control" value="${product.code + ' - ' + product.name }" readonly/>
                                 </div>
                             </div>
+                            <div class="col-1">
+                                <div  class="form-group _form-group">
+                                    <label for="input_post_description" class="font-weight-bold">
+                                        Qty 
+                                    </label>
+                                    <input data-itemid="${item_id}" id="quantity_${item_id}" name="quantity[]" type="number" class="form-control" value="1" onkeyup="calculate_from_qty('${item_id}')" style="text-align:center;" />
+                                </div>
+                            </div>
                             <div class="col-2">
                                 <div  class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
-                                        Quantity 
+                                        Unit Price <span class="wajib">* </span>
                                     </label>
-                                    <input data-itemid="${item_id}" id="quantity_${item_id}" name="quantity[]" type="number" class="form-control" value="1" onkeyup="calculate_from_qty('${item_id}')" />
+                                    <input data-itemid="${item_id}" id="unit_price_${item_id}" name="unit_price[]" type="text" class="form-control" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_qty('${item_id}')" style="text-align:right;" required />
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <div  class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
-                                        Unit Price 
+                                        Amount <span class="wajib">* </span>
                                     </label>
-                                    <input data-itemid="${item_id}" id="unit_price_${item_id}" name="unit_price[]" type="text" class="form-control" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_qty('${item_id}')" />
+                                    <input data-itemid="${item_id}" id="amount_${item_id}" name="amount[]" type="text" class="form-control" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_amount('${item_id}')" style="text-align:right;" required />
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-2">
                                 <div  class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
-                                        Amount 
+                                        Expired Date <span class="wajib">* </span>
                                     </label>
-                                    <input data-itemid="${item_id}" id="amount_${item_id}" name="amount[]" type="text" class="form-control" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57" onkeyup="calculate_from_amount('${item_id}')" />
+                                    <input data-itemid="${item_id}" id="expired_date_${item_id}" name="expired_date[]" type="date" class="form-control" required />
                                 </div>
                             </div>
                         </div>

@@ -67,7 +67,6 @@ class UserController extends Controller
             [
                 "name" => "required|string|max:30",
                 "role" => "required",
-                "office" => "required",
                 "phone_number" => "required",
                 "employee_id" => "required",
                 "email" => "required|email|unique:users,email",
@@ -92,7 +91,6 @@ class UserController extends Controller
             $user = User::create([
                 'employee_id' => $request->employee_id,
                 'phone_number' => $request->phone_number,
-                'office' => $request->office,
                 'status' => ($request->status) ? '1' : '0',
                 'name' => $request->name,
                 'email' => $request->email,
@@ -168,7 +166,6 @@ class UserController extends Controller
             $update_data = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'office' => $request->office,
                 'status' => ($request->status) ? '1' : '0',
             ];
 
