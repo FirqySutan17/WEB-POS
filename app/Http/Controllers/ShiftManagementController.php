@@ -83,7 +83,6 @@ class ShiftManagementController extends Controller
             'employee_id' => 'required',
             'seq' => 'required',
             'pin' => 'required',
-            'cash' => 'required',
         ]);
 
         DB::beginTransaction();
@@ -151,7 +150,6 @@ class ShiftManagementController extends Controller
                 'time' => 'required',
                 'categories' => 'required',
                 'description' => 'required',
-                'cash' => 'required',
             ],
             [],
         );

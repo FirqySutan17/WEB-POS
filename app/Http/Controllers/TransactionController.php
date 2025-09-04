@@ -513,7 +513,7 @@ class TransactionController extends Controller
         $invoice_no = "INV".date('Ymd');
         $no = 1;
         $today = date('Y-m-d');
-        $latest_transaction = Transaction::whereDate('trans_date', $today)->orderBy('id', 'DESC')->first();
+        $latest_transaction = Transaction::whereDate('created_at', $today)->orderBy('id', 'DESC')->first();
         if (!empty($latest_transaction)) {
             $no = substr($latest_transaction->invoice_no, -4);
 

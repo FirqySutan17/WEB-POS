@@ -92,9 +92,11 @@ CMS | Report Receive
                         <th class="center-text">No <span class="dividerHr"></span></th>
                         <th class="center-text">Item <span class="dividerHr"></span></th>
                         <th class="center-text">Supplier <span class="dividerHr"></span></th>
+                        <th class="center-text">Expired <span class="dividerHr"></span></th>
                         <th class="center-text">Qty <span class="dividerHr"></span></th>
                         <th class="center-text">Unit Price <span class="dividerHr"></span></th>
                         <th class="center-text">Amount <span class="dividerHr"></span></th>
+                        
                     </tr>
                 </thead>
                 <?php $total_qty = 0; $total_amount = 0; ?>
@@ -113,6 +115,7 @@ CMS | Report Receive
                             <td style="vertical-align: middle; text-align:left">
                                 {{ $item['supplier'] }}
                             </td>
+                            <td style="vertical-align: middle; text-align:center">{{ date('d-m-Y', strtotime($item['details'][0]['expired_date'])) }}</td>
                             <?php 
                                 $qty        = 0;
                                 $amount     = 0;
@@ -134,7 +137,7 @@ CMS | Report Receive
                     @endif
                 </tbody>
                 <tr>
-                    <th colspan="3" style="text-align:right" colspan="2">Total</th>
+                    <th colspan="4" style="text-align:right" colspan="2">Total</th>
                     <th style="text-align:right">{{ number_format($total_qty) }}</th>
                     <td></td>
                         <td style="vertical-align: middle; text-align: right"><strong>{{ number_format($total_amount) }}</strong></td>

@@ -709,7 +709,7 @@ class ReportController extends Controller
             $query = "
                 SELECT 
                     receive_detail.receive_code, receive.receive_date, receive.delivery_no, users.name AS pic, 
-                    receive_detail.product_code, products.name AS product_name, receive_detail.quantity, COALESCE(receive_detail.unit_price, 0) as unit_price, COALESCE(receive_detail.amount, 0) as amount,
+                    receive_detail.product_code, products.name AS product_name, receive_detail.quantity, receive_detail.expired_date, COALESCE(receive_detail.unit_price, 0) as unit_price, COALESCE(receive_detail.amount, 0) as amount,
                     suppliers.supplier_code, suppliers.name as supplier_name
                 FROM tr_receive_detail receive_detail
                 INNER JOIN tr_receive receive ON receive_detail.receive_code = receive.receive_code
@@ -791,7 +791,7 @@ class ReportController extends Controller
                             "details"  => []
                         ];
                     }
-                    
+                    // dd($item);
                     $data_receive[$product_code]["details"][] = [
                         "quantity"      => $item->quantity,
                         "receive_code"  => $item->receive_code,
@@ -799,7 +799,8 @@ class ReportController extends Controller
                         "delivery_no"   => $item->delivery_no,
                         "pic"           => $item->pic,
                         "unit_price"    => $item->unit_price,
-                        "amount"        => $item->amount
+                        "amount"        => $item->amount,
+                        "expired_date"  => $item->expired_date
                     ];
                 }
             }
@@ -1461,52 +1462,6 @@ class ReportController extends Controller
             return view('admin.report.labarugi', compact('data', 'sdate', 'edate', 'search', 'categories'));
         }
 
-        private function bak_convert_labarugi($data_raw) {
-            $data = [];
-            if (!empty($data_raw)) {
-                foreach ($data_raw as $item) {
-                    dd($data_raw);
-                    $product_code = $item->product_code;
-                    if (!array_key_exists($product_code, $data)) {
-                        $data[$product_code] = [
-                            "product_name"  => $item->product_name,
-                            "detail"        => []
-                        ];
-                    }
-                    $item->trans_date = date('Y-m-d', strtotime($item->trans_date));
-                    $tanggal = strtotime($item->trans_date);
-
-                    $item->receive_date = date('Y-m-d', strtotime($item->receive_date));
-                    $tanggal_rcv = strtotime($item->receive_date);
-                    if ($tanggal_rcv < $tanggal) {
-                        if (!array_key_exists($tanggal_rcv, $data[$product_code]["detail"])) {
-                            $data[$product_code]["detail"][$tanggal_rcv] = [
-                                "tanggal"       => $item->receive_date,
-                                "quantity"      => $item->quantity_rcv,
-                                "harga_jual"    => 0,
-                                "harga_beli"    => $item->harga_beli,
-                                "is_receive"    => 1
-                            ];
-                            
-                        }
-                    }
-                    if (!array_key_exists($tanggal, $data[$product_code]["detail"])) {
-                        $data[$product_code]["detail"][$tanggal] = [
-                            "tanggal"       => $item->trans_date,
-                            "quantity"      => $item->quantity,
-                            "harga_jual"    => $item->harga_jual,
-                            "harga_beli"    => $item->harga_beli,
-                            "is_receive"    => ($tanggal_rcv == $tanggal) ? 2 : 0
-                        ];
-                    } else {
-                        $data[$product_code]["detail"][$tanggal]["quantity"] += $item->quantity;
-                    }
-                }
-                // dd($data);
-            }
-            return $data;
-        }
-
         private function convert_labarugi($data_raw) {
             $data = [];
             if (!empty($data_raw)) {
@@ -1584,7 +1539,7 @@ class ReportController extends Controller
                 SELECT 
                     rcv.receive_date AS tanggal, 
                     rcv.created_at, 
-                    rcv_detail.product_code AS kode_produk, s
+                    rcv_detail.product_code AS kode_produk,
                     rcv_detail.quantity, 
                     rcv_detail.unit_price, 
                     rcv_detail.amount, 0 AS status_data
@@ -1599,6 +1554,16 @@ class ReportController extends Controller
                 LIMIT 1
             ";
             $db_query = DB::select(DB::raw($query));
+            if (empty($db_query[0])) {
+                return (object) [
+                    'tanggal'       => $date,
+                    'kode_produk'   => $product_code,
+                    'quantity'      => 0,
+                    'amount'        => 0,
+                    'unit_price'    => 0,
+                    'status_data'   => 0
+                ];
+            }
             return $db_query[0];
         }
 
