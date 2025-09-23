@@ -45,18 +45,19 @@ CMS | Dashboard
   }
 
   ul.calendar-dashboard li.calendar-item.today {
-    background: #a12a2f;
+    background: #c42e2f;
     color: #fff !important;
   }
 
-  ul.calendar-dashboard li.calendar-item.today a{
+  ul.calendar-dashboard li.calendar-item.today a {
     color: #fff;
   }
 
   ul.calendar-dashboard .today time {
     font-weight: 800;
   }
-  .date-flow{
+
+  .date-flow {
     display: flex;
     flex-direction: column
   }
@@ -96,12 +97,13 @@ CMS | Dashboard
         <div class="table-responsive">
           <ul class="calendar-dashboard">
             @foreach ($daily_sales as $i => $item)
-              <li class="{{ $item['date'] == date('Y-m-d') ? 'today' : '' }} calendar-item">
-                <a class="date-flow" href="{{ $item['date'] == date('Y-m-d') ? route('report.transaction') : 'javascript::void(0)'  }}">
-                  <time datetime="{{ $item['date'] }}">
+            <li class="{{ $item['date'] == date('Y-m-d') ? 'today' : '' }} calendar-item">
+              <a class="date-flow"
+                href="{{ $item['date'] == date('Y-m-d') ? route('report.transaction') : 'javascript::void(0)'  }}">
+                <time datetime="{{ $item['date'] }}">
                   {{ $i }}</time>@currency($item["amount"])
-                </a>
-              </li>
+              </a>
+            </li>
             @endforeach
           </ul>
         </div>

@@ -53,7 +53,7 @@
 }
 
 .accordion-button:not(.collapsed) {
-  color: #a12a2f;
+  color: #c42e2f;
   background-color: rgba(36, 105, 92, 0.1);
 }
 
@@ -317,7 +317,7 @@ label {
   ul.nav-submenu
   li
   a.active {
-  background-color: #a12a2f9d;
+  background-color: #c42e2f9d;
   color: #ffffff;
 }
 
@@ -330,7 +330,7 @@ label {
   ul.nav-submenu
   li
   a:hover {
-  background-color: #a12a2f;
+  background-color: #c42e2f;
   color: #ffffff;
 }
 
@@ -357,10 +357,10 @@ textarea.form-control {
   padding: 10px;
 }
 .page-main-header .main-header-right {
-  background: #a12a2f;
+  background: #c42e2f;
 }
 .page-main-header .main-header-right .toggle-sidebar svg {
-  color: #a12a2f;
+  color: #c42e2f;
 }
 .page-main-header .main-header-right .nav-right.right-menu ul li {
   position: relative;
@@ -438,7 +438,7 @@ textarea.form-control {
   header.main-nav
   .sidebar-user
   .setting-primary:hover {
-  background-color: #a12a2f;
+  background-color: #c42e2f;
 }
 
 .dropdownSet {
@@ -462,7 +462,7 @@ textarea.form-control {
   height: 0;
   border-style: solid;
   border-width: 0 10px 10px 10px;
-  border-color: transparent transparent #a12a2f transparent;
+  border-color: transparent transparent #c42e2f transparent;
   z-index: 9999;
 }
 
@@ -522,7 +522,7 @@ svg.feather.feather-lock {
 }
 
 .dropStyle.active {
-  background: #a12a2f;
+  background: #c42e2f;
   border-radius: 10px;
   color: #ffffff;
 }
@@ -564,7 +564,7 @@ svg.feather.feather-lock {
 
 .list-group-item-head {
   color: #fff;
-  background-color: #a12a2f;
+  background-color: #c42e2f;
   font-size: 13px;
   font-weight: 600;
 }
@@ -636,7 +636,7 @@ svg.feather.feather-lock {
 
 .squareContent .boxIcon {
   margin-bottom: 10px;
-  background-color: #a12a2f33;
+  background-color: #c42e2f33;
   clip-path: circle(65.6% at 34% 34%);
   position: absolute;
   border-top-left-radius: 10px;
@@ -1062,13 +1062,13 @@ input[type="number"]::-webkit-outer-spin-button {
   border-bottom: none;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background: #a12a2f;
+  background: #c42e2f;
   color: #fff;
   font-weight: 600;
 }
 
 .menu-rt a:hover {
-  background: #a12a2f;
+  background: #c42e2f;
   color: #fff;
 }
 
@@ -1088,13 +1088,13 @@ input[type="number"]::-webkit-outer-spin-button {
   border-bottom: none;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  background: #a12a2f;
+  background: #c42e2f;
   color: #fff;
   font-weight: 600;
 }
 
 .btn-disc:hover {
-  background: #a12a2f;
+  background: #c42e2f;
   color: #fff;
 }
 

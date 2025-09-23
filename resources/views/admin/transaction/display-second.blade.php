@@ -30,7 +30,7 @@ CMS | Transaction
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #a12a2f !important;
+        background: #c42e2f !important;
         color: #fff;
         font-weight: 700
     }
@@ -42,7 +42,7 @@ CMS | Transaction
     }
 
     .card-footer {
-        background: #a12a2f !important;
+        background: #c42e2f !important;
         height: 10% !important;
         margin: auto;
         display: flex;
@@ -139,7 +139,7 @@ CMS | Transaction
     }
 
     .carousel-item img {
-        height: 528px;
+        height: 543px;
         object-fit: cover;
     }
 
@@ -155,8 +155,8 @@ CMS | Transaction
         <div class="box">
             <div class="card">
                 <div class="card-header">
-                    <img class="img-fluid" style="width: 120px; text-align: left"
-                        src="{{ asset('assets/images/meatmaster_logo_png.png')}}" alt="">
+                    <img class="img-fluid" style="width: 78px; text-align: left" src="{{ asset('images/LUSTORE.jpeg')}}"
+                        alt="">
                     {{-- <h2 style="text-align: center">MEAT STORE</h2> --}}
                 </div>
                 <div class="card-body">
@@ -179,10 +179,10 @@ CMS | Transaction
                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="{{ asset('images/banner-meatmaster.png')}}" class="d-block w-100" alt="">
+                            <img src="{{ asset('images/feed4.jpg')}}" class="d-block w-100" alt="">
                         </div>
                         <div class="carousel-item">
-                            <img src="{{ asset('images/banner-suja.png')}}" class="d-block w-100" alt="">
+                            <img src="{{ asset('images/feed7.jpg')}}" class="d-block w-100" alt="">
                         </div>
 
                     </div>

@@ -116,7 +116,7 @@
 <body>
     <div class="ticket">
         <center>
-            <img style="width: 100%;" src="{{ asset('assets/images/meatmaster_logo.jpeg')}}" alt="">
+            <img style="width: 100%;" src="{{ asset('images/logo-placeholder.png')}}" alt="">
         </center>
         <center>
             <h1>MEAT MASTER</h1>
@@ -202,18 +202,18 @@
             ?>
             <tbody>
                 @if ($sub_disc > 0 && $transaction->is_isales == 1)
-                    <tr>
-                        <td class="description">TOTAL</td>
-                        <td class="price">@currency($total_price + $sub_disc)</td>
-                    </tr>
-                    <tr>
-                        <td class="description">ANDA HEMAT</td>
-                        <td class="price">@currency($sub_disc)</td>
-                    </tr>
-                    <tr>
-                        <td class="description" style="font-weight: 700">GRAND TOTAL</td>
-                        <td class="price">@currency($total_price)</td>
-                    </tr>
+                <tr>
+                    <td class="description">TOTAL</td>
+                    <td class="price">@currency($total_price + $sub_disc)</td>
+                </tr>
+                <tr>
+                    <td class="description">ANDA HEMAT</td>
+                    <td class="price">@currency($sub_disc)</td>
+                </tr>
+                <tr>
+                    <td class="description" style="font-weight: 700">GRAND TOTAL</td>
+                    <td class="price">@currency($total_price)</td>
+                </tr>
                 @else
                 <tr>
                     <td class="description" style="font-weight: 700">GRAND TOTAL</td>

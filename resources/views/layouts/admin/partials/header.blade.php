@@ -19,8 +19,8 @@
         <div class="logo-wrapper"><a href="{{ route('home') }}">
             {{-- <h5 style="margin-top:10px; font-family: 'Poppins', sans-serif; color: #fff"><strong>RIMBA CMS</strong>
             </h5> --}}
-            <img class="img-fluid" style="width: 91px; text-align: left"
-              src="{{ asset('assets/images/meatmaster_logo_png.png')}}" alt=""></a>
+            <img class="img-fluid" style="width: 60px; text-align: left; border-radius: 8px"
+              src="{{ asset('images/LUSTORE.jpeg')}}" alt=""></a>
         </div>
       </center>
 
