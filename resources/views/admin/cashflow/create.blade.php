@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Cashflow
+LUSTORE | Add Cashflow
 @endsection
 
 @push('css')
@@ -332,7 +332,9 @@ CMS | Add Cashflow
             beforeSend: function () {
             },
             success: function(response) {
-                if (JSON.stringify(response) === "{}") {
+                console.log(response);
+
+                if (!response.success) {
                     chance += 1;
                     if (chance >= 3) {
                         setTimeout(() => {
@@ -344,7 +346,7 @@ CMS | Add Cashflow
                             icon: 'error'
                         });
                     }
-                    
+
                     return Swal.fire({
                         title: 'Oops...',
                         text: `Wrong PIN Number! You already try ${chance}x`,
@@ -352,6 +354,7 @@ CMS | Add Cashflow
                     });
                 }
 
+                // authorized
                 $("#approval").val(pin);
                 $("#form-authorization").remove();
                 Swal.fire({
@@ -361,6 +364,14 @@ CMS | Add Cashflow
                 });
                 $("#form-add").show();
                 $(".wrap-cashier").show();
+            },
+            error: function(xhr) {
+                console.error("Server error:", xhr.responseText);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Something went wrong on server!',
+                    icon: 'error'
+                });
             }
         });
     });

@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Membership
+LUSTORE | Edit Membership
 @endsection
 
 @section('content')
@@ -68,7 +68,7 @@ CMS | Edit Membership
                                                 Phone <span class="wajib">*</span>
                                             </label>
                                             <input id="input_user_name" value="{{ old('phone', $membership->phone) }}"
-                                                name="number" type="text"
+                                                name="phone" type="text"
                                                 class="form-control @error('phone') is-invalid @enderror"
                                                 placeholder="Input Phone Number" readonly />
                                             @error('phone')

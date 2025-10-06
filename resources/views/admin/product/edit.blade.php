@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Product
+LUSTORE | Edit Product
 @endsection
 
 @section('content')

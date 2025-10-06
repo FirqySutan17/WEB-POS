@@ -1,7 +1,7 @@
 @extends('admin.authentication.master')
 
 @section('title')
-CMS | Reset Password
+LUSTORE | Reset Password
 @endsection
 
 @push('css')

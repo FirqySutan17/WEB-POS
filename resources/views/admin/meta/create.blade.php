@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Meta
+LUSTORE | Add Meta
 @endsection
 
 @push('css')

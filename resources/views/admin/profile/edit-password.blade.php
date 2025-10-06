@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Password
+LUSTORE | Edit Password
 @endsection
 
 @section('content')

@@ -11,6 +11,9 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Product;
 use App\Models\ProductPriceLog;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductExport;
+
 class ProductController extends Controller
 {
     public function __construct()
@@ -28,16 +31,41 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = [];
+        $query = Product::with('supplier');
+
+        // Filter berdasarkan keyword (pencarian)
         if ($request->get('keyword')) {
-            $products = Product::with('supplier')->where('is_active', 1)->search($request->keyword)->orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
-        } else {
-            $products = Product::with('supplier')->where('is_active', 1)->orderBy('stock', 'asc')->orderBy('id', 'desc')->paginate(9);
+            $query->search($request->keyword);
         }
-        // dd($products);
+
+        // Filter berdasarkan status aktif
+        if ($request->has('status') && $request->status !== '') {
+            if ($request->status == '1') {
+                $query->where('is_active', 1);
+            } elseif ($request->status == '0') {
+                $query->where('is_active', 0);
+            }
+            // Jika "All Status", maka tidak ada filter tambahan
+        }
+
+        $products = $query->orderBy('id', 'desc')
+        ->paginate(9)
+        ->appends([
+            'keyword' => $request->keyword,
+            'status' => $request->status,
+        ]);
+
         return view('admin.product.index', [
             'products' => $products
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $date = now()->format('Y-m-d_H-i-s');
+        $fileName = 'products_' . $date . '.xlsx';
+
+        return Excel::download(new ProductExport($request), $fileName);
     }
 
 

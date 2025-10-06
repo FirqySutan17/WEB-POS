@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Code
+LUSTORE | Code
 @endsection
 
 @push('css')

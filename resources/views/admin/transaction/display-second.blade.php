@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Transaction
+LUSTORE | Transaction
 @endsection
 
 @push('css-internal')
@@ -169,8 +169,7 @@ CMS | Transaction
 
                 </div>
                 <div class="card-footer">
-                    Ruko Kemang Pratama Raya Blok MM, Jl. Kemang Pratama Raya No.10, Bojong Rawalaumbu, Kec. Rawalumbu,
-                    Kota Bks, Jawa Barat
+                    Jln. Raya Bumi Indah Blok B6/7 Sukamantri, Pasar Kemis, Tangerang
                 </div>
             </div>
         </div>
@@ -179,10 +178,10 @@ CMS | Transaction
                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="{{ asset('images/feed4.jpg')}}" class="d-block w-100" alt="">
+                            <img src="{{ asset('images/lustore.jpeg')}}" class="d-block w-100" alt="">
                         </div>
                         <div class="carousel-item">
-                            <img src="{{ asset('images/feed7.jpg')}}" class="d-block w-100" alt="">
+                            <img src="{{ asset('images/lustore.jpeg')}}" class="d-block w-100" alt="">
                         </div>
 
                     </div>

@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Role
+LUSTORE | Edit Role
 @endsection
 
 @section('content')

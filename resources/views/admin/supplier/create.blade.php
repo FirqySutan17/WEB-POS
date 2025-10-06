@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Create - Supplier
+LUSTORE | Create - Supplier
 @endsection
 
 @push('css')

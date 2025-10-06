@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Adjust Stock
+LUSTORE | Adjust Stock
 @endsection
 
 @push('css')

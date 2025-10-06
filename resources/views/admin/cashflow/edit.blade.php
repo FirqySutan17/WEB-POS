@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Cashflow
+LUSTORE | Add Cashflow
 @endsection
 
 @push('css')

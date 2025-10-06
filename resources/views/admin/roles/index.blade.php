@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Roles
+LUSTORE | Roles
 @endsection
 
 @push('css')
@@ -23,11 +23,11 @@ CMS | Roles
                 {{-- filter:start --}}
                 <form class="row" method="GET">
                     <div class="col-8">
-                        @can('Role Create')
+                        
                         <a href="{{ route('roles.create') }}" class="btn btn-primary _btn" role="button">
                             <i class='bx bx-plus'></i> Create Role
                         </a>
-                        @endcan
+                       
                     </div>
                     <div class="col-4 boxContent">
                         <div class="boxSearch _form-group">
@@ -63,15 +63,15 @@ CMS | Roles
                         {{-- <td style="width: 20%;" class="center-text">5 users</td> --}}
                         <td style="width: 10%;" class="center-text boxAction fontField">
                             <div class="boxInside">
-                                @can('Role Update')
+                               
                                 <div class="boxEdit">
                                     <a href="{{ route('roles.edit', ['role' => $role]) }}" class="btn-sm btn-info" role="button">
                                         <i class="bx bx-edit"></i>
                                     </a>
                                 </div>
-                                @endcan
+                                
 
-                                @can('Role Delete')
+                                
                                 <div class="boxDelete">
                                     <form role="alert" action="{{ route('roles.destroy', ['role' => $role]) }}" method="POST">
                                         @csrf
@@ -81,7 +81,7 @@ CMS | Roles
                                         </button>
                                     </form>
                                 </div>
-                                @endcan
+                                
                             </div>
 
                         </td>

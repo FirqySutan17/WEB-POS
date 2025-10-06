@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Single Upload
+LUSTORE | Add Single Upload
 @endsection
 
 @push('css')

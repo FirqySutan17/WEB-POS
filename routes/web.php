@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\DatabaseController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -74,14 +75,16 @@ Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showRese
 Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 
 // Product Route
+Route::get('/product/export', [App\Http\Controllers\ProductController::class, 'export'])->name('product.export');
+
 Route::post('/product/select_one', [App\Http\Controllers\ProductController::class, 'select_one'])->name('product.select_one');
 Route::post('/product/select', [App\Http\Controllers\ProductController::class, 'select'])->name('product.select');
 Route::get('/product/select2_product', [App\Http\Controllers\ProductController::class, 'select2_product'])->name('product.select2_product');
 // Route::get('/product/select2_free_product', [App\Http\Controllers\ProductController::class, 'select2_product'])->name('product.select2_free_product');
 Route::post('/product/select_trans', [App\Http\Controllers\ProductController::class, 'select_trans'])->name('product.select_trans');
-Route::resource('/product', App\Http\Controllers\ProductController::class);
 Route::get('/barcode-print/{product}', [App\Http\Controllers\ProductController::class, 'print'])->name('product.print');
 
+Route::resource('/product', App\Http\Controllers\ProductController::class);
 // Closing Date Route
 Route::resource('/closing-date', App\Http\Controllers\ClosingdateController::class);
 
@@ -122,6 +125,8 @@ Route::resource('/receive-material', App\Http\Controllers\ReceiveMaterialControl
 
 // Account Slip Route
 Route::resource('/account-slip', App\Http\Controllers\AccountSlipController::class);
+
+Route::get('/database/download', [DatabaseController::class, 'download'])->name('database.download');
 
 // Supplier Route
 Route::get('/supplier/select', [App\Http\Controllers\SupplierController::class, 'select'])->name('supplier.select');

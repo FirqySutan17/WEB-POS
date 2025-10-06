@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Closing Date
+LUSTORE | Closing Date
 @endsection
 
 @section('content')

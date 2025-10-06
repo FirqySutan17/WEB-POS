@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Users
+LUSTORE | Users
 @endsection
 
 @push('css')
@@ -75,16 +75,14 @@ CMS | Users
 						</td>
 						<td style="width: 10%;" class="center-text boxAction fontField">
 							<div class="boxInside">
-								@can('User Update')
+								
 								<div class="boxEdit">
 									<a href="{{ route('users.edit', ['user' => $user]) }}" class="btn-sm btn-info"
 										role="button">
 										<i class="bx bx-edit"></i>
 									</a>
 								</div>
-								@endcan
-
-								@can('User Delete')
+								
 								<div class="boxDelete">
 									<form role="alert" action="{{ route('users.destroy', ['user' => $user]) }}"
 										method="POST">
@@ -95,7 +93,7 @@ CMS | Users
 										</button>
 									</form>
 								</div>
-								@endcan
+					
 							</div>
 
 						</td>

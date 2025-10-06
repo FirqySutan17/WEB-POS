@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Account Code
+LUSTORE | Account Code
 @endsection
 
 @push('css')

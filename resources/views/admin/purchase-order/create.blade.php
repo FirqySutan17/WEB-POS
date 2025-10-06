@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Create - Purchase Order
+LUSTORE | Create - Purchase Order
 @endsection
 
 @push('css')

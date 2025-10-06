@@ -442,20 +442,56 @@ class TransactionController extends Controller
         return response()->json($user);
     }
 
+    // public function check_svppin(Request $request)
+    // {
+    //     $user = [];
+    //     if ($request->has('pin')) {
+    //         $user_admin = User::role('Admin')->select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+    //         if (!empty($user_admin)) {
+    //             $user = $user_admin;
+    //         } else {
+    //             $user_superadmin = User::role('Super admin')->select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
+    //             $user = $user_superadmin;
+    //         }
+    //     }
+
+    //     return response()->json($user);
+    // }
+
     public function check_svppin(Request $request)
     {
-        $user = [];
+        $user = null;
+
         if ($request->has('pin')) {
-            $user_admin = User::role('Admin')->select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
-            if (!empty($user_admin)) {
+            $user_admin = User::role('Admin')
+                ->select('employee_id', 'name', 'pin')
+                ->where('pin', $request->pin)
+                ->first();
+
+            if ($user_admin) {
                 $user = $user_admin;
             } else {
-                $user_superadmin = User::role('Super admin')->select('employee_id', 'name', 'pin')->where('pin', $request->pin)->first();
-                $user = $user_superadmin;
+                $user_superadmin = User::role('Owner')
+                    ->select('employee_id', 'name', 'pin')
+                    ->where('pin', $request->pin)
+                    ->first();
+                if ($user_superadmin) {
+                    $user = $user_superadmin;
+                }
             }
         }
 
-        return response()->json($user);
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'user' => $user
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid PIN'
+        ]);
     }
 
 

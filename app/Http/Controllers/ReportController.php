@@ -1568,116 +1568,29 @@ class ReportController extends Controller
         }
 
         private function get_labarugi($sdate, $edate, $search, $categories) {
-            $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
-            $whereDate = "";
-            if (!empty($sdate)) {
-                $sdate_exp = explode("-", $sdate);    
-            } else {
-                $sdate_exp = explode("-", date("Y-m"));
+            // Default tanggal kalau kosong (awal & akhir bulan berjalan)
+            if (empty($sdate)) {
+                $sdate = date("Y-m-01");
             }
-            $year   = $sdate_exp[0];
-            $month  = $sdate_exp[1];
-            // $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
-            $whereDate = " AND (trans.trans_date BETWEEN '".$sdate."' AND '".$edate."')";
+            if (empty($edate)) {
+                $edate = date("Y-m-t");
+            }
+
+            // filter pencarian produk
+            $where = "";
+            if (!empty($search)) {
+                $where .= " AND (products.code LIKE '%" . $search . "%' 
+                            OR products.name LIKE '%" . $search . "%')";
+            }
+
+            // filter kategori
             if (!empty($categories) && $categories != "ALL") {
-                $where .= " AND products.categories = '".$categories."'";
+                $where .= " AND products.categories = '" . $categories . "'";
             }
-            $oldquery = "
-                SELECT 
-                    products.code as product_code,
-                    CONCAT(products.code, ' | ', products.name) AS product_name,
-                    trans.created_at as trans_date,
-                    trans_detail.quantity,
-                    trans_detail.price AS harga_jual,
-                    COALESCE (
-                        (
-                           SELECT rcv.created_at
-                           FROM 
-                               tr_receive_detail rcv_detail,
-                               tr_receive rcv
-                           WHERE
-                               rcv.receive_code = rcv_detail.receive_code
-                               AND rcv_detail.product_code = trans_detail.product_code
-                               AND rcv.created_at <= trans.created_at
-                           ORDER BY rcv.id DESC
-                           LIMIT 1
-                        ),
-                        (
-                           SELECT rcv.created_at
-                           FROM 
-                               tr_receive_detail rcv_detail,
-                               tr_receive rcv
-                           WHERE
-                               rcv.receive_code = rcv_detail.receive_code
-                               AND rcv_detail.product_code = trans_detail.product_code
-                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
-                           ORDER BY rcv.id DESC
-                           LIMIT 1
-                        )
-                    ) AS receive_date,
-                    COALESCE (
-                        (
-                           SELECT rcv_detail.unit_price
-                           FROM 
-                               tr_receive_detail rcv_detail,
-                               tr_receive rcv
-                           WHERE
-                               rcv.receive_code = rcv_detail.receive_code
-                               AND rcv_detail.product_code = trans_detail.product_code
-                               AND rcv.created_at <= trans.created_at
-                           ORDER BY rcv.id DESC
-                           LIMIT 1
-                        ),
-                        (
-                           SELECT rcv_detail.unit_price
-                           FROM 
-                               tr_receive_detail rcv_detail,
-                               tr_receive rcv
-                           WHERE
-                               rcv.receive_code = rcv_detail.receive_code
-                               AND rcv_detail.product_code = trans_detail.product_code
-                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
-                           ORDER BY rcv.id DESC
-                           LIMIT 1
-                        )
-                    ) AS harga_beli,
-                    COALESCE (
-                        (
-                           SELECT rcv_detail.quantity
-                           FROM 
-                               tr_receive_detail rcv_detail,
-                               tr_receive rcv
-                           WHERE
-                               rcv.receive_code = rcv_detail.receive_code
-                               AND rcv_detail.product_code = trans_detail.product_code
-                               AND rcv.created_at <= trans.created_at
-                           ORDER BY rcv.id DESC
-                           LIMIT 1
-                        ),
-                        (
-                           SELECT rcv_detail.quantity
-                           FROM 
-                               tr_receive_detail rcv_detail,
-                               tr_receive rcv
-                           WHERE
-                               rcv.receive_code = rcv_detail.receive_code
-                               AND rcv_detail.product_code = trans_detail.product_code
-                               AND DATE(rcv.created_at) <= DATE(trans.created_at)
-                           ORDER BY rcv.id DESC
-                           LIMIT 1
-                        )
-                    ) AS quantity_rcv
-                FROM 
-                    tr_transaction_detail trans_detail,
-                    tr_transaction trans,
-                    products
-                WHERE
-                    trans.invoice_no = trans_detail.invoice_no
-                    AND products.code = trans_detail.product_code
-                    ".$whereDate."
-                    ".$where."
-                ORDER BY products.name ASC, trans.trans_date ASC        
-            ";
+
+            // filter tanggal
+            $whereDateTrans = "AND (DATE(trans.trans_date) BETWEEN '$sdate' AND '$edate')";
+            $whereDateRcv   = "AND (DATE(rcv.receive_date) BETWEEN '$sdate' AND '$edate')";
 
             $query = "
                 SELECT 
@@ -1689,32 +1602,183 @@ class ReportController extends Controller
                     table_data.amount, 
                     table_data.status_data
                 FROM (
-                    SELECT rcv.receive_date AS tanggal, rcv.created_at, rcv_detail.product_code AS kode_produk, rcv_detail.quantity, rcv_detail.unit_price, rcv_detail.amount, 1 AS status_data
-                    FROM 
-                        tr_receive_detail rcv_detail,
-                        tr_receive rcv
-                    WHERE
-                        rcv.receive_code = rcv_detail.receive_code
-                        AND (DATE(rcv.receive_date) BETWEEN '$sdate' AND '$edate')
-                    
+                    SELECT rcv.receive_date AS tanggal, rcv.created_at, 
+                        rcv_detail.product_code AS kode_produk, 
+                        rcv_detail.quantity, rcv_detail.unit_price, rcv_detail.amount, 
+                        1 AS status_data
+                    FROM tr_receive_detail rcv_detail
+                    JOIN tr_receive rcv ON rcv.receive_code = rcv_detail.receive_code
+                    $whereDateRcv
+
                     UNION ALL
-                    
-                    SELECT trans.trans_date AS tanggal, trans.created_at, trans_detail.product_code AS kode_produk, trans_detail.quantity, trans_detail.price as unit_price, (trans_detail.quantity * trans_detail.price) as amount, 2 AS status_data
-                    FROM 
-                        tr_transaction_detail trans_detail,
-                        tr_transaction trans
-                    WHERE
-                        trans.invoice_no = trans_detail.invoice_no
-                        AND (DATE(trans.trans_date) BETWEEN '$sdate' AND '$edate')
-                ) AS table_data, products
-                WHERE products.code = table_data.kode_produk
+
+                    SELECT trans.trans_date AS tanggal, trans.created_at, 
+                        trans_detail.product_code AS kode_produk, 
+                        trans_detail.quantity, trans_detail.price as unit_price, 
+                        (trans_detail.quantity * trans_detail.price) as amount, 
+                        2 AS status_data
+                    FROM tr_transaction_detail trans_detail
+                    JOIN tr_transaction trans ON trans.invoice_no = trans_detail.invoice_no
+                    $whereDateTrans
+                ) AS table_data
+                JOIN products ON products.code = table_data.kode_produk
                 $where
                 ORDER BY products.name ASC, table_data.created_at ASC
             ";
-            // echo "<pre/>";print_r($query);exit;
+
             $db_query = DB::select(DB::raw($query));
             return $db_query;
         }
+
+
+        // private function get_labarugi($sdate, $edate, $search, $categories) {
+        //     $where = empty($search) ? "" : " AND (products.code LIKE '%".$search."%' OR products.name LIKE '%".$search."%')";
+        //     $whereDate = "";
+        //     if (!empty($sdate)) {
+        //         $sdate_exp = explode("-", $sdate);    
+        //     } else {
+        //         $sdate_exp = explode("-", date("Y-m"));
+        //     }
+        //     $year   = $sdate_exp[0];
+        //     $month  = $sdate_exp[1];
+        //     // $whereDate = "AND (YEAR(trans.trans_date) = '".$year."' AND MONTH(trans.trans_date) = '".$month."')";
+        //     $whereDate = " AND (trans.trans_date BETWEEN '".$sdate."' AND '".$edate."')";
+        //     if (!empty($categories) && $categories != "ALL") {
+        //         $where .= " AND products.categories = '".$categories."'";
+        //     }
+        //     $oldquery = "
+        //         SELECT 
+        //             products.code as product_code,
+        //             CONCAT(products.code, ' | ', products.name) AS product_name,
+        //             trans.created_at as trans_date,
+        //             trans_detail.quantity,
+        //             trans_detail.price AS harga_jual,
+        //             COALESCE (
+        //                 (
+        //                    SELECT rcv.created_at
+        //                    FROM 
+        //                        tr_receive_detail rcv_detail,
+        //                        tr_receive rcv
+        //                    WHERE
+        //                        rcv.receive_code = rcv_detail.receive_code
+        //                        AND rcv_detail.product_code = trans_detail.product_code
+        //                        AND rcv.created_at <= trans.created_at
+        //                    ORDER BY rcv.id DESC
+        //                    LIMIT 1
+        //                 ),
+        //                 (
+        //                    SELECT rcv.created_at
+        //                    FROM 
+        //                        tr_receive_detail rcv_detail,
+        //                        tr_receive rcv
+        //                    WHERE
+        //                        rcv.receive_code = rcv_detail.receive_code
+        //                        AND rcv_detail.product_code = trans_detail.product_code
+        //                        AND DATE(rcv.created_at) <= DATE(trans.created_at)
+        //                    ORDER BY rcv.id DESC
+        //                    LIMIT 1
+        //                 )
+        //             ) AS receive_date,
+        //             COALESCE (
+        //                 (
+        //                    SELECT rcv_detail.unit_price
+        //                    FROM 
+        //                        tr_receive_detail rcv_detail,
+        //                        tr_receive rcv
+        //                    WHERE
+        //                        rcv.receive_code = rcv_detail.receive_code
+        //                        AND rcv_detail.product_code = trans_detail.product_code
+        //                        AND rcv.created_at <= trans.created_at
+        //                    ORDER BY rcv.id DESC
+        //                    LIMIT 1
+        //                 ),
+        //                 (
+        //                    SELECT rcv_detail.unit_price
+        //                    FROM 
+        //                        tr_receive_detail rcv_detail,
+        //                        tr_receive rcv
+        //                    WHERE
+        //                        rcv.receive_code = rcv_detail.receive_code
+        //                        AND rcv_detail.product_code = trans_detail.product_code
+        //                        AND DATE(rcv.created_at) <= DATE(trans.created_at)
+        //                    ORDER BY rcv.id DESC
+        //                    LIMIT 1
+        //                 )
+        //             ) AS harga_beli,
+        //             COALESCE (
+        //                 (
+        //                    SELECT rcv_detail.quantity
+        //                    FROM 
+        //                        tr_receive_detail rcv_detail,
+        //                        tr_receive rcv
+        //                    WHERE
+        //                        rcv.receive_code = rcv_detail.receive_code
+        //                        AND rcv_detail.product_code = trans_detail.product_code
+        //                        AND rcv.created_at <= trans.created_at
+        //                    ORDER BY rcv.id DESC
+        //                    LIMIT 1
+        //                 ),
+        //                 (
+        //                    SELECT rcv_detail.quantity
+        //                    FROM 
+        //                        tr_receive_detail rcv_detail,
+        //                        tr_receive rcv
+        //                    WHERE
+        //                        rcv.receive_code = rcv_detail.receive_code
+        //                        AND rcv_detail.product_code = trans_detail.product_code
+        //                        AND DATE(rcv.created_at) <= DATE(trans.created_at)
+        //                    ORDER BY rcv.id DESC
+        //                    LIMIT 1
+        //                 )
+        //             ) AS quantity_rcv
+        //         FROM 
+        //             tr_transaction_detail trans_detail,
+        //             tr_transaction trans,
+        //             products
+        //         WHERE
+        //             trans.invoice_no = trans_detail.invoice_no
+        //             AND products.code = trans_detail.product_code
+        //             ".$whereDate."
+        //             ".$where."
+        //         ORDER BY products.name ASC, trans.trans_date ASC        
+        //     ";
+
+        //     $query = "
+        //         SELECT 
+        //             table_data.kode_produk,
+        //             products.name,
+        //             table_data.tanggal, 
+        //             table_data.quantity, 
+        //             table_data.unit_price, 
+        //             table_data.amount, 
+        //             table_data.status_data
+        //         FROM (
+        //             SELECT rcv.receive_date AS tanggal, rcv.created_at, rcv_detail.product_code AS kode_produk, rcv_detail.quantity, rcv_detail.unit_price, rcv_detail.amount, 1 AS status_data
+        //             FROM 
+        //                 tr_receive_detail rcv_detail,
+        //                 tr_receive rcv
+        //             WHERE
+        //                 rcv.receive_code = rcv_detail.receive_code
+        //                 AND (DATE(rcv.receive_date) BETWEEN '$sdate' AND '$edate')
+                    
+        //             UNION ALL
+                    
+        //             SELECT trans.trans_date AS tanggal, trans.created_at, trans_detail.product_code AS kode_produk, trans_detail.quantity, trans_detail.price as unit_price, (trans_detail.quantity * trans_detail.price) as amount, 2 AS status_data
+        //             FROM 
+        //                 tr_transaction_detail trans_detail,
+        //                 tr_transaction trans
+        //             WHERE
+        //                 trans.invoice_no = trans_detail.invoice_no
+        //                 AND (DATE(trans.trans_date) BETWEEN '$sdate' AND '$edate')
+        //         ) AS table_data, products
+        //         WHERE products.code = table_data.kode_produk
+        //         $where
+        //         ORDER BY products.name ASC, table_data.created_at ASC
+        //     ";
+        //     // echo "<pre/>";print_r($query);exit;
+        //     $db_query = DB::select(DB::raw($query));
+        //     return $db_query;
+        // }
 
     // END REPORT LABA RUGI
 

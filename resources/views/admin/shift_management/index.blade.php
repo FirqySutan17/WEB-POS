@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Shift Management
+LUSTORE | Shift Management
 @endsection
 
 @push('css')

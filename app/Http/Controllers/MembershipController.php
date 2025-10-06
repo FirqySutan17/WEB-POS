@@ -124,8 +124,6 @@ class MembershipController extends Controller
             [
                 'code' => 'required|unique:memberships,code,' . $membership->id,
                 'name' => 'required',
-                'phone' => 'required',
-                'email' => 'required|string',
             ],
             [],
         );
@@ -133,10 +131,7 @@ class MembershipController extends Controller
         DB::beginTransaction();
         try {
             $update_data = [
-                'code' => $request->code,
                 'name' => $request->name,
-                'phone' => $request->phone,
-                'email'   => $request->email,
             ];
 
             $update= DB::table('memberships')->where('id', $membership->id)->update($update_data);

@@ -1,7 +1,7 @@
  @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Receive
+LUSTORE | Add Receive
 @endsection
 
 @push('css')
@@ -374,9 +374,9 @@ CMS | Add Receive
                             <div class="col-2">
                                 <div  class="form-group _form-group">
                                     <label for="input_post_description" class="font-weight-bold">
-                                        Expired Date <span class="wajib">* </span>
+                                        Expired Date
                                     </label>
-                                    <input data-itemid="${item_id}" id="expired_date_${item_id}" name="expired_date[]" type="date" class="form-control" required />
+                                    <input data-itemid="${item_id}" id="expired_date_${item_id}" name="expired_date[]" type="date" class="form-control" />
                                 </div>
                             </div>
                         </div>

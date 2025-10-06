@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Project Type
+LUSTORE | Add Project Type
 @endsection
 
 @push('css')

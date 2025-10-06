@@ -1,7 +1,7 @@
 @extends('admin.authentication.master')
 
 @section('title')
-CMS | Login
+LUSTORE | Login
 @endsection
 
 @push('css')

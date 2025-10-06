@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Project Type
+LUSTORE | Edit Project Type
 @endsection
 
 @section('content')

@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit - Receive Material
+LUSTORE | Edit - Receive Material
 @endsection
 
 @push('css')

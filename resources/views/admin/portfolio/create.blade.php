@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Add Portfolio
+LUSTORE | Add Portfolio
 @endsection
 
 @push('css')

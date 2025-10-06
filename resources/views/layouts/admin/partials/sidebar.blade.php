@@ -286,12 +286,12 @@
                                     Supplier
                                 </a>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <a href="{{ route('closing-date.edit', 1) }}"
                                     class="{{routeActive('closing-date.edit')}}">Closing
                                     Date
                                 </a>
-                            </li>
+                            </li> -->
                             <li>
                                 <a href="{{ route('product-category.index') }}"
                                     class="{{routeActive(['product-category.edit', 'product-category.index', 'product-category.create'])}}">Product
@@ -303,9 +303,14 @@
                     </li>
                     @endcan
 
-
-
-                    @canany(['Manage Users', 'Manage Roles'])
+                    <li>
+                        <a class="nav-link menu-title link-nav {{routeActive(['database.download'])}}"
+                            href="{{ route('database.download') }}">
+                            <i data-feather="circle"></i>
+                            <span>BackUp Database</span>
+                        </a>
+                    </li>
+                
                     <li class="dropdown">
                         <a class="nav-link navSubMenu menu-title {{ routeActive(['user.index', 'user.show', 'user.edit', 'user.create', 'roles.index', 'roles.show', 'roles.edit', 'roles.create']) }}"
                             href="javascript:void(0)"><i data-feather="users"></i><span>Users Management</span></a>
@@ -321,8 +326,7 @@
 
                         </ul>
                     </li>
-                    @endcan
-
+                    
                     {{-- @can('Manage Meta')
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive(['metas.index', 'metas.show', 'metas.edit', 'metas.create'])}}"

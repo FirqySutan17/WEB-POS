@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Report Receive
+LUSTORE | Report Receive
 @endsection
 
 @push('css')

@@ -116,16 +116,15 @@
 <body>
     <div class="ticket">
         <center>
-            <img style="width: 100%;" src="{{ asset('images/logo-placeholder.png')}}" alt="">
+            <img style="width: 70px;" src="{{ asset('images/lustore.jpeg')}}" alt="">
         </center>
         <center>
-            <h1>MEAT MASTER</h1>
+            <h1>LUSTORE</h1>
         </center>
         <p class="centered">
-            Ruko Kemang Pratama Raya Blok MM, Jl. Kemang Pratama Raya No.10, Bojong Rawalaumbu, Kec. Rawalumbu, Kota
-            Bks, Jawa Barat
+            Jln. Raya Bumi Indah Blok B6/7 Sukamantri, Pasar Kemis, Tangerang
         </p>
-        <p style="text-align: center"> NPWP 50.588.919.6-014.000 </p>
+        <!-- <p style="text-align: center"> NPWP 50.588.919.6-014.000 </p> -->
         <p style="text-align: center">{{ $transaction->created_at->format('d-m-Y h:m:s') }}</p>
         <hr class="dotted">
         <table class="add-note">
@@ -260,8 +259,8 @@
             </tbody>
         </table> --}}
         <hr class="dotted">
-        <p class="centered">Thanks for your purchase!
-            <br>PREMIUM FRESH CHICKEN MEAT
+        <p class="centered">LUSTORE - Tempat anda belanja hemat!
+            <br>Terimakasih atas Kunjungannya
         </p>
     </div>
     <button id="btnPrint" class="hidden-print" style="width: 100%;

@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Meta pages
+LUSTORE | Edit Meta pages
 @endsection
 
 @section('content')

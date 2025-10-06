@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Report Transaction
+LUSTORE | Report Transaction
 @endsection
 
 @push('css')

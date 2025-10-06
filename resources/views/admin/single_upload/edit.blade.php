@@ -1,7 +1,7 @@
 @extends('layouts.admin.master')
 
 @section('title')
-CMS | Edit Single Upload
+LUSTORE | Edit Single Upload
 @endsection
 
 @section('content')
